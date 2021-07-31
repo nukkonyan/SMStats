@@ -12,6 +12,8 @@ Xstats: Core (The main plugin itself)
 
 Xstats: Libraries (Library holding such as weapon names)
 
+Xstats: Connect (Connect & disconnect messages module)
+
 Xstats: <game name> (The game module)
 
 Steam page: https://steamcommunity.com/groups/xstats_statistics
