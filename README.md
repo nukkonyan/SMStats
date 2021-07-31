@@ -22,7 +22,7 @@ Xstats: Connect (Connect & disconnect messages module)
 
 Xstats: <game name> (The game module)
 
-Steam page: https://steamcommunity.com/groups/xstats_statistics
+Steam page: https://steamcommunity.com/groups/xstats_plugin
 
 
 This will be updated to a nicer design later and better description.
