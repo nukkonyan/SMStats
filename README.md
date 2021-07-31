@@ -7,8 +7,11 @@ Currently supporting only Team Fortress 2 but will ofcourse later support other 
 
 The plugin is split in different parts to make updating more effective, rather than updating one single package.
 Such as:
+
 Xstats: Core (The main plugin itself)
+
 Xstats: Libraries (Library holding such as weapon names)
+
 Xstats: <game name> (The game module)
 
 Steam page: https://steamcommunity.com/groups/xstats_statistics
