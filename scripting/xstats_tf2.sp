@@ -14,7 +14,7 @@ Xstats_Libraries	libraries;
 char	Prefix[256];
 
 #define		PLUGIN_NAME		"Xstats: Team Fortress 2"
-#define		PLUGIN_VERSION	"0.1b"
+#define		PLUGIN_VERSION	"0.1a"
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)	{
 	RegPluginLibrary(PLUGIN_NAME);
