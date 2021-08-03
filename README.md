@@ -22,6 +22,10 @@ Xstats: Connect (Connect & disconnect messages module)
 
 Xstats: <game name> (The game module)
 
+Xstats: Killstreaks (Awarding points for killstreaks, will be worked on.)
+
+Xstats: Achievements (Custom achievements module)
+
 Steam page: https://steamcommunity.com/groups/xstats_plugin
 
 
