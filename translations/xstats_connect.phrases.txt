@@ -1,0 +1,14 @@
+"Phrases"
+{
+	//Player connected.
+	"Client Connected"	{
+		"#format"	"{1:s},{2:d},{3:d},{4:d},{5:s}"
+		"en"		"{1} (Pos {2} out of {3} players, {4}) has joined from {5}"
+	}
+	
+	//Player disconnected.
+	"Client Disconnected"	{
+		"#format"	"{1:s},{2:d},{3:d},{4:d},{5:s},{6:s}"
+		"en"		"{1} (Pos {2} out of {3} players, {4}) has left from {5} ({6})"
+	}
+}
