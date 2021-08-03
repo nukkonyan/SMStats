@@ -20,7 +20,7 @@ Xstats: Libraries (Library holding such as weapon names)
 
 Xstats: Connect (Connect & disconnect messages module)
 
-Xstats: <game name> (The game module)
+Xstats: game name (The game module)
 
 Xstats: Killstreaks (Awarding points for killstreaks, will be worked on.)
 
