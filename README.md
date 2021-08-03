@@ -7,7 +7,7 @@ This will a 'plug-n-play' type of plugin. Throw the plugin into the server, add 
 
 At the moment there is no web panel yet but if you're interested in helping out on that part, hit me up https://steamcommunity.com/id/Teamkiller324
 
-Development: soon to be test-able.
+Development: test-able.
 
 Currently supporting only Team Fortress 2 but will ofcourse later support other games.
 
