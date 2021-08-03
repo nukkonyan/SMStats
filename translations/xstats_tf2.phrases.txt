@@ -1,0 +1,234 @@
+"Phrases"
+{
+	//==================================================================================
+	// Kill type phrases.
+	// The message is colour-safe. No need to use {default} after pre-colouring it.
+	//==================================================================================
+	
+	//Deflection kill event.
+	"Kill Event Type 1"	{
+		"en"	"Deflection"
+	}
+	
+	//Airshot kill event.
+	"Kill Event Type 2"	{
+		"en"	"Airshot"
+	}
+	
+	//Headshot kill event.
+	"Kill Event Type 3"	{
+		"en"	"Headshot"
+	}
+	
+	//Backstab kill event.
+	"Kill Event Type 4"	{
+		"en"	"Backstab"
+		"sv"	"Rygghugg"
+		"nl"	"Rugsteek"
+	}
+	
+	//Noscope kill event.
+	"Kill Event Type 5"	{
+		"en"	"Noscope"
+	}
+	
+	//Tauntkill kill event.
+	"Kill Event Type 6"	{
+		"en"	"Tauntkill"
+	}
+	
+	//Rocket jump kill event.
+	"Kill Event Type 7"	{
+		"en"	"Rocket Jump"
+	}
+	
+	//Bleeding kill event.
+	"Kill Event Type 8"	{
+		"en"	"Bleed Kill"
+	}
+	
+	
+	//==================================================================================
+	// Kill event phrases.
+	//==================================================================================
+	
+	//Suicide scenario.
+	"Suicide Event"	{
+		//Order: client name, client points, points lost.
+		"#format"	"{1:s},{2:d},{3:d}"
+		"en"		"{1} ({2}) Lost {3} points for suiciding"
+	}
+	
+	//Client killed a victim. 1.5 is for normal kill.
+	"Kill Event 1"	{
+		//Order: client name, client points, points, victim name, victim points/bot, kill_type name, weapon name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s},{7:s}"
+		"en"		"{1} ({2}) Got {3} points for killing {4} ({5}) with {lightgreen}{6} using {7}"
+	}
+	"Kill Event 1.5"	{
+		//Order: client name, client points, points, victim name, victim points/bot, weapon name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s}"
+		"en"		"{1} ({2}) Got {3} points for killing {4} ({5}) using {6}"
+	}
+	//Assisters message.
+	"Kill Event 1 Assister"	{
+		//Order: assister name, assister points, points, victim name, victim points/bot, kill type name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s}"
+		"en"		"{1} ({2}) Got {3} points for assisting in killing {4} ({5}) with {lightgreen}{6}"
+	}
+	"Kill Event 1.5 Assister"	{
+		//Order: assister name, assister points, points, victim name, victim points/bot.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s}"
+		"en"		"{1} ({2}) Got {3} points for assisting in killing {4} ({5})"
+	}
+
+	//==================================================================================
+	// Capture-The-Flag event phrases.
+	//==================================================================================
+	
+	//The flag was stolen.
+	"CTF Event Type 1"	{
+		"en"		"Stealing"
+	}
+	
+	//The flag was captured.
+	"CTF Event Type 2"	{
+		"en"		"Capturing"
+	}
+	
+	//The flag was picked up.
+	"CTF Event Type 3"	{
+		"en"		"Picking up"
+	}
+	
+	//The flag was defended.
+	"CTF Event Type 4"	{
+		"en"		"Defended"
+	}
+	
+	//Flag was picked up, captured or stolen.
+	"CTF Event 1"	{
+		//Order: client name, client points, points, flag event name, flag team name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}{4} the intelligence ({5})"
+	}
+	
+	//Flag was defended from a carrier bot.
+	"CTF Event 2"	{
+		//Order: client name, client points, points, flag event name, flag team name, carrier name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}{4} the intelligence ({5}) from {6} (Bot)"
+	}
+	
+	//==================================================================================
+	// Capture Point event phrases.
+	//==================================================================================
+	
+	//==================================================================================
+	// CP event phrases.
+	//==================================================================================
+	
+	//Defending a point.
+	"CP Event Type 1"	{
+		"en"	"Defending"
+	}
+	
+	//Captured a point.
+	"CP Event Type 2"	{
+		"en"	"Capturing"
+	}
+	
+	//Capture was blocked by opponent from capturing the point.
+	"CP Event 1"	{
+		//Order: client name, client points, points, cp name, victim name, victim points/bot.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}{4} {5} from {5} ({6}) capturing"
+	}
+	
+	//Capture point was captured.
+	"CP Event 2"	{
+		//Order: client name, client points, points, cp name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}{4} {5}"
+	}
+	
+	//==================================================================================
+	// MvM event phrases.
+	//==================================================================================
+	
+	//The bomb was defended.
+	"MvM Event Type 1"	{
+		"en"		"Defended"
+	}
+	
+	//Bomb was defended by player from the robot.
+	"MvM Event 1"	{
+		//Order: client name, client points, points, mvm event type name.
+		"#format"	"{1:s},{2:d},{3:d}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}{4} {default}the bomb"
+	}
+	
+	//==================================================================================
+	// Building phrases.
+	//==================================================================================
+	
+	//Building was destroyed.
+	"Building Event 1"	{
+		//Order: client name, client points, points, victim name, victim points/bot, building name, building owner, building owner name, weapon name
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s},{7:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}Destroying {4} by {5} ({6}) with {7}"
+	}
+	"Building Event 1 Assister"	{
+		//Order: assister name, assister points, points, victim name, victim points/bot, building name, building owner, building owner name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s},{7:s}"
+		"en"		"{1} ({2}) Got {3} points for assisting in {lightgreen}Destroying {4}by {5} ({6}) with {7}"
+	}
+	"Building Event 1.5"	{
+		//Order: client name, client points, points, victim name, victim points/bot, building name, weapon name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}Destroying {4} with {5}"
+	}
+	"Building Event 1.5 Assister"	{
+		//Order: assister name, assister name points, points, victim name, victim points/bot, building name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s}"
+		"en"		"{1} ({2}) Got {3} points for assisting in {lightgreen}Destroying {4} with {5}"
+	}
+	
+	//Building was built.
+	"Building Event 2"	{
+		"#format"	"{1:s},{2:d},{3:d},{4:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}Building {default}a {lightgreen}{4}"
+	}
+	
+	//==================================================================================
+	// Other event phrases.
+	//==================================================================================
+	
+	//Player coated an enemy with a jar.
+	"Coated Event"	{
+		//Order: client name, client points, points, victim name, victim points/bot, weapon name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}Coating {4} ({5}) with {6}"
+	}
+	
+	//Player extinguished their teammate.
+	"Extinguished Event"	{
+		//Order: client name, client points, points, victim name, victim points/bot, weapon name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}Extinguishing {4} ({5}) with {6}"
+	}
+	
+	//Player stole a sandvich.
+	"Sandvich Stolen Event"	{
+		//Order: client name, client points, points, victim name, victim points/bot.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s}"
+		"en"		"{1} ({2}) Got {3} points for stealing sandvich from {4} ({5})"
+	}
+	
+	//Medic ubercharged his teammate or enemy spy.
+	"Ubercharged Player"	{
+		//Order: client name, client points, points, victim name, victim points/bot, weapon name.
+		"#format"	"{1:s},{2:d},{3:d},{4:s},{5:s},{6:s}"
+		"en"		"{1} ({2}) Got {3} points for {lightgreen}Übercharging {4} ({5}) using {6}"
+	}
+}
