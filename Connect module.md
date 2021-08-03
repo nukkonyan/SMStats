@@ -1,4 +1,4 @@
-# Connect & Disconnect message module.
+# The Xstats Connect & Disconnect message module.
 
 Here's a preview of how a connect & disconnect messsage looks like.
 
