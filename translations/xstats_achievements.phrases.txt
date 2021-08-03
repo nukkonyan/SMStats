@@ -1,9 +1,0 @@
-"Phrases"
-{
-	//When the player achieves the achievement.
-	"Achievement Earned"	{
-		//Order: client name, client points, achievement name.
-		"#format"	"{1:s},{2:d},{3:s}"
-		"en"		"{1} ({2}) Has earned an achievement: {olive}{3}"
-	}
-}
