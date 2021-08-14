@@ -7,26 +7,6 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 
 At the moment there is no web panel yet but if you're interested in helping out on that part, hit me up https://steamcommunity.com/id/Teamkiller324
 
-Development: test-able.
+More info at the steam grou page: https://steamcommunity.com/groups/xstats_plugin
 
-Currently supporting only Team Fortress 2 but will ofcourse later support other games.
-
-The plugin is split in different parts to make updating more effective, rather than updating one single package.
-Such as:
-
-Xstats: Core (The main plugin itself)
-
-Xstats: Libraries (Library holding such as weapon names)
-
-Xstats: Connect (Connect & disconnect messages module)
-
-Xstats: game name (The game module)
-
-Xstats: Killstreaks (Awarding points for killstreaks, will be worked on.)
-
-Xstats: Achievements (Custom achievements module)
-
-Steam page: https://steamcommunity.com/groups/xstats_plugin
-
-
-This will be updated to a nicer design later and better description.
+This will be updated to a nicer design later and better description later on.
