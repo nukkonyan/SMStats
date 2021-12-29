@@ -3,7 +3,7 @@ Xstats is a multi-statistics tracking plugin, featuring kill tracking, achieveme
 
 Influenced by gameMe, HLStatsX:CE (Community driven HLStatsX version) 
 
-#Currently being re-built from scratch with a huge optimization.
+# Currently being re-built from scratch with a huge optimization.
 
 This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add the neccessary database.cfg lines to connect to the database and You're done.
 
