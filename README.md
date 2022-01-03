@@ -1,5 +1,6 @@
 # Xstats - Currently being re-built from scratch with a huge optimization.
 Xstats is a multi-statistics tracking plugin, featuring kill tracking, achievement tracking and more to come.
+Xstats is not made to superceed any statistical plugins, it's just made for fun and improving skills.
 
 Influenced by gameMe, HLStatsX:CE (Community driven HLStatsX version) 
 
