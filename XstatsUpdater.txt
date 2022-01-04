@@ -16,11 +16,11 @@
 	{
 		"Patch"
 		{
-			"Plugin"	"/plugins/xstats.smx"
-			"Plugin"	"/translations/xstats.phrases.txt"
+			"Plugin"	"Path_SM/plugins/xstats.smx"
+			"Plugin"	"Path_SM/translations/xstats.phrases.txt"
 		}
 		
-		"Plugin"	"/plugins/xstats.smx"
-		"Plugin"	"/translations/xstats.phrases.txt"
+		"Plugin"	"Path_SM/plugins/xstats.smx"
+		"Plugin"	"Path_SM/translations/xstats.phrases.txt"
 	}
 }
