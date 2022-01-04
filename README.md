@@ -20,6 +20,7 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 ```
 Counter-Strike: Global Offensive.
 Counter-Strike: Source
+Team Fortress 2 (Work in progress.)
 ```
 
 ## Info
