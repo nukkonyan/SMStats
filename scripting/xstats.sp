@@ -126,7 +126,7 @@ public void OnPluginStart()
 		default:	SetFailState("%s Game is unsupported.", LogTag);
 	}
 	
-	PrintToServer("%s Detected game: %s", LogTag, title);
+	PrintToServer("xStats Version %s Detected game: %s", Version, title);
 	
 	CreateConVar("xstats_version", Version, "xStats - Version.").AddChangeHook(VersionChanged);
 	PluginActive = CreateConVar("xstats_enabled", "1", "xStats - Should the tracking plugin be enabled?.", _, true, 0.0, true, 1.0);
