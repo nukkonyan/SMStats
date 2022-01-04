@@ -21,4 +21,4 @@ At the moment there is no web panel yet but if you're interested in helping out 
 
 More info at the steam group page: https://steamcommunity.com/groups/xstats_plugin
 
-This will be updated to a nicer design later and better description later on.
+### This will be updated to a nicer design later and better description later on.
