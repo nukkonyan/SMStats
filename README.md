@@ -12,7 +12,7 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 ## Requirements
 [Updater](https://github.com/Teamkiller324/Updater)
 
-[SteamWorks (due to Updater.)](http://users.alliedmods.net/~kyles/builds/SteamWorks/)
+[SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (due to Updater.)
 
 ``Event Manager. (Will be uploaded later.)``
 
