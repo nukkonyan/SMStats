@@ -16,6 +16,11 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 
 ### ``Event Manager`` (Will be uploaded later.)
 
+## Games supported. (So far)
+### Counter-Strike: Global Offensive.
+
+### Counter-Strike: Source
+
 ## Info
 At the moment there is no web panel yet but if you're interested in helping out on that part, hit me up https://steamcommunity.com/id/Teamkiller324
 
