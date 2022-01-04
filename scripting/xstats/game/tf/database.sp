@@ -1,8 +1,7 @@
 /**
  *	Prepare database.
  */
-void PrepareDB_TF2()
-{
+void PrepareDB_TF2()	{
 	char query[8192];
 	int len = 0;
 	

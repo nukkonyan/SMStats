@@ -13,8 +13,7 @@ ConVar TF2_MiniSentryKill;
 /**
  *	Initialize: Team Fortress 2.
  */
-void PrepareGame_TF2()
-{
+void PrepareGame_TF2()	{
 	//Weapon cvars
 	Weapon[0]	= CreateConVar("xstats_weapon_bat",					"10",	"xStats: TF2 - Points given when killing with Bat.", _, true, 0.0);
 	Weapon[1]	= CreateConVar("xstats_weapon_bottle",				"10",	"xStats: TF2 - Points given when killing with Bottle.", _, true, 0.0);
@@ -173,7 +172,7 @@ void PrepareGame_TF2()
 	Weapon[658]	= Weapon[18];	//Festive Rocket Launcher.
 	Weapon[659]	= Weapon[21];	//Festive Flamethrower.
 	Weapon[660]	= Weapon[0];	//Festive Bat.
-	Weapon[661]	= Weapon[20];	//Festive stickybomb Launcher.
+	Weapon[661]	= Weapon[20];	//Festive StickyBomb Launcher.
 	Weapon[662]	= Weapon[7];	//Festive Wrench.
 	Weapon[664]	= Weapon[14];	//Festive Sniper Rifle.
 	Weapon[665]	= Weapon[4];	//Festive Knife.
@@ -238,6 +237,7 @@ void PrepareGame_TF2()
 	Weapon[914]	= Weapon[21];	//Default Flamethrower.			Diamond Botkiller Mk. I.
 	Weapon[915]	= Weapon[13];	//Default Scattergun.			Diamond Botkiller Mk. I.
 	Weapon[916]	= Weapon[18];	//Default Rocket Launcher.		Diamond Botkiller Mk. I.
+	Weapon[939]	= CreateConVar("xstats_weapon_batouttahell",	"10",	"xStats: TF2 - Points given when killing with Bat Outta Hell.", _, true, 0.0);
 	Weapon[954]	= CreateConVar("xstats_weapon_memorymaker",		"10",	"xStats: TF2 - Points given when killing with Memory Maker.", _, true, 0.0);
 	Weapon[957]	= Weapon[14];	//Default Sniper Rifle.			Silver Botkiller Mk. II.
 	Weapon[958]	= Weapon[15];	//Default Minigun.				Silver Botkiller Mk. II.
@@ -253,7 +253,6 @@ void PrepareGame_TF2()
 	Weapon[972]	= Weapon[21];	//Default Flamethrower.			Gold Botkiller Mk. II.
 	Weapon[973]	= Weapon[13];	//Default Scattergun.			Gold Botkiller Mk. II.
 	Weapon[974]	= Weapon[18];	//Default Rocket Launcher.		Gold Botkiller Mk. II.
-	Weapon[939]	= CreateConVar("xstats_weapon_batouttahell",	"10",	"xStats: TF2 - Points given when killing with Bat Outta Hell.", _, true, 0.0);
 	Weapon[996]	= CreateConVar("xstats_weapon_loosecannon",		"10",	"xStats: TF2 - Points given when killing with Loose Cannon.", _, true, 0.0);
 	Weapon[997]	= CreateConVar("xstats_weapon_rescueranger",	"10",	"xStats: TF2 - Points given when killing with Rescue Ranger.", _, true, 0.0);
 	Weapon[999]	= Weapon[221];	//Festive Holy Mackerel.
@@ -449,4 +448,6 @@ void PrepareGame_TF2()
 	Weapon[30667]	= CreateConVar("xstats_weapon_batsaber",		"10",	"xStats: TF2 - Points given when killing with Batsaber.", _, true, 0.0);
 	Weapon[30668]	= CreateConVar("xstats_weapon_gigarcounter",	"10",	"xStats: TF2 - Points given when killing with Gigar Counter.", _, true, 0.0);
 	Weapon[30758]	= CreateConVar("xstats_weapon_prinnymachete",	"10",	"xStats: TF2 - Points given when killing with Prinny Machete.", _, true, 0.0);
+
+	AutoExecConfig(true, "xstats.tf.cfg");
 }

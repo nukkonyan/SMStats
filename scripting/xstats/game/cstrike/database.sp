@@ -1,8 +1,7 @@
 /**
  *	Prepare database.
  */
-void PrepareDB_CSS()
-{
+void PrepareDB_CSS()	{
 	char query[8192];
 	int len = 0;
 	

@@ -11,8 +11,7 @@
 /**
  *	Initialize: Counter-Strike Global Offensive.
  */
-void PrepareGame_CSGO()
-{
+void PrepareGame_CSGO()	{
 	//Weapon cvars
 	Weapon[CSGO_Weapon_Deagle]		= CreateConVar("xstats_weapon_deagle",	"5", "xStats: CSGO - Points given when killing with Deagle.", _, true, 0.0);
 	Weapon[CSGO_Weapon_Glock]		= CreateConVar("xstats_weapon_glock",	"5", "xStats: CSGO - Points given when killing with Glock.", _, true, 0.0);
@@ -43,9 +42,33 @@ void PrepareGame_CSGO()
 	Weapon[CSGO_Weapon_Scar20]		= CreateConVar("xstats_weapon_scar20",	"5", "xStats: CSGO - Points given when killing with Scar-20.", _, true, 0.0);
 	Weapon[CSGO_Weapon_SG556]		= CreateConVar("xstats_weapon_sg556",	"5", "xStats: CSGO - Points given when killing with SG556.", _, true, 0.0);
 	Weapon[CSGO_Weapon_SSG08]		= CreateConVar("xstats_weapon_ssg08",	"5", "xStats: CSGO - Points given when killing with Scout.", _, true, 0.0);
+	Weapon[CSGO_Knife_CT]			= CreateConVar("xstats_weapon_knife",	"5", "xStats: CSGO - Points given when killing with Knife.", _, true, 0.0);
+	Weapon[CSGO_Knife_Gold]			= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_T]			= Weapon[CSGO_Knife_CT];
 	Weapon[CSGO_Weapon_M4A1_S]		= CreateConVar("xstats_weapon_m4a1_silencer",	"5", "xStats: CSGO - Points given when killing with M4A1-S.", _, true, 0.0);
 	Weapon[CSGO_Weapon_USP_S]		= CreateConVar("xstats_weapon_usp_silencer",	"5", "xStats: CSGO - Points given when killing with USP-S", _, true, 0.0);
 	Weapon[CSGO_Weapon_CZ75_A]		= CreateConVar("xstats_weapon_cz75a",	"5", "xStats: CSGO - Points given when killing with CZ75-A", _, true, 0.0);
+	Weapon[CSGO_Weapon_Revolver]	= CreateConVar("xstats_weapon_revolver",		"5", "xStats: CSGO - Points given when killing with Revolver.", _, true, 0.0);
+	Weapon[CSGO_Knife_Ghost]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Bayonet]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Classic]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Flip]			= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Gut]			= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Karambit]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_M9_Bayonet]	= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Huntsman]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Falchion]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Bowie]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Butterfly]	= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_ButtPlugs]	= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Paracord]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Survival]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Ursus]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Navaja]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Nomad]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Stiletto]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Talon]		= Weapon[CSGO_Knife_CT];
+	Weapon[CSGO_Knife_Skeleton]		= Weapon[CSGO_Knife_CT];
 	
-	
+	AutoExecConfig(false, "xstats.csgo.cfg");
 }

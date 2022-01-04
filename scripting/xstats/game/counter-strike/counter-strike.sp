@@ -3,8 +3,7 @@
  */
 ConVar	BombEvent[3];
 
-void PrepareGame_CounterStrike()
-{
+void PrepareGame_CounterStrike()	{
 	BombEvent[0] = CreateConVar("xstats_bomb_planted",	"2", "xStats: Counter-Strike - Points given when planting the bomb.", _, true, 0.0);
 	BombEvent[1] = CreateConVar("xstats_bomb_defused",	"2", "xStats: Counter-Strike - Points given when defusing the bomb.", _, true, 0.0);
 	BombEvent[2] = CreateConVar("xstats_bomb_exploded",	"2", "xStats: Counter-Strike - Points given when bomb explodes.", _, true, 0.0);
@@ -18,17 +17,13 @@ void PrepareGame_CounterStrike()
  *	- Counter-Strike: Classic Offensive.
  */
 
-public void EM_Bomb_Planted(int userid)
-{
+public void EM_Bomb_Planted(int userid)	{
 	int client = GetClientOfUserId(userid);
 	int points = BombEvent[0].IntValue;
 	
-	if(Tklib_IsValidClient(client, true))
-	{
+	if(Tklib_IsValidClient(client, true))	{
 		if(CS_GetClientTeam(client) != CSTeam_T)
-		{
 			return;
-		}
 		
 		char query[256];
 		GetClientTeamString(client, Name[client], sizeof(Name[]));
@@ -37,8 +32,7 @@ public void EM_Bomb_Planted(int userid)
 		Format(query, sizeof(query), "update `%s` set BombsPlanted = BombsPlanted+1 where SteamID='%s'", playerlist, SteamID[client]);
 		db.Query(DBQuery_CS_Bombs, query);
 		
-		if(points > 0)
-		{
+		if(points > 0)	{
 			Session[client].Points = Session[client].Points+points;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 			db.Query(DBQuery_CS_Bombs, query);
@@ -49,17 +43,13 @@ public void EM_Bomb_Planted(int userid)
 	}
 }
 
-public void EM_Bomb_Defused(int userid)
-{
+public void EM_Bomb_Defused(int userid)	{
 	int client = GetClientOfUserId(userid);
 	int points = BombEvent[1].IntValue;
 	
-	if(Tklib_IsValidClient(client, true))
-	{
+	if(Tklib_IsValidClient(client, true))	{
 		if(CS_GetClientTeam(client) != CSTeam_CT)
-		{
 			return;
-		}
 		
 		char query[256];
 		GetClientTeamString(client, Name[client], sizeof(Name[]));
@@ -68,8 +58,7 @@ public void EM_Bomb_Defused(int userid)
 		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s'", playerlist, SteamID[client]);
 		db.Query(DBQuery_CS_Bombs, query);
 		
-		if(points > 0)
-		{
+		if(points > 0)	{
 			Session[client].Points = Session[client].Points+points;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 			db.Query(DBQuery_CS_Bombs, query);
@@ -80,17 +69,13 @@ public void EM_Bomb_Defused(int userid)
 	}
 }
 
-public void EM_Bomb_Exploded(int userid)
-{
+public void EM_Bomb_Exploded(int userid)	{
 	int client = GetClientOfUserId(userid);
 	int points = BombEvent[2].IntValue;
 	
-	if(Tklib_IsValidClient(client, true))
-	{
+	if(Tklib_IsValidClient(client, true))	{
 		if(CS_GetClientTeam(client) != CSTeam_T)
-		{
 			return;
-		}
 		
 		char query[256];
 		GetClientTeamString(client, Name[client], sizeof(Name[]));
@@ -99,8 +84,7 @@ public void EM_Bomb_Exploded(int userid)
 		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s'", playerlist, SteamID[client]);
 		db.Query(DBQuery_CS_Bombs, query);
 		
-		if(points > 0)
-		{
+		if(points > 0)	{
 			Session[client].Points = Session[client].Points+points;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 			db.Query(DBQuery_CS_Bombs, query);
@@ -111,46 +95,41 @@ public void EM_Bomb_Exploded(int userid)
 	}
 }
 
-void DBQuery_CS_Bombs(Database database, DBResultSet results, const char[] error, any data)
-{
+void DBQuery_CS_Bombs(Database database, DBResultSet results, const char[] error, any data)	{
 	if(results == null)
-	{
 		SetFailState("[xStats: CS] Updating player table for bomb event failed! (%s)", error);
-	}
 }
 
-public void EM_Round_Start()
-{
+public void EM_Round_Start()	{
 	RoundActive = true;
 	
-	switch(IsCurrentGame(Game_CSGO))
-	{
-		case	true:
-		{
+	switch(IsCurrentGame(Game_CSGO))	{
+		case	true:	{
 			WarmupActive = CS_IsWarmupRound();
-			switch(CS_IsWarmupRound())
-			{
-				case	true:	PrintToServer("[xStats: CS] Warmup Round Started");
-				case	false:	PrintToServer("[xStats: CS] Round Started");
+			
+			if(Debug.BoolValue)	{
+				switch(CS_IsWarmupRound())	{
+					case	true:	PrintToServer("[xStats: CS] Warmup Round Started");
+					case	false:	PrintToServer("[xStats: CS] Round Started");
+				}
 			}
 		}
 		case	false:	PrintToServer("[xStats: CS] Round Started");
 	}
 }
 
-public void EM_Round_End()
-{
+public void EM_Round_End()	{
 	RoundActive = false;
 	
-	switch(IsCurrentGame(Game_CSGO))
-	{
-		case	true:
-		{
+	switch(IsCurrentGame(Game_CSGO))	{
+		case	true:	{
 			WarmupActive = CS_IsWarmupRound();
-			switch(CS_IsWarmupRound())
-			{
-				case	true:	PrintToServer("[xStats: CS] Warmup Round Ended");
-				case	false:	PrintToServer("[xStats: CS] Round Ended");
+			
+			if(Debug.BoolValue)	{
+				switch(CS_IsWarmupRound())	{
+					case	true:	PrintToServer("[xStats: CS] Warmup Round Ended");
+					case	false:	PrintToServer("[xStats: CS] Round Ended");
+				}
 			}
 		}
 		case	false:	PrintToServer("[xStats: CS] Round Ended");

@@ -14,15 +14,13 @@ public void EM_Player_Death_TF2(int attacker,
 								 bool rocket_jump,
 								 const char[] killstreak,
 								 const char[] duckstreak,
-								 float distance)
-{
+								 float distance)	{
 	if(!PluginActive.BoolValue || !RoundActive)
 		return;
 	
 	int defindex = weapon_defindex;
 	
-	if(Weapon[defindex] == null)
-	{
+	if(Weapon[defindex] == null)	{
 		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", logprefix, weapon, defindex);
 		return;
 	}
@@ -58,21 +56,17 @@ public void EM_Player_Death_TF2(int attacker,
 	
 	char query[1024];
 	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))
-	{		
-		if(IsSamePlayers(client, victim))
-		{
+	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))	{		
+		if(IsSamePlayers(client, victim))	{
 			Session[client].Suicides++;
 			Format(query, sizeof(query), "update `%s` set Suicides = Suicides+1 where SteamID='%s'", playerlist, SteamID[victim]);
 			db.Query(DBQuery_Death, query);
 		}
 	}
 	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))
-	{
+	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))	{
 		//There was an assist.
-		if(Tklib_IsValidClient(assist, true))
-		{
+		if(Tklib_IsValidClient(assist, true))	{
 			Session[assist].Assists++;
 			Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s'", playerlist, SteamID[assist]);
 			db.Query(DBQuery_Death, query);
@@ -90,13 +84,11 @@ public void EM_Player_Death_TF2(int attacker,
 		}
 		
 		//Make sure to not query updates on a bot, the database wont be happy about that.
-		if(!IsFakeClient(victim))
-		{
+		if(!IsFakeClient(victim))	{
 			Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s'", playerlist, SteamID[victim]);
 			db.Query(DBQuery_Death, query);
 			
-			if(Death.IntValue > 0)
-			{
+			if(Death.IntValue > 0)	{
 				Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s'", playerlist, Death.IntValue, SteamID[victim]);
 				db.Query(DBQuery_Death, query);
 			}
@@ -107,22 +99,18 @@ public void EM_Player_Death_TF2(int attacker,
 		db.Query(DBQuery_Death, query);
 		
 		//If the inflictor entity is a building.
-		switch(TF2_GetBuildingType(inflictor))
-		{
-			case	TFBuilding_Sentrygun:
-			{
+		switch(TF2_GetBuildingType(inflictor))	{
+			case	TFBuilding_Sentrygun:	{
 				Session[client].MiniSentryKills++;
 				Format(query, sizeof(query), "update `%s` set SentryKills = SentryKills+1 where SteamID='%s'", playerlist, SteamID[client]);
 				db.Query(DBQuery_Death, query);
 			}
-			case	TFBuilding_MiniSentry:
-			{
+			case	TFBuilding_MiniSentry:	{
 				Session[client].SentryKills++;
 				Format(query, sizeof(query), "update `%s` set MiniSentryKills = MiniSentryKills+1 where SteamID='%s'", playerlist, SteamID[client]);
 				db.Query(DBQuery_Death, query);
 			}
-			case	TFBuilding_Invalid:
-			{
+			case	TFBuilding_Invalid:	{
 				char why_weapon_class[96];
 				TF2_whyWeaponClassname(why_weapon_class, sizeof(why_weapon_class), weapon_defindex, weapon);
 				
@@ -131,43 +119,37 @@ public void EM_Player_Death_TF2(int attacker,
 			}
 		}
 		
-		if(headshot)
-		{
+		if(headshot)	{
 			Session[client].Headshots++;
 			Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(backstab)
-		{
+		if(backstab)	{
 			Session[client].Backstabs++;
 			Format(query, sizeof(query), "update `%s` set Backstabs = Backstabs+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(dominated)
-		{
+		if(dominated)	{
 			Session[client].Dominations++;
 			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(revenge)
-		{
+		if(revenge)	{
 			Session[client].Revenges++;
 			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(noscope)
-		{
+		if(noscope)	{
 			Session[client].Noscopes++;
 			Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(points > 0)
-		{
+		if(points > 0)	{
 			Session[client].Points = Session[client].Points+points;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i", playerlist, points);
 			db.Query(DBQuery_Death, query);
@@ -189,8 +171,7 @@ public void EM_Player_Death_TF2(int attacker,
 			
 			char scenario[64];
 			
-			if(Kill_Scenario > 0)
-			{
+			if(Kill_Scenario > 0)	{
 				//why the format.
 				Format(scenario, sizeof(scenario), "%t{default}", Kill_Type[Kill_Scenario]);
 			}
@@ -199,15 +180,13 @@ public void EM_Player_Death_TF2(int attacker,
 			char dist[64];
 			Format(dist, sizeof(dist), "%.2f", distance);
 			
-			switch(IsValidString(scenario))
-			{
+			switch(IsValidString(scenario))	{
 				case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario, dist);
 				case	false:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 2", Name[client], points_client, points, Name[victim], dist);
 			}
 		}
 		
-		if(!IsFakeClient(victim))
-		{
+		if(!IsFakeClient(victim))	{
 			char log[2048];
 			int len = 0;
 			len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);
@@ -273,7 +252,7 @@ void TF2_whyWeaponClassname(char[] weapon, int maxlen, int weapon_defindex, cons
 		case	127:	why = "weapon_directhit";				//The Direct-Hit.
 		case	128:	why = "weapon_equalizer";				//The Equalizer.
 		case	130:	why = "weapon_scottishresistance";		//The Scottish Resistance.
-		case	131:	why = "weapon_chargentarge";			//The Charge n' Targe.
+		case	131:	why = "weapon_chargintarge";			//The Chargin' Targe.
 		case	132:	why = "weapon_eyelander";				//The Eyelander.
 		case	140:	why = "weapon_wrangler";				//The Wrangler.
 		case	141:	why = "weapon_frontierjustice";			//The Frontier Justice.
@@ -345,6 +324,174 @@ void TF2_whyWeaponClassname(char[] weapon, int maxlen, int weapon_defindex, cons
 		case	404:	why = "weapon_persainpersuader";		//The Persain Persuader.
 		case	406:	why = "weapon_splendidscreen";			//The Splendid Screen.
 		case	412:	why = "weapon_overdose";				//The Overdose.
+		case	413:	why = "weapon_solemnvow";				//The Solemn Vow.
+		case	414:	why = "weapon_libertylauncher";			//The Liberty Launcher.
+		case	415:	why = "weapon_reserveshooter";			//The Reserve Shooter.
+		case	416:	why = "weapon_marketgardener";			//The Market Gardener.
+		case	423:	why = "weapon_saxxy";					//The Saxxy.
+		case	424:	why = "weapon_tomislav";				//The Tomislav.
+		case	425:	why = "weapon_familybusiness";			//The Family Business.
+		case	426:	why = "weapon_evictionnotice";			//The Eviction Notice.
+		case	441:	why = "weapon_cowmangler5000";			//The Cow Mangler 5000.
+		case	442:	why = "weapon_righteousbison";			//The Righeous Bison.
+		case	444:	why = "weapon_mantreads";				//The Mantreads.
+		case	447:	why = "weapon_disciplinaryaction";		//The Disciplinary Action.
+		case	448:	why = "weapon_sodapopper";				//The Soda Popper.
+		case	449:	why = "weapon_winger";					//The Winger.
+		case	450:	why = "weapon_atomizer";				//The Atomizer.
+		case	452:	why = "weapon_threeruneblade";			//The Three-Rune-Blade.
+		case	457:	why = "weapon_postalpummeler";			//The Postal Pummeler.
+		case	460:	why = "weapon_enforcer";				//The Enforcer.
+		case	461:	why = "weapon_bigearner";				//The Big Earner.
+		case	466:	why = "weapon_maul";					//The Maul.
+		case	474:	why = "weapon_conscentiousobjector";	//The Conscentious Objector.
+		case	482:	why = "weapon_nessiesnineiron";			//The Nessie's Nine Iron.
+		case	513:	why = "weapon_original";				//The Original.
+		case	525:	why = "weapon_diamondback";				//The Diamond Back.
+		case	526:	why = "weapon_machina";					//The Machine.
+		case	527:	why = "weapon_widowmaker";				//The Widowmaker.
+		case	528:	why = "weapon_shortcircuit";			//The Short Circuit.
+		case	572:	why = "weapon_unarmedcombat";			//The Unarmed Combat.
+		case	574:	why = "weapon_wangaprick";				//The Wanga Prick.
+		case	587:	why = "weapon_apocofists";				//The Apoco Fists.
+		case	588:	why = "weapon_pomson6000";				//The Pomson 6000.
+		case	589:	why = "weapon_eurekaeffect";			//The Eureka Effect.
+		case	593:	why = "weapon_thirddegree";				//The Third Degree.
+		case	594:	why = "weapon_phlogistinator";			//The Phlogistinator.
+		case	595:	why = "weapon_manmelter";				//The Man Melter.
+		case	609:	why = "weapon_scottishhandshake";		//The Scottish Handshake.
+		case	638:	why = "weapon_sharpdresser";			//The Sharp Dresser.
+		case	648:	why = "weapon_wrapassassin";			//The Wrap Assassin.
+		case	649:	why = "weapon_spycicle";				//The Spycicle.
+		case	654:	why = "weapon_minigun";					//The Festive Minigun.
+		case	656:	why = "weapon_holidaypunch";			//The Holiday Punch.
+		case	658:	why = "weapon_rocketlauncher";			//The Festive Rocket Launcher.
+		case	659:	why = "weapon_flamethrower";			//The Festive Flamethrower.
+		case	660:	why = "weapon_bat";						//The Festive Bat.
+		case	661:	why = "weapon_stickybomblauncher";		//The Festive StickyBomb Launcher.
+		case	662:	why = "weapon_wrench";					//The Festive Wrench.
+		case	664:	why = "weapon_sniperrifle";				//The Festive Sniper Rifle.
+		case	665:	why = "weapon_knife";					//The Festive Knife.
+		case	669:	why = "weapon_scattergun";				//The Festive Scattergun.
+		case	727:	why = "weapon_blackrose";				//The Blackrose.
+		case	739:	why = "weapon_lollichop";				//The Lollichop.
+		case	740:	why = "weapon_scorchshot";				//The Shorch Shot.
+		case	741:	why = "weapon_rainblower";				//The Rainblower.
+		case	751:	why = "weapon_cleanerscarbine";			//The Cleaner's Carbine.
+		case	752:	why = "weapon_hitmansheatmaker";		//The Hitman's Heatmaker.
+		case	772:	why = "weapon_babyfacesblaster";		//The Baby Face's Blaster.
+		case	773:	why = "weapon_prettyboyspocketpistol";	//The Pretty Boy's Pocket Pistol.
+		case	775:	why = "weapon_escapeplan";				//The Escape Plan.
+		case	792:	why = "weapon_sniperrifle";				//The Silver Botkiller Mk. I Sniper Rifle.
+		case	793:	why = "weapon_minigun";					//The Silver Botkiller Mk. I Minigun.
+		case	795:	why = "weapon_wrench";					//The Silver Botkiller Mk. I Wrench.
+		case	797:	why = "weapon_stickybomblauncher";		//The Silver Botkiller Mk. I StickyBomb Launcher.
+		case	798:	why = "weapon_flamethrower";			//The Silver Botkiller Mk. I Flamethrower.
+		case	799:	why = "weapon_scattergun";				//The Silver Botkiller Mk. I Scattergun.
+		case	800:	why = "weapon_rocketlauncher";			//The Silver Botkiller Mk. I Rocket Launcher.
+		case	801:	why = "weapon_sniperrifle";				//The Gold Botkiller Mk. I Sniper Rifle.
+		case	802:	why = "weapon_minigun";					//The Gold Botkiller Mk. I Minigun.
+		case	804:	why = "weapon_wrench";					//The Gold Botkiller Mk. I Wrench.
+		case	806:	why = "weapon_stickybomblauncher";		//The Gold Botkiller Mk. I StickyBomb Launcher.
+		case	807:	why = "weapon_flamethrower";			//The Gold Botkiller Mk. I Flamethrower.
+		case	808:	why = "weapon_scattergun";				//The Gold Botkiller Mk. I Scattergun.
+		case	809:	why = "weapon_rocketlauncher";			//The Gold Botkiller Mk. I Rocket Launcher.
+		case	811:	why = "weapon_huolongheater";			//The Huo-Long Heater.
+		case	812:	why = "weapon_flyingguillotine";		//The Flying Guillotine.
+		case	813:	why = "weapon_neonannihilator";			//The Neon Annhiliator.
+		case	832:	why = "weapon_huolongheater";			//The Genuine Huo-Long Heater.
+		case	833:	why = "weapon_flyingguillotine";		//The Genuine Guillotine.
+		case	834:	why = "weapon_neonannihilator";			//The Genuine Neon Annihilator.
+		case	850:	why = "weapon_minigun";					//The MvM Minigun Deflector.
+		case	851:	why = "weapon_awperhand";				//The AWPer Hand.
+		case	880:	why = "weapon_freedomstaff";			//The Freedom Staff.
+		case	881:	why = "weapon_sniperrifle";				//The Rust Botkiller Mk. I Sniper Rifle.
+		case	882:	why = "weapon_minigun";					//The Rust Botkiller Mk. I Minigun.
+		case	884:	why = "weapon_wrench";					//The Rust Botkiller Mk. I Wrench.
+		case	886:	why = "weapon_stickybomblauncher";		//The Rust Botkiller Mk. I StickyBomb Launcher.
+		case	887:	why = "weapon_flamethrower";			//The Rust Botkiller Mk. I Flamethrower
+		case	888:	why = "weapon_scattergun";				//The Rust Botkiller Mk. I Scattergun.
+		case	889:	why = "weapon_rocketlauncher";			//The Rust Botkiller Mk. I Rocket Launcher.
+		case	890:	why = "weapon_sniperrifle";				//The Blood Botkiller Mk. I Sniper Rifle.
+		case	891:	why = "weapon_minigun";					//The Blood Botkiller Mk. I Minigun.
+		case	893:	why = "weapon_wrench";					//The Blood Botkiller Mk. I Wrench.
+		case	895:	why = "weapon_stickybomblauncher";		//The Blood Botkiller Mk. I StickyBomb Launcher.
+		case	896:	why = "weapon_flamethrower";			//The Blood Botkiller Mk. I Flamethrower
+		case	897:	why = "weapon_scattergun";				//The Blood Botkiller Mk. I Scattergun.
+		case	898:	why = "weapon_rocketlauncher";			//The Blood Botkiller Mk. I Rocket Launcher.
+		case	899:	why = "weapon_sniperrifle";				//The Carbonado Botkiller Mk. I Sniper Rifle.
+		case	900:	why = "weapon_minigun";					//The Carbonado Botkiller Mk. I Minigun.
+		case	902:	why = "weapon_wrench";					//The Carbonado Botkiller Mk. I Wrench.
+		case	904:	why = "weapon_stickybomblauncher";		//The Carbonado Botkiller Mk. I StickyBomb Launcher.
+		case	905:	why = "weapon_flamethrower";			//The Carbonado Botkiller Mk. I Flamethrower
+		case	906:	why = "weapon_scattergun";				//The Carbonado Botkiller Mk. I Scattergun.
+		case	907:	why = "weapon_rocketlauncher";			//The Carbonado Botkiller Mk. I Rocket Launcher.
+		case	908:	why = "weapon_sniperrifle";				//The Diamond Botkiller Mk. I Sniper Rifle.
+		case	909:	why = "weapon_minigun";					//The Diamond Botkiller Mk. I Minigun.
+		case	911:	why = "weapon_wrench";					//The Diamond Botkiller Mk. I Wrench.
+		case	913:	why = "weapon_stickybomblauncher";		//The Diamond Botkiller Mk. I StickyBomb Launcher.
+		case	914:	why = "weapon_flamethrower";			//The Diamond Botkiller Mk. I Flamethrower
+		case	915:	why = "weapon_scattergun";				//The Diamond Botkiller Mk. I Scattergun.
+		case	916:	why = "weapon_rocketlauncher";			//The Diamond Botkiller Mk. I Rocket Launcher.
+		case	939:	why = "weapon_batouttahell";			//The Bat Outta Hell.
+		case	954:	why = "weapon_memorymaker";				//The Memory Maker.
+		case	957:	why = "weapon_sniperrifle";				//The Silver Botkiller Mk. II Sniper Rifle.
+		case	958:	why = "weapon_minigun";					//The Silver Botkiller Mk. II Minigun.
+		case	960:	why = "weapon_wrench";					//The Silver Botkiller Mk. II Wrench.
+		case	962:	why = "weapon_stickybomblauncher";		//The Silver Botkiller Mk. II StickyBomb Launcher.
+		case	963:	why = "weapon_flamethrower";			//The Silver Botkiller Mk. II Flamethrower
+		case	964:	why = "weapon_scattergun";				//The Silver Botkiller Mk. II Scattergun.
+		case	965:	why = "weapon_rocketlauncher";			//The Silver Botkiller Mk. II Rocket Launcher.
+		case	966:	why = "weapon_sniperrifle";				//The Gold Botkiller Mk. II Sniper Rifle.
+		case	967:	why = "weapon_minigun";					//The Gold Botkiller Mk. II Minigun.
+		case	969:	why = "weapon_wrench";					//The Gold Botkiller Mk. II Wrench.
+		case	971:	why = "weapon_stickybomblauncher";		//The Gold Botkiller Mk. II StickyBomb Launcher.
+		case	972:	why = "weapon_flamethrower";			//The Gold Botkiller Mk. II Flamethrower
+		case	973:	why = "weapon_scattergun";				//The Gold Botkiller Mk. II Scattergun.
+		case	974:	why = "weapon_rocketlauncher";			//The Gold Botkiller Mk. II Rocket Launcher.
+		case	996:	why = "weapon_loosecannon";				//The Loose Cannon.
+		case	997:	why = "weapon_rescueranger";			//The Rescue Ranger.
+		case	999:	why = "weapon_holymackerel";			//The Festive Holy Mackerel.
+		case	1000:	why = "weapon_axtinguisher";			//The Festive Axtinguisher.
+		case	1003:	why = "weapon_ubersaw";					//The Festive Ubersaw.
+		case	1004:	why = "weapon_frontierjustice";			//The Festive Frontier Justice.
+		case	1005:	why = "weapon_huntsman";				//The Festive Huntsman.
+		case	1006:	why = "weapon_ambassador";				//The Festive Ambassador.
+		case	1007:	why = "weapon_grenadelauncher";			//The Festive Grenade Launcher.
+		case	1013:	why = "weapon_hamshank";				//The Ham Shank.
+		case	1071:	why = "weapon_goldenfryingpan";			//The Golden Frying Pan.
+		case	1078:	why = "weapon_forceanature";			//The Festive Force-A-Nature.
+		case	1079:	why = "weapon_crusaderscrossbow";		//The Festive Crusader's Crossbow.
+		case	1081:	why = "weapon_flaregun";				//The Festive Flare Gun.
+		case	1082:	why = "weapon_eyelander";				//The Festive Eyelander.
+		case	1084:	why = "weapon_goru";					//The Festive Gloves Of Running Urgently.
+		case	1085:	why = "weapon_blackbox";				//The Festive Black Box.
+		case	1092:	why = "weapon_fortifiedcompound";		//The Fortified Compound.
+		case	1098:	why = "weapon_classic";					//The Classic.
+		case	1099:	why = "weapon_tideturner";				//The Tide Turner.
+		case	1100:	why = "weapon_breadbite";				//The Bread Bite.
+		case	1103:	why = "weapon_backscatter";				//The Back Scatter.
+		case	1104:	why = "weapon_airstrike";				//The Air Strike.
+		case	1123:	why = "weapon_necrosmasher";			//The Necro Smasher.
+		case	1127:	why = "weapon_crossingguard";			//The Crossing Guard.
+		case	1141:	why = "weapon_shotgun";					//The Festive Shotgun.
+		case	1142:	why = "weapon_revolver";				//The Festive Revolver.
+		case	1144:	why = "weapon_chargintarge";			//The Festive Chargin' Targe.
+		case	1446:	why = "weapon_backburner";				//The Festive Backburner.
+		case	1149:	why = "weapon_smg";						//The Festive SMG.
+		case	1150:	why = "weapon_quickiebomblauncher";		//The QuickieBomb Launcher.
+		case	1151:	why = "weapon_ironbomber";				//The Iron Bomber.
+		case	1153:	why = "weapon_panicattack";				//The Panic Attack.
+		case	1178:	why = "weapon_dragonsfury";				//The Dragon's Fury.
+		case	1179:	why = "weapon_thermalthruster";			//The Thermal Thruster.
+		case	1181:	why = "weapon_hothand";					//The Hot Hand.
+		case	1184:	why = "weapon_goru";					//The MvM Gloves Of Running Urgently.
+		case	30474:	why = "weapon_nostromonapalmer";		//The Nostromo Napalmer.
+		case	30665:	why = "weapon_shootingstar";			//The Shooting Star.
+		case	30666:	why = "weapon_capper";					//The C.A.P.P.E.R.
+		case	30667:	why = "weapon_batsaber";				//The Batsaber.
+		case	30668:	why = "weapon_gigarcounter";			//The Gigarcounter.
+		case	30758:	why = "weapon_prinnymachete";			//The Prinny Machete.
 		default:
 		{
 			Format(why, sizeof(why), format);

@@ -6,15 +6,13 @@ public void EM_Player_Death_CSS(int attacker,
 								  bool dominated,
 								  bool revenge,
 								  bool noscope,
-								  float distance)
-{
+								  float distance)	{
 	if(!PluginActive.BoolValue || !RoundActive)
 		return;
 	
 	int defindex = CSS_GetWeaponDefindex(weapon);
 	
-	if(Weapon[defindex] == null)
-	{
+	if(Weapon[defindex] == null)	{
 		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", logprefix, weapon, defindex);
 		return;
 	}
@@ -31,31 +29,26 @@ public void EM_Player_Death_CSS(int attacker,
 	GetClientTeamString(victim, Name[victim], sizeof(Name[]));
 	GetClientTeamString(assist, Name[assist], sizeof(Name[]));
 	
-	if(IsFakeClient(victim) && !AllowBots.BoolValue)
-		return;
-	
 	char query[1024];
 	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))
-	{		
-		if(IsSamePlayers(client, victim))
-		{
+	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))	{		
+		if(IsSamePlayers(client, victim))	{
 			Session[client].Suicides++;
 			Format(query, sizeof(query), "update `%s` set Suicides = Suicides+1 where SteamID='%s'", playerlist, SteamID[victim]);
 			db.Query(DBQuery_Death, query);
 		}
 	}
 	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))
-	{		
-		if(Tklib_IsValidClient(assist, true))
-		{
+	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))	{
+		if(IsFakeClient(victim) && !AllowBots.BoolValue)
+			return;
+		
+		if(Tklib_IsValidClient(assist, true))	{
 			Session[assist].Assists++;
 			Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s'", playerlist, SteamID[assist]);
 			db.Query(DBQuery_Death, query);
 			
-			if(AssistKill.IntValue > 0)
-			{
+			if(AssistKill.IntValue > 0)	{
 				Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, SteamID[assist]);
 				db.Query(DBQuery_Death, query);
 				

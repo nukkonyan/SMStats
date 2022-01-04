@@ -14,7 +14,7 @@ void PrepareUpdater()
 public void OnLibraryAdded(const char[] name)
 {
 	if(StrEqual(name, "updater"))	{
-		PrintToServer("[xstats Updater] Updater plugin was detected, adding plugin to update list..");
+		PrintToServer("[xStats Updater] Updater plugin was detected, adding plugin to update list..");
 		Updater_AddPlugin(UpdateUrl);
 	}
 }

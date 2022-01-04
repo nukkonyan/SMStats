@@ -11,8 +11,7 @@
 /**
  *	Initialize: Counter-Strike Source.
  */
-void PrepareGame_CSS()
-{
+void PrepareGame_CSS()	{
 	//Weapon cvars
 	Weapon[CSS_Weapon_Deagle]	= CreateConVar("xstats_weapon_deagle",	"5", "xStats: CSS - Points given when killing with Deagle.", _, true, 0.0);
 	Weapon[CSS_Weapon_Glock]	= CreateConVar("xstats_weapon_glock",	"5", "xStats: CSS - Points given when killing with Glock.", _, true, 0.0);
@@ -35,4 +34,6 @@ void PrepareGame_CSS()
 	Weapon[CSS_Weapon_SG550]	= CreateConVar("xstats_weapon_sg550",	"5", "xStats: CSS - Points given when killing with SG550.", _, true, 0.0);
 	Weapon[CSS_Weapon_SG552]	= CreateConVar("xstats_weapon_sg552",	"5", "xStats: CSS - Points given when killing with SG552.", _, true, 0.0);
 	Weapon[CSS_Weapon_Scout]	= CreateConVar("xstats_weapon_scout",	"5", "xStats: CSS - Points given when killing with Scout.", _, true, 0.0);
+	
+	AutoExecConfig(false, "xstats.css.cfg");
 }

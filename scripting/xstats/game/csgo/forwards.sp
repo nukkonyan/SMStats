@@ -1,12 +1,3 @@
-public void EM_Player_Hurt(int attacker, int userid, int health)
-{
-	PrintToServer("//===== EM_Player_Hurt =====//");
-	PrintToServer("attacker %i", attacker);
-	PrintToServer("userid %i", userid);
-	PrintToServer("health %i", health);
-	PrintToServer(" ");
-}
-
 public void EM_Player_Death_CSGO(int attacker,
 								  int userid,
 								  int assister,
@@ -20,15 +11,13 @@ public void EM_Player_Death_CSGO(int attacker,
 								  bool noscope,
 								  bool thrusmoke,
 								  bool attackerblind,
-								  float distance)
-{
+								  float distance)	{
 	if(!PluginActive.BoolValue || !RoundActive || WarmupActive && !AllowWarmup.BoolValue)
 		return;
 	
 	int defindex = CSGO_GetWeaponDefindex(weapon);
 	
-	if(Weapon[defindex] == null)
-	{
+	if(Weapon[defindex] == null)	{
 		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", logprefix, weapon, defindex);
 		return;
 	}
@@ -45,13 +34,8 @@ public void EM_Player_Death_CSGO(int attacker,
 	GetClientTeamString(victim, Name[victim], sizeof(Name[]));
 	GetClientTeamString(assist, Name[assist], sizeof(Name[]));
 	
-	if(IsFakeClient(victim) && !AllowBots.BoolValue)
-		return;
-	
 	char query[1024];
-	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))
-	{		
+	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))	{		
 		if(IsSamePlayers(client, victim))
 		{
 			Session[client].Suicides++;
@@ -60,16 +44,16 @@ public void EM_Player_Death_CSGO(int attacker,
 		}
 	}
 	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))
-	{		
-		if(Tklib_IsValidClient(assist, true))
-		{
+	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))	{
+		if(IsFakeClient(victim) && !AllowBots.BoolValue)
+			return;
+		
+		if(Tklib_IsValidClient(assist, true))	{
 			Session[assist].Assists++;
 			Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s'", playerlist, SteamID[assist]);
 			db.Query(DBQuery_Death, query);
 			
-			if(AssistKill.IntValue > 0)
-			{
+			if(AssistKill.IntValue > 0)	{
 				Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, SteamID[assist]);
 				db.Query(DBQuery_Death, query);
 				
@@ -80,13 +64,11 @@ public void EM_Player_Death_CSGO(int attacker,
 			}
 		}
 		
-		if(!IsFakeClient(victim))
-		{
+		if(!IsFakeClient(victim))	{
 			Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s'", playerlist, SteamID[victim]);
 			db.Query(DBQuery_Death, query);
 			
-			if(Death.IntValue > 0)
-			{
+			if(Death.IntValue > 0)	{
 				Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s'", playerlist, Death.IntValue, SteamID[victim]);
 				db.Query(DBQuery_Death, query);
 			}
@@ -99,43 +81,37 @@ public void EM_Player_Death_CSGO(int attacker,
 		Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s'", playerlist, weapon, weapon, SteamID[client]);
 		db.Query(DBQuery_Death, query);
 		
-		if(headshot)
-		{
+		if(headshot)	{
 			Session[client].Headshots++;
 			Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(dominated)
-		{
+		if(dominated)	{
 			Session[client].Dominations++;
 			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(revenge)
-		{
+		if(revenge)	{
 			Session[client].Revenges++;
 			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(noscope)
-		{
+		if(noscope)	{
 			Session[client].Noscopes++;
 			Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(thrusmoke)
-		{
+		if(thrusmoke)	{
 			Session[client].SmokeKills++;
 			Format(query, sizeof(query), "update `%s` set ThruSmokes = ThruSmokes+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(points > 0)
-		{
+		if(points > 0)	{
 			Session[client].Points = Session[client].Points+points;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i", playerlist, points);
 			db.Query(DBQuery_Death, query);
@@ -153,8 +129,7 @@ public void EM_Player_Death_CSGO(int attacker,
 			
 			char scenario[64];
 			
-			if(Kill_Scenario > 0)
-			{
+			if(Kill_Scenario > 0)	{
 				//Fix the format.
 				Format(scenario, sizeof(scenario), "%t{default}", Kill_Type[Kill_Scenario]);
 			}
@@ -163,8 +138,7 @@ public void EM_Player_Death_CSGO(int attacker,
 			char dist[64];
 			Format(dist, sizeof(dist), "%.2f", distance);
 			
-			switch(IsValidString(scenario))
-			{
+			switch(IsValidString(scenario))	{
 				case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario, dist);
 				case	false:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 2", Name[client], points_client, points, Name[victim], dist);
 			}
@@ -172,8 +146,7 @@ public void EM_Player_Death_CSGO(int attacker,
 			
 		}
 		
-		if(!IsFakeClient(victim))
-		{
+		if(!IsFakeClient(victim))	{
 			char log[2048];
 			int len = 0;
 			len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);

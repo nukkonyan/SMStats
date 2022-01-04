@@ -1,8 +1,7 @@
 /**
  *	Prepare database.
  */
-void PrepareDB_CSGO()
-{
+void PrepareDB_CSGO()	{
 	char query[8192];
 	int len = 0;
 	
