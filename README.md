@@ -1,4 +1,4 @@
-Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.) At the moment in early development stages.
+### Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.) At the moment in early development stages.
 
 xStats is a multi-statistics tracking plugin, featuring kill tracking, achievement tracking and more to come.
 
