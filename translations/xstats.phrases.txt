@@ -1,0 +1,90 @@
+"Phrases"
+{
+	//Kill event types.
+	"Kill Event Type 1"
+	{
+		//Noscope headshot.
+		"en"	"with a {green}Noscope Headshot"
+	}
+	
+	"Kill Event Type 2"
+	{
+		//Noscope
+		"en"	"with a {green}Noscope"
+	}
+	
+	"Kill Event Type 3"
+	{
+		//Mid-air headshot.
+		"en"	"with a {green}Mid-air Headshot"
+	}
+	
+	"Kill Event Typep 4"
+	{
+		//Mid-air kill.
+		"en"	"with a {green}Mid-air Shot"
+	}
+	
+	"Kill Event Type 5"
+	{
+		//Headshot.
+		"en"	"with a {green}Headshot"
+	}
+	
+	"Kill Event Type 6"
+	{
+		//Backstab.
+		"en"	"with a {green}Backstab"
+	}
+	
+	"Kill Event Type 7"
+	{
+		//Through Smoke.
+		"en"	"{green}Through Smoke"
+	}
+	
+	//Assist
+	"Assist Kill Event"
+	{
+		//Special kill event.
+		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en"		"{1} ({2}) Earned {3} points for assisting in killing {5}."
+	}
+	
+	//Kill event
+	"Kill Event 1"
+	{
+		//Special kill event.
+		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
+		"en"		"{1} ({2}) Earned {3} points for killing {4} {5} from {6} meters away."
+	}
+	
+	"Kill Event 2"
+	{
+		//Default kill event.
+		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en"		"{1} ({2}) Earned {3} points for killing {4} from {5} meters away."
+	}
+	
+	//================================//
+	// Counter-Strike.
+	//================================//
+	
+	"Bomb Planted"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for planting the bomb."
+	}
+	
+	"Bomb Defused"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for defusing the bomb."
+	}
+	
+	"Bomb Explode"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for bomb exploding and winning the round."
+	}
+}
