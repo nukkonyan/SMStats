@@ -5,10 +5,7 @@
  */
 public void PrepareUpdater()
 {
-	if(LibraryExists("updater"))	{
-		Updater_AddPlugin(UpdateUrl);
-		Updater_ForceUpdate();
-	}
+
 }
 
 public void OnLibraryAdded(const char[] name)
@@ -27,5 +24,8 @@ public void Updater_OnPluginUpdated()
 
 public void OnAllPluginsLoaded()
 {
-	
+	if(LibraryExists("updater"))	{
+		Updater_AddPlugin(UpdateUrl);
+		Updater_ForceUpdate();
+	}
 }

@@ -147,7 +147,6 @@ public void OnPluginStart()
 	PrepareDatabase();
 	PrepareGame();
 	PrepareCommands();
-	PrepareUpdater();
 	
 	//Translation.
 	LoadTranslations("xstats.phrases");
