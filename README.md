@@ -17,7 +17,8 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 ### ``Event Manager`` (Will be uploaded later.)
 
 ## Games supported. (So far)
-### ```Counter-Strike: Global Offensive.
+```
+Counter-Strike: Global Offensive.
 Counter-Strike: Source
 ```
 
