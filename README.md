@@ -10,7 +10,7 @@ xStats is not made to superceed any statistical plugins, it's just made for fun 
 This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add the neccessary database.cfg lines to connect to the database and You're done.
 
 ## Requirements
-[Updater](https://github.com/Teamkiller324/Updater)
+### [Updater](https://github.com/Teamkiller324/Updater)
 
 [SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (due to Updater.)
 
