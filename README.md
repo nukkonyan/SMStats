@@ -12,9 +12,9 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 ## Requirements
 ### [Updater](https://github.com/Teamkiller324/Updater)
 
-[SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (due to Updater.)
+### [SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (due to Updater.)
 
-``Event Manager. (Will be uploaded later.)``
+### ``Event Manager. (Will be uploaded later.)``
 
 ## Info
 At the moment there is no web panel yet but if you're interested in helping out on that part, hit me up https://steamcommunity.com/id/Teamkiller324
