@@ -11,7 +11,9 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 
 ## Requirements
 Updater
+
 SteamWorks (due to Updater.)
+
 ``Event Manager. (Will be uploaded later.)``
 
 ## Info
