@@ -1,4 +1,4 @@
-#define UpdateUrl "https://github.com/Teamkiller324/Xstats/XstatsUpdater.txt"
+#define UpdateUrl "https://raw.githubusercontent.com/Teamkiller324/Xstats/main/XstatsUpdater.txt"
 
 /**
  *	Initialize updater addition.
