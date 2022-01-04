@@ -14,7 +14,7 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 
 ### [Updater](https://github.com/Teamkiller324/Updater) (Updated & continued version)
 
-### [SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (due to Updater)
+### [SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (Due to Updater)
 
 ### ``Event Manager`` (Will be uploaded later)
 
