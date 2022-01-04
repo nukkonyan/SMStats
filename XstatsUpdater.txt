@@ -1,0 +1,26 @@
+"Updater"
+{
+	"Information"
+	{
+		"Version"
+		{
+			"Latest"	"0.01a"
+			"Previous"	"0.01a"
+		}
+		
+		"Notes"	"More info @ https://github.com/Teamkiller324/Xstats"
+		"Notes"	"Development Testing Phase."
+	}
+	
+	"Files"
+	{
+		"Patch"
+		{
+			"Plugin"	"/plugins/xstats.smx"
+			"Plugin"	"/translations/xstats.phrases.txt"
+		}
+		
+		"Plugin"	"/plugins/xstats.smx"
+		"Plugin"	"/translations/xstats.phrases.txt"
+	}
+}
