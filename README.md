@@ -16,7 +16,7 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 
 ### [SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (due to Updater)
 
-### ``Event Manager`` (Will be uploaded later.)
+### ``Event Manager`` (Will be uploaded later)
 
 ## Games supported. (So far)
 ```
