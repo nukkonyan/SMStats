@@ -1,4 +1,4 @@
-# Xstats - Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.)
+# xStats - Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.)
 Xstats is a multi-statistics tracking plugin, featuring kill tracking, achievement tracking and more to come.
 
 Xstats is not made to superceed any statistical plugins, it's just made for fun and improving skills.
