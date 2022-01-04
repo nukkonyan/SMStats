@@ -5,8 +5,10 @@
  */
 public void PrepareUpdater()
 {
-	if(LibraryExists("updater"))
+	if(LibraryExists("updater"))	{
 		Updater_AddPlugin(UpdateUrl);
+		Updater_ForceUpdate();
+	}
 }
 
 public void OnLibraryAdded(const char[] name)
@@ -21,4 +23,9 @@ public void Updater_OnPluginUpdated()
 {
 	PrintToServer("[xStats Updater] New update found and installed, Restarting plugin..");
 	ReloadPlugin();
+}
+
+public void OnAllPluginsLoaded()
+{
+	
 }
