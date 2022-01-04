@@ -10,11 +10,20 @@ xStats is not made to superceed any statistical plugins, it's just made for fun 
 This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add the neccessary database.cfg lines to connect to the database and You're done.
 
 ## Requirements
-### [Updater](https://github.com/Teamkiller324/Updater)
+### [Tklib](https://github.com/Teamkiler324) (To compile)
 
-### [SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (due to Updater.)
+### [Updater](https://github.com/Teamkiller324/Updater) (Updated & continued version)
 
-### ``Event Manager`` (Will be uploaded later.)
+### [SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (Due to Updater)
+
+### ``Event Manager`` (Will be uploaded later)
+
+## Games supported. (So far, more will be added)
+```
+Counter-Strike: Global Offensive.
+Counter-Strike: Source
+Team Fortress 2 (Work in progress.)
+```
 
 ## Info
 At the moment there is no web panel yet but if you're interested in helping out on that part, hit me up https://steamcommunity.com/id/Teamkiller324
