@@ -4,8 +4,7 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a"
-			"Previous"	"0.01a"
+			"Latest"	"0.01a_devtest1"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/Xstats"
