@@ -12,7 +12,7 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 ## Requirements
 ### [Tk Libraries](https://github.com/Teamkiler324) (To compile)
 
-### [Updater](https://github.com/Teamkiller324/Updater) (Updated & continued version)
+### [Updater](https://github.com/Teamkiller324/Updater) (To compile with updater support)
 
 ### [SteamWorks](http://users.alliedmods.net/~kyles/builds/SteamWorks/) (Due to Updater)
 
