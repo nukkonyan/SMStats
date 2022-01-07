@@ -26,6 +26,8 @@ public void EM_Player_Death_CSGO(int attacker,
 	int victim = GetClientOfUserId(userid);
 	int assist = GetClientOfUserId(assist);
 	int points = Weapon[defindex].IntValue;
+	
+	bool midair = IsClientMidAir(client);
 
 	GetClientNameEx(client, Playername[client], sizeof(Playername[]));
 	GetClientNameEx(victim, Playername[victim], sizeof(Playername[]));
@@ -122,6 +124,10 @@ public void EM_Player_Death_CSGO(int attacker,
 				Kill_Scenario = 1;
 			else if(noscope)
 				Kill_Scenario = 2;
+			else if(midair && headshot)
+				Kill_Scenario = 3;
+			else if(midair)
+				Kill_Scenario = 4;
 			else if(headshot)
 				Kill_Scenario = 5;
 			else if(thrusmoke)

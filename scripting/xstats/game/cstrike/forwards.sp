@@ -22,6 +22,8 @@ public void EM_Player_Death_CSS(int attacker,
 	int assist = GetClientOfUserId(assister);
 	int points = Weapon[defindex].IntValue;
 
+	bool midair = IsClientMidAir(client);
+
 	GetClientNameEx(client, Playername[client], sizeof(Playername[]));
 	GetClientNameEx(victim, Playername[victim], sizeof(Playername[]));
 	GetClientNameEx(assist, Playername[assist], sizeof(Playername[]));
@@ -59,13 +61,11 @@ public void EM_Player_Death_CSS(int attacker,
 			}
 		}
 		
-		if(!IsFakeClient(victim))
-		{
+		if(!IsFakeClient(victim))	{
 			Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s'", playerlist, SteamID[victim]);
 			db.Query(DBQuery_Death, query);
 			
-			if(Death.IntValue > 0)
-			{
+			if(Death.IntValue > 0)	{
 				Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s'", playerlist, Death.IntValue, SteamID[victim]);
 				db.Query(DBQuery_Death, query);
 			}
@@ -78,36 +78,31 @@ public void EM_Player_Death_CSS(int attacker,
 		Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s'", playerlist, weapon, weapon, SteamID[client]);
 		db.Query(DBQuery_Death, query);
 		
-		if(headshot)
-		{
+		if(headshot)	{
 			Session[client].Headshots++;
 			Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(dominated)
-		{
+		if(dominated)	{
 			Session[client].Dominations++;
 			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(revenge)
-		{
+		if(revenge)	{
 			Session[client].Revenges++;
 			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(noscope)
-		{
+		if(noscope)	{
 			Session[client].Noscopes++;
 			Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s'", playerlist, SteamID[client]);
 			db.Query(DBQuery_Death, query);
 		}
 		
-		if(points > 0)
-		{
+		if(points > 0)	{
 			Session[client].Points = Session[client].Points+points;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i", playerlist, points);
 			db.Query(DBQuery_Death, query);
@@ -118,30 +113,26 @@ public void EM_Player_Death_CSS(int attacker,
 				Kill_Scenario = 1;
 			else if(noscope)
 				Kill_Scenario = 2;
+			else if(midair && headshot)
+				Kill_Scenario = 3;
+			else if(midair)
+				Kill_Scenario = 4;
 			else if(headshot)
 				Kill_Scenario = 5;
 			
 			char scenario[64];
-			
-			if(Kill_Scenario > 0)
-			{
+			if(Kill_Scenario > 0)	{
 				//Fix the format.
 				Format(scenario, sizeof(scenario), "%t{default}", Kill_Type[Kill_Scenario]);
 			}
 			
-			//Fixes the distance float.
-			char dist[64];
-			Format(dist, sizeof(dist), "%.2f", distance);
-			
-			switch(IsValidString(scenario))
-			{
-				case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario, dist);
-				case	false:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 2", Name[client], points_client, points, Name[victim], dist);
+			switch(IsValidString(scenario))	{
+				case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario);
+				case	false:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 2", Name[client], points_client, points, Name[victim]);
 			}
 		}
 		
-		if(!IsFakeClient(victim))
-		{
+		if(!IsFakeClient(victim))	{
 			char log[2048];
 			int len = 0;
 			len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);

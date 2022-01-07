@@ -9,6 +9,7 @@ ConVar TF2_MiniSentryKill;
  */
 #include	"xstats/game/tf/database.sp"
 #include	"xstats/game/tf/forwards.sp"
+#include	"xstats/game/tf/callbacks.sp"
 
 /**
  *	Initialize: Team Fortress 2.

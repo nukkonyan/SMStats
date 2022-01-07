@@ -10,7 +10,7 @@
 */
 
 #define LogTag "[xStats]"
-#define Version "0.01"
+#define Version "0.01_dev1"
 
 public Plugin myinfo = {
 	name		=	"xStats",
@@ -19,7 +19,6 @@ public Plugin myinfo = {
 	version		=	Version,
 	url			=	"https://steamcommunity.com/id/Teamkiller324"
 }
-
 
 /*
 	Functions.
@@ -118,10 +117,10 @@ public void OnPluginStart()	{
 	PrintToServer("xStats Version %s Detected game: %s", Version, title);
 	
 	CreateConVar("xstats_version", Version, "xStats - Version.").AddChangeHook(VersionChanged);
-	PluginActive = CreateConVar("xstats_enabled", "1", "xStats - Should the tracking plugin be enabled?.", _, true, 0.0, true, 1.0);
-	Debug = CreateConVar("xstats_debug", "0", "xStats - Debug.", _, true, 0.0, true, 1.0);
-	AllowBots = CreateConVar("xstats_allow_bots", "0", "xStats - Should bots be allowed to be tracked as a valid opponent?.", _, true, 0.0, true, 1.0);
-	AllowWarmup = CreateConVar("xstats_allow_warmup", "0", "xStats - Should warmup be a valid round to track?.", _, true, 0.0, true, 1.0);
+	PluginActive	= CreateConVar("xstats_enabled",		"1", "xStats - Should the tracking plugin be enabled?.", _, true, 0.0, true, 1.0);
+	Debug			= CreateConVar("xstats_debug",			"0", "xStats - Debug.", _, true, 0.0, true, 1.0);
+	AllowBots		= CreateConVar("xstats_allow_bots",		"0", "xStats - Should bots be allowed to be tracked as a valid opponent?.", _, true, 0.0, true, 1.0);
+	AllowWarmup		= CreateConVar("xstats_allow_warmup",	"0", "xStats - Should warmup be a valid round to track?.", _, true, 0.0, true, 1.0);
 	
 	PrefixCvar = CreateConVar("xstats_prefix", "{green}xStats", "xStats - Prefix to be used ingame texts.");
 	PrefixCvar.AddChangeHook(PrefixCallback);
