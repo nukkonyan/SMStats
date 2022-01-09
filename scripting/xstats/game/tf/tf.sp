@@ -1,14 +1,22 @@
 /**
  *	Functions.
  */
+ConVar TF2_DeathClass[10];
+
 ConVar TF2_SentryKill;
 ConVar TF2_MiniSentryKill;
+
+ConVar TF2_PointCaptured;
+ConVar TF2_PointBlocked;
+
+ConVar TF2_FlagEvent[6];
+ConVar TF2_FlagStolen;
 
 /**
  *	Initializes includes for this game.
  */
 #include	"xstats/game/tf/database.sp"
-#include	"xstats/game/tf/forwards.sp"
+#include	"xstats/game/tf/events.sp"
 #include	"xstats/game/tf/callbacks.sp"
 
 /**
@@ -449,6 +457,45 @@ void PrepareGame_TF2()	{
 	Weapon[30667]	= CreateConVar("xstats_weapon_batsaber",		"10",	"xStats: TF2 - Points given when killing with Batsaber.", _, true, 0.0);
 	Weapon[30668]	= CreateConVar("xstats_weapon_gigarcounter",	"10",	"xStats: TF2 - Points given when killing with Gigar Counter.", _, true, 0.0);
 	Weapon[30758]	= CreateConVar("xstats_weapon_prinnymachete",	"10",	"xStats: TF2 - Points given when killing with Prinny Machete.", _, true, 0.0);
-
+	
+	TF2_SentryKill		= CreateConVar("xstats_points_sentrykill",		"5",	"xStats: TF2 - Points given when killing with Sentry gun.", _, true, 0.0);
+	TF2_MiniSentryKill	= CreateConVar("xstats_points_minisentrykill",	"5",	"xStats: TF2 - Points given when killing with Mini-Sentry gun.", _, true, 0.0);
+	
+	TF2_PointCaptured	= CreateConVar("xstats_points_point_captured",	"5",	"xStats: TF2 - Points given when capturing a point.", _, true, 0.0);
+	TF2_PointBlocked	= CreateConVar("xstats_points_point_blocked",	"5",	"xStats: TF2 - Points given when blocking a point from being captured.", _, true, 0.0);
+	
+	TF2_FlagEvent[1]	= CreateConVar("xstats_points_flag_pickedup",	"5",	"xStats: TF2 - Points given when picking up the flag.", _, true, 0.0);
+	TF2_FlagEvent[2]	= CreateConVar("xstats_points_flag_captured",	"5",	"xStats: TF2 - Points given when capturing the flag.", _, true, 0.0);
+	TF2_FlagEvent[3]	= CreateConVar("xstats_points_flag_defended",	"5",	"xStats: TF2 - Points given when defending the flag.", _, true, 0.0);
+	TF2_FlagEvent[4]	= CreateConVar("xstats_points_flag_dropping",	"5",	"xStats: TF2 - Points taken when dropping the flag.", _, true, 0.0);
+	TF2_FlagStolen		= CreateConVar("xstats_points_flag_stealing",	"5",	"xStats: TF2 - Points given when stealing the flag. Paired with picking up.", _, true, 0.0);
+	
+	/* Classes */
+	TF2_DeathClass[1]	= CreateConVar("xstats_points_death_scout",		"5",	"xStats: TF2 - Points taken when dying as Scout.", _, true, 0.0);
+	TF2_DeathClass[2]	= CreateConVar("xstats_points_death_sniper",	"5",	"xStats: TF2 - Points taken when dying as Sniper.", _, true, 0.0);
+	TF2_DeathClass[3]	= CreateConVar("xstats_points_death_soldier",	"5",	"Xstats: TF2 - Points taken when dying as Soldier.", _, true, 0.0);
+	
+	/* Events */
+	HookEventEx(EVENT_PLAYER_DEATH,				Player_Death_TF2,			EventHookMode_Pre);
+	HookEventEx(EVENT_TEAMPLAY_POINT_CAPTURED,	Teamplay_Point_Captured,	EventHookMode_Pre);
+	HookEventEx(EVENT_TEAMPLAY_CAPTURE_BLOCKED,	Teamplay_Capture_Blocked,	EventHookMode_Pre);
+	HookEventEx(EVENT_TEAMPLAY_FLAG_EVENT,		Teamplay_Flag_Event,		EventHookMode_Pre);
+	
+	/* Rounds */
+	HookEventEx(EVENT_TEAMPLAY_ROUND_ACTIVE,	Event_TF2Rounds, EventHookMode_Pre);
+	HookEventEx(EVENT_TEAMPLAY_ROUND_WIN,		Event_TF2Rounds, EventHookMode_Pre);
+	
 	AutoExecConfig(true, "xstats.tf.cfg");
+}
+
+stock void Event_TF2Rounds(Event event, const char[] event_name, bool dontBroadcast)	{
+	StrEqual(event_name, EVENT_TEAMPLAY_ROUND_ACTIVE) ? RoundStarted() : RoundEnded();
+}
+
+public void TF2_OnWaitingForPlayersStart()	{
+	WarmupActive = false;
+}
+
+public void TF2_OnWaitingForPlayersEnd()	{
+	WarmupActive = true;
 }

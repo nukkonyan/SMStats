@@ -1,12 +1,9 @@
-void PrepareDatabase()
-{
+void PrepareDatabase()	{
 	Database.Connect(DBConnect, "xstats");
 }
 
-void DBConnect(Database database, const char[] error, any data)
-{
-	if(!IsValidDatabase(database))
-	{
+void DBConnect(Database database, const char[] error, any data)	{
+	if(!IsValidDatabase(database))	{
 		delete database;
 		SetFailState("%s Database connection failed! (%s)", LogTag, error);
 		return;

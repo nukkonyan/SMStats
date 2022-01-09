@@ -43,27 +43,33 @@
 		"en"	"{green}Through Smoke"
 	}
 	
+	"Kill Event Type 8"
+	{
+		//Teleport frag.
+		"en"	"with a {green}Telefrag"
+	}
+	
 	//Assist
 	"Assist Kill Event"
 	{
 		//Special kill event.
 		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en"		"{1} ({2}) Earned {3} points for assisting in killing {5}."
+		"en"		"{1} ({2}) Earned {3} points for assisting {4} in killing {5}."
 	}
 	
 	//Kill event
 	"Kill Event 1"
 	{
 		//Special kill event.
-		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
-		"en"		"{1} ({2}) Earned {3} points for killing {4} {5} from {6} meters away."
+		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en"		"{1} ({2}) Earned {3} points for killing {4} {5}."
 	}
 	
 	"Kill Event 2"
 	{
 		//Default kill event.
-		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en"		"{1} ({2}) Earned {3} points for killing {4} from {5} meters away."
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for killing {4}."
 	}
 	
 	//================================//
@@ -86,5 +92,33 @@
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
 		"en"		"{1} ({2}) Earned {3} points for bomb exploding and winning the round."
+	}
+	
+	//================================//
+	// Team Fortress 2.
+	//================================//
+	
+	"Point Captured"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for capturing point {4}"
+	}
+	
+	"Point Defended"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en"		"{1} ({2}) Earned {3} points for defending point {4} from {5} capturing"
+	}
+	
+	"Flag Picked Up"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for picking up the enemy intelligence"
+	}
+	
+	"Flag Stolen"
+	{
+		"format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for stealing the enemy intelligence"
 	}
 }

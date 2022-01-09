@@ -6,7 +6,7 @@
  *	Initializes includes for this game.
  */
 #include	"xstats/game/cstrike/database.sp"
-#include	"xstats/game/cstrike/forwards.sp"
+#include	"xstats/game/cstrike/events.sp"
 
 /**
  *	Initialize: Counter-Strike Source.
@@ -34,6 +34,9 @@ void PrepareGame_CSS()	{
 	Weapon[CSS_Weapon_SG550]	= CreateConVar("xstats_weapon_sg550",	"5", "xStats: CSS - Points given when killing with SG550.", _, true, 0.0);
 	Weapon[CSS_Weapon_SG552]	= CreateConVar("xstats_weapon_sg552",	"5", "xStats: CSS - Points given when killing with SG552.", _, true, 0.0);
 	Weapon[CSS_Weapon_Scout]	= CreateConVar("xstats_weapon_scout",	"5", "xStats: CSS - Points given when killing with Scout.", _, true, 0.0);
+	
+	/* Events */
+	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_CSS, EventHookMode_Pre);
 	
 	AutoExecConfig(false, "xstats.css.cfg");
 }

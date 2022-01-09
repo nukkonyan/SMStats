@@ -6,7 +6,7 @@
  *	Initializes includes for this game.
  */
 #include	"xstats/game/csgo/database.sp"
-#include	"xstats/game/csgo/forwards.sp"
+#include	"xstats/game/csgo/events.sp"
 
 /**
  *	Initialize: Counter-Strike Global Offensive.
@@ -69,6 +69,9 @@ void PrepareGame_CSGO()	{
 	Weapon[CSGO_Knife_Stiletto]		= Weapon[CSGO_Knife_CT];
 	Weapon[CSGO_Knife_Talon]		= Weapon[CSGO_Knife_CT];
 	Weapon[CSGO_Knife_Skeleton]		= Weapon[CSGO_Knife_CT];
+	
+	/* Events */
+	HookEvent(EVENT_PLAYER_DEATH, Player_Death_CSGO, EventHookMode_Pre);
 	
 	AutoExecConfig(false, "xstats.csgo.cfg");
 }

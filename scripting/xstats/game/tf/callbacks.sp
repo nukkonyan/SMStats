@@ -5,8 +5,9 @@
  *	@param	maxlen			The maximum length of the string.
  *	@param	weapon_defindex	The weapon definition index to read.
  *	@param	format			The weapon classname to read.
+ *	@param	client			The attacker to read.
  */
-void TF2_whyWeaponClassname(char[] weapon, int maxlen, int weapon_defindex, const char[] format)	{
+int TF2_FixWeaponClassname(char[] weapon, int maxlen, int weapon_defindex, const char[] format)	{
 	char why[64];
 	
 	//If it's something else.
@@ -55,7 +56,7 @@ void TF2_whyWeaponClassname(char[] weapon, int maxlen, int weapon_defindex, cons
 		case	127:	why = "weapon_directhit";				//The Direct-Hit.
 		case	128:	why = "weapon_equalizer";				//The Equalizer.
 		case	130:	why = "weapon_scottishresistance";		//The Scottish Resistance.
-		case	131:	why = "weapon_chargintarge";			//The Chargin' Targe.
+		case	131:	why = "weapon_chargentarge";			//The Chargin' Targe.
 		case	132:	why = "weapon_eyelander";				//The Eyelander.
 		case	140:	why = "weapon_wrangler";				//The Wrangler.
 		case	141:	why = "weapon_frontierjustice";			//The Frontier Justice.

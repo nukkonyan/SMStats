@@ -7,6 +7,14 @@ void PrepareGame_CounterStrike()	{
 	BombEvent[0] = CreateConVar("xstats_bomb_planted",	"2", "xStats: Counter-Strike - Points given when planting the bomb.", _, true, 0.0);
 	BombEvent[1] = CreateConVar("xstats_bomb_defused",	"2", "xStats: Counter-Strike - Points given when defusing the bomb.", _, true, 0.0);
 	BombEvent[2] = CreateConVar("xstats_bomb_exploded",	"2", "xStats: Counter-Strike - Points given when bomb explodes.", _, true, 0.0);
+	
+	/* Events */
+	HookEventEx(EVENT_BOMB_PLANTED, Bomb_Planted, EventHookMode_Pre);
+	HookEventEx(EVENT_BOMB_DEFUSED, Bomb_Defused, EventHookMode_Pre);
+	HookEventEx(EVENT_BOMB_EXPLODED, Bomb_Exploded, EventHookMode_Pre);
+	
+	HookEventEx(EVENT_ROUND_END, Round_End, EventHookMode_Pre);
+	HookEventEx(EVENT_ROUND_START, Round_Start, EventHookMode_Pre);
 }
 
 /*
@@ -17,8 +25,8 @@ void PrepareGame_CounterStrike()	{
  *	- Counter-Strike: Classic Offensive.
  */
 
-public void EM_Bomb_Planted(int userid)	{
-	int client = GetClientOfUserId(userid);
+stock void Bomb_Planted(Event event, const char[] event_name, bool dontBroadcast)	{
+	int client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	int points = BombEvent[0].IntValue;
 	
 	if(Tklib_IsValidClient(client, true))	{
@@ -43,8 +51,8 @@ public void EM_Bomb_Planted(int userid)	{
 	}
 }
 
-public void EM_Bomb_Defused(int userid)	{
-	int client = GetClientOfUserId(userid);
+stock void Bomb_Defused(Event event, const char[] event_name, bool dontBroadcast)	{
+	int client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	int points = BombEvent[1].IntValue;
 	
 	if(Tklib_IsValidClient(client, true))	{
@@ -69,8 +77,8 @@ public void EM_Bomb_Defused(int userid)	{
 	}
 }
 
-public void EM_Bomb_Exploded(int userid)	{
-	int client = GetClientOfUserId(userid);
+stock void Bomb_Exploded(Event event, const char[] event_name, bool dontBroadcast)	{
+	int client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	int points = BombEvent[2].IntValue;
 	
 	if(Tklib_IsValidClient(client, true))	{
@@ -100,38 +108,11 @@ void DBQuery_CS_Bombs(Database database, DBResultSet results, const char[] error
 		SetFailState("[xStats: CS] Updating player table for bomb event failed! (%s)", error);
 }
 
-public void EM_Round_Start()	{
-	RoundActive = true;
-	
-	switch(IsCurrentGame(Game_CSGO))	{
-		case	true:	{
-			WarmupActive = CS_IsWarmupRound();
-			
-			if(Debug.BoolValue)	{
-				switch(CS_IsWarmupRound())	{
-					case	true:	PrintToServer("[xStats: CS] Warmup Round Started");
-					case	false:	PrintToServer("[xStats: CS] Round Started");
-				}
-			}
-		}
-		case	false:	PrintToServer("[xStats: CS] Round Started");
-	}
+stock void Round_End(Event event, const char[] event_name, bool dontBroadcast)	{
+	RoundEnded();
+	ResetAssister();
 }
 
-public void EM_Round_End()	{
-	RoundActive = false;
-	
-	switch(IsCurrentGame(Game_CSGO))	{
-		case	true:	{
-			WarmupActive = CS_IsWarmupRound();
-			
-			if(Debug.BoolValue)	{
-				switch(CS_IsWarmupRound())	{
-					case	true:	PrintToServer("[xStats: CS] Warmup Round Ended");
-					case	false:	PrintToServer("[xStats: CS] Round Ended");
-				}
-			}
-		}
-		case	false:	PrintToServer("[xStats: CS] Round Ended");
-	}
+stock void Round_Start(Event event, const char[] event_name, bool dontBroadcast)	{
+	RoundStarted();
 }
