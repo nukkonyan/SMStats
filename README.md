@@ -12,7 +12,7 @@ This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add th
 ### [Cvars](https://github.com/Teamkiller324/Xstats/blob/main/Cvars.md)
 
 ## Requirements
-### [Tk Libraries](https://github.com/Teamkiler324) (To compile)
+### [Tk Libraries](https://github.com/Teamkiller324/Tklib) (To compile)
 
 ### [Multi-Colours](https://github.com/Bara/Multi-Colors) (To compile)
 
