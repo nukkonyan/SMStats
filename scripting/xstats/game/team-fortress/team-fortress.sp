@@ -293,32 +293,32 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 	char query[256];
 	switch(building)	{
 		case	TFBuilding_Sentrygun:	{
-			Format(query, sizeof(query), "update `%s` set SentryGunsBuilt = SentryGunsBuilt+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set SentryGunsBuilt = SentryGunsBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Dispenser:	{
-			Format(query, sizeof(query), "update `%s` set DispensersBuilt = DispensersBuilt+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set DispensersBuilt = DispensersBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_MiniSentry:	{
-			Format(query, sizeof(query), "update `%s` set MiniSentryGunsBuilt = MiniSentryGunsBuilt+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set MiniSentryGunsBuilt = MiniSentryGunsBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Teleporter_Entrance:	{
-			Format(query, sizeof(query), "update `%s` set TeleporterEntrancesBuilt = TeleporterEntrancesBuilt+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set TeleporterEntrancesBuilt = TeleporterEntrancesBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Teleporter_Exit:	{
-			Format(query, sizeof(query), "update `%s` set TeleporterExitsBuilt = TeleporterExitsBuilt where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set TeleporterExitsBuilt = TeleporterExitsBuilt, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Sapper:	{
-			Format(query, sizeof(query), "update `%s` set SappersPlaced = SappersPlaced where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set SappersPlaced = SappersPlaced, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
@@ -374,27 +374,27 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 	
 	switch(building)	{
 		case	TFBuilding_Sentrygun:	{
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, SentryGunsDestroyed = SentryGunsDestroyed+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, SentryGunsDestroyed = SentryGunsDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Dispenser:	{
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, DispensersDestroyed = DispensersDestroyed+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, DispensersDestroyed = DispensersDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_MiniSentry:	{
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Teleporter_Entrance:	{
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Teleporter_Exit:	{
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TeleporterExitsDestroyed = TeleporterExitsDestroyed where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TeleporterExitsDestroyed = TeleporterExitsDestroyed, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
@@ -543,18 +543,25 @@ stock void Player_Stunned(Event event, const char[] event_name, bool dontBroadca
 	int points = TF2_Stunned.IntValue;
 	int points_client = GetClientPoints(SteamID[client]);
 	
+	char query[512];
 	switch(big_stun)	{
-		case	true:
+		case	true:	{
 			CPrintToChat(client, "%s %s (%i) earned %i points for stunning %s with a {green}Moon Shot{default}.",
 			Prefix, Name[client], points_client, client, Name[victim]);
-		case	false:
+
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, MoonShotStunnedPlayers = MoonShotStunnedPlayers+1 where SteamID='%i' and ServerID='%i'",
+			playerlist, points, SteamID[client], ServerID.IntValue);
+		}
+		case	false:	{
 			CPrintToChat(client, "%s %s (%i) earned %i points for stunning %s.",
 			Prefix, Name[client], points_client, client, Name[victim]);
+			
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, StunnedPlayers = StunnedPlayers+1 where SteamID='%i' and ServerID='%i'",
+			playerlist, points, SteamID[client], ServerID.IntValue);
+		}
 	}
 	
-	char query[512];
-	Format(query, sizeof(query), "update `%s` set Points = Points+%i, StunnedPlayers = StunnedPlayers+1 where SteamID='%i' and ServerID='%i'",
-	playerlist, points, SteamID[client], ServerID.IntValue);
+
 }
 
 /* Bosses */
