@@ -26,12 +26,13 @@ GameIdentifier	game	= Game_Unknown;
 Database		db		= null;
 
 /* Plugin */
-bool			RoundActive = true;
+bool			RoundActive = false;
 bool			WarmupActive = false;
-bool			RankActive = true;
+bool			RankActive = false;
 ConVar			PluginActive, Debug, AllowBots, AllowWarmup, PrefixCvar, Death, AssistKill;
 ConVar			ServerID, MinimumPlayers, DisableAfterWin, ConnectMsg;
 ConVar			Weapon[40000];
+ConVar			RemoveOldPlayers;
 char			Prefix[96], logprefix[64], playerlist[64], kill_log[64];
 
 /* Client */
@@ -133,6 +134,7 @@ public void OnPluginStart()	{
 	MinimumPlayers	= CreateConVar("xstats_minimumplayers",	"4", "Xstats - Minimum amount of players required.", _, true, 1.0);
 	DisableAfterWin	= CreateConVar("xstats_disableafterwin","1", "Xstats - Should tracking be disabled when a team wins/round ends?.", _, true, _, true, 1.0);
 	ConnectMsg		= CreateConVar("xstats_connectmsg",		"1", "Xstats - Should connect messages be enabled?", _, true, _, true, 1.0);
+	RemoveOldPlayers = CreateConVar("xstats_removeoldplayers", "0", "Xstats - Number of days of days to keep players in the database. (Since last connection). 0 Disables check.");
 	
 	PrefixCvar = CreateConVar("xstats_prefix", "{green}Xstats", "Xstats - Prefix to be used ingame texts.");
 	PrefixCvar.AddChangeHook(PrefixCallback);
@@ -231,10 +233,10 @@ stock void RoundStarted()	{
 		case	false:	PrintToServer("%s Round Started", LogTag);
 	}
 	
-	if(DisableAfterWin.BoolValue && GetClientCountEx(AllowBots.BoolValue) < MinimumPlayers.IntValue)	{
+	if(DisableAfterWin.BoolValue && GetClientCountEx(AllowBots.BoolValue) >= MinimumPlayers.IntValue)	{
 		if(RoundActive)	{
 			RankActive = true;
-			CPrintToChatAll("%s %t", Prefix, "Round Start Tracking Active");
+			CPrintToChatAll("%s Round Start: Statistical Tracking Enabled", Prefix);
 		}
 	}
 }
@@ -257,6 +259,11 @@ stock void RoundEnded()	{
 		case	false:	PrintToServer("%s Round Ended", LogTag);
 	}
 	
-	if(DisableAfterWin.BoolValue)
+	if(DisableAfterWin.BoolValue)	{
 		RankActive = false;
+		CPrintToChatAll("%s Round End: Statistical Tracking Disabled", Prefix);
+	}
+	
+	if(RemoveOldPlayers.IntValue >= 1)
+		RemoveOldConnectedPlayers(RemoveOldPlayers.IntValue);
 }

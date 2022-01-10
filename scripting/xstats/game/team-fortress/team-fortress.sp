@@ -18,6 +18,8 @@ ConVar TF2_DestroyObject[6];
 ConVar TF2_Ubercharged, TF2_Ubercharged_Spy;
 ConVar TF2_Teleported;
 ConVar TF2_SandvichStolen;
+ConVar TF2_Jarated, TF2_MadMilked;
+ConVar TF2_Extinguished;
 
 /* Other */
 ConVar TF2_TeleFrag;
@@ -43,21 +45,25 @@ void PrepareGame_TeamFortress()	{
 	TF2_FlagStolen		= CreateConVar("xstats_points_flag_stealing",	"5",	"Xstats: TF2 - Points given when stealing the flag. Paired with picking up.", _, true);
 	
 	/* Player */
-	TF2_BuiltObject[0]	= CreateConVar("xstats_points_place_sentrygun",				"2", "Xstats: TF2 - Points given when placing a Sentrygun.", _, true);
-	TF2_BuiltObject[1]	= CreateConVar("xstats_points_place_dispenser",				"2", "Xstats: TF2 - Points given when placing a Dispenser.", _, true);
-	TF2_BuiltObject[2]	= CreateConVar("xstats_points_place_teleporter_entrance",	"2", "Xstats: TF2 - Points given when placing a Teleporter Entrance.", _, true);
-	TF2_BuiltObject[3]	= CreateConVar("xstats_points_place_teleporter_exit",		"2", "Xstats: TF2 - Points given when placing a Teleporter Exit.", _, true);
-	TF2_BuiltObject[4]	= CreateConVar("xstats_points_place_minisentrygun",			"2", "Xstats: TF2 - Points given when placing a Mini-Sentrygun.", _, true);
-	TF2_BuiltObject[5]	= CreateConVar("xstats_points_place_sapper",				"2", "Xstats: TF2 - Points given when placing a Sapper.", _, true);
-	TF2_DestroyObject[0]= CreateConVar("xstats_points_destroy_sentrygun",			"2", "Xstats: TF2 - Points given when destroying a Sentrygun.", _, true);
-	TF2_DestroyObject[1]= CreateConVar("xstats_points_destroy_dispenser",			"2", "Xstats: TF2 - Points given when destroying a Dispenser.", _, true);
-	TF2_DestroyObject[2]= CreateConVar("xstats_points_destroy_teleporter_entrance",	"2", "Xstats: TF2 - Points given when destroying a Teleporter Entrance.", _, true);
-	TF2_DestroyObject[3]= CreateConVar("xstats_points_destroy_teleporter_exit",		"2", "Xstats: TF2 - Points given when destroying a Teleporter Exit.", _, true);
-	TF2_DestroyObject[4]= CreateConVar("xstats_points_destroy_minisentrygun",		"2", "Xstats: TF2 - Points given when destroying a Mini-Sentry Gun.", _, true);
-	TF2_DestroyObject[5]= CreateConVar("xstats_points_destroy_sapper",				"2", "Xstats: TF2 - Points given when destroying a Sapper.", _, true);
-	TF2_Ubercharged		= CreateConVar("xstats_points_ubercharged",		"5",	"Xstats: TF2 - Points given when ubercharging.", _, true);
-	TF2_Ubercharged_Spy	= CreateConVar("xstats_ubercharged_count_spy",	"1",	"Xstats: TF2 - Should an enemy spy be counted as valid?.", _, true, _, true, 1.0);
-	TF2_Teleported		= CreateConVar("xstats_points_teleported",		"2",	"Xstats: TF2 - Points given to the builder when teleporter was used.", _, true);
+	TF2_BuiltObject[0]		= CreateConVar("xstats_points_place_sentrygun",				"2", "Xstats: TF2 - Points given when placing a Sentrygun.", _, true);
+	TF2_BuiltObject[1]		= CreateConVar("xstats_points_place_dispenser",				"2", "Xstats: TF2 - Points given when placing a Dispenser.", _, true);
+	TF2_BuiltObject[2]		= CreateConVar("xstats_points_place_teleporter_entrance",	"2", "Xstats: TF2 - Points given when placing a Teleporter Entrance.", _, true);
+	TF2_BuiltObject[3]		= CreateConVar("xstats_points_place_teleporter_exit",		"2", "Xstats: TF2 - Points given when placing a Teleporter Exit.", _, true);
+	TF2_BuiltObject[4]		= CreateConVar("xstats_points_place_minisentrygun",			"2", "Xstats: TF2 - Points given when placing a Mini-Sentrygun.", _, true);
+	TF2_BuiltObject[5]		= CreateConVar("xstats_points_place_sapper",				"2", "Xstats: TF2 - Points given when placing a Sapper.", _, true);
+	TF2_DestroyObject[0]	= CreateConVar("xstats_points_destroy_sentrygun",			"2", "Xstats: TF2 - Points given when destroying a Sentrygun.", _, true);
+	TF2_DestroyObject[1]	= CreateConVar("xstats_points_destroy_dispenser",			"2", "Xstats: TF2 - Points given when destroying a Dispenser.", _, true);
+	TF2_DestroyObject[2]	= CreateConVar("xstats_points_destroy_teleporter_entrance",	"2", "Xstats: TF2 - Points given when destroying a Teleporter Entrance.", _, true);
+	TF2_DestroyObject[3]	= CreateConVar("xstats_points_destroy_teleporter_exit",		"2", "Xstats: TF2 - Points given when destroying a Teleporter Exit.", _, true);
+	TF2_DestroyObject[4]	= CreateConVar("xstats_points_destroy_minisentrygun",		"2", "Xstats: TF2 - Points given when destroying a Mini-Sentry Gun.", _, true);
+	TF2_DestroyObject[5]	= CreateConVar("xstats_points_destroy_sapper",				"2", "Xstats: TF2 - Points given when destroying a Sapper.", _, true);
+	TF2_Ubercharged			= CreateConVar("xstats_points_ubercharged",					"5", "Xstats: TF2 - Points given when ubercharging.", _, true);
+	TF2_Ubercharged_Spy		= CreateConVar("xstats_ubercharged_count_spy",				"1", "Xstats: TF2 - Should an enemy spy be counted as valid?.", _, true, _, true, 1.0);
+	TF2_Teleported			= CreateConVar("xstats_points_teleported",					"2", "Xstats: TF2 - Points given to the builder when teleporter was used.", _, true);
+	TF2_SandvichStolen		= CreateConVar("xstats_points_sandvichesstolen",			"2", "Xstats: TF2 - Points given when stealing a sandvich.", _, true);
+	TF2_Jarated				= CreateConVar("xstats_points_jarated",						"3", "Xstats: TF2 - Points given when coating opponent with a jar.", _, true);
+	TF2_MadMilked			= CreateConVar("xstats_points_madmilked",					"2", "Xstats: TF2 - Points given when coating opponent with a milk jar.", _, true);
+	TF2_Extinguished		= CreateConVar("xstats_points_extinguished",				"3", "Xstats: TF2 - Points given when extinguishing a teammate.", _, true);
 	
 	/* Classes */
 	TF2_DeathClass[1]	= CreateConVar("xstats_points_death_scout",		"5",	"Xstats: TF2 - Points taken when dying as Scout.", _, true);
@@ -97,6 +103,12 @@ void PrepareGame_TeamFortress()	{
 	HookEventEx(EVENT_PLAYER_TELEPORTED,		Player_Teleported,		EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_STEALSANDVICH,		Player_StealSandvich,	EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_STUNNED,			Player_Stunned,			EventHookMode_Pre);
+	
+	/* Bosses */
+	
+	/* User Messages */
+	HookUserMessageEx(GetUserMessageId("PlayerJarated"), PlayerJarated);
+	HookUserMessageEx(GetUserMessageId("PlayerExtinguished"), PlayerExtinguished);
 	
 	/* For some arrays as they use multi-arrays (ArrayExample[MAXPLAYERS][10] for example) */
 	ResetAntiAbuseArrays();
@@ -181,7 +193,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 	bool home = event.GetBool(EVENT_STR_HOME);
 	TFTeam team = TFTeam(event.GetInt(EVENT_STR_TEAM));
 	TFFlag flag = TFFlag(eventtype);
-	char query[512];
+	char query[1024];
 	
 	if(Debug.BoolValue)	{
 		char teamname[][] = {
@@ -208,18 +220,18 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 		
 		/* Flag was picked up */
 		if(flag == TFFlag_PickedUp)	{
-			points = points+TF2_FlagStolen.IntValue;
-			
 			switch(home)	{
 				/* Flag was stolen */
 				case	true:	{
+					points = points+TF2_FlagStolen.IntValue;
+					
 					Session[client].FlagsStolen++;
 					Session[client].FlagsPickedUp++;
 					Session[client].Points = Session[client].Points+points;
 					CPrintToChat(client, "%s %s (%i) earned %i points for stealing the opponent's inteligence.",
 					Prefix, Name[client], points_client, points);
 					
-					Format(query, sizeof(query), "update `%s` Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1, FlagsStolen = FlagsStolen+1 where SteamID='%s' and ServerID='%i'",
+					Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1, FlagsStolen = FlagsStolen+1 where SteamID='%s' and ServerID='%i'",
 					playerlist, points, SteamID[client], ServerID.IntValue); 
 					db.Query(DBQuery_Callback, query);
 				}
@@ -230,7 +242,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 					CPrintToChat(client, "%s %s (%i) earned %i points for picking up the opponent's intelligence.",
 					Prefix, Name[client], points_client, points);
 					
-					Format(query, sizeof(query), "update `%s` Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1 where SteamID='%s' and ServerID='%i'",
+					Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1 where SteamID='%s' and ServerID='%i'",
 					playerlist, points, SteamID[client], ServerID.IntValue); 
 					db.Query(DBQuery_Callback, query);
 				}
@@ -244,7 +256,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			CPrintToChat(client, "%s %s (%i) earned %i points for capturing the opponent's intelligence.",
 			Prefix, Name[client], points_client, points);
 			
-			Format(query, sizeof(query), "update `%s` Points = Points+%i, FlagsCaptured = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsCaptured = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
@@ -256,7 +268,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			CPrintToChat(client, "%s %s (%i) earned %i points for defending the intelligence", Prefix, "Flag Defended",
 			Name[client], points_client, points);
 			
-			Format(query, sizeof(query), "update `%s` Points = Points+%i, FlagsDefended = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsDefended = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
@@ -268,7 +280,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			CPrintToChat(client, "%s %s (%i) lost %i for dropping the opponents intelligence.",
 			Prefix, Name[client], points_client, points);
 			
-			Format(query, sizeof(query), "update `%s` Points = Points-%i where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
@@ -276,8 +288,8 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 }
 
 /* Objects | Buildings */
-float BuiltObject_Timer[5] = {40.0, ...};
-bool BuiltObject[MAXPLAYERS][5];
+float BuiltObject_Timer[6] = {40.0, ...};
+bool BuiltObject[MAXPLAYERS][6];
 stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!PluginActive.BoolValue || !RankActive)
 		return;
@@ -566,6 +578,98 @@ stock void Player_Stunned(Event event, const char[] event_name, bool dontBroadca
 
 /* Bosses */
 
+/* User Messages */
+float Jarated_Timer = 25.0;
+bool Jarated[MAXPLAYERS] = {false, ...};
+Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{
+	int client = bf.ReadByte();
+	int victim = bf.ReadByte();
+	int defindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Secondary)).DefinitionIndex;
+	
+	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !Jarated[client] && TF2_Jarated.IntValue > 0)	{
+		if(defindex > 1)	{
+			GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
+			GetClientTeamString(client, Name[client], sizeof(Name[]));
+			GetClientTeamString(victim, Name[victim], sizeof(Name[]));
+			int points = 0;
+			int points_client = GetClientPoints(SteamID[client]);
+			
+			char query[512];
+			switch(defindex)	{
+				/* Madmilk & Mutated Milk */
+				case	222, 1121:	{
+					points = TF2_MadMilked.IntValue;
+					
+					CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with milk.",
+					Prefix, Name[client], points_client, points);
+					
+					Format(query, sizeof(query), "update `%s` set MadMilked = MadMilked+1 where SteamID='%s' and ServerID='%i'",
+					playerlist, SteamID[client], ServerID.IntValue);
+					db.Query(DBQuery_Callback, query);
+				}
+				/* Jarate & The Self-Aware Beauty Mark */
+				case	58, 1105:	{
+					points = TF2_Jarated.IntValue;
+					
+					CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with piss.",
+					Prefix, Name[client], points_client, points);
+					
+					Format(query, sizeof(query), "update `%s` set Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
+					playerlist, SteamID[client], ServerID.IntValue);
+					db.Query(DBQuery_Callback, query);
+				}
+				/* Incase the player was coated with piss via Sydney Sleeper. */
+				default:	{
+					points = TF2_Jarated.IntValue;
+					
+					if(Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex == 230)	{
+						CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with piss.",
+						Prefix, Name[client], points_client, points);
+						
+						Format(query, sizeof(query), "update `%s` set Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
+						playerlist, SteamID[client], ServerID.IntValue);
+						db.Query(DBQuery_Callback, query);
+					}
+				}
+			}
+			
+			AddSessionPoints(client, points);
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, Coated = Coated+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, points, SteamID[client], ServerID.IntValue);
+			
+			Jarated[client] = true;
+			CreateTimer(Jarated_Timer, Timer_PlayerJarated, client);
+		}
+	}
+}
+
+float Extinguished_Timer = 10.0;
+bool Extinguished[MAXPLAYERS] = {false, ...};
+Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{
+	int client = bf.ReadByte();
+	int victim = bf.ReadByte();
+	
+	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !Extinguished[client] && TF2_Extinguished.IntValue > 0)	{
+		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
+		GetClientTeamString(client, Name[client], sizeof(Name[]));
+		GetClientTeamString(victim, Name[victim], sizeof(Name[]));
+		
+		int points = TF2_Extinguished.IntValue;
+		int points_client = GetClientPoints(SteamID[client]);
+		AddSessionPoints(client, points);
+		
+		CPrintToChat(client, "%s %s (%i) earned %i points for Extinguishing %s.",
+		Prefix, Name[client], points_client, points);
+		
+		char query[512];			
+		Format(query, sizeof(query), "update `%s` set Points = Points+%i, Extinguished = Extinguished+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, points, SteamID[client], ServerID.IntValue);
+		
+		Extinguished[client] = true;
+		CreateTimer(Extinguished_Timer, Timer_PlayerExtinguished, client);
+	}
+}
+
 /* Callbacks & Forwards */
 stock Action Timer_Player_BuiltObject(Handle timer, DataPack pack)	{
 	pack.Reset();
@@ -578,6 +682,8 @@ stock Action Timer_Player_BuiltObject(Handle timer, DataPack pack)	{
 
 stock Action Timer_Player_Invulned(Handle timer, int client)	{	Ubercharged[client] = false;	}
 stock Action Timer_Player_Teleported(Handle timer, int client)	{	Teleported[client] = false;		}
+stock Action Timer_PlayerJarated(Handle timer, int client)		{	Jarated[client] = false;		}
+stock Action Timer_PlayerExtinguished(Handle timer, int client)	{	Extinguished[client] = false;	}
 
 stock void ResetAntiAbuseArrays()	{
 	for(int i = 0; i < MaxClients; i++)

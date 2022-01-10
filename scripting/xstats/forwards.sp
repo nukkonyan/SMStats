@@ -1,11 +1,8 @@
-public void OnClientAuthorized(int client, const char[] auth)
-{
-	if(Tklib_IsValidClient(client, true, _, false))
-	{
+public void OnClientAuthorized(int client, const char[] auth)	{
+	if(Tklib_IsValidClient(client, true, _, false))	{
 		Database database = SQL_Connect2(Xstats, false);
 		
-		if(database == null)
-		{
+		if(database == null)	{
 			delete database;
 			SetFailState("Failed to connect to database");
 			return;
@@ -22,35 +19,30 @@ public void OnClientAuthorized(int client, const char[] auth)
 		if(!GeoipCountry(IP[client], country, sizeof(country)))
 			country = "unknown country";
 		
-		switch(results != null && results.FetchRow())
-		{
+		UpdateLastConnectedState(SteamID[client]);
+		
+		switch(results != null && results.FetchRow())	{
 			/* Player was found */
-			case	true:
-			{			
+			case	true:	{			
 				int points = results.FetchInt(0);
 				int position = GetClientPosition(auth);
 				results = SQL_QueryEx(database, "update `%s` set Playername = '%s', IPAddress = '%s' where SteamID='%s'",
 				playerlist, Playername[client], IP[client], SteamID[client]);
 				
-				if(Debug.BoolValue)
-				{
+				if(Debug.BoolValue)	{
 					/* Avoid showing ip due to privacy */
 					PrintToServer("[Xstats Debug] Updating table \"%s\" \nPlayername \"%s\" in SteamID \"%s\"",
 					playerlist, Playername[client], SteamID[client]);
 				}
 				
-				switch(results == null)
-				{
-					case	true:
-					{
+				switch(results == null)	{
+					case	true:	{
 						char error[256];
 						SQL_GetError(database, error, sizeof(error));
 						SetFailState("%s Updating player table into \"%s\" failed! (%s)", LogTag, playerlist, error);
 					}
-					case	false:
-					{
-						if(ConnectMsg.BoolValue)
-						{
+					case	false:	{
+						if(ConnectMsg.BoolValue)	{
 							CPrintToChatAll("%s %s (Pos #%i, %i points) has connected from %s", Prefix, Name[client], position, points, country);
 							PrintToServer("%s %s (Pos #%i, %i points) has connected from %s.", LogTag, Playername[client], position, points, country);
 						}
@@ -58,28 +50,23 @@ public void OnClientAuthorized(int client, const char[] auth)
 				}
 			}
 			/* Player wasn't found, adding.. */
-			case	false:
-			{
+			case	false:	{
 				results = SQL_QueryEx(database, "insert into `%s` (Playername, SteamID, IPAddress) values ('%s', '%s', '%s')",
 				playerlist, Playername[client], SteamID[client], IP[client]);
 				
-				if(Debug.BoolValue)
-				{
+				if(Debug.BoolValue)	{
 					PrintToServer("[Xstats Debug] Inserting into table \"%s\" \nPlayername \"%s\"\nSteamID \"%s\"",
 					playerlist, Playername[client], SteamID[client]);
 				}
 				
-				switch(results == null)
-				{
+				switch(results == null)	{
 					case	true:	{
 						char error[256];
 						SQL_GetError(database, error, sizeof(error));
 						SetFailState("%s Inserting player table into \"%s\" failed! (%s)", LogTag, playerlist, error);
 					}
-					case	false:
-					{
-						if(ConnectMsg.BoolValue)
-						{
+					case	false:	{
+						if(ConnectMsg.BoolValue)	{
 							int points = GetClientPoints(auth);
 							int position = GetClientPosition(auth);
 							CPrintToChatAll("%s %s (Pos #%i, %i points) has connected from %s", Prefix, Name[client], position, points, country);
@@ -95,16 +82,14 @@ public void OnClientAuthorized(int client, const char[] auth)
 	}
 }
 
-public void OnClientPutInServer(int client)
-{
+public void OnClientPutInServer(int client)	{
 	if(Tklib_IsValidClient(client, true, _, false))
 		CreateTimer(60.0, IntervalPlayTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	/* Experimental Assister */
 	SDKHook(client, SDKHook_OnTakeDamage, Assister_OnTakeDamage);
 	
-	for(int i = 1; i < MaxClients; i++)
-	{
+	for(int i = 1; i < MaxClients; i++)	{
 		PlayerDamaged[i][client] = 0;
 	}
 	
@@ -112,19 +97,16 @@ public void OnClientPutInServer(int client)
 	GetClientAuthId(client, AuthId_Steam2, SteamID[client], sizeof(SteamID[]));
 	
 	/* Check active players */
-	if(!RankActive && GetClientCountEx(AllowBots.BoolValue) < MinimumPlayers.IntValue)
-	{
+	if(!RankActive && GetClientCountEx(AllowBots.BoolValue) < MinimumPlayers.IntValue)	{
 		RankActive = true;
 		CPrintToChatAll("%s Enough players, enabling statistical tracking..", Prefix);
 		if(Debug.BoolValue)
-			PrintToServer("%s Enough Players, enabling statistical tracking..");
+			PrintToServer("%s Enough Players, enabling statistical tracking..", Prefix);
 	}
 }
 
-public void OnClientDisconnect(int client)
-{
-	if(ConnectMsg.BoolValue && Tklib_IsValidClient(client, true))
-	{
+public void OnClientDisconnect(int client)	{
+	if(ConnectMsg.BoolValue && Tklib_IsValidClient(client, true))	{
 		char country[96];
 		if(!GeoipCountry(IP[client], country, sizeof(country)))
 			country = "unknown country";
@@ -132,10 +114,11 @@ public void OnClientDisconnect(int client)
 		int points = GetClientPoints(SteamID[client]);
 		int position = GetClientPosition(SteamID[client]);
 		CPrintToChatAll("%s %s (Pos #%i, %i points) has left from %s", Prefix, Name[client], position, points, country);
+		
+		UpdateLastConnectedState(SteamID[client]);
 	}
 	
-	for(int i = 1; i < MaxClients; i++)
-	{
+	for(int i = 1; i < MaxClients; i++)	{
 		PlayerDamaged[i][client] = 0;
 	}
 	
@@ -143,19 +126,17 @@ public void OnClientDisconnect(int client)
 	SteamID[client] = NULL_STRING;
 	
 	/* Check active players */
-	if(RankActive && GetClientCountEx(AllowBots.BoolValue) >= MinimumPlayers.IntValue)
-	{
+	if(RankActive && GetClientCountEx(AllowBots.BoolValue) <= MinimumPlayers.IntValue)	{
 		RankActive = false;
 		CPrintToChatAll("%s %t", Prefix, "Not Enough Players");
 		if(Debug.BoolValue)
-			PrintToServer("%s Not Enough Players, disabling tracking..");
+			PrintToServer("%s Not Enough Players, disabling tracking..", Prefix);
 	}
 }
 
 Action IntervalPlayTimer(Handle timer, int client)	{
 	/* Incase the player disconnected */
-	if(!IsClientConnected(client))
-	{
+	if(!IsClientConnected(client))	{
 		KillTimer(timer);
 		return	Plugin_Handled;
 	}
