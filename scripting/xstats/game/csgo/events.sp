@@ -1,5 +1,5 @@
 stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RoundActive || WarmupActive && !AllowWarmup.BoolValue)
+	if(!PluginActive.BoolValue || !RankActive || WarmupActive && !AllowWarmup.BoolValue)
 		return;
 	
 	char weapon[64];
@@ -34,6 +34,26 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	
 	int points = Weapon[defindex].IntValue;
 	
+	/* Debug */
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== Player_Death_CSGO =====//");
+		PrintToServer("client %i", client);
+		PrintToServer("victim %i", victim);
+		PrintToServer("assist: %i", assist);
+		PrintToServer("defindex %i", defindex);
+		PrintToServer("weapon \"%s\"", weapon);
+		PrintToServer(" ");
+		PrintToServer("midair %s", Bool[midair]);
+		PrintToServer("headshot %s", Bool[headshot]);
+		PrintToServer("dominated %s", Bool[dominated]);
+		PrintToServer("revenge %s", Bool[revenge]);
+		PrintToServer("noscope %s", Bool[noscope]);
+		PrintToServer("thrusmoke %s", Bool[thrusmoke]);
+		PrintToServer("attackerblind %s", Bool[attackerblind]);
+		PrintToServer(" ");
+		PrintToServer("Points %i", points);
+	}
+	
 	GetClientNameEx(client, Playername[client], sizeof(Playername[]));
 	GetClientNameEx(victim, Playername[victim], sizeof(Playername[]));
 	GetClientNameEx(assist, Playername[assist], sizeof(Playername[]));
@@ -42,22 +62,17 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	GetClientTeamString(assist, Name[assist], sizeof(Name[]));
 	
 	char query[1024];
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))	{		
-		if(IsSamePlayers(client, victim))	{
-			Session[client].Suicides++;
-			Format(query, sizeof(query), "update `%s` set Suicides = Suicides+1 where SteamID='%s'", playerlist, SteamID[victim]);
-			db.Query(DBQuery_Callback, query);
-		}
-	}
 	
 	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))	{
 		if(Tklib_IsValidClient(assist, true))	{
 			Session[assist].Assists++;
-			Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s'", playerlist, SteamID[assist]);
+			Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[assist], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
 			if(AssistKill.IntValue > 0)	{
-				Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, SteamID[assist]);
+				Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
+				playerlist, SteamID[assist], ServerID.IntValue);
 				db.Query(DBQuery_Callback, query);
 				
 					//Optimize the servers performance, combining the callback inside the chat print may lag the server for a slight second.
@@ -68,55 +83,65 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		}
 		
 		if(!IsFakeClient(victim))	{
-			Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s'", playerlist, SteamID[victim]);
+			Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[victim], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
 			if(Death.IntValue > 0)	{
-				Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s'", playerlist, Death.IntValue, SteamID[victim]);
+				Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
+				playerlist, Death.IntValue, SteamID[victim], ServerID.IntValue);
 				db.Query(DBQuery_Callback, query);
 			}
 		}
 		
 		Session[client].Kills++;
-		Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s'", playerlist, SteamID[client]);
+		Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
-		Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s'", playerlist, weapon, weapon, SteamID[client]);
+		Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, weapon, weapon, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
 		if(headshot)	{
 			Session[client].Headshots++;
-			Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s'", playerlist, SteamID[client]);
+			Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		
 		if(dominated)	{
 			Session[client].Dominations++;
-			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s'", playerlist, SteamID[client]);
+			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		
 		if(revenge)	{
 			Session[client].Revenges++;
-			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s'", playerlist, SteamID[client]);
+			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		
 		if(noscope)	{
 			Session[client].Noscopes++;
-			Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s'", playerlist, SteamID[client]);
+			Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		
 		if(thrusmoke)	{
 			Session[client].SmokeKills++;
-			Format(query, sizeof(query), "update `%s` set ThruSmokes = ThruSmokes+1 where SteamID='%s'", playerlist, SteamID[client]);
+			Format(query, sizeof(query), "update `%s` set ThruSmokes = ThruSmokes+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		
 		if(points > 0)	{
 			Session[client].Points = Session[client].Points+points;
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i", playerlist, points);
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
+			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
 			int points_client = GetClientPoints(SteamID[client]);

@@ -1,6 +1,11 @@
+/* Deaths */
 stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
-	//if(!PluginActive.BoolValue || !RoundActive /* || TF2_GetGameType() != TFGameType_MvM */)
-	//	return;
+	if(!PluginActive.BoolValue || !RankActive /* || TF2_GetGameType() != TFGameType_MvM */)
+		return;
+	
+	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
+	if(!Tklib_IsValidClient(client, true))
+		return;
 	
 	//It's a fake death.
 	if(event.GetInt(EVENT_STR_DEATH_FLAGS) == 32)	{
@@ -22,7 +27,6 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	int deathflags = event.GetInt(EVENT_STR_DEATH_FLAGS);
 	TFCritType crits = TFCritType(event.GetInt(EVENT_STR_CRIT_TYPE));
 	
-	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	int assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER));
 	int points = 0;
@@ -37,6 +41,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		case	TFBuilding_Invalid:		points = Weapon[defindex].IntValue;
 	}
 	
+	/* Kill event stuff */
 	bool headshot = (customkill == 1 || customkill == 51);
 	bool backstab = (customkill == 2);
 	bool noscope = (customkill == 11);
@@ -132,7 +137,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		PrintToServer(" ");
 		PrintToServer("crit type \"%s\"", TF2_GetCritTypeName[crits]);
 		PrintToServer(" ");
-		PrintToServer("Midair %s", Bool[IsClientMidAir(client)]);
+		PrintToServer("Midair %s", Bool[midair]);
 		PrintToServer(" ");
 		PrintToServer("Points %i", points);
 	}
@@ -155,20 +160,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	char query[1024];
 	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))	{		
-		if(IsSamePlayers(client, victim))	{
-			Session[client].Suicides++;
-			Format(query, sizeof(query), "update `%s` set Suicides = Suicides+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[victim], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-		}
-	}
-	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))	{
+	if(Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))	{
 		//There was an assist.
 		if(Tklib_IsValidClient(assist, true))	{
 			Session[assist].Assists++;
-			Session[assist].Points = Session[assist].Points+AssistKill.IntValue;
+			AddSessionPoints(client, AssistKill.IntValue);
 			Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[assist], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
@@ -190,10 +186,14 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			playerlist, SteamID[victim], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
-			if(Death.IntValue > 0)	{
-				Session[victim].Points = Session[victim].Points-Death.IntValue;
+			int death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
+			int victim_points = GetClientPoints(SteamID[victim]);
+			if(death_points > 0)	{
+				RemoveSessionPoints(victim, death_points);
+				CPrintToChat(victim, "%s %t", Prefix, "Death Event", Name[victim], death_points, victim_points);
+				
 				Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
-				playerlist, Death.IntValue, SteamID[victim], ServerID.IntValue);
+				playerlist, death_points, SteamID[victim], ServerID.IntValue);
 				db.Query(DBQuery_Callback, query);
 			}
 		}
@@ -219,7 +219,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 						playerlist, SteamID[client], ServerID.IntValue);
 						db.Query(DBQuery_Callback, query);
 						
-						if(Debug.BoolValue)	{
+						if(Debug.BoolValue)
+						{
 							PrintToServer(" ");
 							PrintToServer("Building: Sentry");
 						}
@@ -241,6 +242,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 				switch(telefrag)	{
 					case	true:	{
 						Session[client].TeleFrags++;
+						points = points+TF2_TeleFrag.IntValue;
+						AddSessionPoints(client, TF2_TeleFrag.IntValue);
 						Format(query, sizeof(query), "update `%s` set TeleFrags = TeleFrags+1 where SteamID='%s' and ServerID='%i'",
 						playerlist, SteamID[client], ServerID.IntValue);
 						db.Query(DBQuery_Callback, query);
@@ -380,9 +383,9 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			}
 		}
 		
-		Session[client].Points = Session[client].Points+points;
-		
 		if(points > 0)	{
+			AddSessionPoints(client, points);
+			
 			if(Debug.BoolValue)	{
 				PrintToServer(" ");
 				PrintToServer("Processing kill message..");
@@ -409,11 +412,10 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			else if(telefrag)
 				Kill_Scenario = 8;
 			
+			//fix the format.
 			char scenario[64];
-			if(Kill_Scenario > 0)	{
-				//fix the format.
+			if(Kill_Scenario > 0)
 				Format(scenario, sizeof(scenario), "%t{default}", Kill_Type[Kill_Scenario]);
-			}
 			
 			switch(IsValidString(scenario))	{
 				case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario);
@@ -430,158 +432,6 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', `%i`, `%i`)",
 			ServerID.IntValue, Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, midair, crits);
 			db.Query(DBQuery_Kill_Log, log);
-		}
-	}
-}
-
-stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RoundActive || TF2_PointCaptured.IntValue < 0)
-		return;
-	
-	char query[256], cpname[64], cappers[MAXPLAYERS];
-	event.GetString(EVENT_STR_CPNAME, cpname, sizeof(cpname));
-	event.GetString(EVENT_STR_CAPPERS, cappers, MAXPLAYERS);
-	int points = TF2_PointCaptured.IntValue;
-	
-	for(int i = 0; i < strlen(cappers); i++)	{
-		int client = cappers[i];
-		
-		if(Tklib_IsValidClient(client, true))	{
-			GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-			GetClientNameEx(client, Playername[client], sizeof(Playername[]));
-			GetClientTeamString(client, Name[client], sizeof(Name[]));
-			
-			int points_client = GetClientPoints(SteamID[client]);
-			CPrintToChat(client, "%s %t", Prefix, "Point Captured", Name[client], points_client, points, cpname);
-			
-			Format(query, sizeof(query), "update `%s` set PointsCaptured = PointsCaptured+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[client], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-		}
-	}
-}
-
-stock void Teamplay_Capture_Blocked(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RoundActive || TF2_PointBlocked.IntValue < 0)
-		return;
-	
-	char query[256], cpname[64];
-	event.GetString(EVENT_STR_CPNAME, cpname, sizeof(cpname));
-	
-	int client = event.GetInt(EVENT_STR_BLOCKER);
-	int victim = event.GetInt(EVENT_STR_VICTIM);
-	int points = TF2_PointBlocked.IntValue;
-	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && (TF2_GetGameType() == TFGameType_CP || TF2_GetGameType() == TFGameType_Arena))	{
-		if(IsFakeClient(victim) && !AllowBots.BoolValue)
-			return;
-		
-		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-		GetClientNameEx(client, Playername[client], sizeof(Playername[]));
-		GetClientTeamString(client, Name[client], sizeof(Name[]));
-		GetClientTeamString(victim, Name[victim], sizeof(Name[]));
-		
-		int points_client = GetClientPoints(SteamID[client]);
-		CPrintToChat(client, "%s %t", Prefix, "Point Defended", Name[client], points_client, points, cpname, Name[victim]);
-		
-		Format(query, sizeof(query), "update `%s` set PointsDefended = PointsDefended+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
-	}
-}
-
-stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RoundActive || TF2_GetGameType() != TFGameType_CTF)
-		return;
-	
-	char query[512];
-	int client = event.GetInt(EVENT_STR_PLAYER);
-	int carrier = event.GetInt(EVENT_STR_CARRIER);
-	int eventtype = event.GetInt(EVENT_STR_EVENTTYPE);
-	bool home = event.GetBool(EVENT_STR_HOME);
-	TFTeam team = TFTeam(event.GetInt(EVENT_STR_TEAM));
-	
-	if(Debug.BoolValue)	{
-		char teamname[][] = {
-			/* 0 */ "Unassigned",
-			/* 1 */ "SPEC",
-			/* 2 */ "BLU",
-			/* 3 */ "RED"
-		};
-		
-		PrintToServer("//===== Teamplay_Flag_Event =====//");
-		PrintToServer("player %N (%i)", client, client);
-		PrintToServer("carrier %N (%i)", carrier, carrier);
-		PrintToServer("eventtype %s", TF2_GetFlagTypeName[eventtype]);
-		PrintToServer("home %s", Bool[home]);
-		PrintToServer("teamname %s", teamname[team]);
-		PrintToServer(" ");
-	}
-	
-	if(Tklib_IsValidClient(client, true) && TF2_FlagEvent[eventtype].IntValue > 0)	{
-		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-		GetClientTeamString(client, Name[client], sizeof(Name[]));
-		int points = TF2_FlagEvent[eventtype].IntValue;
-		int points_client = GetClientPoints(SteamID[client]);
-		
-		switch(TFFlag(eventtype))	{
-			/* Flag was picked up */
-			case	TFFlag_PickedUp:	{
-				switch(home)	{
-					/* Flag was stolen */
-					case	true:	{
-						points = points+TF2_FlagStolen.IntValue;
-						Session[client].FlagsStolen++;
-						Session[client].FlagsPickedUp++;
-						Session[client].Points = Session[client].Points+points;
-						CPrintToChat(client, "%s %t", Prefix, "Flag Stolen", Name[client], points_client, points);
-						
-						Format(query, sizeof(query), "update `%s` Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1, FlagsStolen = FlagsStolen+1 where SteamID='%s' and ServerID='%i'",
-						playerlist, points, SteamID[client], ServerID.IntValue); 
-						db.Query(DBQuery_Callback, query);
-					}
-					/* Flag was not stolen (phew, that was close) */
-					case	false:	{
-						Session[client].FlagsPickedUp++;
-						Session[client].Points = Session[client].Points+points;
-						CPrintToChat(client, "%s %t", Prefix, "Flag Picked Up", Name[client], points_client, points);
-						
-						Format(query, sizeof(query), "update `%s` Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1 where SteamID='%s' and ServerID='%i'",
-						playerlist, points, SteamID[client], ServerID.IntValue); 
-						db.Query(DBQuery_Callback, query);
-					}
-				}
-			}
-			/* Flag was captured */
-			case	TFFlag_Captured:	{
-				Session[client].FlagsCaptured++;
-				Session[client].Points = Session[client].Points+points;
-				CPrintToChat(client, "%s %t", Prefix, "Flag Captured", Name[client], points_client, points);
-				
-				Format(query, sizeof(query), "update `%s` Points = Points+%i, FlagsCaptured = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
-				playerlist, points, SteamID[client], ServerID.IntValue);
-				db.Query(DBQuery_Callback, query);
-			}
-			/* Flag was defended */
-			case	TFFlag_Defended:	{
-				Session[client].FlagsDefended++;
-				Session[client].Points = Session[client].Points+points;
-				CPrintToChat(client, "%s %t", Prefix, "Flag Defended", Name[client], points_client, points);
-				
-				Format(query, sizeof(query), "update `%s` Points = Points+%i, FlagsDefended = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
-				playerlist, points, SteamID[client], ServerID.IntValue);
-				db.Query(DBQuery_Callback, query);
-			}
-			/* Flag was dropped */
-			case	TFFlag_Dropped:	{
-				Session[client].FlagsDropped++;
-				Session[client].Points = Session[client].Points+points;
-				CPrintToChat(client, "%s %t", Prefix, "Flag Dropped", Name[client], points_client, points);
-				
-				Format(query, sizeof(query), "update `%s` Points = Points-%i where SteamID='%s' and ServerID='%i'",
-				playerlist, points, SteamID[client], ServerID.IntValue);
-				db.Query(DBQuery_Callback, query);
-			}
 		}
 	}
 }

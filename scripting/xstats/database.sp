@@ -1,5 +1,5 @@
 void PrepareDatabase()	{
-	Database.Connect(DBConnect, "xstats");
+	Database.Connect(DBConnect, Xstats);
 }
 
 void DBConnect(Database database, const char[] error, any data)	{

@@ -1,3 +1,4 @@
+#include	<geoip>
 #include	<tklib>
 #include	<multicolors>
 #include	<xstats>
@@ -5,9 +6,9 @@
 #pragma		semicolon	1
 #pragma		newdecls	required
 
-/*
-	xStats is a multi-game statistical tracking plugin, functioning similiarly to gameMe & HlStatsX.
-*/
+/**
+ *	xStats is a multi-game statistical tracking plugin, functioning similiarly to gameMe & HlStatsX.
+ */
 
 #define LogTag "[Xstats]"
 #define Version "0.01_dev1"
@@ -15,7 +16,7 @@
 public Plugin myinfo = {
 	name		=	"Xstats - Statistical Tracker",
 	author		=	"Tk /id/Teamkiller324",
-	description	=	"Xstats - Statistical tracker.",
+	description	=	"Xstats - Track kills, maps, kill events, achievements, etc.",
 	version		=	Version,
 	url			=	"https://steamcommunity.com/id/Teamkiller324"
 }
@@ -27,8 +28,9 @@ Database		db		= null;
 /* Plugin */
 bool			RoundActive = true;
 bool			WarmupActive = false;
+bool			RankActive = true;
 ConVar			PluginActive, Debug, AllowBots, AllowWarmup, PrefixCvar, Death, AssistKill;
-ConVar			ServerID;
+ConVar			ServerID, MinimumPlayers, DisableAfterWin, ConnectMsg;
 ConVar			Weapon[40000];
 char			Prefix[96], logprefix[64], playerlist[64], kill_log[64];
 
@@ -53,16 +55,18 @@ char			Kill_Type[][] = {
 int PlayerDamaged[MAXPLAYERS][MAXPLAYERS];
 
 /* Session */
-XstatsSession	Session[MAXPLAYERS];
+XStatsSession	Session[MAXPLAYERS];
 
 /* Includes. */
-#include	"xstats/database.sp"
-#include	"xstats/game.sp"
-#include	"xstats/forwards.sp"
-#include	"xstats/functions.sp"
-#include	"xstats/commands.sp"
-#include	"xstats/natives.sp"
-#include	"xstats/updater.sp"
+#include	"xstats/database.sp" /* Database */
+#include	"xstats/game.sp" /* Game */
+#include	"xstats/forwards.sp" /* Forwards */
+#include	"xstats/functions.sp" /* Function callbacks */
+#include	"xstats/commands.sp" /* Commands */
+#include	"xstats/natives.sp" /* Natives */
+#include	"xstats/updater.sp" /* Updater Support */
+#include	"xstats/events.sp" /* Global Events */
+//#include	"xstats/achievements.sp" /* Achievements */
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)	{
 	RegPluginLibrary("xStats");
@@ -77,39 +81,39 @@ public void OnPluginStart()	{
 	char title[64];
 	switch(game)	{
 		case	Game_TF2:	{
-			logprefix = "[xStats: TF2]";
+			logprefix = "[Xstats: TF2]";
 			title = "Team Fortress 2";
 			playerlist = "playerlist_tf2";
 			kill_log = "kill_log_tf2";
 		}
 		case	Game_TF2Classic:	{
-			logprefix = "[xStats: TF2C]";
+			logprefix = "[Xstats: TF2C]";
 			title = "Team Fortress 2: Classic";
 			playerlist = "playerlist_tf2classic";
 			kill_log = "kill_log_tf2classic";
 			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		case	Game_CSS:	{
-			logprefix = "[xStats: CSS]";
+			logprefix = "[Xstats: CSS]";
 			title = "Counter-Strike: Source";
 			playerlist = "playerlist_css";
 			kill_log = "kill_log_css";
 		}
 		case	Game_CSPromod:	{
-			logprefix = "[xStats: CSPromod]";
+			logprefix = "[Xstats: CSPromod]";
 			title = "Counter-Strike: Promod";
 			playerlist = "playerlist_promod";
 			kill_log = "kill_log_cspromod";
 			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		case	Game_CSGO:	{
-			logprefix = "[xStats: CSGO]";
+			logprefix = "[Xstats: CSGO]";
 			title = "Counter-Strike: Global Offensive";
 			playerlist = "playerlist_csgo";
 			kill_log = "kill_log_csgo";
 		}
 		case	Game_CSCO:	{
-			logprefix = "[xStats: CSCO]";
+			logprefix = "[Xstats: CSCO]";
 			title = "Counter-Strike: Classic Offensive";
 			playerlist = "playerlist_csco";
 			kill_log = "kill_log_csco";
@@ -120,35 +124,42 @@ public void OnPluginStart()	{
 	
 	PrintToServer("xStats Version %s Detected game: %s", Version, title);
 	
-	CreateConVar("xstats_version", Version, "xStats - Version.").AddChangeHook(VersionChanged);
-	PluginActive	= CreateConVar("xstats_enabled",		"1", "Xstats - Should the tracking plugin be enabled?.", _, true, 0.0, true, 1.0);
-	Debug			= CreateConVar("xstats_debug",			"0", "Xstats - Debug. (For development purposes)", FCVAR_DEVELOPMENTONLY, true, 0.0, true, 1.0);
-	AllowBots		= CreateConVar("xstats_allow_bots",		"0", "Xstats - Should bots be allowed to be tracked as a valid opponent?.", _, true, 0.0, true, 1.0);
-	AllowWarmup		= CreateConVar("xstats_allow_warmup",	"0", "Xstats - Should warmup be a valid round to track?.", _, true, 0.0, true, 1.0);
-	ServerID		= CreateConVar("xstats_serverid",		"1", "Xstats - Server ID the server should be identified as.", _, true, 0.0);
+	CreateConVar("xstats_version", Version, "Xstats - Version.").AddChangeHook(VersionChanged);
+	PluginActive	= CreateConVar("xstats_enabled",		"1", "Xstats - Should the tracking plugin be enabled?.", _, true, _, true, 1.0);
+	Debug			= CreateConVar("xstats_debug",			"0", "Xstats - Debug. (For development purposes)", FCVAR_DEVELOPMENTONLY, true, _, true, 1.0);
+	AllowBots		= CreateConVar("xstats_allow_bots",		"0", "Xstats - Should bots be allowed to be tracked as a valid opponent?.", _, true, _, true, 1.0);
+	AllowWarmup		= CreateConVar("xstats_allow_warmup",	"0", "Xstats - Should warmup be a valid round to track?.", _, true, _, true, 1.0);
+	ServerID		= CreateConVar("xstats_serverid",		"1", "Xstats - Server ID the server should be identified as.", _, true);
+	MinimumPlayers	= CreateConVar("xstats_minimumplayers",	"4", "Xstats - Minimum amount of players required.", _, true, 1.0);
+	DisableAfterWin	= CreateConVar("xstats_disableafterwin","1", "Xstats - Should tracking be disabled when a team wins/round ends?.", _, true, _, true, 1.0);
+	ConnectMsg		= CreateConVar("xstats_connectmsg",		"1", "Xstats - Should connect messages be enabled?", _, true, _, true, 1.0);
 	
 	PrefixCvar = CreateConVar("xstats_prefix", "{green}Xstats", "Xstats - Prefix to be used ingame texts.");
 	PrefixCvar.AddChangeHook(PrefixCallback);
 	PrefixCvar.GetString(Prefix, sizeof(Prefix));
 	Format(Prefix, sizeof(Prefix), "%s{default}", Prefix);
 	
-	Death		= CreateConVar("xstats_points_death",	"5", "Xstats - Points to remove from the player who died.", _, true, 0.0);
-	AssistKill	= CreateConVar("xstats_points_assist",	"3", "Xstats - Points to give the assister.", _, true, 0.0);
+	if(!IsCurrentGame(Game_TF2) && !IsCurrentGame(Game_TF2C))
+		Death	= CreateConVar("xstats_points_death",	"5", "Xstats - Points to remove from the player who died.", _, true);
+	
+	AssistKill	= CreateConVar("xstats_points_assist",	"3", "Xstats - Points to give the assister.", _, true);
 	
 	//AutoExecConfig(true);
 	
 	//Prepare.
-	PrepareDatabase();
-	PrepareGame();
-	PrepareCommands();
-	PrepareUpdater();
+	PrepareDatabase(); /* Database */
+	PrepareGame(); /* Game stats */
+	PrepareCommands(); /* Commands */
+	PrepareUpdater(); /* Updater support */
+	PrepareEvents(); /* Global events */
 	
 	//Translation.
-	LoadTranslations("xstats.phrases");
+	//LoadTranslations("xstats.phrases");
 }
 
 void VersionChanged(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
-	cvar.SetString(Version);
+	if(!StrEqual(newvalue, Version))
+		cvar.SetString(Version);
 }
 
 void PrefixCallback(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
@@ -219,6 +230,13 @@ stock void RoundStarted()	{
 		}
 		case	false:	PrintToServer("%s Round Started", LogTag);
 	}
+	
+	if(DisableAfterWin.BoolValue && GetClientCountEx(AllowBots.BoolValue) < MinimumPlayers.IntValue)	{
+		if(RoundActive)	{
+			RankActive = true;
+			CPrintToChatAll("%s %t", Prefix, "Round Start Tracking Active");
+		}
+	}
 }
 
 /* When round ends */
@@ -238,4 +256,7 @@ stock void RoundEnded()	{
 		}
 		case	false:	PrintToServer("%s Round Ended", LogTag);
 	}
+	
+	if(DisableAfterWin.BoolValue)
+		RankActive = false;
 }

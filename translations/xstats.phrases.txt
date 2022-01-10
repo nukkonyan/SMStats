@@ -1,5 +1,25 @@
 "Phrases"
 {
+	//================================//
+	// Connected.
+	//================================//
+	
+	"Player Connected"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} (Pos #{2}, {3} points) has connected from {4}"
+	}
+	
+	"Player Disconnected"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} (Pos #{2}, {3} points) has left from {4}"
+	}
+	
+	//================================//
+	// Kill Event.
+	//================================//
+	
 	//Kill event types.
 	"Kill Event Type 1"
 	{

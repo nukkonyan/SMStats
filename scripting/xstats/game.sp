@@ -1,14 +1,15 @@
 /**
+ *	Game Events.
+ */
+#include	"xstats/game/team-fortress/team-fortress.sp"
+#include	"xstats/game/counter-strike/counter-strike.sp"
+
+/**
  *	Initialize the includes.
  */
 #include	"xstats/game/tf/tf.sp"
 #include	"xstats/game/csgo/csgo.sp"
 #include	"xstats/game/cstrike/cstrike.sp"
-
-/**
- *	Counter-Strike Forwards.
- */
-#include	"xstats/game/counter-strike/counter-strike.sp"
 
 /**
  *	Initialize the database.
@@ -26,7 +27,10 @@ void Games_DatabaseConnected()	{
  */
 void PrepareGame()	{
 	switch(game)	{
-		case	Game_TF2:	PrepareGame_TF2();
+		case	Game_TF2:	{
+			PrepareGame_TF2();
+			PrepareGame_TeamFortress();
+		}
 		case	Game_CSS:	{
 			PrepareGame_CounterStrike();
 			PrepareGame_CSS();

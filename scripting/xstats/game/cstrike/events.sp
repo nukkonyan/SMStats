@@ -1,5 +1,5 @@
 stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RoundActive)
+	if(!PluginActive.BoolValue || !RankActive)
 		return;
 	
 	char weapon[64];
@@ -39,14 +39,6 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	GetClientTeamString(assist, Name[assist], sizeof(Name[]));
 	
 	char query[1024];
-	
-	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim, true))	{		
-		if(IsSamePlayers(client, victim))	{
-			Session[client].Suicides++;
-			Format(query, sizeof(query), "update `%s` set Suicides = Suicides+1 where SteamID='%s'", playerlist, SteamID[victim]);
-			db.Query(DBQuery_Callback, query);
-		}
-	}
 	
 	if(Tklib_IsValidClient(client, true) && Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))	{
 		if(IsFakeClient(victim) && !AllowBots.BoolValue)

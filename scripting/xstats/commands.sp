@@ -1,12 +1,12 @@
 void PrepareCommands()
 {
-	RegConsoleCmd("rank", RankCmd, "xStats - returns the rank position.");
-	RegConsoleCmd("sm_rank", RankCmd, "xStats - Returns the rank position.");
+	RegConsoleCmd("rank", RankCmd, "Xstats - returns the rank position.");
+	RegConsoleCmd("sm_rank", RankCmd, "Xstats - Returns the rank position.");
 }
 
 Action RankCmd(int client, int args)
 {
-	Database database = SQL_Connect2("xstats", false);
+	Database database = SQL_Connect2(Xstats, false);
 	
 	if(database == null)
 	{
@@ -15,11 +15,9 @@ Action RankCmd(int client, int args)
 		return	Plugin_Handled;
 	}
 	
-	char auth[64];
-	GetClientAuth(client, auth, sizeof(auth));
-	
+	GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
 	DBResultSet results = SQL_QueryEx(database, "select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides from `%s` where SteamID='%s'",
-	playerlist, auth);
+	playerlist, SteamID[client]);
 	
 	if(results == null)
 	{
@@ -33,6 +31,9 @@ Action RankCmd(int client, int args)
 	{
 		char playername[64];
 		results.FetchString(0, playername, sizeof(playername));
+		
+		int position = GetClientPosition(SteamID[client]);
+		int players = GetTablePlayerCount();
 		
 		int points = results.FetchInt(1);
 		int playtime = results.FetchInt(2);
@@ -48,6 +49,10 @@ Action RankCmd(int client, int args)
 		
 		Format(info, sizeof(info), "Playername : %s", playername);
 		panel.DrawText(info);
+		
+		Format(info, sizeof(info), "Position #%i", position);
+		panel.DrawText(info);
+		
 		panel.DrawText(" ");
 		
 		panel.DrawText("Current Session");
@@ -71,6 +76,9 @@ Action RankCmd(int client, int args)
 		Format(info, sizeof(info), "%i Suicides", Session[client].Suicides);
 		panel.DrawText(info);
 		
+		Format(info, sizeof(info), "KDR Ratio: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
+		panel.DrawText(info);
+		
 		panel.DrawText(" ");
 		
 		panel.DrawText("Total Statistics");
@@ -91,13 +99,20 @@ Action RankCmd(int client, int args)
 		
 		Format(info, sizeof(info), "%i Suicides", suicides);
 		panel.DrawText(info);
+		
+		Format(info, sizeof(info), "KDR Ratio: %.2f", GetKDR(kills, deaths, assists));
+		panel.DrawText(info);
+		
 		panel.DrawText(" ");
 		
 		panel.DrawItem("Exit");
 		
-		
-		panel.Send(client, PanelCallback, 60);
+		panel.Send(client, PanelCallback, 120);
 		delete panel;
+		
+		GetClientTeamString(client, Name[client], sizeof(Name[]));
+		CPrintToChat(client, "%s %s is positioned #%i out of %i players with %.2f KDR Radio and %i total minutes in playtime",
+		Prefix, Name[client], position, players, GetKDR(kills, deaths, assists), playtime);
 	}
 	
 	return	Plugin_Handled;
