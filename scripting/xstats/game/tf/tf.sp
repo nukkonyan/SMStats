@@ -446,6 +446,4 @@ void PrepareGame_TF2()	{
 	
 	/* Deaths */
 	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_TF2, EventHookMode_Pre);
-	
-	AutoExecConfig(false, "xstats.tf.cfg");
 }

@@ -37,6 +37,4 @@ void PrepareGame_CSS()	{
 	
 	/* Events */
 	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_CSS, EventHookMode_Pre);
-	
-	AutoExecConfig(false, "xstats.css.cfg");
 }
