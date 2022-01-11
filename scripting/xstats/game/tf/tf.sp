@@ -998,7 +998,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Mid-Air Headshot{default}.",
 					Prefix, Name[client], points_client, points, Name[victim]);
 				case	4:
-					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s {green}Mid-Air{default}.",
+					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s whilst {green}Mid-Air{default}.",
 					Prefix, Name[client], points_client, points, Name[victim]);
 				case	5:
 					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Headshot{default}.",
