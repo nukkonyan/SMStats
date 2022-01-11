@@ -98,11 +98,40 @@ void DBQuery_CS_Bombs(Database database, DBResultSet results, const char[] error
 }
 
 stock void CS_Round(Event event, const char[] event_name, bool dontBroadcast)	{
-	switch(StrEqual(event_name, EVENT_ROUND_END))	{
-		case	true:	{
-			RoundEnded();
-			ResetAssister();
-		}
-		case	false:	RoundStarted();
+	StrEqual(event_name, EVENT_ROUND_END) ? RoundEnded() : RoundStarted();
+}
+
+/*	At the moment not gonna be super accurate
+	but will be fixed up later and be more accurate */
+
+public Action CS_OnBuyCommand(int client, const char[] weapon)	{
+	if(Tklib_IsValidClient(client, true))	{
+		DataPack pack = new DataPack();
+		pack.WriteCell(client);
+		pack.WriteString(weapon);
+		CreateTimer(0.25, Timer_OnBuyCommand, pack);
 	}
+}
+
+Action Timer_OnBuyCommand(Handle timer, DataPack pack)	{
+	pack.Reset();
+	int client = pack.ReadCell();
+	char weapon[64];
+	pack.ReadString(weapon, sizeof(weapon));
+	delete pack;
+	
+	/* If player left */
+	if(!IsClientConnected(client))	{
+		KillTimer(timer);
+		return Plugin_Handled;
+	}
+	
+	int price = CS_GetPriceFromWeapon(weapon);
+	Session[client].MoneySpent = Session[client].MoneySpent;
+	
+	char query[256];
+	Format(query, sizeof(query), "update `%s` set MoneySpent = MoneySpent+%i where SteamID='%i' and ServerID='%i'",
+	playerlist, price, SteamID[client], ServerID.IntValue);
+	
+	return Plugin_Handled;
 }

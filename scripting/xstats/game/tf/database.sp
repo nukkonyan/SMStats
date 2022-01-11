@@ -57,6 +57,13 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`TotalMonoculusStunned`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TotalMonoculusKilled`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TotalMerasmusKilled`					int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`TotalKilledHHH`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`PassBallsGotten`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`PassBallsScored`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`PassBallsDropped`					int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`PassBallsCatched`					int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`PassBallsStolen`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`PassBallsBlocked`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Coated`								int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Jarated`								int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`MadMilked`							int(32) not null default '0',");

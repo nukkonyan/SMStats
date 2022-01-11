@@ -266,4 +266,6 @@ stock void RoundEnded()	{
 	
 	if(RemoveOldPlayers.IntValue >= 1)
 		RemoveOldConnectedPlayers(RemoveOldPlayers.IntValue);
+	
+	ResetAssister();
 }

@@ -23,6 +23,7 @@ void PrepareDB_CSS()	{
 	len += Format(query[len], sizeof(query)-len, "`Noscopes`					int(32)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Dominations`					int(32)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Revenges`					int(32)			not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`MoneySpent`					int(32)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_SelfNade`				int(32)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`		int(32)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_flashbang`		int(32)			not null default '0',");

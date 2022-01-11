@@ -128,7 +128,7 @@ public void OnClientDisconnect(int client)	{
 	/* Check active players */
 	if(RankActive && GetClientCountEx(AllowBots.BoolValue) <= MinimumPlayers.IntValue)	{
 		RankActive = false;
-		CPrintToChatAll("%s %t", Prefix, "Not Enough Players");
+		CPrintToChatAll("%s Round End: Statistical Tracking Disabled", Prefix);
 		if(Debug.BoolValue)
 			PrintToServer("%s Not Enough Players, disabling tracking..", Prefix);
 	}
