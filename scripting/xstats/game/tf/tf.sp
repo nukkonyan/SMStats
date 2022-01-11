@@ -970,6 +970,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 				Kill_Scenario = 6;
 			else if(telefrag)
 				Kill_Scenario = 8;
+			else
+				Kill_Scenario = 0;
 			
 			/*
 			//fix the format.

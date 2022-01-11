@@ -5,7 +5,6 @@
  *	@param	maxlen			The maximum length of the string.
  *	@param	weapon_defindex	The weapon definition index to read.
  *	@param	format			The weapon classname to read.
- *	@param	client			The attacker to read.
  */
 int TF2_FixWeaponClassname(char[] weapon, int maxlen, int weapon_defindex, const char[] format)	{
 	char why[64];
