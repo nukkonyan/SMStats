@@ -950,7 +950,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 				PrintToServer("Processing kill message..");
 			}
 			
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%i' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
