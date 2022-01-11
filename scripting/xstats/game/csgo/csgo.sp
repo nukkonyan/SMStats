@@ -72,6 +72,4 @@ void PrepareGame_CSGO()	{
 	
 	/* Events */
 	HookEvent(EVENT_PLAYER_DEATH, Player_Death_CSGO, EventHookMode_Pre);
-	
-	AutoExecConfig(false, "xstats.csgo.cfg");
 }
