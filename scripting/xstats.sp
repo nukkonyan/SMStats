@@ -41,7 +41,7 @@ char			SteamID[64][MAXPLAYERS], Playername[64][MAXPLAYERS], Name[64][MAXPLAYERS]
 /* Kill scenario */
 int				Kill_Scenario = 0;
 char			Kill_Type[][] = {
-	"",	//unused
+	"Kill Event Type 0", //unused
 	"Kill Event Type 1",
 	"Kill Event Type 2",
 	"Kill Event Type 3",
@@ -52,7 +52,7 @@ char			Kill_Type[][] = {
 	"Kill Event Type 8"
 };
 
-//For experimental assister function.
+/* For experimental assister function. */
 int PlayerDamaged[MAXPLAYERS][MAXPLAYERS];
 
 /* Session */

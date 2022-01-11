@@ -123,17 +123,22 @@ int GetStats(int client, XStats_SessionType sessiontype)
 		case	SessionType_MadMilked: stats = Session[client].MadMilked;
 		case	SessionType_Jarated: stats = Session[client].Jarated;
 		
+		/* TF2 MvM */
+		case	SessionType_TanksDestroyed: stats = Session[client].TanksDestroyed;
+		case	SessionType_SentryBustersKilled: stats = Session[client].SentryBustersKilled;
+		case	SessionType_BombsResetted: stats = Session[client].BombsResetted;
+		
 		/* CS:GO */
-		case	SessionType_BlindKills:		stats = Session[client].BlindKills;
-		case	SessionType_SmokeKills:		stats = Session[client].SmokeKills;
-		case	SessionType_Wipes:			stats = Session[client].Wipes;
+		case	SessionType_BlindKills: stats = Session[client].BlindKills;
+		case	SessionType_SmokeKills: stats = Session[client].SmokeKills;
+		case	SessionType_Wipes: stats = Session[client].Wipes;
 		
 		/* Counter-Strike Overall */
-		case	SessionType_MVPs:			stats = Session[client].MVPs;
-		case	SessionType_BombsPlanted:	stats = Session[client].BombsPlanted;
-		case	SessionType_BombsDefused:	stats = Session[client].BombsDefused;
-		case	SessionType_BombsExploded:	stats = Session[client].BombsExploded;
-		case	SessionType_MoneySpent:		stats = Session[client].MoneySpent;
+		case	SessionType_MVPs: stats = Session[client].MVPs;
+		case	SessionType_BombsPlanted: stats = Session[client].BombsPlanted;
+		case	SessionType_BombsDefused: stats = Session[client].BombsDefused;
+		case	SessionType_BombsExploded: stats = Session[client].BombsExploded;
+		case	SessionType_MoneySpent: stats = Session[client].MoneySpent;
 	}
 	
 	return stats;

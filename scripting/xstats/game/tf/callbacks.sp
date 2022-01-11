@@ -10,12 +10,6 @@
 int TF2_FixWeaponClassname(char[] weapon, int maxlen, int weapon_defindex, const char[] format)	{
 	char why[64];
 	
-	//If it's something else.
-	if(StrEqual(format, "telefrag"))	{
-		strcopy(weapon, maxlen, format);
-		return;
-	}
-	
 	switch(weapon_defindex)	{
 		case	0:		why = "weapon_bat";						//The Bat.
 		case	1:		why = "weapon_bottle";					//The Bottle.

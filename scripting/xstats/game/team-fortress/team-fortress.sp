@@ -219,7 +219,7 @@ stock void Teamplay_Capture_Blocked(Event event, const char[] event_name, bool d
 
 /* Capture-The-Flag */
 stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RankActive || TF2_GetGameType() != TFGameType_CTF)
+	if(!PluginActive.BoolValue || !RankActive || TF2_GetGameType() != TFGameType_CTF || TF2_IsMvMGameMode())
 		return;
 	
 	int client = event.GetInt(EVENT_STR_PLAYER);

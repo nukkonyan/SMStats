@@ -69,6 +69,11 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Jarated`								int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`MadMilked`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Extinguished`						int(32) not null default '0',");
+	
+	len += Format(query[len], sizeof(query)-len, "`TanksDestroyed`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`SentryBustersKilled`					int(32) not null default '0',");
+	
+	
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_bat`					int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_bottle`					int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_fireaxe`				int(32)	not null default '0',");
@@ -172,7 +177,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_enforcer`				int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_bigearner`				int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_maul`					int(32)	not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_concentiousobjector`	int(32)	not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_conscentiousobjector`	int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_nessiesnineiron`		int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_original`				int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_diamondback`			int(32)	not null default '0',");
