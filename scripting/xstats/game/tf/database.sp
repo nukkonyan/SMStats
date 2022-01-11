@@ -56,6 +56,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`MoonShotStunnedPlayers`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TotalMonoculusStunned`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TotalMonoculusKilled`				int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`TotalMerasmusStunned`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TotalMerasmusKilled`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TotalKilledHHH`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`PassBallsGotten`						int(32) not null default '0',");

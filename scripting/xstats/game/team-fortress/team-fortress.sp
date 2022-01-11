@@ -29,7 +29,7 @@ ConVar TF2_PassBall[6];
 
 /* Bosses */
 ConVar TF2_BossKilled[5];
-ConVar TF2_BossStunned[3];
+ConVar TF2_BossStunned[2];
 
 /* Other */
 ConVar TF2_TeleFrag;
@@ -94,11 +94,11 @@ void PrepareGame_TeamFortress()	{
 	TF2_PassBall[5] = CreateConVar("xstats_points_pass_blocked",	"1",	"Xstats: TF2 - Points given when blocking the ball.", _, true);
 	
 	/* Bosses */
-	TF2_BossKilled[1] = CreateConVar("xstats_points_boss_hhh",			"5",	"Xstats: TF2 - Points given when killing Headless Horseless Headmann.", _, true);
-	TF2_BossKilled[2] = CreateConVar("xstats_points_boss_monoculus",	"5",	"Xstats: TF2 - Points given when killing MONOCULUS!.", _, true);
-	TF2_BossKilled[3] = CreateConVar("xstats_points_boss_merasmus",		"5",	"Xstats: TF2 - Points given when killing Merasmus.", _, true);
-	TF2_BossKilled[4] = CreateConVar("xstats_points_boss_skeleton",		"5",	"Xstats: TF2 - Points given when killing Skeleton King.", _, true);
-	TF2_BossStunned[0] = CreateConVar("xstats_points_boss_stunned_monoculus",	"5",	"Xstats: TF2 - Points given when stunning MONOCULUS!.", _, true);
+	TF2_BossKilled[1] = CreateConVar("xstats_points_boss_hhh",					"5",	"Xstats: TF2 - Points given when killing Headless Horseless Headmann.", _, true);
+	TF2_BossKilled[2] = CreateConVar("xstats_points_boss_monoculus",			"5",	"Xstats: TF2 - Points given when killing Monoculus.", _, true);
+	TF2_BossKilled[3] = CreateConVar("xstats_points_boss_merasmus",				"5",	"Xstats: TF2 - Points given when killing Merasmus.", _, true);
+	TF2_BossKilled[4] = CreateConVar("xstats_points_boss_skeleton",				"5",	"Xstats: TF2 - Points given when killing Skeleton King.", _, true);
+	TF2_BossStunned[0] = CreateConVar("xstats_points_boss_stunned_monoculus",	"5",	"Xstats: TF2 - Points given when stunning Monoculus.", _, true);
 	TF2_BossStunned[1] = CreateConVar("xstats_points_boss_stunned_merasmus",	"5",	"Xstats: TF2 - Points given when stunning Merasmus.", _, true);
 	
 	/* Other */
@@ -130,7 +130,8 @@ void PrepareGame_TeamFortress()	{
 	/* Bosses */
 	HookEventEx(EVENT_HALLOWEEN_BOSS_KILLED,		Halloween_Boss_Killed,		EventHookMode_Pre);
 	HookEventEx(EVENT_HALLOWEEN_SKELETON_KILLED,	Halloween_Skeleton_Killed,	EventHookMode_Pre);
-	
+	HookEventEx(EVENT_EYEBALL_BOSS_STUNNED,			Eyeball_Boss_Stunned,		EventHookMode_Pre);
+	HookEventEx(EVENT_MERASMUS_STUNNED,				Merasmus_Stunned,			EventHookMode_Pre);
 	
 	/* Pass Ball Mode */
 	HookEventEx(EVENT_PASS_GET,				PassBall, EventHookMode_Pre);
@@ -140,13 +141,16 @@ void PrepareGame_TeamFortress()	{
 	HookEventEx(EVENT_PASS_BALL_STOLEN,		PassBall, EventHookMode_Pre);
 	HookEventEx(EVENT_PASS_BALL_BLOCKED,	PassBall, EventHookMode_Pre);
 	
-	
 	/* User Messages */
 	HookUserMessageEx(GetUserMessageId("PlayerJarated"), PlayerJarated);
 	HookUserMessageEx(GetUserMessageId("PlayerExtinguished"), PlayerExtinguished);
 	
 	/* For some arrays as they use multi-arrays (ArrayExample[MAXPLAYERS][10] for example) */
 	ResetAntiAbuseArrays();
+	
+	/* Waiting For Players - Just to make all TF2 versions compatible. */
+	HookEventEx(EVENT_TEAMPLAY_WAITING_BEGINS,	WaitingForPlayers, EventHookMode_Pre);
+	HookEventEx(EVENT_TEAMPLAY_WAITING_ENDS,	WaitingForPlayers, EventHookMode_Pre);
 }
 
 /* Rounds */
@@ -166,7 +170,7 @@ stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool do
 		int client = cappers[i];
 		
 		if(Tklib_IsValidClient(client, true))	{
-			GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
+			AddSessionPoints(client, points);
 			GetClientNameEx(client, Playername[client], sizeof(Playername[]));
 			GetClientTeamString(client, Name[client], sizeof(Name[]));
 			
@@ -199,8 +203,7 @@ stock void Teamplay_Capture_Blocked(Event event, const char[] event_name, bool d
 		if(IsFakeClient(victim) && !AllowBots.BoolValue)
 			return;
 		
-		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-		GetClientNameEx(client, Playername[client], sizeof(Playername[]));
+		AddSessionPoints(client, points);
 		GetClientTeamString(client, Name[client], sizeof(Name[]));
 		GetClientTeamString(victim, Name[victim], sizeof(Name[]));
 		
@@ -228,7 +231,6 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 	bool home = event.GetBool(EVENT_STR_HOME);
 	TFTeam team = TFTeam(event.GetInt(EVENT_STR_TEAM));
 	TFFlag flag = TFFlag(eventtype);
-	char query[1024];
 	
 	if(Debug.BoolValue)	{
 		char teamname[][] = {
@@ -247,14 +249,17 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 		PrintToServer(" ");
 	}
 	
-	if(TF2_FlagEvent[eventtype].IntValue > 0)	{
-		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-		GetClientTeamString(client, Name[client], sizeof(Name[]));
-		int points = TF2_FlagEvent[eventtype].IntValue;
-		int points_client = GetClientPoints(SteamID[client]);
-		
+	if(TF2_FlagEvent[eventtype] == null || TF2_FlagEvent[eventtype].IntValue < 1)
+		return;
+	
+	char query[1024];
+	GetClientTeamString(client, Name[client], sizeof(Name[]));
+	int points = TF2_FlagEvent[eventtype].IntValue;
+	int points_client = GetClientPoints(SteamID[client]);
+	
+	switch(flag)	{
 		/* Flag was picked up */
-		if(flag == TFFlag_PickedUp)	{
+		case	TFFlag_PickedUp:	{
 			switch(home)	{
 				/* Flag was stolen */
 				case	true:	{
@@ -262,7 +267,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 					
 					Session[client].FlagsStolen++;
 					Session[client].FlagsPickedUp++;
-					Session[client].Points = Session[client].Points+points;
+					AddSessionPoints(client, points);
 					CPrintToChat(client, "%s %s (%i) earned %i points for stealing the opponent's inteligence.",
 					Prefix, Name[client], points_client, points);
 					
@@ -270,10 +275,10 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 					playerlist, points, SteamID[client], ServerID.IntValue); 
 					db.Query(DBQuery_Callback, query);
 				}
-				/* Flag was not stolen (phew, that was close) */
+				/* Flag was not stolen (phew, that was close *heavy voice*) */
 				case	false:	{
 					Session[client].FlagsPickedUp++;
-					Session[client].Points = Session[client].Points+points;
+					AddSessionPoints(client, points);
 					CPrintToChat(client, "%s %s (%i) earned %i points for picking up the opponent's intelligence.",
 					Prefix, Name[client], points_client, points);
 					
@@ -283,11 +288,10 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 				}
 			}
 		}
-		
 		/* Flag was captured */
-		if(flag == TFFlag_Captured)	{
+		case	TFFlag_Captured:	{
 			Session[client].FlagsCaptured++;
-			Session[client].Points = Session[client].Points+points;
+			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %s (%i) earned %i points for capturing the opponent's intelligence.",
 			Prefix, Name[client], points_client, points);
 			
@@ -295,23 +299,21 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
-		
 		/* Flag was defended */
-		if(flag == TFFlag_Defended)	{
+		case	TFFlag_Defended:	{
 			Session[client].FlagsDefended++;
-			Session[client].Points = Session[client].Points+points;
-			CPrintToChat(client, "%s %s (%i) earned %i points for defending the intelligence", Prefix, "Flag Defended",
-			Name[client], points_client, points);
+			AddSessionPoints(client, points);
+			CPrintToChat(client, "%s %s (%i) earned %i points for defending the intelligence",
+			Prefix, Name[client], points_client, points);
 			
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsDefended = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
-		
 		/* Flag was dropped */
-		if(flag == TFFlag_Dropped)	{
+		case	TFFlag_Dropped:	{
 			Session[client].FlagsDropped++;
-			Session[client].Points = Session[client].Points+points;
+			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %s (%i) lost %i for dropping the opponents intelligence.",
 			Prefix, Name[client], points_client, points);
 			
@@ -335,7 +337,6 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 	
 	TFBuilding building = TF2_GetBuildingType(event.GetInt(EVENT_STR_INDEX));
 	int type = int(building);
-	GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
 	
 	char query[256];
 	switch(building)	{
@@ -418,12 +419,11 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 		return;
 	
 	AddSessionPoints(client, points);
-	GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
 	GetClientTeamString(client, Name[client], sizeof(Name[]));
 	
 	char query[512], buildingname[64];
 	TF2_GetBuildingName(building, buildingname, sizeof(buildingname));
-	CPrintToChat(client, "%s %s (%i) earned %i points for destroying a %s belonging to %s",	Prefix, Name[client], points_client, points, buildingname);
+	CPrintToChat(client, "%s %s (%i) earned %i points for destroying a %s",	Prefix, Name[client], points_client, points, buildingname);
 	
 	switch(building)	{
 		case	TFBuilding_Sentrygun:	{
@@ -486,7 +486,6 @@ stock void Player_Invulned(Event event, const char[] event_name, bool dontBroadc
 		if(Ubercharged[client])
 			return;
 		
-		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
 		GetClientTeamString(client, Name[client], sizeof(Name[]));
 		GetClientTeamString(victim, Name[victim], sizeof(Name[]));
 		
@@ -624,14 +623,14 @@ stock void Player_Stunned(Event event, const char[] event_name, bool dontBroadca
 }
 
 /* Pass Ball Mode */
-void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RankActive || TF2_Stunned.IntValue < 1)
+stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
+	if(!PluginActive.BoolValue || !RankActive || TF2_GetGameType() != TFGameType_PassBall)
 		return;
 	
 	char query[512];
 	int client, points = 0;
 	
-	if(StrEqual(event_name, EVENT_PASS_GET) && (client = GetClientOfUserId(event.GetInt(EVENT_STR_OWNER))) > 0 && (points = TF2_PassBall[0].IntValue) > 0)
+	if(StrEqual(event_name, EVENT_PASS_GET) && (client = event.GetInt(EVENT_STR_OWNER)) > 0 && (points = TF2_PassBall[0].IntValue) > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
@@ -648,7 +647,7 @@ void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		db.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_SCORE) && (client = GetClientOfUserId(event.GetInt(EVENT_STR_SCORER))) > 0 && (points = TF2_PassBall[1].IntValue) > 0)
+	if(StrEqual(event_name, EVENT_PASS_SCORE) && (client = event.GetInt(EVENT_STR_SCORER)) > 0 && (points = TF2_PassBall[1].IntValue) > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
@@ -665,7 +664,7 @@ void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		db.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_FREE) && (client = GetClientOfUserId(event.GetInt(EVENT_STR_OWNER))) > 0 && (points = TF2_PassBall[2].IntValue) > 0)
+	if(StrEqual(event_name, EVENT_PASS_FREE) && (client = event.GetInt(EVENT_STR_OWNER)) > 0 && (points = TF2_PassBall[2].IntValue) > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
@@ -674,15 +673,15 @@ void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		int points_client = GetClientPoints(SteamID[client]);
 		AddSessionPoints(client, points);
 		
-		CPrintToChat(client, "%s %s (%i) earned %i points for scoring the ball.",
+		CPrintToChat(client, "%s %s (%i) lost %i points for dropping the ball.",
 		Prefix, Name[client], points_client, points);
 		
-		Format(query, sizeof(query), "update `%s` set Points = Points+%i, PassBallsDropped = PassBallsDropped+1 where SteamID='%s' and ServerID='%i'",
+		Format(query, sizeof(query), "update `%s` set Points = Points-%i, PassBallsDropped = PassBallsDropped+1 where SteamID='%s' and ServerID='%i'",
 		playerlist, points, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_PASS_CAUGHT) && (client = GetClientOfUserId(event.GetInt(EVENT_STR_CATCHER))) > 0 && (points = TF2_PassBall[3].IntValue) > 0)
+	if(StrEqual(event_name, EVENT_PASS_PASS_CAUGHT) && (client = event.GetInt(EVENT_STR_CATCHER)) > 0 && (points = TF2_PassBall[3].IntValue) > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
@@ -710,7 +709,7 @@ void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		db.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_BALL_STOLEN) && (client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER))) > 0 && (points = TF2_PassBall[4].IntValue) > 0)
+	if(StrEqual(event_name, EVENT_PASS_BALL_STOLEN) && (client = event.GetInt(EVENT_STR_ATTACKER)) > 0 && (points = TF2_PassBall[4].IntValue) > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
@@ -737,7 +736,7 @@ void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		db.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_BALL_BLOCKED) && (client = GetClientOfUserId(event.GetInt(EVENT_STR_BLOCKER))) > 0 && TF2_PassBall[5].IntValue > 0)
+	if(StrEqual(event_name, EVENT_PASS_BALL_BLOCKED) && (client = event.GetInt(EVENT_STR_BLOCKER)) > 0 && TF2_PassBall[5].IntValue > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
@@ -766,7 +765,7 @@ void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 }
 
 /* Bosses */
-void Halloween_Boss_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
+stock void Halloween_Boss_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!PluginActive.BoolValue || !RankActive)
 		return;
 	
@@ -808,6 +807,7 @@ void Halloween_Boss_Killed(Event event, const char[] event_name, bool dontBroadc
 		
 		switch(boss)	{
 			case	TFBoss_Killed_HHH:	{
+				Session[client].KilledHHH++;
 				CPrintToChat(client, "%s %s (%i) earned %i points for killing {purple}Horseless Headless Horsemann{default}.",
 				Prefix, Name[client], points_client, points);
 				
@@ -816,7 +816,8 @@ void Halloween_Boss_Killed(Event event, const char[] event_name, bool dontBroadc
 				db.Query(DBQuery_Callback, query);
 			}
 			case	TFBoss_Killed_Monoculus:	{
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing {purple}MONOCULUS!{default}.",
+				Session[client].KilledMonoculus++;
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing {purple}Monoculus{default}.",
 				Prefix, Name[client], points_client, points);
 				
 				Format(query, sizeof(query), "update `%s` set Points = Points+%i, TotalKilledMonoculus = TotalKilledMonoculus+1 where SteamID='%s' and ServerID='%i'",
@@ -824,6 +825,7 @@ void Halloween_Boss_Killed(Event event, const char[] event_name, bool dontBroadc
 				db.Query(DBQuery_Callback, query);
 			}
 			case	TFBoss_Killed_Merasmus:	{
+				Session[client].KilledMerasmus++;
 				CPrintToChat(client, "%s %s (%i) earned %i points for killing {lightgreen}Merasmus{default}.",
 				Prefix, Name[client], points_client, points);
 				
@@ -835,7 +837,8 @@ void Halloween_Boss_Killed(Event event, const char[] event_name, bool dontBroadc
 	}
 }
 
-void Halloween_Skeleton_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
+/* Skeleton King */
+stock void Halloween_Skeleton_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!PluginActive.BoolValue || !RankActive || TF2_BossKilled[4].IntValue < 1)
 		return;
 	
@@ -846,6 +849,7 @@ void Halloween_Skeleton_Killed(Event event, const char[] event_name, bool dontBr
 	int points = TF2_BossKilled[4].IntValue;
 	int points_client = GetClientPoints(SteamID[client]);
 	AddSessionPoints(client, points);
+	Session[client].KilledSkeletonKing++;
 	GetClientTeamString(client, Name[client], sizeof(Name[]));
 	
 	CPrintToChat(client, "%s %s (%i) earned %i points for killing {lightgreen}Skeleton {purple}King{default}.",
@@ -857,79 +861,141 @@ void Halloween_Skeleton_Killed(Event event, const char[] event_name, bool dontBr
 	db.Query(DBQuery_Callback, query);
 }
 
+stock void Eyeball_Boss_Stunned(Event event, const char[] event_name, bool dontBroadcast)	{
+	if(!PluginActive.BoolValue || !RankActive || TF2_BossStunned[0].IntValue < 1)
+		return;
+	
+	int client = event.GetInt(EVENT_STR_PLAYER_ENTINDEX);
+	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	int points = TF2_BossStunned[0].IntValue;
+	int points_client = GetClientPoints(SteamID[client]);
+	AddSessionPoints(client, points);
+	Session[client].StunnedMonoculus++;
+	GetClientTeamString(client, Name[client], sizeof(Name[]));
+	
+	CPrintToChat(client, "%s %s (%i) earned %i points for stunning {purple}Monoculus{default}.",
+	Prefix, Name[client], points_client, points);
+	
+	char query[512];
+	Format(query, sizeof(query), "update `%s` set Points = Points+%i, TotalMonoculusStunned = TotalMonoculusStunned+1 where SteamID='%s' and ServerID='%i'",
+	playerlist, points, SteamID[client], ServerID.IntValue);
+	db.Query(DBQuery_Callback, query);
+}
+
+stock void Merasmus_Stunned(Event event, const char[] event_name, bool dontBroadcast)	{
+	if(!PluginActive.BoolValue || !RankActive || TF2_BossStunned[1].IntValue < 1)
+		return;
+	
+	int client = event.GetInt(EVENT_STR_PLAYER_ENTINDEX);
+	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	int points = TF2_BossStunned[1].IntValue;
+	int points_client = GetClientPoints(SteamID[client]);
+	AddSessionPoints(client, points);
+	Session[client].StunnedMonoculus++;
+	GetClientTeamString(client, Name[client], sizeof(Name[]));
+	
+	CPrintToChat(client, "%s %s (%i) earned %i points for stunning {lightgreen}Merasmus{default}.",
+	Prefix, Name[client], points_client, points);
+	
+	char query[512];
+	Format(query, sizeof(query), "update `%s` set Points = Points+%i, TotalMerasmusStunned = TotalMerasmusStunned+1 where SteamID='%s' and ServerID='%i'",
+	playerlist, points, SteamID[client], ServerID.IntValue);
+	db.Query(DBQuery_Callback, query);
+}
+
 /* User Messages */
 float Jarated_Timer = 25.0;
+float MadMilked_Timer = 25.0;
 bool Jarated[MAXPLAYERS] = {false, ...};
+bool MadMilked[MAXPLAYERS] = {false, ...};
 Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{
 	if(!PluginActive.BoolValue || !RankActive || TF2_Jarated.IntValue < 1)
-		return Plugin_Continue;
+		return Plugin_Handled; /* Should do no harm to the usermessage event */
 	
 	int client = bf.ReadByte();
 	if(!Tklib_IsValidClient(client, true))
-		return Plugin_Continue;
+		return Plugin_Handled;
 	
 	int victim = bf.ReadByte();
 	if(!Tklib_IsValidClient(victim))
-		return Plugin_Continue;
+		return Plugin_Handled;
 	
 	if(IsFakeClient(victim) && !AllowBots.BoolValue)
-		return Plugin_Continue;
+		return Plugin_Handled;
+	
+	GetClientTeamString(client, Name[client], sizeof(Name[]));
+	GetClientTeamString(victim, Name[victim], sizeof(Name[]));
 	
 	int defindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Secondary)).DefinitionIndex;
-	
-	if(!Jarated[client])	{
-		if(defindex > 1)	{
-			GetClientTeamString(client, Name[client], sizeof(Name[]));
-			GetClientTeamString(victim, Name[victim], sizeof(Name[]));
-			int points = 0;
-			int points_client = GetClientPoints(SteamID[client]);
+	int points = 0;
+	int points_client = GetClientPoints(SteamID[client]);
+	Session[client].Coated++;
+		
+	char query[512];
+	switch(defindex)	{
+		/* Madmilk & Mutated Milk */
+		case	222, 1121:	{
+			if(MadMilked[client])
+				return Plugin_Handled;
 			
-			char query[512];
-			switch(defindex)	{
-				/* Madmilk & Mutated Milk */
-				case	222, 1121:	{
-					points = TF2_MadMilked.IntValue;
-					
-					CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with milk.",
-					Prefix, Name[client], points_client, points);
-					
-					Format(query, sizeof(query), "update `%s` set MadMilked = MadMilked+1 where SteamID='%s' and ServerID='%i'",
-					playerlist, SteamID[client], ServerID.IntValue);
-					db.Query(DBQuery_Callback, query);
-				}
-				/* Jarate & The Self-Aware Beauty Mark */
-				case	58, 1105:	{
-					points = TF2_Jarated.IntValue;
-					
-					CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with piss.",
-					Prefix, Name[client], points_client, points);
-					
-					Format(query, sizeof(query), "update `%s` set Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
-					playerlist, SteamID[client], ServerID.IntValue);
-					db.Query(DBQuery_Callback, query);
-				}
-				/* Incase the player was coated with piss via Sydney Sleeper. */
-				default:	{
-					points = TF2_Jarated.IntValue;
-					
-					if(Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex == 230)	{
-						CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with piss.",
-						Prefix, Name[client], points_client, points);
-						
-						Format(query, sizeof(query), "update `%s` set Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
-						playerlist, SteamID[client], ServerID.IntValue);
-						db.Query(DBQuery_Callback, query);
-					}
-				}
-			}
+			points = TF2_MadMilked.IntValue;
+			Session[client].MadMilked++;
 			
-			AddSessionPoints(client, points);
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, Coated = Coated+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, points, SteamID[client], ServerID.IntValue);
+			CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with milk.",
+			Prefix, Name[client], points_client, points);
+			
+			Format(query, sizeof(query), "update `%s` set MadMilked = MadMilked+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[client], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
+			
+			MadMilked[client] = true;
+			CreateTimer(MadMilked_Timer, Timer_PlayerMadMilked, client);
+		}
+		/* Jarate & The Self-Aware Beauty Mark */
+		case	58, 1105:	{
+			if(Jarated[client])
+				return Plugin_Handled;
+			
+			points = TF2_Jarated.IntValue;
+			Session[client].Jarated++;
+			
+			CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with piss.",
+			Prefix, Name[client], points_client, points);
+				
+			Format(query, sizeof(query), "update `%s` set Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[client], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
 			
 			Jarated[client] = true;
 			CreateTimer(Jarated_Timer, Timer_PlayerJarated, client);
 		}
+		/* Incase the player was coated with piss via Sydney Sleeper. */
+		default:	{
+			if(Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex == 230 && !Jarated[client])	{
+				points = TF2_Jarated.IntValue;
+				Session[client].Jarated++;
+			
+				CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with piss.",
+				Prefix, Name[client], points_client, points);
+				
+				Format(query, sizeof(query), "update `%s` set Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
+				playerlist, SteamID[client], ServerID.IntValue);
+				db.Query(DBQuery_Callback, query);
+				
+				Jarated[client] = true;
+				CreateTimer(Jarated_Timer, Timer_PlayerJarated, client);
+			}
+		}
+	}
+	
+	if(points > 0)	{
+		AddSessionPoints(client, points);
+		Format(query, sizeof(query), "update `%s` set Points = Points+%i, Coated = Coated+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, points, SteamID[client], ServerID.IntValue);
 	}
 	
 	return Plugin_Continue;
@@ -939,35 +1005,35 @@ float Extinguished_Timer = 10.0;
 bool Extinguished[MAXPLAYERS] = {false, ...};
 Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{
 	if(!PluginActive.BoolValue || !RankActive || TF2_Extinguished.IntValue < 1)
-		return Plugin_Continue;
+		return Plugin_Handled;
 	
 	int client = bf.ReadByte();
 	if(!Tklib_IsValidClient(client, true))
-		return Plugin_Continue;
+		return Plugin_Handled;
 	
 	int victim = bf.ReadByte();
 	if(!Tklib_IsValidClient(victim))
-		return Plugin_Continue;
+		return Plugin_Handled;
 	
-	if(!Extinguished[client])	{
-		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-		GetClientTeamString(client, Name[client], sizeof(Name[]));
-		GetClientTeamString(victim, Name[victim], sizeof(Name[]));
+	if(Extinguished[client])
+		return Plugin_Handled;
+	
+	GetClientTeamString(client, Name[client], sizeof(Name[]));
+	GetClientTeamString(victim, Name[victim], sizeof(Name[]));
+	
+	int points = TF2_Extinguished.IntValue;
+	int points_client = GetClientPoints(SteamID[client]);
+	AddSessionPoints(client, points);
+	
+	CPrintToChat(client, "%s %s (%i) earned %i points for Extinguishing %s.",
+	Prefix, Name[client], points_client, points);
+	
+	char query[512];			
+	Format(query, sizeof(query), "update `%s` set Points = Points+%i, Extinguished = Extinguished+1 where SteamID='%s' and ServerID='%i'",
+	playerlist, points, SteamID[client], ServerID.IntValue);
 		
-		int points = TF2_Extinguished.IntValue;
-		int points_client = GetClientPoints(SteamID[client]);
-		AddSessionPoints(client, points);
-		
-		CPrintToChat(client, "%s %s (%i) earned %i points for Extinguishing %s.",
-		Prefix, Name[client], points_client, points);
-		
-		char query[512];			
-		Format(query, sizeof(query), "update `%s` set Points = Points+%i, Extinguished = Extinguished+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, points, SteamID[client], ServerID.IntValue);
-		
-		Extinguished[client] = true;
-		CreateTimer(Extinguished_Timer, Timer_PlayerExtinguished, client);
-	}
+	Extinguished[client] = true;
+	CreateTimer(Extinguished_Timer, Timer_PlayerExtinguished, client);
 	
 	return Plugin_Continue;
 }
@@ -985,17 +1051,21 @@ stock Action Timer_Player_BuiltObject(Handle timer, DataPack pack)	{
 stock Action Timer_Player_Invulned(Handle timer, int client)	{	Ubercharged[client] = false;	}
 stock Action Timer_Player_Teleported(Handle timer, int client)	{	Teleported[client] = false;		}
 stock Action Timer_PlayerJarated(Handle timer, int client)		{	Jarated[client] = false;		}
+stock Action Timer_PlayerMadMilked(Handle timer, int client)	{	MadMilked[client] = false;		}
 stock Action Timer_PlayerExtinguished(Handle timer, int client)	{	Extinguished[client] = false;	}
 
 stock void ResetAntiAbuseArrays()	{
-	for(int i = 0; i < MaxClients; i++)
-	{
-		for(int type = 0; type < 6; type++)
-		{
+	for(int i = 0; i < MaxClients; i++)	{
+		for(int type = 0; type < 6; type++)	{
 			BuiltObject[i][type] = false;
 		}
 	}
 }
 
+/* Waiting For Players */
+stock void WaitingForPlayers(Event event, const char[] event_name, bool dontBroadcast)	{WarmupActive = StrEqual(event_name, EVENT_TEAMPLAY_WAITING_BEGINS);}
+
+/* Disabled because these particularily doesn't wanna work properly on TF2 Classic.
 public void TF2_OnWaitingForPlayersStart()	{	WarmupActive = true;	}
 public void TF2_OnWaitingForPlayersEnd()	{	WarmupActive = false;	}
+*/

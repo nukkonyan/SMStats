@@ -157,6 +157,15 @@ public void OnPluginStart()	{
 	
 	//Translation.
 	//LoadTranslations("xstats.phrases");
+	
+	/* Incase the plugin were launched manually or perhaps started (?)*/
+	for(int client = 1; client < MaxClients; client++)	{
+		if(Tklib_IsValidClient(client, true, false, false))	{
+			GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
+			GetClientNameEx(client, Playername[client], sizeof(Playername[]));
+			GetClientTeamString(client, Name[client], sizeof(Name[]));
+		}
+	}
 }
 
 void VersionChanged(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
