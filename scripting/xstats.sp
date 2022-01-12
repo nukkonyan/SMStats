@@ -85,44 +85,40 @@ public void OnPluginStart()	{
 	game = IdentifyGame();
 	
 	char title[64];
+	GetGameName(title, sizeof(title));
+	
 	switch(game)	{
 		case	Game_TF2:	{
 			logprefix = "[Xstats: TF2]";
-			title = "Team Fortress 2";
 			playerlist = "playerlist_tf2";
 			kill_log = "kill_log_tf2";
 			item_found = "item_found_tf2";
 		}
 		case	Game_TF2Classic:	{
-			logprefix = "[Xstats: TF2C]";
-			title = "Team Fortress 2: Classic";
+			logprefix = "[Xstats: TF2:C]";
 			playerlist = "playerlist_tf2classic";
 			kill_log = "kill_log_tf2classic";
 			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		case	Game_CSS:	{
-			logprefix = "[Xstats: CSS]";
-			title = "Counter-Strike: Source";
+			logprefix = "[Xstats: CS:S]";
 			playerlist = "playerlist_css";
 			kill_log = "kill_log_css";
 		}
 		case	Game_CSPromod:	{
-			logprefix = "[Xstats: CSPromod]";
-			title = "Counter-Strike: Promod";
+			logprefix = "[Xstats: CS:Promod]";
 			playerlist = "playerlist_promod";
 			kill_log = "kill_log_cspromod";
 			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		case	Game_CSGO:	{
-			logprefix = "[Xstats: CSGO]";
-			title = "Counter-Strike: Global Offensive";
+			logprefix = "[Xstats: CS:GO]";
 			playerlist = "playerlist_csgo";
 			kill_log = "kill_log_csgo";
 			item_found = "item_found_csgo";
 		}
 		case	Game_CSCO:	{
-			logprefix = "[Xstats: CSCO]";
-			title = "Counter-Strike: Classic Offensive";
+			logprefix = "[Xstats: CS:CO]";
 			playerlist = "playerlist_csco";
 			kill_log = "kill_log_csco";
 			SetFailState("%s Game is unsuppported for the moment.", LogTag);
