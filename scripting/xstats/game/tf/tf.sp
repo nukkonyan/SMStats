@@ -466,7 +466,7 @@ void PrepareGame_TF2()	{
 
 /* MvM */
 stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RankActive || !TF2_IsMvMGameMode() || TF2_MvM[0].IntValue < 1)
+	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[0].IntValue < 1)
 		return;
 	
 	int points = TF2_MvM[0].IntValue;
@@ -496,7 +496,7 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 	doesn't offer a killer userid/entity index
 	but the sentry buster entity itself only. */
 stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RankActive || !TF2_IsMvMGameMode() || TF2_MvM[1].IntValue < 1)
+	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[1].IntValue < 1)
 		return;
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
@@ -534,7 +534,7 @@ stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool do
 }
 
 stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RankActive || !TF2_IsMvMGameMode() || TF2_MvM[2].IntValue < 1)
+	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[2].IntValue < 1)
 		return;
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_PLAYER));
@@ -559,7 +559,7 @@ stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool d
 
 /* Deaths */
 stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue || !RankActive || TF2_IsMvMGameMode())
+	if(!IsValidStats() || TF2_IsMvMGameMode())
 		return;
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));

@@ -38,9 +38,13 @@ char			Prefix[96], logprefix[64], playerlist[64], kill_log[64];
 /* Client */
 char			SteamID[64][MAXPLAYERS], Playername[64][MAXPLAYERS], Name[64][MAXPLAYERS], IP[16][MAXPLAYERS];
 
-/* Kill scenario */
+/**
+ *	Kill scenario | Used for translations but is currently unused for the moment
+ *	due to in process of adding new stuff whole time during development process.
+ *	Translations will be added later.
+ */
 int				Kill_Scenario = 0;
-char			Kill_Type[][] = {
+stock char		Kill_Type[][] = {
 	"Kill Event Type 0", //unused
 	"Kill Event Type 1",
 	"Kill Event Type 2",
@@ -157,7 +161,7 @@ public void OnPluginStart()	{
 	PrepareUpdater(); /* Updater support */
 	PrepareEvents(); /* Global events */
 	
-	//Translation.
+	//Translation. (Will be added later.)
 	//LoadTranslations("xstats.phrases");
 	
 	/* Incase the plugin were launched manually or perhaps started (?)*/

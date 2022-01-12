@@ -252,12 +252,9 @@ stock void CheckActivePlayers()	{
 	int players = GetClientCountEx(!AllowBots.BoolValue);
 	//PrintToServer("Players: [%i/%i]", players, needed);
 	
-	switch(RankActive)
-	{
-		case	true:
-		{
-			if(needed > players)
-			{
+	switch(RankActive)	{
+		case	true:	{
+			if(needed > players)	{
 				RankActive = false;
 				
 				CPrintToChatAll("%s Not enough players [%i/%i], disabling..", Prefix, players, needed);
@@ -265,12 +262,9 @@ stock void CheckActivePlayers()	{
 					PrintToServer("%s Not Enough Players [%i/%i], disabling..", Prefix, players, needed);
 			}
 		}
-		case	false:
-		{
-			if(needed <= players)
-			{
-				if(RoundActive)
-				{
+		case	false:	{
+			if(needed <= players)	{
+				if(RoundActive)	{
 					RankActive = true;
 					CPrintToChatAll("%s Enough players [%i/%i], enabling..", Prefix, players, needed);
 					if(Debug.BoolValue)
@@ -279,4 +273,13 @@ stock void CheckActivePlayers()	{
 			}
 		}
 	}
+}
+
+/**
+ *	Make sure the stats is properly configured.
+ */
+stock bool IsValidStats()	{
+	if(!PluginActive.BoolValue || !RankActive || WarmupActive && !AllowWarmup.BoolValue)
+		return	false;
+	return	true;
 }
