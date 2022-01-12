@@ -15,8 +15,6 @@ Xstats is a Multi-Statistics tracking plugin.
 
 ## This is a 'plug-n-play' type of plugin. Throw the plugin into the server, add the neccessary database.cfg lines to connect to the database and You're done.
 
-### You may NOT modify the plugin and distribute on to another place/source
-
 # Early Development Screenshots
 
 ![Screenshot_1](https://user-images.githubusercontent.com/49116354/148999939-862ff95c-1834-4c7a-8085-1216387a9285.png)
