@@ -460,6 +460,9 @@ void PrepareGame_TF2()	{
 	HookEventEx(EVENT_PLAYER_DEATH, MvM_Sentrybuster_Killed, EventHookMode_Pre);
 	HookEventEx(EVENT_MVM_BOMB_RESET_BY_PLAYER, MvM_Bomb_Reset_By_Player, EventHookMode_Pre);
 	
+	/* Item found, achieved, gained or traded */
+	HookEventEx(EVENT_ITEM_FOUND, Item_Found_TF2, EventHookMode_Pre);
+	
 	/* Deaths */
 	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_TF2, EventHookMode_Pre);
 }
@@ -557,13 +560,63 @@ stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool d
 	db.Query(DBQuery_Callback, query);
 }
 
+/* Item found */
+stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
+	if(!PluginActive.BoolValue)
+		return;
+
+	if(event.GetBool("isfake"))	//Item is fake
+		return; //This event bool doesn't exist in the game in general but you can force this event and use this.
+	
+	int client = event.GetInt(EVENT_STR_PLAYER);
+	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	int quality = event.GetInt(EVENT_STR_QUALITY);
+	int method = event.GetInt(EVENT_STR_METHOD);
+	int defindex = event.GetInt(EVENT_STR_ITEMDEF);
+	bool isstrange = event.GetBool(EVENT_STR_ISSTRANGE);
+	bool isunusual = event.GetBool(EVENT_STR_ISUNUSUAL);
+	float wear = event.GetFloat(EVENT_STR_WEAR);
+	
+	char method_name[][] = {
+		"Achieved",
+		"Found",
+		"Crafted",
+		"Traded",
+		"Unboxed",
+		"Gifted",
+		"Earned",
+		"Refunded",
+		"WrappedGift"
+	}, quality_name[][] = {
+		"Normal",
+		"Genuine",
+		"Vintage",
+		"Unusual",
+		"Unique",
+		"Community",
+		"Valve",
+		"Self-Made",
+		"Strange",
+		"Unusual",
+		"Haunted",
+		"Colletor's"
+	};
+	
+	char query[512];
+	int len = 0;
+	len += Format(query[len], sizeof(query)-len, "insert into `%s`", item_found);
+	len += Format(query[len], sizeof(query)-len, "(Playername, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, IsStrange, IsUnusual, Wear)");
+	len += Format(query[len], sizeof(query)-len, "values");
+	len += Format(query[len], sizeof(query)-len, "('%s', '%s', '%i', '%s', '%i', '%s', '%i', '%i', '%i', '%f')",
+	Playername[client], SteamID[client], quality, quality_name, method, method_name[method], defindex, isstrange, isunusual, wear);
+	db.Query(DBQuery_Callback, query);
+}
+
 /* Deaths */
 stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats() || TF2_IsMvMGameMode())
-		return;
-	
-	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
-	if(!Tklib_IsValidClient(client, true))
 		return;
 	
 	//It's a fake death.
@@ -577,22 +630,34 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	char weapon[96];
 	event.GetString(EVENT_STR_WEAPON_LOGCLASSNAME, weapon, sizeof(weapon));
+
+	if(StrEqual(weapon, "player")
+	|| StrEqual(weapon, "world"))
+		return;	
+	
+	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
+	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
+	if(!Tklib_IsValidClient(victim))
+		return;
+		
+	if(IsFakeClient(victim) && !AllowBots.BoolValue)
+		return;
+	
+	if(IsSamePlayers(client, victim) || IsSameTeam(client, victim))
+		return;
 	
 	/* Get the values early for lowest delay. */
 	
+	int assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER));
 	int inflictor = event.GetInt(EVENT_STR_INFLICTOR_ENTINDEX);
 	int defindex = event.GetInt(EVENT_STR_WEAPON_DEF_INDEX);
 	int customkill = event.GetInt(EVENT_STR_CUSTOMKILL);
 	int deathflags = event.GetInt(EVENT_STR_DEATH_FLAGS);
 	TFCritType crits = TFCritType(event.GetInt(EVENT_STR_CRIT_TYPE));
-	
-	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	int assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER));
 	int points = 0;
-	
-	if(StrEqual(weapon, "player")
-	|| StrEqual(weapon, "world"))
-		return;	
 	
 	switch(TF2_GetBuildingType(inflictor))	{
 		case	TFBuilding_Sentrygun:	points = TF2_SentryKill.IntValue;
@@ -616,7 +681,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	|| (StrEqual(weapon, "gas_blast", false))
 	/* Spy knife taunt kill */
 	|| customkill == 13);
-	bool telefrag = StrEqual(weapon, "telefrag", false);
+	bool telefrag = StrEqual(weapon, "telefrag");
 	bool midair = IsClientMidAir(client);
 		
 	// The 'weapon_def_index' on the player_death is same as if you're gathering the killers
@@ -707,320 +772,312 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		return;
 	}
 	
-	GetClientNameEx(client, Playername[client], sizeof(Playername[]));
-	GetClientNameEx(victim, Playername[victim], sizeof(Playername[]));
-	GetClientNameEx(assist, Playername[assist], sizeof(Playername[]));
-	GetClientTeamString(client, Name[client], sizeof(Name[]));
-	GetClientTeamString(victim, Name[victim], sizeof(Name[]));
-	GetClientTeamString(assist, Name[assist], sizeof(Name[]));
-	
-	if(IsFakeClient(victim) && !AllowBots.BoolValue)
-		return;
-	
 	char query[1024];
 	
-	if(Tklib_IsValidClient(victim) && !IsSamePlayers(client, victim) && !IsSameTeam(client, victim))	{
-		//There was an assist.
-		if(Tklib_IsValidClient(assist, true))	{
-			Session[assist].Assists++;
-			AddSessionPoints(client, AssistKill.IntValue);
-			Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
+	//There was an assist.
+	if(Tklib_IsValidClient(assist, true))	{
+		Session[assist].Assists++;
+		AddSessionPoints(client, AssistKill.IntValue);
+		Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[assist], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(AssistKill.IntValue > 0)	{
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[assist], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
-			if(AssistKill.IntValue > 0)	{
-				Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-				playerlist, SteamID[assist], ServerID.IntValue);
-				db.Query(DBQuery_Callback, query);
-				
-					//Optimize the servers performance, combining the callback inside the chat print may lag the server for a slight second.
-				int assist_points = GetClientPoints(SteamID[assist]);
-				CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", Name[assist], assist_points, points, Name[client], Name[victim]);
-			}
+			//Optimize the servers performance, combining the callback inside the chat print may lag the server for a slight second.
+			int assist_points = GetClientPoints(SteamID[assist]);
+			CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", Name[assist], assist_points, points, Name[client], Name[victim]);
 		}
+	}
 		
-		//Make sure to not query updates on a bot, the database wont be happy about that.
-		if(!IsFakeClient(victim))	{
-			Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[victim], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
+	//Make sure to not query updates on a bot, the database wouldn't be happy about that.
+	if(!IsFakeClient(victim))	{
+		Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[victim], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		int death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
+		int victim_points = GetClientPoints(SteamID[victim]);
+		if(death_points > 0)	{
+			RemoveSessionPoints(victim, death_points);
+			CPrintToChat(victim, "%s %s (%i) lost %i points for dying.", Prefix, Name[victim], death_points, victim_points);
 			
-			int death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
-			int victim_points = GetClientPoints(SteamID[victim]);
-			if(death_points > 0)	{
-				RemoveSessionPoints(victim, death_points);
-				CPrintToChat(victim, "%s %t", Prefix, "Death Event", Name[victim], death_points, victim_points);
+			Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
+			playerlist, death_points, SteamID[victim], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
+		}
+	}
+		
+	Session[client].Kills++;
+	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
+	playerlist, SteamID[client], ServerID.IntValue);
+	db.Query(DBQuery_Callback, query);
+		
+	//If the inflictor entity is a building.
+	switch(TF2_IsEntityBuilding(inflictor))	{
+		case	true:	{
+			switch(TF2_GetBuildingType(inflictor))	{
+				case	TFBuilding_Dispenser:	{
+					if(Debug.BoolValue)	{
+						PrintToServer(" ");
+						PrintToServer("Building: Dispenser (?!)");
+					}
+				}
+				case	TFBuilding_Sentrygun:	{
+					Session[client].MiniSentryKills++;
+					Format(query, sizeof(query), "update `%s` set SentryKills = SentryKills+1 where SteamID='%s' and ServerID='%i'",
+					playerlist, SteamID[client], ServerID.IntValue);
+					db.Query(DBQuery_Callback, query);
 				
-				Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
-				playerlist, death_points, SteamID[victim], ServerID.IntValue);
-				db.Query(DBQuery_Callback, query);
+					if(Debug.BoolValue)	{
+						PrintToServer(" ");
+						PrintToServer("Building: Sentry");
+					}
+				}
+				case	TFBuilding_MiniSentry:	{
+					Session[client].SentryKills++;
+					Format(query, sizeof(query), "update `%s` set MiniSentryKills = MiniSentryKills+1 where SteamID='%s' and ServerID='%i'",
+					playerlist, SteamID[client], ServerID.IntValue);
+					db.Query(DBQuery_Callback, query);
+					
+					if(Debug.BoolValue)	{
+						PrintToServer(" ");
+						PrintToServer("Building: Mini-Sentry");
+					}
+				}
 			}
 		}
-		
-		Session[client].Kills++;
-		Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
+		case	false:	{
+			switch(telefrag)	{
+				case	true:	{
+					Session[client].TeleFrags++;
+					points += TF2_TeleFrag.IntValue;
+					AddSessionPoints(client, TF2_TeleFrag.IntValue);
+					Format(query, sizeof(query), "update `%s` set TeleFrags = TeleFrags+1 where SteamID='%s' and ServerID='%i'",
+					playerlist, SteamID[client], ServerID.IntValue);
+					db.Query(DBQuery_Callback, query);
+					
+					if(Debug.BoolValue)	{
+						PrintToServer(" ");
+						PrintToServer("Telefrag");
+					}
+				}
+				case	false:	{
+					Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s' and ServerID='%i'",
+					playerlist, fix_weapon, fix_weapon, SteamID[client], ServerID.IntValue);
+					db.Query(DBQuery_Callback, query);
+				}
+			}
+		}
+	}
+	
+	if(headshot)	{
+		Session[client].Headshots++;
+		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
 		playerlist, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
-		//If the inflictor entity is a building.
-		switch(TF2_IsEntityBuilding(inflictor))	{
-			case	true:	{
-				switch(TF2_GetBuildingType(inflictor))	{
-					case	TFBuilding_Dispenser:	{
-						if(Debug.BoolValue)	{
-							PrintToServer(" ");
-							PrintToServer("Building: Dispenser (?!)");
-						}
-					}
-					case	TFBuilding_Sentrygun:	{
-						Session[client].MiniSentryKills++;
-						Format(query, sizeof(query), "update `%s` set SentryKills = SentryKills+1 where SteamID='%s' and ServerID='%i'",
-						playerlist, SteamID[client], ServerID.IntValue);
-						db.Query(DBQuery_Callback, query);
-						
-						if(Debug.BoolValue)
-						{
-							PrintToServer(" ");
-							PrintToServer("Building: Sentry");
-						}
-					}
-					case	TFBuilding_MiniSentry:	{
-						Session[client].SentryKills++;
-						Format(query, sizeof(query), "update `%s` set MiniSentryKills = MiniSentryKills+1 where SteamID='%s' and ServerID='%i'",
-						playerlist, SteamID[client], ServerID.IntValue);
-						db.Query(DBQuery_Callback, query);
-						
-						if(Debug.BoolValue)	{
-							PrintToServer(" ");
-							PrintToServer("Building: Mini-Sentry");
-						}
-					}
-				}
-			}
-			case	false:	{
-				switch(telefrag)	{
-					case	true:	{
-						Session[client].TeleFrags++;
-						points = points+TF2_TeleFrag.IntValue;
-						AddSessionPoints(client, TF2_TeleFrag.IntValue);
-						Format(query, sizeof(query), "update `%s` set TeleFrags = TeleFrags+1 where SteamID='%s' and ServerID='%i'",
-						playerlist, SteamID[client], ServerID.IntValue);
-						db.Query(DBQuery_Callback, query);
-						
-						if(Debug.BoolValue)	{
-							PrintToServer(" ");
-							PrintToServer("Telefrag");
-						}
-					}
-					case	false:	{
-						Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s' and ServerID='%i'",
-						playerlist, fix_weapon, fix_weapon, SteamID[client], ServerID.IntValue);
-						db.Query(DBQuery_Callback, query);
-					}
-				}
-			}
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Headshot");
 		}
+	}
 		
-		if(headshot)	{
-			Session[client].Headshots++;
-			Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
+	if(backstab)	{
+		Session[client].Backstabs++;
+		Format(query, sizeof(query), "update `%s` set Backstabs = Backstabs+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Backstab");
+		}
+	}
+		
+	if(dominated)	{
+		Session[client].Dominations++;
+		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Dominated");
+		}
+	}
+		
+	if(revenge)	{
+		Session[client].Revenges++;
+		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Backstab");
+		}
+	}
+		
+	if(noscope)	{
+		Session[client].Noscopes++;
+		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Noscope");
+		}
+	}
+		
+	if(tauntkill)	{
+		Session[client].TauntKills++;
+		Format(query, sizeof(query), "update `%s` set TauntKills = TauntKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Tauntkill");
+		}
+	}
+	
+	if(deflectkill)	{
+		Session[client].DeflectKills++;
+		Format(query, sizeof(query), "update `%s` set DeflectKills = DeflectKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Deflectkill");
+		}
+	}
+	
+	if(gibkill)	{
+		Session[client].GibKills++;
+		Format(query, sizeof(query), "update `%s` set GibKills = GibKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Gibkill");
+		}
+	}
+		
+	switch(crits)	{
+		case	TFCritType_Minicrit:	{
+			Session[client].MiniCritKills++;
+			Format(query, sizeof(query), "update `%s` set MiniCritKills = MiniCritKills+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
 			if(Debug.BoolValue)	{
 				PrintToServer(" ");
-				PrintToServer("Headshot");
+				PrintToServer("Mini-Crit");
 			}
 		}
-		
-		if(backstab)	{
-			Session[client].Backstabs++;
-			Format(query, sizeof(query), "update `%s` set Backstabs = Backstabs+1 where SteamID='%s' and ServerID='%i'",
+		case	TFCritType_Crit:	{
+			Session[client].CritKills++;
+			Format(query, sizeof(query), "update `%s` set CritKills = CritKills+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
 			if(Debug.BoolValue)	{
 				PrintToServer(" ");
-				PrintToServer("Backstab");
+				PrintToServer("Crit");
 			}
+		}
+	}
+	
+	if(points > 0)	{
+		AddSessionPoints(client, points);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Processing kill message..");
 		}
 		
-		if(dominated)	{
-			Session[client].Dominations++;
-			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[client], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			if(Debug.BoolValue)	{
-				PrintToServer(" ");
-				PrintToServer("Dominated");
-			}
-		}
+		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
+		playerlist, points, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
 		
-		if(revenge)	{
-			Session[client].Revenges++;
-			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[client], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			if(Debug.BoolValue)	{
-				PrintToServer(" ");
-				PrintToServer("Backstab");
-			}
-		}
+		int points_client = GetClientPoints(SteamID[client]);
 		
-		if(noscope)	{
-			Session[client].Noscopes++;
-			Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[client], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			if(Debug.BoolValue)	{
-				PrintToServer(" ");
-				PrintToServer("Noscope");
-			}
-		}
+		if(noscope && headshot)
+			Kill_Scenario = 1;
+		else if(noscope)
+			Kill_Scenario = 2;
+		else if(midair && headshot)
+			Kill_Scenario = 3;
+		else if(midair)
+			Kill_Scenario = 4;
+		else if(headshot)
+			Kill_Scenario = 5;
+		else if(backstab)
+			Kill_Scenario = 6;
+		else if(telefrag)
+			Kill_Scenario = 8;
+		else if(tauntkill)
+			Kill_Scenario = 9;
+		else
+			Kill_Scenario = 0;
 		
-		if(tauntkill)	{
-			Session[client].TauntKills++;
-			Format(query, sizeof(query), "update `%s` set TauntKills = TauntKills+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[client], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			if(Debug.BoolValue)	{
-				PrintToServer(" ");
-				PrintToServer("Tauntkill");
-			}
-		}
+		/*
+		//fix the format.
+		char scenario[64];
+		if(Kill_Scenario > 0)
+			Format(scenario, sizeof(scenario), "%t{default}", Kill_Type[Kill_Scenario]);
 		
-		if(deflectkill)	{
-			Session[client].DeflectKills++;
-			Format(query, sizeof(query), "update `%s` set DeflectKills = DeflectKills+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[client], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			if(Debug.BoolValue)	{
-				PrintToServer(" ");
-				PrintToServer("Deflectkill");
-			}
-		}
 		
-		if(gibkill)	{
-			Session[client].GibKills++;
-			Format(query, sizeof(query), "update `%s` set GibKills = GibKills+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[client], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			if(Debug.BoolValue)	{
-				PrintToServer(" ");
-				PrintToServer("Gibkill");
-			}
+		switch(IsValidString(scenario))	{
+			case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario);
+			case	false:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 2", Name[client], points_client, points, Name[victim]);
 		}
+		*/
 		
-		switch(crits)	{
-			case	TFCritType_Minicrit:	{
-				Session[client].MiniCritKills++;
-				Format(query, sizeof(query), "update `%s` set MiniCritKills = MiniCritKills+1 where SteamID='%s' and ServerID='%i'",
-				playerlist, SteamID[client], ServerID.IntValue);
-				db.Query(DBQuery_Callback, query);
-				
-				if(Debug.BoolValue)	{
-					PrintToServer(" ");
-					PrintToServer("Mini-Crit");
-				}
-			}
-			case	TFCritType_Crit:	{
-				Session[client].CritKills++;
-				Format(query, sizeof(query), "update `%s` set CritKills = CritKills+1 where SteamID='%s' and ServerID='%i'",
-				playerlist, SteamID[client], ServerID.IntValue);
-				db.Query(DBQuery_Callback, query);
-				
-				if(Debug.BoolValue)	{
-					PrintToServer(" ");
-					PrintToServer("Crit");
-				}
-			}
+		/* Temporary */
+		switch(Kill_Scenario)	{
+			case	0:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	2:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Noscope{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	3:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Mid-Air Headshot{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	4:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s whilst {green}Mid-Air{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	5:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Headshot{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	6:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Backstab{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	8:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Telefrag{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	9:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Tauntkill{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
 		}
+	}
 		
-		if(points > 0)	{
-			AddSessionPoints(client, points);
-			
-			if(Debug.BoolValue)	{
-				PrintToServer(" ");
-				PrintToServer("Processing kill message..");
-			}
-			
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-			playerlist, points, SteamID[client], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			int points_client = GetClientPoints(SteamID[client]);
-			
-			if(noscope && headshot)
-				Kill_Scenario = 1;
-			else if(noscope)
-				Kill_Scenario = 2;
-			else if(midair && headshot)
-				Kill_Scenario = 3;
-			else if(midair)
-				Kill_Scenario = 4;
-			else if(headshot)
-				Kill_Scenario = 5;
-			else if(backstab)
-				Kill_Scenario = 6;
-			else if(telefrag)
-				Kill_Scenario = 8;
-			else
-				Kill_Scenario = 0;
-			
-			/*
-			//fix the format.
-			char scenario[64];
-			if(Kill_Scenario > 0)
-				Format(scenario, sizeof(scenario), "%t{default}", Kill_Type[Kill_Scenario]);
-			
-			
-			switch(IsValidString(scenario))	{
-				case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario);
-				case	false:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 2", Name[client], points_client, points, Name[victim]);
-			}
-			*/
-			
-			/* Temporary */
-			switch(Kill_Scenario)	{
-				case	0:
-					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s",
-					Prefix, Name[client], points_client, points, Name[victim]);
-				case	2:
-					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Noscope{default}.",
-					Prefix, Name[client], points_client, points, Name[victim]);
-				case	3:
-					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Mid-Air Headshot{default}.",
-					Prefix, Name[client], points_client, points, Name[victim]);
-				case	4:
-					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s whilst {green}Mid-Air{default}.",
-					Prefix, Name[client], points_client, points, Name[victim]);
-				case	5:
-					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Headshot{default}.",
-					Prefix, Name[client], points_client, points, Name[victim]);
-				case	6:
-					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Backstab{default}.",
-					Prefix, Name[client], points_client, points, Name[victim]);
-				case	8:
-					CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Telefrag{default}.",
-					Prefix, Name[client], points_client, points, Name[victim]);
-			}
-		}
-		
-		if(!IsFakeClient(victim))	{
-			char log[2048];
-			int len = 0;
-			len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);
-			len += Format(log[len], sizeof(log)-len, "(ServerID, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, Midair, CritType)");
-			len += Format(log[len], sizeof(log)-len, "values");
-			len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', `%i`, `%i`)",
-			ServerID.IntValue, Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, midair, crits);
-			db.Query(DBQuery_Kill_Log, log);
-		}
+	if(!IsFakeClient(victim))	{
+		char log[2048];
+		int len = 0;
+		len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);
+		len += Format(log[len], sizeof(log)-len, "(ServerID, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, Midair, CritType)");
+		len += Format(log[len], sizeof(log)-len, "values");
+		len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', `%i`, `%i`)",
+		ServerID.IntValue, Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, midair, crits);
+		db.Query(DBQuery_Kill_Log, log);
 	}
 }

@@ -71,8 +71,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Extinguished`						int(32) not null default '0',");
 	
 	len += Format(query[len], sizeof(query)-len, "`TanksDestroyed`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`SentryBustersKilled`					int(32) not null default '0',");
-	
+	len += Format(query[len], sizeof(query)-len, "`SentryBustersKilled`					int(32) not null default '0',");	
 	
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_bat`					int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_bottle`					int(32)	not null default '0',");
@@ -237,18 +236,18 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_batsaber`				int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_gigarcounter`			int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_prinnymachete`			int(32)	not null default '0',");
-	
 	len += Format(query[len], sizeof(query)-len, "primary key (`SteamID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
 	db.Query(DBQuery_DB, query, 1);
 	
 	//Reset for new query.
-	query = "";
+	query = NULL_STRING;
 	len = 0;
 	
 	len += Format(query[len], sizeof(query)-len, "create table if not exists `kill_log_tf2`");
 	len += Format(query[len], sizeof(query)-len, "(");
 	len += Format(query[len], sizeof(query)-len, "`ID`							int(32)			not null auto_increment,");
+	len += Format(query[len], sizeof(query)-len, "`ServerID`					int(16)			not null default 'Servers unique ID',");
 	len += Format(query[len], sizeof(query)-len, "`Playername`					varchar(64)		not null default '',");
 	len += Format(query[len], sizeof(query)-len, "`SteamID`						varchar(64)		not null default '',");
 	len += Format(query[len], sizeof(query)-len, "`Victim_Playername`			varchar(64)		not null default '',");
@@ -264,4 +263,24 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
 	db.Query(DBQuery_DB, query, 2);
+	
+	query = NULL_STRING;
+	len = 0;
+	
+	len += Format(query[len], sizeof(query)-len, "create table if not exists `item_found_tf2`");
+	len += Format(query[len], sizeof(query)-len, "(");
+	len += Format(query[len], sizeof(query)-len, "`ID`							int(32)			not null auto_increment,");
+	len += Format(query[len], sizeof(query)-len, "`Playername`					varchar(64)		not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`SteamID`						varchar(64)		not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`QualityID`					int(32)			not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Quality`						varchar(64)		not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`MethodID`					int(32)			not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Method`						varchar(64)		not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`DefinitionIndex`				varchar(64)		not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`IsStrange`					bool			not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`IsUnusual`					bool			not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Wear`						float			not null default '0.0',");
+	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
+	len += Format(query[len], sizeof(query)-len, ")");
+	db.Query(DBQuery_DB, query, 3);
 }

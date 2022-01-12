@@ -33,7 +33,7 @@ ConVar			PluginActive, Debug, AllowBots, AllowWarmup, PrefixCvar, Death, AssistK
 ConVar			ServerID, MinimumPlayers, DisableAfterWin, ConnectMsg;
 ConVar			Weapon[40000];
 ConVar			RemoveOldPlayers;
-char			Prefix[96], logprefix[64], playerlist[64], kill_log[64];
+char			Prefix[96], logprefix[64], playerlist[64], kill_log[64], item_found[64];
 
 /* Client */
 char			SteamID[64][MAXPLAYERS], Playername[64][MAXPLAYERS], Name[64][MAXPLAYERS], IP[16][MAXPLAYERS];
@@ -53,7 +53,8 @@ stock char		Kill_Type[][] = {
 	"Kill Event Type 5",
 	"Kill Event Type 6",
 	"Kill Event Type 7",
-	"Kill Event Type 8"
+	"Kill Event Type 8",
+	"Kill Event Type 9"
 };
 
 /* For experimental assister function. */
@@ -74,7 +75,7 @@ XStatsSession	Session[MAXPLAYERS];
 //#include	"xstats/achievements.sp" /* Achievements */
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)	{
-	RegPluginLibrary("xStats");
+	RegPluginLibrary("Xstats");
 	
 	PrepareNatives();
 }
@@ -90,6 +91,7 @@ public void OnPluginStart()	{
 			title = "Team Fortress 2";
 			playerlist = "playerlist_tf2";
 			kill_log = "kill_log_tf2";
+			item_found = "item_found_tf2";
 		}
 		case	Game_TF2Classic:	{
 			logprefix = "[Xstats: TF2C]";
@@ -116,6 +118,7 @@ public void OnPluginStart()	{
 			title = "Counter-Strike: Global Offensive";
 			playerlist = "playerlist_csgo";
 			kill_log = "kill_log_csgo";
+			item_found = "item_found_csgo";
 		}
 		case	Game_CSCO:	{
 			logprefix = "[Xstats: CSCO]";
