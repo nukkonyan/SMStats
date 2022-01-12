@@ -141,6 +141,8 @@ public void OnPluginStart()	{
 	PrefixCvar.GetString(Prefix, sizeof(Prefix));
 	Format(Prefix, sizeof(Prefix), "%s{default}", Prefix);
 	
+	AllowBots.AddChangeHook(BotsCvarUpdated);
+	
 	if(!IsCurrentGame(Game_TF2) && !IsCurrentGame(Game_TF2C))
 		Death	= CreateConVar("xstats_points_death",	"5", "Xstats - Points to remove from the player who died.", _, true);
 	
@@ -168,6 +170,10 @@ public void OnPluginStart()	{
 	}
 }
 
+public void OnConfigsExecuted()	{
+	CheckActivePlayers();
+}
+
 void VersionChanged(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
 	if(!StrEqual(newvalue, Version))
 		cvar.SetString(Version);
@@ -176,6 +182,10 @@ void VersionChanged(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
 void PrefixCallback(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
 	cvar.GetString(Prefix, sizeof(Prefix));
 	Format(Prefix, sizeof(Prefix), "%s{default}", Prefix);
+}
+
+void BotsCvarUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
+	CheckActivePlayers();
 }
 
 Action Assister_OnTakeDamage(int victim, int &client, int &inflictor, float &damage, int &damagetype)	{
@@ -242,10 +252,14 @@ stock void RoundStarted()	{
 		case	false:	PrintToServer("%s Round Started", LogTag);
 	}
 	
-	if(DisableAfterWin.BoolValue && GetClientCountEx(AllowBots.BoolValue) >= MinimumPlayers.IntValue)	{
-		if(RoundActive)	{
+	int needed = MinimumPlayers.IntValue;
+	int players = GetClientCountEx(AllowBots.BoolValue);
+	
+	if(DisableAfterWin.BoolValue)	{
+		if(needed <= players)	{
 			RankActive = true;
-			CPrintToChatAll("%s Round Start: Statistical Tracking Enabled", Prefix);
+			if(PluginActive)
+				CPrintToChatAll("%s Round Start: Statistical Tracking Enabled [%i/%i]", Prefix, players, needed);
 		}
 	}
 }
@@ -268,9 +282,14 @@ stock void RoundEnded()	{
 		case	false:	PrintToServer("%s Round Ended", LogTag);
 	}
 	
+	int needed = MinimumPlayers.IntValue;
+	int players = GetClientCountEx(AllowBots.BoolValue);
+	
 	if(DisableAfterWin.BoolValue)	{
 		RankActive = false;
-		CPrintToChatAll("%s Round End: Statistical Tracking Disabled", Prefix);
+		
+		if(PluginActive)
+			CPrintToChatAll("%s Round End: Statistical Tracking Disabled [%i/%i]", Prefix, players, needed);
 	}
 	
 	if(RemoveOldPlayers.IntValue >= 1)

@@ -117,6 +117,8 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_homewrecker`			int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_paintrain`				int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_southernhospitality`	int(32)	not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_bigkill`				int(32)	not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_goldenwrench`			int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_tribalmansshiv`			int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_scotmansskullcutter`	int(32)	not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_vitasaw`				int(32)	not null default '0',");

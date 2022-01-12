@@ -3,13 +3,11 @@
  *
  *	@param	auth	The players steam authentication id.
  */
-stock int GetClientPoints(const char[] auth)
-{
+stock int GetClientPoints(const char[] auth)	{
 	int points = 0;
 	Database database = SQL_Connect2(Xstats, false);
 	
-	if(database != null)
-	{
+	if(database != null)	{
 		DBResultSet results = SQL_QueryEx(database, "select Points from `%s` where SteamID='%s' and ServerID='%i'", playerlist, auth, ServerID.IntValue);
 		points = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
 		delete results;
@@ -26,19 +24,17 @@ stock int GetClientPoints(const char[] auth)
  */
 stock int GetClientPosition(const char[] auth)	{
 	int position = 0;
+	int points = 0;
 	Database database = SQL_Connect2(Xstats, false);
 	
-	if(database != null)
-	{
-		DBResultSet results = SQL_QueryEx(database, "select Points from `%s` where SteamID='%s' and ServerID='%'", playerlist, auth, ServerID.IntValue);
-		while(results != null && results.FetchRow())
-		{
-			results = SQL_QueryEx(database, "select count(*) from `%s` where >='%i'", playerlist, results.FetchInt(0));
-			while(results != null && results.FetchRow())
-			{
+	if(database != null)	{
+		DBResultSet results = SQL_QueryEx(database, "select Points from `%s` where SteamID='%s' and ServerID='%i'", playerlist, auth, ServerID.IntValue);
+		while(results != null && results.FetchRow())	{
+			points = results.FetchInt(0);
+			
+			results = SQL_QueryEx(database, "select count(*) from `%s` where Points >='%i' and ServerID='%i'", playerlist, points, ServerID.IntValue);
+			while(results.FetchRow())
 				position = results.FetchInt(0);
-				PrintToServer("%i", results.FetchInt(0));
-			}
 		}
 		
 		delete results;
@@ -51,18 +47,14 @@ stock int GetClientPosition(const char[] auth)	{
 /**
  *	Returns the total player count in a database table.
  */
-stock int GetTablePlayerCount()
-{
+stock int GetTablePlayerCount()	{
 	int playercount = 0;
 	Database database = SQL_Connect2(Xstats, false);
 	
-	if(database != null)
-	{
+	if(database != null)	{
 		DBResultSet results = SQL_QueryEx(database, "select count(*) from `%s` where ServerID='%i'", playerlist, ServerID.IntValue);
 		while(results != null && results.FetchRow())
-		{
 			playercount = results.FetchInt(0);
-		}
 		
 		delete results;
 	}
@@ -80,8 +72,7 @@ stock int GetClientPlayTime(const char[] auth)	{
 	int playtime = 0;
 	Database database = SQL_Connect2(Xstats, false);
 	
-	if(database != null)
-	{
+	if(database != null)	{
 		DBResultSet results = SQL_QueryEx(database, "select PlayTime from `%s` where SteamID='%s' and ServerID='%i'", playerlist, auth, ServerID.IntValue);
 		playtime = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
 		delete results;
@@ -99,16 +90,35 @@ stock int GetClientPlayTime(const char[] auth)	{
  *	@param	assists	The assist count to check.
  */
 stock float GetKDR(int kills, int deaths, int assists)	{
-	float kdr;
-	
+	float kdr = 1.00;
 	float fkills = float(kills);
-	fkills = fkills + (float(assists) / 2.0);
 	float fdeaths = float(deaths);
+	float fassists = float(assists);
+	
+	fkills = fkills + (fassists / 2.0);
+	
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== GetKDR =====//");
+		PrintToServer("kills: %i", kills);
+		PrintToServer("deaths: %i", deaths);
+		PrintToServer("assists: %i", assists);
+		PrintToServer("fkills: %.2f", float(kills));
+		PrintToServer("fkills = fkills + (fassists / 2.0): %.2f", fkills);
+		PrintToServer("fdeaths: %.2f", fdeaths);
+		PrintToServer("fassists: %.2f", fassists);
+	}
 	
 	if(fdeaths == 0.0)
 		fdeaths = 1.0;
 	
+	if(Debug.BoolValue)
+		PrintToServer("after fdeaths check: %.2f", fdeaths);
+	
 	kdr = fkills / fdeaths;
+	if(Debug.BoolValue)	{
+		PrintToServer("kdr: %.2f", kdr);
+		PrintToServer(" ");
+	}
 	
 	return kdr;
 }
@@ -117,14 +127,14 @@ stock float GetKDR(int kills, int deaths, int assists)	{
  *	Add session points. Just to make it easier :)
  */
 stock void AddSessionPoints(int client, int value)	{
-	Session[client].Points = Session[client].Points+value;
+	Session[client].Points += value;
 }
 
 /**
  *	Remove session points. Just to make it easier :)
  */
 stock void RemoveSessionPoints(int client, int value)	{
-	Session[client].Points = Session[client].Points-value;
+	Session[client].Points -= value;
 }
 
 /**
@@ -233,3 +243,40 @@ void DBQuery_DB(Database database, DBResultSet results, const char[] error, int 
  *	Callback for the panel.
  */
 int PanelCallback(Menu menu, MenuAction action, int client, int selection)	{}
+
+/**
+ *	Check active players.
+ */
+stock void CheckActivePlayers()	{
+	int needed = MinimumPlayers.IntValue;
+	int players = GetClientCountEx(!AllowBots.BoolValue);
+	//PrintToServer("Players: [%i/%i]", players, needed);
+	
+	switch(RankActive)
+	{
+		case	true:
+		{
+			if(needed > players)
+			{
+				RankActive = false;
+				
+				CPrintToChatAll("%s Not enough players [%i/%i], disabling..", Prefix, players, needed);
+				if(Debug.BoolValue)
+					PrintToServer("%s Not Enough Players [%i/%i], disabling..", Prefix, players, needed);
+			}
+		}
+		case	false:
+		{
+			if(needed <= players)
+			{
+				if(RoundActive)
+				{
+					RankActive = true;
+					CPrintToChatAll("%s Enough players [%i/%i], enabling..", Prefix, players, needed);
+					if(Debug.BoolValue)
+						PrintToServer("%s Enough Players [%i/%i], enabling..", Prefix, players, needed);
+				}
+			}
+		}
+	}
+}

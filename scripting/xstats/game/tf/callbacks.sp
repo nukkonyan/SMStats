@@ -58,6 +58,8 @@ int TF2_FixWeaponClassname(char[] weapon, int maxlen, int weapon_defindex, const
 		case	154:	why = "weapon_paintrain";				//The Pain Train.
 		case	155:	why = "weapon_southernhospitality";		//The Southern Hospitality.
 		case	160:	why = "weapon_lugermorph";				//The Lugermorph.
+		case	161:	why = "weapon_bigkill";					//The Big Kill.
+		case	169:	why = "weapon_goldenwrench";			//The Golden Wrench.
 		case	171:	why = "weapon_tribalmansshiv";			//The Tribalman's Shiv.
 		case	172:	why = "weapon_scotmansskullcutter";		//The Scotman's Skullcutter.
 		case	173:	why = "weapon_vitasaw";					//The Vita-Saw.

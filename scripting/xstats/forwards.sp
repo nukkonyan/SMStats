@@ -97,12 +97,7 @@ public void OnClientPutInServer(int client)	{
 	GetClientAuthId(client, AuthId_Steam2, SteamID[client], sizeof(SteamID[]));
 	
 	/* Check active players */
-	if(!RankActive && GetClientCountEx(AllowBots.BoolValue) < MinimumPlayers.IntValue)	{
-		RankActive = true;
-		CPrintToChatAll("%s Enough players, enabling statistical tracking..", Prefix);
-		if(Debug.BoolValue)
-			PrintToServer("%s Enough Players, enabling statistical tracking..", Prefix);
-	}
+	CheckActivePlayers();
 }
 
 public void OnClientDisconnect(int client)	{
@@ -126,12 +121,7 @@ public void OnClientDisconnect(int client)	{
 	SteamID[client] = NULL_STRING;
 	
 	/* Check active players */
-	if(RankActive && GetClientCountEx(AllowBots.BoolValue) <= MinimumPlayers.IntValue)	{
-		RankActive = false;
-		CPrintToChatAll("%s Round End: Statistical Tracking Disabled", Prefix);
-		if(Debug.BoolValue)
-			PrintToServer("%s Not Enough Players, disabling tracking..", Prefix);
-	}
+	CheckActivePlayers();
 }
 
 Action IntervalPlayTimer(Handle timer, int client)	{

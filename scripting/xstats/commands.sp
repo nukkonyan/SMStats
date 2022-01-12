@@ -13,8 +13,9 @@ Action RankCmd(int client, int args)	{
 	}
 	
 	GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-	DBResultSet results = SQL_QueryEx(database, "select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides from `%s` where SteamID='%s'",
-	playerlist, SteamID[client]);
+	DBResultSet results = SQL_QueryEx(database,
+	"select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides from `%s` where SteamID='%s' and ServerID='%i'",
+	playerlist, SteamID[client], ServerID.IntValue);
 	
 	if(results == null)	{
 		CPrintToChat(client, "%s The database query failed, please contact the server author.", Prefix);
@@ -47,7 +48,7 @@ Action RankCmd(int client, int args)	{
 		Format(info, sizeof(info), "Playername : %s", playername);
 		panel.DrawText(info);
 		
-		Format(info, sizeof(info), "Position #%i", position);
+		Format(info, sizeof(info), "Position #%i out of %i players", position, players);
 		panel.DrawText(info);
 		
 		panel.DrawText(" ");
@@ -71,7 +72,7 @@ Action RankCmd(int client, int args)	{
 		Format(info, sizeof(info), "%i Suicides", Session[client].Suicides);
 		panel.DrawText(info);
 		
-		Format(info, sizeof(info), "KDR Ratio: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
+		Format(info, sizeof(info), "KDR: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
 		panel.DrawText(info);
 		
 		panel.DrawText(" ");
@@ -95,7 +96,7 @@ Action RankCmd(int client, int args)	{
 		Format(info, sizeof(info), "%i Suicides", suicides);
 		panel.DrawText(info);
 		
-		Format(info, sizeof(info), "KDR Ratio: %.2f", kdr);
+		Format(info, sizeof(info), "KDR: %.2f", kdr);
 		panel.DrawText(info);
 		
 		panel.DrawText(" ");
@@ -104,7 +105,7 @@ Action RankCmd(int client, int args)	{
 		delete panel;
 		
 		GetClientTeamString(client, Name[client], sizeof(Name[]));
-		CPrintToChat(client, "%s %s is positioned #%i out of %i players with %.2f KDR Radio and %i total minutes in playtime",
+		CPrintToChat(client, "%s %s is positioned #%i out of %i players with %.2f KDR and %i total minutes in playtime",
 		Prefix, Name[client], position, players, kdr, playtime);
 	}
 	
