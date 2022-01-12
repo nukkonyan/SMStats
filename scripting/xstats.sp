@@ -262,8 +262,7 @@ stock void RoundStarted()	{
 	if(DisableAfterWin.BoolValue)	{
 		if(needed <= players)	{
 			RankActive = true;
-			if(PluginActive)
-				CPrintToChatAll("%s Round Start: Statistical Tracking Enabled [%i/%i]", Prefix, players, needed);
+			CPrintToChatAll("%s Round Start: Statistical Tracking Enabled [%i/%i]", Prefix, players, needed);
 		}
 	}
 }
@@ -291,9 +290,7 @@ stock void RoundEnded()	{
 	
 	if(DisableAfterWin.BoolValue)	{
 		RankActive = false;
-		
-		if(PluginActive)
-			CPrintToChatAll("%s Round End: Statistical Tracking Disabled [%i/%i]", Prefix, players, needed);
+		CPrintToChatAll("%s Round End: Statistical Tracking Disabled [%i/%i]", Prefix, players, needed);
 	}
 	
 	if(RemoveOldPlayers.IntValue >= 1)
