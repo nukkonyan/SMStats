@@ -144,8 +144,12 @@ stock void RemoveSessionPoints(int client, int value)	{
  */
 stock void UpdateLastConnectedState(const char[] auth)	{
 	char query[512];
-	Format(query, sizeof(query), "update `%s` Set LastConnected='%i' where SteamID='%s' and ServerID='%i'",
+	Format(query, sizeof(query), "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'",
 	playerlist, GetTime(), auth, ServerID.IntValue);
+	db.Query(DBQuery_Callback, query);
+	
+	Format(query, sizeof(query), "update `%s` set LastConnectedServerID='%i' where SteamID='%s'",
+	playerlist, ServerID.IntValue, auth);
 	db.Query(DBQuery_Callback, query);
 }
 
@@ -259,7 +263,7 @@ stock void CheckActivePlayers()	{
 				
 				CPrintToChatAll("%s Not enough players [%i/%i], disabling..", Prefix, players, needed);
 				if(Debug.BoolValue)
-					PrintToServer("%s Not Enough Players [%i/%i], disabling..", Prefix, players, needed);
+					PrintToServer("%s Not enough players [%i/%i], disabling..", Prefix, players, needed);
 			}
 		}
 		case	false:	{
@@ -268,7 +272,7 @@ stock void CheckActivePlayers()	{
 					RankActive = true;
 					CPrintToChatAll("%s Enough players [%i/%i], enabling..", Prefix, players, needed);
 					if(Debug.BoolValue)
-						PrintToServer("%s Enough Players [%i/%i], enabling..", Prefix, players, needed);
+						PrintToServer("%s Enough players [%i/%i], enabling..", Prefix, players, needed);
 				}
 			}
 		}

@@ -7,7 +7,7 @@
 #pragma		newdecls	required
 
 /**
- *	xStats is a multi-game statistical tracking plugin, functioning similiarly to gameMe & HlStatsX.
+ *	Xstats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX.
  */
 
 #define LogTag "[Xstats]"
@@ -33,7 +33,8 @@ ConVar			PluginActive, Debug, AllowBots, AllowWarmup, PrefixCvar, Death, AssistK
 ConVar			ServerID, MinimumPlayers, DisableAfterWin, ConnectMsg;
 ConVar			Weapon[40000];
 ConVar			RemoveOldPlayers;
-char			Prefix[96], logprefix[64], playerlist[64], kill_log[64], item_found[64];
+char			Prefix[96], logprefix[64], playerlist[64], kill_log[64], item_found[64], maps_log[64];
+char			CurrentMap[64];
 
 /* Client */
 char			SteamID[64][MAXPLAYERS], Playername[64][MAXPLAYERS], Name[64][MAXPLAYERS], IP[16][MAXPLAYERS];
@@ -93,22 +94,27 @@ public void OnPluginStart()	{
 			playerlist = "playerlist_tf2";
 			kill_log = "kill_log_tf2";
 			item_found = "item_found_tf2";
+			maps_log = "maps_log_tf2";
 		}
 		case	Game_TF2Classic:	{
 			logprefix = "[Xstats: TF2:C]";
 			playerlist = "playerlist_tf2classic";
 			kill_log = "kill_log_tf2classic";
+			maps_log = "maps_log_tf2classic";
 			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		case	Game_CSS:	{
 			logprefix = "[Xstats: CS:S]";
 			playerlist = "playerlist_css";
 			kill_log = "kill_log_css";
+			maps_log = "maps_log_css";
+			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		case	Game_CSPromod:	{
 			logprefix = "[Xstats: CS:Promod]";
 			playerlist = "playerlist_promod";
 			kill_log = "kill_log_cspromod";
+			maps_log = "maps_log_cspromod";
 			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		case	Game_CSGO:	{
@@ -116,11 +122,14 @@ public void OnPluginStart()	{
 			playerlist = "playerlist_csgo";
 			kill_log = "kill_log_csgo";
 			item_found = "item_found_csgo";
+			maps_log = "maps_log_csgo";
+			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		case	Game_CSCO:	{
 			logprefix = "[Xstats: CS:CO]";
 			playerlist = "playerlist_csco";
 			kill_log = "kill_log_csco";
+			maps_log = "maps_log_csco";
 			SetFailState("%s Game is unsuppported for the moment.", LogTag);
 		}
 		default:	SetFailState("%s Game is unsupported.", LogTag);
@@ -168,8 +177,11 @@ public void OnPluginStart()	{
 		if(Tklib_IsValidClient(client, true, false, false))	{
 			GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
 			GetClientNameEx(client, Playername[client], sizeof(Playername[]));
-			GetClientTeamString(client, Name[client], sizeof(Name[]));
 		}
+		
+		/* Bots needs a name too, right? */
+		if(Tklib_IsValidClient(client, false, false, false))
+			GetClientTeamString(client, Name[client], sizeof(Name[]));
 	}
 }
 

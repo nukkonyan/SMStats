@@ -2,6 +2,13 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	if(!IsValidStats())
 		return;
 	
+	char weapon[64];
+	event.GetString(EVENT_STR_WEAPON, weapon, sizeof(weapon));
+	
+	if(StrEqual(weapon, "world")
+	|| StrEqual(weapon, "player"))
+		return;
+	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	if(!Tklib_IsValidClient(client, true))
 		return;
@@ -14,13 +21,6 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		return;
 	
 	if(IsSamePlayers(client, victim) || IsSameTeam(client, victim))
-		return;
-	
-	char weapon[64];
-	event.GetString(EVENT_STR_WEAPON, weapon, sizeof(weapon));
-	
-	if(StrEqual(weapon, "world")
-	|| StrEqual(weapon, "player"))
 		return;
 	
 	Format(weapon, sizeof(weapon), "weapon_%s", weapon);
@@ -57,7 +57,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 			db.Query(DBQuery_Callback, query);
 			
 			int assist_points = GetClientPoints(SteamID[assist]);
-			CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", assist_points, points, Name[victim]);
+			CPrintToChat(client, "%s %s (%i) earned %i points assisting %s in killing %s", Prefix, assist_points, points, Name[client], Name[victim]);
 		}
 	}
 		

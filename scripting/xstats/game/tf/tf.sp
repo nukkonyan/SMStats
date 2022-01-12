@@ -607,10 +607,10 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	char query[512];
 	int len = 0;
 	len += Format(query[len], sizeof(query)-len, "insert into `%s`", item_found);
-	len += Format(query[len], sizeof(query)-len, "(Playername, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, IsStrange, IsUnusual, Wear)");
+	len += Format(query[len], sizeof(query)-len, "(ServerID, Playername, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, IsStrange, IsUnusual, Wear)");
 	len += Format(query[len], sizeof(query)-len, "values");
-	len += Format(query[len], sizeof(query)-len, "('%s', '%s', '%i', '%s', '%i', '%s', '%i', '%i', '%i', '%f')",
-	Playername[client], SteamID[client], quality, quality_name, method, method_name[method], defindex, isstrange, isunusual, wear);
+	len += Format(query[len], sizeof(query)-len, "('%i', '%s', '%s', '%i', '%s', '%i', '%s', '%i', '%i', '%i', '%f')",
+	ServerID.IntValue, Playername[client], SteamID[client], quality, quality_name, method, method_name[method], defindex, isstrange, isunusual, wear);
 	db.Query(DBQuery_Callback, query);
 }
 
@@ -669,10 +669,37 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	bool headshot = (customkill == 1 || customkill == 51);
 	bool backstab = (customkill == 2);
 	bool noscope = (customkill == 11);
-	bool dominated = (deathflags == 1);
-	bool revenge = (deathflags == 4);
 	bool bleedkill = (customkill == 34);
+	
+	bool dominated = (deathflags == 1);
+	bool dominated_assister = (deathflags == 2);
+	bool revenge = (deathflags == 4);
+	bool revenge_assister = (deathflags == 8);
 	bool gibkill = (deathflags == 128 || deathflags == 129);
+	
+	/*	Backup death flags checks incase exampled attacker
+		and assister gets domination or revenge at the same time. */
+	if(deathflags & 1)	{
+		dominated = true;
+		if(Debug.BoolValue)
+			PrintToServer("Killer dominated");
+	}
+	if(deathflags & 2)	{
+		dominated_assister = true;
+		if(Debug.BoolValue)
+			PrintToServer("Assister dominated");
+	}
+	if(deathflags & 4)	{
+		revenge = true;
+		if(Debug.BoolValue)
+			PrintToServer("Killer revenged");
+	}
+	if(deathflags & 8)	{
+		revenge_assister = true;
+		if(Debug.BoolValue)
+			PrintToServer("Assister revenged");
+	}
+	
 	bool deflectkill = (StrContains(weapon, "deflect", false) != -1);
 	bool tauntkill = ((StrContains(weapon, "taunt", false) != -1)
 	/* Rainblower tauntkill */
@@ -789,7 +816,20 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			
 			//Optimize the servers performance, combining the callback inside the chat print may lag the server for a slight second.
 			int assist_points = GetClientPoints(SteamID[assist]);
-			CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", Name[assist], assist_points, points, Name[client], Name[victim]);
+			CPrintToChat(client, "%s %s (%i) earned %i points for assisting %s in killing %s",
+			Prefix, Name[assist], assist_points, points, Name[client], Name[victim]);
+		}
+		
+		if(dominated_assister)	{
+			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[assist], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
+		}
+		
+		if(revenge_assister)	{
+			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[assist], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
 		}
 	}
 		

@@ -84,10 +84,8 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 }
 
 public void OnClientPutInServer(int client)	{
-	if(!Tklib_IsValidClient(client, true, _, false))
-		return;
-	
-	CreateTimer(60.0, IntervalPlayTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	/* Make sure bots can have names */
+	GetClientTeamString(client, Name[client], sizeof(Name[]));
 	
 	/* Experimental Assister */
 	SDKHook(client, SDKHook_OnTakeDamage, Assister_OnTakeDamage);
@@ -95,16 +93,31 @@ public void OnClientPutInServer(int client)	{
 	for(int i = 1; i < MaxClients; i++)
 		PlayerDamaged[i][client] = 0;
 	
-	/* Safety callback if the steamid weren't acquired. */
-	GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-	
 	/* Check active players */
 	CheckActivePlayers();
+	
+	if(!Tklib_IsValidClient(client, true, _, false))
+		return;
+	
+	CreateTimer(60.0, IntervalPlayTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
+	
+	/* Safety callback if the steamid weren't acquired. (for some reason) */
+	if(StrEqual(SteamID[client], ""))
+		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
 }
 
 public void OnClientDisconnect(int client)	{
 	if(!PluginActive.BoolValue)
 		return;
+	
+	/* Clear the steamid. */
+	SteamID[client] = NULL_STRING;
+	
+	/* Check active players */
+	CheckActivePlayers();
+	
+	for(int i = 1; i < MaxClients; i++)
+		PlayerDamaged[i][client] = 0;
 	
 	if(!Tklib_IsValidClient(client, true))
 		return;
@@ -120,15 +133,6 @@ public void OnClientDisconnect(int client)	{
 		
 		UpdateLastConnectedState(SteamID[client]);
 	}
-	
-	for(int i = 1; i < MaxClients; i++)
-		PlayerDamaged[i][client] = 0;
-	
-	/* Clear the steamid. */
-	SteamID[client] = NULL_STRING;
-	
-	/* Check active players */
-	CheckActivePlayers();
 }
 
 Action IntervalPlayTimer(Handle timer, int client)	{	
@@ -144,4 +148,54 @@ Action IntervalPlayTimer(Handle timer, int client)	{
 	db.Query(DBQuery_IntervalPlayTimer, query, client);
 	
 	return	Plugin_Handled;
+}
+
+public void OnMapStart()	{
+	if(!PluginActive.BoolValue)
+		return;
+	
+	GetCurrentMap(CurrentMap, sizeof(CurrentMap));	
+	CreateTimer(60.0, MapLogTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+}
+
+Action MapLogTimer(Handle timer)	{
+	if(!PluginActive.BoolValue)	{
+		KillTimer(timer);
+		return Plugin_Handled;
+	}
+	
+	/* Check if map exists in database table */
+	char query[512];
+	Format(query, sizeof(query), "select '%s' from `%s`", CurrentMap, maps_log);
+	db.Query(DBQuery_MapLog_1, query);
+	
+	return Plugin_Handled;
+}
+
+void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error, any data)	{		
+	char query[512];
+	
+	switch(results == null)	{
+		/* Map was not found, lets add it */
+		case	true:	{
+			Format(query, sizeof(query), "insert into `%s` (MapName) values ('%s')",
+			maps_log, CurrentMap);
+			db.Query(DBQuery_MapLog_2, query);
+			
+			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
+			maps_log, CurrentMap, ServerID.IntValue);
+			db.Query(DBQuery_MapLog_2, query);
+		}
+		/* Map was found, lets update it */
+		case	false:	{
+			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
+			maps_log, CurrentMap, ServerID.IntValue);
+			db.Query(DBQuery_MapLog_2, query);
+		}
+	}	
+}
+
+void DBQuery_MapLog_2(Database database, DBResultSet results, const char[] error, any data)	{
+	if(results == null)
+		SetFailState("%s Map Log Updater failed! (%s)", LogTag, error);
 }
