@@ -23,10 +23,10 @@ public Plugin myinfo = {
 
 /* Functions. */
 GameIdentifier	game	= Game_Unknown;
-Database		db		= null;
-GlobalForward	Fwd_Prepare = null;
-GlobalForward	Fwd_Death = null;
-PrivateForward	Fwd_GetStats = null;
+Database		db;
+GlobalForward	Fwd_Prepare;
+GlobalForward	Fwd_Death;
+PrivateForward	Fwd_GetStats;
 
 /* Plugin */
 bool			RoundActive = false;
@@ -41,6 +41,10 @@ char			CurrentMap[64];
 
 /* Client */
 char			SteamID[64][MAXPLAYERS], Playername[64][MAXPLAYERS], Name[64][MAXPLAYERS], IP[16][MAXPLAYERS], Country[MAXPLAYERS][96];
+
+/* Connect sound */
+ConVar			ConnectSnd[2];
+char			ConnectSound[2][64];
 
 /**
  *	Kill scenario | Used for translations but is currently unused for the moment
@@ -77,6 +81,7 @@ XStatsSession	Session[MAXPLAYERS];
 #include	"xstats/natives.sp" /* Natives */
 #include	"xstats/updater.sp" /* Updater Support */
 #include	"xstats/events.sp" /* Global Events */
+#include	"xstats/sounds.sp" /* Player Connect Sound */
 //#include	"xstats/achievements.sp" /* Achievements */
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)	{
@@ -168,11 +173,11 @@ public void OnPluginStart()	{
 	//AutoExecConfig(true);
 	
 	//Prepare.
-	PrepareDatabase(); /* Database */
 	PrepareGame(); /* Game stats */
 	PrepareCommands(); /* Commands */
 	PrepareUpdater(); /* Updater support */
 	PrepareEvents(); /* Global events */
+	PrepareSounds(); /* Connect sounds */
 	
 	//Translation. (Will be added later.)
 	//LoadTranslations("xstats.phrases");

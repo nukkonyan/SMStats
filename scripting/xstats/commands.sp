@@ -12,7 +12,6 @@ Action RankCmd(int client, int args)	{
 		return	Plugin_Handled;
 	}
 	
-	GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
 	DBResultSet results = SQL_QueryEx(database,
 	"select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides from `%s` where SteamID='%s' and ServerID='%i'",
 	playerlist, SteamID[client], ServerID.IntValue);

@@ -1,8 +1,8 @@
 /* Initialize global events */
 void PrepareEvents()	{
 	HookEventEx(EVENT_PLAYER_DEATH, Suicide, EventHookMode_Pre);
-	HookEventEx(EVENT_PLAYER_TEAM, UploadStuff, EventHookMode_Pre);
-	HookEventEx(EVENT_PLAYER_CHANGENAME, UploadStuff, EventHookMode_Pre);
+	HookEventEx(EVENT_PLAYER_TEAM, UploadStuff);
+	HookEventEx(EVENT_PLAYER_CHANGENAME, UploadStuff);
 	HookEventEx(EVENT_PLAYER_CONNECT, Connected, EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_CONNECT_CLIENT, Connected, EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_DISCONNECT, Disconnected, EventHookMode_Pre);
@@ -27,7 +27,7 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
 	char query[256];
 	Session[client].Suicides++;
 	Format(query, sizeof(query), "update `%s` set Suicides = Suicides+1 where SteamID='%s' and ServerID='%i'",
-	playerlist, SteamID[victim], ServerID.IntValue);
+	playerlist, SteamID[client], ServerID.IntValue);
 	db.Query(DBQuery_Callback, query);
 }
 
@@ -36,32 +36,35 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
  *	this is a backup for some games using this event.
  */
 stock void UploadStuff(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!PluginActive.BoolValue)
-		return;
-	
-	int client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(client, false, false, false))
-		return;
-	
-	GetClientTeamString(client, Name[client], sizeof(Name[]));
-	GetClientNameEx(client, Playername[client], sizeof(Playername[]));
+	OnClientSettingsChanged(GetClientOfUserId(event.GetInt(EVENT_STR_USERID)));
 }
 
 /**
- *	Acquire the steam authentication id, playername and teamcoloured name.
+ *	Acquire the playername and teamcoloured name.
  *	Need this because some games doesn't use "player_changename" event anymore (Could be the fact it's broken perhaps).
  */
 public void OnClientSettingsChanged(int client)	{
 	if(!PluginActive.BoolValue)
 		return;
 	
-	if(Tklib_IsValidClient(client, true))	{
-		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-		GetClientIP(client, IP[client], sizeof(IP[]));
+	if(!Tklib_IsValidClient(client, false, false, false))
+		return;
+	
+	/* Too early to gain info, lets add a delay */
+	CreateTimer(0.2, Timer_UploadStuff, client);
+}
+
+Action Timer_UploadStuff(Handle timer, int client)	{
+	if(!Tklib_IsValidClient(client, false, false, false))	{
+		KillTimer(timer);
+		return	Plugin_Handled;
 	}
 	
-	GetClientNameEx(client, Playername[client], sizeof(Playername[]));
 	GetClientTeamString(client, Name[client], sizeof(Name[]));
+	GetClientNameEx(client, Playername[client], sizeof(Playername[]));
+	//PrintToServer("%N team %d", client, GetClientTeam(client));
+	
+	return	Plugin_Handled;
 }
 
 /**
