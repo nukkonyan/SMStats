@@ -283,7 +283,35 @@ stock void CheckActivePlayers()	{
  *	Make sure the stats is properly configured.
  */
 stock bool IsValidStats()	{
-	if(!PluginActive.BoolValue || !RankActive || WarmupActive && !AllowWarmup.BoolValue)
-		return	false;
-	return	true;
+	return	!(!PluginActive.BoolValue || !RoundActive || !RankActive || WarmupActive && !AllowWarmup.BoolValue);
+}
+
+/**
+ *	Prepare prefix forward.
+ */
+stock void PreparePrefixForward()	{
+	Fwd_Prepare = new GlobalForward("Xstats_OnPrefixUpdated", ET_Event, Param_String);
+	Call_StartForward(Fwd_Prepare);
+	Call_PushString(Prefix);
+	Call_Finish();
+}
+
+/**
+ *	Prepare OnDeath forward.
+ *
+ *	@param	client		The players user index.
+ *	@param	victim		The killed users index.
+ *	@param	assist		The assisting users index.
+ *	@param	weapon		The weapon string to forward.
+ *	@param	defindex	The weapon definition index. (0 if invalid for the game)
+ */
+stock void PrepareOnDeathForward(int client, int victim, int assist, const char[] weapon, int defindex)	{
+	Fwd_Death = new GlobalForward("Xstats_OnDeathEvent", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_String, Param_Cell);
+	Call_StartForward(Fwd_Death);
+	Call_PushCell(client);
+	Call_PushCell(victim);
+	Call_PushCell(assist);
+	Call_PushString(weapon);
+	Call_PushCell(defindex);
+	Call_Finish();
 }

@@ -24,6 +24,9 @@ public Plugin myinfo = {
 /* Functions. */
 GameIdentifier	game	= Game_Unknown;
 Database		db		= null;
+GlobalForward	Fwd_Prepare = null;
+GlobalForward	Fwd_Death = null;
+PrivateForward	Fwd_GetStats = null;
 
 /* Plugin */
 bool			RoundActive = false;
@@ -37,7 +40,7 @@ char			Prefix[96], logprefix[64], playerlist[64], kill_log[64], item_found[64], 
 char			CurrentMap[64];
 
 /* Client */
-char			SteamID[64][MAXPLAYERS], Playername[64][MAXPLAYERS], Name[64][MAXPLAYERS], IP[16][MAXPLAYERS];
+char			SteamID[64][MAXPLAYERS], Playername[64][MAXPLAYERS], Name[64][MAXPLAYERS], IP[16][MAXPLAYERS], Country[MAXPLAYERS][96];
 
 /**
  *	Kill scenario | Used for translations but is currently unused for the moment
@@ -55,7 +58,8 @@ stock char		Kill_Type[][] = {
 	"Kill Event Type 6",
 	"Kill Event Type 7",
 	"Kill Event Type 8",
-	"Kill Event Type 9"
+	"Kill Event Type 9",
+	"Kill Event Type 10"
 };
 
 /* For experimental assister function. */
@@ -153,9 +157,10 @@ public void OnPluginStart()	{
 	PrefixCvar.GetString(Prefix, sizeof(Prefix));
 	Format(Prefix, sizeof(Prefix), "%s{default}", Prefix);
 	
-	AllowBots.AddChangeHook(BotsCvarUpdated);
+	MinimumPlayers.AddChangeHook(PlayerCvarUpdated);
+	AllowBots.AddChangeHook(PlayerCvarUpdated);
 	
-	if(!IsCurrentGame(Game_TF2) && !IsCurrentGame(Game_TF2C))
+	if(GetEngineVersion() != Engine_TF2)
 		Death	= CreateConVar("xstats_points_death",	"5", "Xstats - Points to remove from the player who died.", _, true);
 	
 	AssistKill	= CreateConVar("xstats_points_assist",	"3", "Xstats - Points to give the assister.", _, true);
@@ -174,14 +179,14 @@ public void OnPluginStart()	{
 	
 	/* Incase the plugin were launched manually or perhaps started (?)*/
 	for(int client = 1; client < MaxClients; client++)	{
-		if(Tklib_IsValidClient(client, true, false, false))	{
+		if(Tklib_IsValidClient(client, true, false, false))
 			GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-			GetClientNameEx(client, Playername[client], sizeof(Playername[]));
-		}
 		
 		/* Bots needs a name too, right? */
-		if(Tklib_IsValidClient(client, false, false, false))
+		if(Tklib_IsValidClient(client, false, false, false))	{
+			GetClientNameEx(client, Playername[client], sizeof(Playername[]));
 			GetClientTeamString(client, Name[client], sizeof(Name[]));
+		}
 	}
 }
 
@@ -197,21 +202,25 @@ void VersionChanged(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
 void PrefixCallback(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
 	cvar.GetString(Prefix, sizeof(Prefix));
 	Format(Prefix, sizeof(Prefix), "%s{default}", Prefix);
+	
+	PreparePrefixForward();
 }
 
-void BotsCvarUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
+void PlayerCvarUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
 	CheckActivePlayers();
 }
 
 Action Assister_OnTakeDamage(int victim, int &client, int &inflictor, float &damage, int &damagetype)	{
-	if(Tklib_IsValidClient(victim) && Tklib_IsValidClient(client))	{
+	if(Tklib_IsValidClient(victim) && Tklib_IsValidClient(client, true))	{
 		//Turn the float into a valid integer.
 		char getdmg[96];
 		FloatToString(damage, getdmg, sizeof(getdmg));
 		SplitString(getdmg, ".", getdmg, sizeof(getdmg));
 		int dmg = StringToInt(getdmg);
 		
-		PlayerDamaged[victim][client] = PlayerDamaged[victim][client]+dmg;		
+		PlayerDamaged[victim][client] = PlayerDamaged[victim][client]+dmg;
+
+		Session[client].DamageDone += dmg;
 	}
 }
 
@@ -253,22 +262,25 @@ int GetLatestAssister(int victim, int client)	{
 stock void RoundStarted()	{
 	RoundActive = true;
 	
-	switch(IsCurrentGame(Game_CSGO))	{
-		case	true:	{
+	switch(game)	{
+		case	Game_CSGO, Game_CSCO:
 			WarmupActive = CS_IsWarmupRound();
-			
-			if(Debug.BoolValue)	{
-				switch(CS_IsWarmupRound())	{
-					case	true:	PrintToServer("%s Warmup Round Started", LogTag);
-					case	false:	PrintToServer("%s Round Started", LogTag);
-				}
-			}
-		}
-		case	false:	PrintToServer("%s Round Started", LogTag);
+		case	Game_TF2, Game_TF2C:
+			WarmupActive = TF2_IsWaitingForPlayers();
 	}
 	
+	if(Debug.BoolValue)	{
+		switch(WarmupActive)	{
+			case	true:	PrintToServer("%s Warmup Round Started", LogTag);
+			case	false:	PrintToServer("%s Round Started", LogTag);
+		}
+	}
+	
+	if(WarmupActive)
+		return;
+	
 	int needed = MinimumPlayers.IntValue;
-	int players = GetClientCountEx(AllowBots.BoolValue);
+	int players = GetClientCountEx(!AllowBots.BoolValue);
 	
 	if(DisableAfterWin.BoolValue)	{
 		if(needed <= players)	{
@@ -282,26 +294,28 @@ stock void RoundStarted()	{
 stock void RoundEnded()	{
 	RoundActive = false;
 	
-	switch(IsCurrentGame(Game_CSGO))	{
-		case	true:	{
+	switch(game)	{
+		case	Game_CSGO, Game_CSCO:
 			WarmupActive = CS_IsWarmupRound();
+		case	Game_TF2, Game_TF2C:
+			WarmupActive = TF2_IsWaitingForPlayers();
+	}
 			
-			if(Debug.BoolValue)	{
-				switch(CS_IsWarmupRound())	{
-					case	true:	PrintToServer("%s Warmup Round Ended", LogTag);
-					case	false:	PrintToServer("%s Round Ended", LogTag);
-				}
-			}
+	if(Debug.BoolValue)	{
+		switch(WarmupActive)	{
+			case	true:	PrintToServer("%s Warmup Round Ended", LogTag);
+			case	false:	PrintToServer("%s Round Ended", LogTag);
 		}
-		case	false:	PrintToServer("%s Round Ended", LogTag);
 	}
 	
-	int needed = MinimumPlayers.IntValue;
-	int players = GetClientCountEx(AllowBots.BoolValue);
-	
-	if(DisableAfterWin.BoolValue)	{
-		RankActive = false;
-		CPrintToChatAll("%s Round End: Statistical Tracking Disabled [%i/%i]", Prefix, players, needed);
+	if(!WarmupActive)	{
+		int needed = MinimumPlayers.IntValue;
+		int players = GetClientCountEx(!AllowBots.BoolValue);
+		
+		if(DisableAfterWin.BoolValue)	{
+			RankActive = false;
+			CPrintToChatAll("%s Round End: Statistical Tracking Disabled [%i/%i]", Prefix, players, needed);
+		}
 	}
 	
 	if(RemoveOldPlayers.IntValue >= 1)

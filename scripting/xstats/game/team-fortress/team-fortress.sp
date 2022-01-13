@@ -149,8 +149,9 @@ void PrepareGame_TeamFortress()	{
 	HookEventEx(EVENT_TEAMPLAY_ROUND_WIN,		TF2Rounds, EventHookMode_Pre);
 	
 	/* Waiting For Players - Just to make all TF2 versions compatible. */
-	HookEventEx(EVENT_TEAMPLAY_WAITING_BEGINS,	WaitingForPlayers, EventHookMode_Pre);
-	HookEventEx(EVENT_TEAMPLAY_WAITING_ENDS,	WaitingForPlayers, EventHookMode_Pre);
+	/* Not working it seems. (Maybe works in TF2C? untested there yet) */
+	//HookEventEx(EVENT_TEAMPLAY_WAITING_BEGINS,	WaitingForPlayers, EventHookMode_Pre);
+	//HookEventEx(EVENT_TEAMPLAY_WAITING_ENDS,	WaitingForPlayers, EventHookMode_Pre);
 }
 
 /* Capture Point */
@@ -169,9 +170,9 @@ stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool do
 		if(Tklib_IsValidClient(client, true))	{
 			AddSessionPoints(client, points);			
 			int points_client = GetClientPoints(SteamID[client]);
-			CPrintToChat(client, "%s %t", Prefix, "Point Captured", Name[client], points_client, points, cpname);
+			CPrintToChat(client, "%s %s (%i) earned %i points for capturing %s", Prefix, Name[client], points_client, points, cpname);
 			
-			Format(query, sizeof(query), "update `%s` set Points = Points%i, PointsCaptured = PointsCaptured+1 where SteamID='%s' and ServerID='%i'",
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, PointsCaptured = PointsCaptured+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
@@ -900,6 +901,24 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 		return Plugin_Handled;
 	
 	int defindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Secondary)).DefinitionIndex;
+	
+	DataPack pack = new DataPack();
+	pack.WriteCell(client);
+	pack.WriteCell(victim);
+	pack.WriteCell(defindex);
+	
+	CreateTimer(0.0, TimerPlayerJarated, pack);
+	
+	return Plugin_Continue;
+}
+
+Action TimerPlayerJarated(Handle timer, DataPack pack)	{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int victim = pack.ReadCell();
+	int defindex = pack.ReadCell();
+	delete pack;
+	
 	int points = 0;
 	int points_client = GetClientPoints(SteamID[client]);
 	Session[client].Coated++;
@@ -915,7 +934,7 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 			Session[client].MadMilked++;
 			
 			CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with milk.",
-			Prefix, Name[client], points_client, points);
+			Prefix, Name[client], points_client, points, Name[victim]);
 			
 			Format(query, sizeof(query), "update `%s` set MadMilked = MadMilked+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
@@ -933,7 +952,7 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 			Session[client].Jarated++;
 			
 			CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with piss.",
-			Prefix, Name[client], points_client, points);
+			Prefix, Name[client], points_client, points, Name[victim]);
 				
 			Format(query, sizeof(query), "update `%s` set Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
@@ -949,7 +968,7 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 				Session[client].Jarated++;
 			
 				CPrintToChat(client, "%s %s (%i) earned %i points for coating %s with piss.",
-				Prefix, Name[client], points_client, points);
+				Prefix, Name[client], points_client, points, Name[victim]);
 				
 				Format(query, sizeof(query), "update `%s` set Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
 				playerlist, SteamID[client], ServerID.IntValue);
@@ -967,7 +986,7 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 		playerlist, points, SteamID[client], ServerID.IntValue);
 	}
 	
-	return Plugin_Continue;
+	return Plugin_Handled;
 }
 
 float Extinguished_Timer = 10.0;
@@ -987,12 +1006,27 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 	if(Extinguished[client])
 		return Plugin_Handled;
 	
+	DataPack pack = new DataPack();
+	pack.WriteCell(client);
+	pack.WriteCell(victim);
+	
+	CreateTimer(0.0, TimerPlayerExtinguished, pack);
+	
+	return Plugin_Continue;
+}
+
+Action TimerPlayerExtinguished(Handle timer, DataPack pack)	{
+	pack.Reset();
+	int client = pack.ReadCell();
+	int victim = pack.ReadCell();
+	delete pack;
+	
 	int points = TF2_Extinguished.IntValue;
 	int points_client = GetClientPoints(SteamID[client]);
 	AddSessionPoints(client, points);
 	
 	CPrintToChat(client, "%s %s (%i) earned %i points for Extinguishing %s.",
-	Prefix, Name[client], points_client, points);
+	Prefix, Name[client], points_client, points, Name[victim]);
 	
 	char query[512];			
 	Format(query, sizeof(query), "update `%s` set Points = Points+%i, Extinguished = Extinguished+1 where SteamID='%s' and ServerID='%i'",
@@ -1000,8 +1034,6 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 		
 	Extinguished[client] = true;
 	CreateTimer(Extinguished_Timer, Timer_PlayerExtinguished, client);
-	
-	return Plugin_Continue;
 }
 
 /* Callbacks & Forwards */
@@ -1040,14 +1072,50 @@ stock void TF2Rounds(Event event, const char[] event_name, bool dontBroadcast)	{
 }
 
 /* Waiting For Players */
+
+/*
+Seems to not work in TF2. (Maybe TF2C?)
 stock void WaitingForPlayers(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!PluginActive.BoolValue)
 		return;
 	
 	WarmupActive = StrEqual(event_name, EVENT_TEAMPLAY_WAITING_BEGINS);
+	
+	PrintToServer("WaitingForPlayers: %s", Bool[WarmupActive]);
 }
+*/
 
 /* Disabled because these particularily doesn't wanna work properly on TF2 Classic.
 public void TF2_OnWaitingForPlayersStart()	{	WarmupActive = true;	}
 public void TF2_OnWaitingForPlayersEnd()	{	WarmupActive = false;	}
 */
+
+/**
+ *	When player killed a class.
+ *
+ *	@param	client	The user index who killed.
+ *	@param	victim	The user index who got killed.
+ */
+stock void TF2_ClientKillVictim(int client, int victim)	{
+	char class[64];
+	switch(TF2_GetPlayerClass(victim))	{
+		case	TFClass_Scout:		class = "ScoutsKilled";
+		case	TFClass_Soldier:	class = "SoldiersKilled";
+		case	TFClass_Pyro:		class = "PyrosKilled";
+		case	TFClass_DemoMan:	class = "DemosKilled";
+		case	TFClass_Heavy:		class = "HeaviesKilled";
+		case	TFClass_Engineer:	class = "EngiesKilled";
+		case	TFClass_Medic:		class = "MedicsKilled";
+		case	TFClass_Sniper:		class = "SnipersKilled";
+		case	TFClass_Spy:		class = "SpiesKilled";
+		case	TFClass_Civilian:	class = "CiviliansKilled"; /* TF2 Classic */
+	}
+	
+	if(StrEqual(class, NULL_STRING))
+		return;
+	
+	char query[512];
+	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
+	playerlist, class, class, SteamID[client], ServerID.IntValue);
+	db.Query(DBQuery_Callback, query);
+}

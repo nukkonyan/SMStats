@@ -9,8 +9,11 @@ void PrepareNatives()
 	CreateNative("Xstats_GetClientPlayTime", Native_GetClientPlayTime);
 	CreateNative("Xstats.GetPlayTime", Public_GetClientPlayTime);
 	
-	CreateNative("Xstats_GetClientSessionTypeStats", Native_GetClientSessionTypeStats);
-	CreateNative("Xstats.GetStats", Public_GetClientSessionTypeStats);
+	CreateNative("Xstats_GetClientSession", Native_GetClientSession);
+	CreateNative("Xstats.GetSession", Public_GetClientSession);
+	
+	CreateNative("Xstats_GetPrefix", Native_GetPrefix);
+	CreateNative("Xstats.GetPrefix", Public_GetPrefix);
 }
 
 any Native_GetClientPoints(Handle plugin, int params)
@@ -39,30 +42,31 @@ any Public_GetClientPlayTime(Handle plugin, int params)
 	return GetClientPlayTime(auth);
 }
 
-any Native_GetClientSessionTypeStats(Handle plugin, int params)
+any Native_GetClientSession(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);
 	
 	if(!Tklib_IsValidClient(client, true))
 		ThrowNativeError(SP_ERROR_NATIVE, "[Xstats] Client index %i is invalid", client);
 	
-	return GetStats(client, GetNativeCell(2));
+	GetStats(plugin, client, GetNativeCell(2), GetNativeFunction(3));
 }
-any Public_GetClientSessionTypeStats(Handle plugin, int params)
+any Public_GetClientSession(Handle plugin, int params)
 {
 	int client = GetNativeCell(2);
 	
 	if(!Tklib_IsValidClient(client, true))
 		ThrowNativeError(SP_ERROR_NATIVE, "[Xstats] Client index %i is invalid", client);
 	
-	return GetStats(client, GetNativeCell(3));
+	GetStats(plugin, client, GetNativeCell(3), GetNativeFunction(4));
 }
 
-int GetStats(int client, XStats_SessionType sessiontype)
-{
+any Native_GetPrefix(Handle plugin, int params)	{	SetNativeString(1, Prefix, GetNativeCell(2), GetNativeCell(3));	}
+any Public_GetPrefix(Handle plugin, int params)	{	SetNativeString(2, Prefix, GetNativeCell(3), GetNativeCell(4));	}
+
+int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function func)	{
 	int stats = 0;
-	switch(sessiontype)
-	{
+	switch(sessiontype)	{
 		/* Stats */
 		case	SessionType_Time: stats = Session[client].Time;
 		case	SessionType_Points: stats = Session[client].Points;
@@ -70,6 +74,7 @@ int GetStats(int client, XStats_SessionType sessiontype)
 		case	SessionType_Deaths: stats = Session[client].Deaths;
 		case	SessionType_Suicides: stats = Session[client].Suicides;
 		case	SessionType_Assists: stats = Session[client].Assists;
+		case	SessionType_DamageDone: stats = Session[client].DamageDone;
 		
 		/* Generic */
 		case	SessionType_Dominations: stats = Session[client].Dominations;
@@ -141,5 +146,12 @@ int GetStats(int client, XStats_SessionType sessiontype)
 		case	SessionType_MoneySpent: stats = Session[client].MoneySpent;
 	}
 	
-	return stats;
+	Fwd_GetStats = new PrivateForward(ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
+	Fwd_GetStats.AddFunction(plugin, func);
+	
+	Call_StartForward(Fwd_GetStats);
+	Call_PushCell(sessiontype);
+	Call_PushCell(client);
+	Call_PushCell(stats);
+	Call_Finish();
 }

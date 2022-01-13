@@ -456,15 +456,15 @@ void PrepareGame_TF2()	{
 	/* Events */
 	
 	/* MvM */
-	HookEventEx(EVENT_MVM_TANK_DESTROYED_BY_PLAYERS, MvM_Tank_Destroyed_By_Players, EventHookMode_Pre);
-	HookEventEx(EVENT_PLAYER_DEATH, MvM_Sentrybuster_Killed, EventHookMode_Pre);
-	HookEventEx(EVENT_MVM_BOMB_RESET_BY_PLAYER, MvM_Bomb_Reset_By_Player, EventHookMode_Pre);
+	HookEventEx(EVENT_MVM_TANK_DESTROYED_BY_PLAYERS, MvM_Tank_Destroyed_By_Players);
+	HookEventEx(EVENT_PLAYER_DEATH, MvM_Sentrybuster_Killed);
+	HookEventEx(EVENT_MVM_BOMB_RESET_BY_PLAYER, MvM_Bomb_Reset_By_Player);
 	
 	/* Item found, achieved, gained or traded */
-	HookEventEx(EVENT_ITEM_FOUND, Item_Found_TF2, EventHookMode_Pre);
+	HookEventEx(EVENT_ITEM_FOUND, Item_Found_TF2);
 	
 	/* Deaths */
-	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_TF2, EventHookMode_Pre);
+	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_TF2);
 }
 
 /* MvM */
@@ -700,7 +700,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			PrintToServer("Assister revenged");
 	}
 	
-	bool deflectkill = (StrContains(weapon, "deflect", false) != -1);
+	bool deflectkill = ((StrContains(weapon, "deflect", false) != -1)
+	|| StrContains(weapon, "reflect") != -1);
 	bool tauntkill = ((StrContains(weapon, "taunt", false) != -1)
 	/* Rainblower tauntkill */
 	|| (StrEqual(weapon, "armageddon", false))
@@ -710,6 +711,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	|| customkill == 13);
 	bool telefrag = StrEqual(weapon, "telefrag");
 	bool midair = IsClientMidAir(client);
+	bool airshot = (GetClientFlags(victim) == 258);
 		
 	// The 'weapon_def_index' on the player_death is same as if you're gathering the killers
 	// current active weapon definition index and is NOT gathering the correct definition index at the time of the event.
@@ -725,22 +727,22 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	// Lets fix these since when you swap weapons just before the kill on some weapons,
 	// it'll pick definition index out of that weapon instead.
 	
-	/* Rocket Launcher */
+	/* Rocket Launcher. */
 	if(StrEqual(weapon, "tf_projectile_rocket", false))	{
 		int getindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex;
 		/* If the gathered index is invalid (left or died during process), this returns 18 for safety. */
 		defindex = getindex != -1 ? getindex : 18;
 	}
 	
-	/* Grenade Launcher */
+	/* Grenade Launcher. */
 	if(StrEqual(weapon, "tf_projectile_pipe", false))
 		defindex = 19;
 	
-	/* StickyBomb Launcher */
+	/* StickyBomb Launcher. */
 	if(StrEqual(weapon, "tf_projectile_pipe_remote", false))
 		defindex = 20;
 	
-	/* Sandman */
+	/* Sandman. */
 	if(StrEqual(weapon, "ball", false))	{
 		int getindex = 0;
 		switch(TF2_GetPlayerClass(client))	{
@@ -748,25 +750,29 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			case	TFClass_Pyro:	getindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex;	//Pyro deflected the ball.
 		}
 		
-		/* If the returned index is -1, return 44 for safety */
+		/* If the returned index is -1, return 44 for safety. */
 		defindex = getindex != -1 ? getindex : 44;
 	}
 	
-	/* Scottish Resistance */
+	/* Scottish Resistance. */
 	if(StrEqual(weapon, "sticky_resistance", false))
 		defindex = 130;
 	
-	/* Loch-N-Load */
+	/* Loch-N-Load. */
 	if(StrEqual(weapon, "loch_n_load", false))
 		defindex = 308;
 	
-	/* QuickieBomb Launcher */
+	/* QuickieBomb Launcher. */
 	if(StrEqual(weapon, "quickiebomb_launcher", false))
 		defindex = 1150;
 	
-	/* Iron Bomber */
+	/* Iron Bomber. */
 	if(StrEqual(weapon, "iron_bomber", false))
 		defindex = 1151;
+	
+	/* Classic - since you can noscope headshot. */
+	if(defindex == 1098 && TF2_IsPlayerInCondition(client, TFCond_Zoomed))
+		noscope = true;
 	
 	/* The database query upload ("bat" -> "weapon_bat") */
 	char fix_weapon[96];
@@ -800,24 +806,27 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	char query[1024];
+	TF2_ClientKillVictim(client, victim);
+	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
 	
 	//There was an assist.
 	if(Tklib_IsValidClient(assist, true))	{
 		Session[assist].Assists++;
-		AddSessionPoints(client, AssistKill.IntValue);
 		Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
 		playerlist, SteamID[assist], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
 		if(AssistKill.IntValue > 0)	{
+			int assistkill = AssistKill.IntValue;
+			AddSessionPoints(assist, assistkill);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[assist], ServerID.IntValue);
+			playerlist, assistkill, SteamID[assist], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
 			//Optimize the servers performance, combining the callback inside the chat print may lag the server for a slight second.
 			int assist_points = GetClientPoints(SteamID[assist]);
-			CPrintToChat(client, "%s %s (%i) earned %i points for assisting %s in killing %s",
-			Prefix, Name[assist], assist_points, points, Name[client], Name[victim]);
+			CPrintToChat(assist, "%s %s (%i) earned %i points for assisting %s in killing %s",
+			Prefix, Name[assist], assist_points, assistkill, Name[client], Name[victim]);
 		}
 		
 		if(dominated_assister)	{
@@ -1009,6 +1018,18 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			PrintToServer("Gibkill");
 		}
 	}
+	
+	if(airshot)	{
+		Session[client].Airshots++;
+		Format(query, sizeof(query), "update `%s` set Airshots = Airshots+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Airshot");
+		}
+	}
 		
 	switch(crits)	{
 		case	TFCritType_Minicrit:	{
@@ -1055,6 +1076,14 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			Kill_Scenario = 2;
 		else if(midair && headshot)
 			Kill_Scenario = 3;
+		else if(midair && deflectkill)
+			Kill_Scenario = 10;
+		else if(midair && airshot)
+			Kill_Scenario = 11;
+		else if(airshot)
+			Kill_Scenario = 12;
+		else if(deflectkill)
+			Kill_Scenario = 13;
 		else if(midair)
 			Kill_Scenario = 4;
 		else if(headshot)
@@ -1107,6 +1136,18 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			case	9:
 				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Tauntkill{default}.",
 				Prefix, Name[client], points_client, points, Name[victim]);
+			case	10:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Mid-Air Deflectkill{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	11:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Airshot{default} whilst {green}Mid-Air{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	12:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Airshot{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
+			case	13:
+				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Deflectkill{default}.",
+				Prefix, Name[client], points_client, points, Name[victim]);
 		}
 	}
 		
@@ -1116,7 +1157,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);
 		len += Format(log[len], sizeof(log)-len, "(ServerID, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, Midair, CritType)");
 		len += Format(log[len], sizeof(log)-len, "values");
-		len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', `%i`, `%i`)",
+		len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
 		ServerID.IntValue, Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, midair, crits);
 		db.Query(DBQuery_Kill_Log, log);
 	}
