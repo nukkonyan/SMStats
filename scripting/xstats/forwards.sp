@@ -45,7 +45,7 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 				case	false:	{
 					if(ConnectMsg.BoolValue)	{
 						CPrintToChatAll("%s %s (Pos #%i, %i points) has connected from %s", Prefix, Name[client], position, points, Country[client]);
-						PrintToServer("%s %s (Pos #%i, %i points) has connected from %s.", LogTag, Playername[client], position, points, Country[client]);
+						PrintToServer("%s %s (Pos #%i, %i points) has connected from %s", LogTag, Playername[client], position, points, Country[client]);
 					}
 				}
 			}
@@ -71,7 +71,7 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 						int points = GetClientPoints(auth);
 						int position = GetClientPosition(auth);
 						CPrintToChatAll("%s %s (Pos #%i, %i points) has connected from %s", Prefix, Name[client], position, points, Country[client]);
-						PrintToServer("%s %s (Pos #%i, %i points) has connected from %s.", LogTag, Playername[client], position, points, Country[client]);
+						PrintToServer("%s %s (Pos #%i, %i points) has connected from %s", LogTag, Playername[client], position, points, Country[client]);
 					}
 				}
 			}
@@ -109,35 +109,6 @@ public void OnClientPutInServer(int client)	{
 	/* Safety callback if the steamid weren't acquired. (for some reason) */
 	if(StrEqual(SteamID[client], NULL_STRING))
 		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
-}
-
-public void OnClientDisconnect(int client)	{
-	if(!PluginActive.BoolValue)
-		return;
-
-	if(IsFakeClient(client) && AllowBots.BoolValue)
-		CPrintToChatAll("%s BOT %s has connected.", Prefix, Name[client]);
-
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	/* Check active players */
-	CheckActivePlayers();
-	
-	for(int i = 1; i < MaxClients; i++)
-		PlayerDamaged[i][client] = 0;
-	
-	if(ConnectMsg.BoolValue)	{
-		int points = GetClientPoints(SteamID[client]);
-		int position = GetClientPosition(SteamID[client]);
-		CPrintToChatAll("%s %s (Pos #%i, %i points) has left from %s", Prefix, Name[client], position, points, Country[client]);
-		PrintToServer("%s %s (Pos #%i, %i points) has left from %s", LogTag, Playername[client], position, points, Country[client]);
-		
-		UpdateLastConnectedState(SteamID[client]);
-	}
-	
-	/* Clear the steamid. */
-	SteamID[client] = NULL_STRING;
 }
 
 Action IntervalPlayTimer(Handle timer, int client)	{	

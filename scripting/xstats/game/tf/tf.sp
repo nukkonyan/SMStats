@@ -725,7 +725,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		defindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Melee)).DefinitionIndex;	//Only part of melee weapons.
 	
 	// Lets fix these since when you swap weapons just before the kill on some weapons,
-	// it'll pick definition index out of that weapon instead.
+	// it'll pick definition index out of that weapon instead of the actual weapon that were used.
 	
 	/* Rocket Launcher. */
 	if(StrEqual(weapon, "tf_projectile_rocket", false))	{
@@ -747,7 +747,10 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		int getindex = 0;
 		switch(TF2_GetPlayerClass(client))	{
 			case	TFClass_Scout:	getindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Melee)).DefinitionIndex;
-			case	TFClass_Pyro:	getindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex;	//Pyro deflected the ball.
+			case	TFClass_Pyro:	{
+				getindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex;	//Pyro deflected the ball.
+				deflectkill = true;
+			}
 		}
 		
 		/* If the returned index is -1, return 44 for safety. */

@@ -265,7 +265,7 @@ stock void RoundStarted()	{
 	switch(game)	{
 		case	Game_CSGO, Game_CSCO:
 			WarmupActive = CS_IsWarmupRound();
-		case	Game_TF2, Game_TF2C:
+		case	Game_TF2, Game_TF2C, Game_TF2B, Game_TF2V, Game_TF2OP:
 			WarmupActive = TF2_IsWaitingForPlayers();
 	}
 	
