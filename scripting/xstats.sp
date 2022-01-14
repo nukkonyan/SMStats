@@ -63,7 +63,10 @@ stock char		Kill_Type[][] = {
 	"Kill Event Type 7",
 	"Kill Event Type 8",
 	"Kill Event Type 9",
-	"Kill Event Type 10"
+	"Kill Event Type 10",
+	"Kill Event Type 11",
+	"Kill Event Type 12",
+	"Kill Event Type 13"
 };
 
 /* For experimental assister function. */

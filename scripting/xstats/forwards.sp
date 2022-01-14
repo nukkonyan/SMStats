@@ -70,7 +70,7 @@ public void OnClientPutInServer(int client)	{
 	GetClientTeamString(client, Name[client], sizeof(Name[]));
 
 	if(IsFakeClient(client) && AllowBots.BoolValue)	{
-		CPrintToChatAll("%s BOT %s has connected.", Prefix, Name[client]);
+		CPrintToChatAll("%s BOT %s was added", Prefix, Name[client]);
 		if(!StrEqual(ConnectSound[0], NULL_STRING))
 			EmitSoundToAll(ConnectSound[0]);
 	}
