@@ -246,7 +246,7 @@ void DBQuery_DB(Database database, DBResultSet results, const char[] error, int 
 /**
  *	Callback for the panel.
  */
-int PanelCallback(Menu menu, MenuAction action, int client, int selection)	{}
+stock int PanelCallback(Menu menu, MenuAction action, int client, int selection)	{}
 
 /**
  *	Check active players.

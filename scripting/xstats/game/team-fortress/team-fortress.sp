@@ -335,30 +335,35 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 	switch(building)	{
 		case	TFBuilding_Sentrygun:	{
 			Session[client].SentryGunsBuilt++;
+			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set SentryGunsBuilt = SentryGunsBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Dispenser:	{
 			Session[client].DispensersBuilt++;
+			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set DispensersBuilt = DispensersBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_MiniSentry:	{
 			Session[client].MiniSentryGunsBuilt++;
+			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set MiniSentryGunsBuilt = MiniSentryGunsBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Teleporter_Entrance:	{
 			Session[client].TeleporterEntrancesBuilt++;
+			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set TeleporterEntrancesBuilt = TeleporterEntrancesBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Teleporter_Exit:	{
 			Session[client].TeleporterExitsBuilt++;
+			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set TeleporterExitsBuilt = TeleporterExitsBuilt, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
@@ -419,30 +424,35 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 	switch(building)	{
 		case	TFBuilding_Sentrygun:	{
 			Session[client].SentryGunsDestroyed++;
+			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, SentryGunsDestroyed = SentryGunsDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Dispenser:	{
 			Session[client].DispensersDestroyed++;
+			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, DispensersDestroyed = DispensersDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_MiniSentry:	{
 			Session[client].MiniSentryGunsDestroyed++;
+			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Teleporter_Entrance:	{
 			Session[client].TeleporterEntrancesDestroyed++;
+			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 		}
 		case	TFBuilding_Teleporter_Exit:	{
 			Session[client].TeleporterExitsDestroyed++;
+			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TeleporterExitsDestroyed = TeleporterExitsDestroyed, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, points, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
@@ -1097,25 +1107,39 @@ public void TF2_OnWaitingForPlayersEnd()	{	WarmupActive = false;	}
  *	@param	victim	The user index who got killed.
  */
 stock void TF2_ClientKillVictim(int client, int victim)	{
-	char class[64];
-	switch(TF2_GetPlayerClass(victim))	{
-		case	TFClass_Scout:		class = "ScoutsKilled";
-		case	TFClass_Soldier:	class = "SoldiersKilled";
-		case	TFClass_Pyro:		class = "PyrosKilled";
-		case	TFClass_DemoMan:	class = "DemosKilled";
-		case	TFClass_Heavy:		class = "HeaviesKilled";
-		case	TFClass_Engineer:	class = "EngiesKilled";
-		case	TFClass_Medic:		class = "MedicsKilled";
-		case	TFClass_Sniper:		class = "SnipersKilled";
-		case	TFClass_Spy:		class = "SpiesKilled";
-		case	TFClass_Civilian:	class = "CiviliansKilled"; /* TF2 Classic */
-	}
+	TFClassType type = TF2_GetPlayerClass(victim);
+	if(type < TFClass_Scout)
+		return; /* Make sure it's a valid class. */
 	
-	if(StrEqual(class, NULL_STRING))
-		return;
+	char class[][] = {
+		"Error",
+		"ScoutsKilled",
+		"SoldiersKilled",
+		"PyrosKilled",
+		"DemosKilled",
+		"HeaviesKilled",
+		"EngiesKilled",
+		"MedicsKilled",
+		"SnipersKilled",
+		"SpiesKilled",
+		"CiviliansKilled"
+	};
+	
+	switch(type)	{
+		case	TFClass_Scout:		Session[client].ScoutsKilled++;
+		case	TFClass_Soldier:	Session[client].SoldiersKilled++;
+		case	TFClass_Pyro:		Session[client].PyrosKilled++;
+		case	TFClass_DemoMan:	Session[client].DemosKilled++;
+		case	TFClass_Heavy:		Session[client].HeaviesKilled++;
+		case	TFClass_Engineer:	Session[client].EngiesKilled++;
+		case	TFClass_Medic:		Session[client].MedicsKilled++;
+		case	TFClass_Sniper:		Session[client].SnipersKilled++;
+		case	TFClass_Spy:		Session[client].SpiesKilled++;
+		case	TFClass_Civilian:	Session[client].CiviliansKilled++; /* TF2 Classic */
+	}
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
-	playerlist, class, class, SteamID[client], ServerID.IntValue);
+	playerlist, class[type], class[type], SteamID[client], ServerID.IntValue);
 	db.Query(DBQuery_Callback, query);
 }

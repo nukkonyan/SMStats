@@ -13,14 +13,11 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats())
 		return;
 	
-	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
+	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));	
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(victim, true))
-		return;
-	
 	if(!IsSamePlayers(client, victim))
 		return;
 	
@@ -30,6 +27,7 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
 	playerlist, SteamID[client], ServerID.IntValue);
 	db.Query(DBQuery_Callback, query);
 }
+
 
 /**
  *	If player changed team or name,

@@ -1,6 +1,12 @@
+/**
+ *	Includes
+ */
+#include "xstats/rankpanel.sp"
+
+
 void PrepareCommands()	{
-	RegConsoleCmd("rank", RankCmd, "Xstats - returns the rank position.");
-	RegConsoleCmd("sm_rank", RankCmd, "Xstats - Returns the rank position.");
+	RegConsoleCmd("rank", RankCmd, "Xstats - Returns the rank position.");
+	RegConsoleCmd("xstats", XstatsCmd, "Xstats - About the project.");
 }
 
 Action RankCmd(int client, int args)	{
@@ -13,7 +19,7 @@ Action RankCmd(int client, int args)	{
 	}
 	
 	DBResultSet results = SQL_QueryEx(database,
-	"select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides from `%s` where SteamID='%s' and ServerID='%i'",
+	"select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
 	playerlist, SteamID[client], ServerID.IntValue);
 	
 	if(results == null)	{
@@ -36,77 +42,54 @@ Action RankCmd(int client, int args)	{
 		int assists = results.FetchInt(4);
 		int deaths = results.FetchInt(5);
 		int suicides = results.FetchInt(6);
+		int damagedone = results.FetchInt(7);
 		
 		float kdr = GetKDR(kills, deaths, assists);
 		
-		char info[256];
-		Panel panel = new Panel();
-		panel.SetTitle("xStats Panel");
+		XStatsRankPanel panel = new XStatsRankPanel();
+		panel.DrawItem("Xstats Panel");
+		panel.DrawText("Playername: %s", playername);
+		panel.DrawText("Position #%i out of %i players", position, players);
 		panel.DrawText(" ");
-		
-		Format(info, sizeof(info), "Playername : %s", playername);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "Position #%i out of %i players", position, players);
-		panel.DrawText(info);
-		
-		panel.DrawText(" ");
-		
 		panel.DrawItem("Current Session");
-		Format(info, sizeof(info), "%i Points", Session[client].Points);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Minutes played", Session[client].Time);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Kills", Session[client].Kills);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Assists", Session[client].Assists);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Deaths", Session[client].Deaths);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Suicides", Session[client].Suicides);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "KDR: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
-		panel.DrawText(info);
-		
+		panel.DrawText("%i Points", Session[client].Points);
+		panel.DrawText("%i Minutes played", Session[client].Time);
+		panel.DrawText("%i Kills", Session[client].Kills);
+		panel.DrawText("%i Assists", Session[client].Assists);
+		panel.DrawText("%i Deaths", Session[client].Deaths);
+		panel.DrawText("%i Suicides", Session[client].Suicides);
+		panel.DrawText("%i Damage dealt", Session[client].DamageDone);
+		panel.DrawText("KDR: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
 		panel.DrawText(" ");
-		
 		panel.DrawItem("Total Statistics");
-		Format(info, sizeof(info), "%i Points", points);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Total minutes played", playtime);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Kills", kills);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Assists", assists);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Deaths", deaths);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "%i Suicides", suicides);
-		panel.DrawText(info);
-		
-		Format(info, sizeof(info), "KDR: %.2f", kdr);
-		panel.DrawText(info);
-		
+		panel.DrawText("%i Points", points);
+		panel.DrawText("%i Total minutes played", playtime);
+		panel.DrawText("%i Kills", kills);
+		panel.DrawText("%i Assists", assists);
+		panel.DrawText("%i Deaths", deaths);
+		panel.DrawText("%i Suicides", suicides);
+		panel.DrawText("%i Damage dealt", damagedone);
+		panel.DrawText("KDR: %.2f", kdr);
 		panel.DrawText(" ");
 		panel.DrawItem("Exit");
-		panel.Send(client, PanelCallback, 120);
+		panel.Send(client, RankPanelCallback, MENU_TIME_FOREVER);
 		delete panel;
 		
-		GetClientTeamString(client, Name[client], sizeof(Name[]));
 		CPrintToChat(client, "%s %s is positioned #%i out of %i players with %.2f KDR and %i total minutes in playtime",
 		Prefix, Name[client], position, players, kdr, playtime);
 	}
 	
+	return	Plugin_Handled;
+}
+
+Action XstatsCmd(int client, int args)	{
+	if(!Tklib_IsValidClient(client, true))	{
+		ReplyToCommand(client, "You may only use this ingame.");
+		return	Plugin_Handled;
+	}
+	
+	CPrintToChat(client, "{green}Xstats {default}is a solo project created and managed by {orange}Teamkiller324 (/id/Teamkiller324)");
+	CPrintToChat(client, "Running version {lightgreen}%s", Version);
+	CPrintToChat(client, "More info @ https://teamkiller324.github.io/Xstats/");
 	return	Plugin_Handled;
 }

@@ -83,6 +83,16 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 		case	SessionType_Noscopes: stats = Session[client].Noscopes;
 		
 		/* TF2 */
+		case	SessionType_ScoutsKilled: stats = Session[client].ScoutsKilled;
+		case	SessionType_SoldiersKilled: stats = Session[client].SoldiersKilled;
+		case	SessionType_PyrosKilled: stats = Session[client].PyrosKilled;
+		case	SessionType_DemosKilled: stats = Session[client].DemosKilled;
+		case	SessionType_HeaviesKilled: stats = Session[client].HeaviesKilled;
+		case	SessionType_EngiesKilled: stats = Session[client].EngiesKilled;
+		case	SessionType_MedicsKilled: stats = Session[client].MedicsKilled;
+		case	SessionType_SnipersKilled: stats = Session[client].SnipersKilled;
+		case	SessionType_SpiesKilled: stats = Session[client].SpiesKilled;
+		case	SessionType_CiviliansKilled: stats = Session[client].CiviliansKilled; /* TF2 Classic */
 		case	SessionType_Airshots: stats = Session[client].Airshots;
 		case	SessionType_Backstabs: stats = Session[client].Backstabs;
 		case	SessionType_TauntKills: stats = Session[client].TauntKills;
@@ -108,12 +118,14 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 		case	SessionType_PassBallsCatched: stats = Session[client].PassBallsCatched;
 		case	SessionType_PassBallsStolen: stats = Session[client].PassBallsStolen;
 		case	SessionType_PassBallsBlocked: stats = Session[client].PassBallsBlocked;
+		case	SessionType_BuildingsBuilt: stats = Session[client].BuildingsBuilt;
 		case	SessionType_SentryGunsBuilt: stats = Session[client].SentryGunsBuilt;
 		case	SessionType_DispensersBuilt: stats = Session[client].DispensersBuilt;
 		case	SessionType_MiniSentryGunsBuilt: stats = Session[client].MiniSentryGunsBuilt;
 		case	SessionType_TeleporterEntrancesBuilt: stats = Session[client].TeleporterEntrancesBuilt;
 		case	SessionType_TeleporterExitsBuilt: stats = Session[client].TeleporterExitsBuilt;
 		case	SessionType_SappersPlaced: stats = Session[client].SappersPlaced;
+		case	SessionType_BuildingsDestroyed: stats = Session[client].BuildingsDestroyed;
 		case	SessionType_SentryGunsDestroyed: stats = Session[client].SentryGunsDestroyed;
 		case	SessionType_DispensersDestroyed: stats = Session[client].DispensersDestroyed;
 		case	SessionType_MiniSentryGunsDestroyed: stats = Session[client].MiniSentryGunsDestroyed;

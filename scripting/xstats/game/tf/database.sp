@@ -33,6 +33,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`TauntKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Deaths`								int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Suicides`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`DamageDone`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Assists`								int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Noscopes`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Dominations`							int(32) not null default '0',");
