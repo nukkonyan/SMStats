@@ -831,24 +831,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
 	
 	//There was an assist.
-	if(Tklib_IsValidClient(assist, true))	{
-		Session[assist].Assists++;
-		Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[assist], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
-		
-		if(AssistKill.IntValue > 0)	{
-			int assistkill = AssistKill.IntValue;
-			AddSessionPoints(assist, assistkill);
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-			playerlist, assistkill, SteamID[assist], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			//Optimize the servers performance, combining the callback inside the chat print may lag the server for a slight second.
-			int assist_points = GetClientPoints(SteamID[assist]);
-			CPrintToChat(assist, "%s %t", Prefix, "Assist Kill Event", Name[assist], assist_points, assistkill, Name[client], Name[victim]);
-		}
-		
+	if(AssistedKill(assist, client, victim))	{
 		if(dominated_assister)	{
 			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[assist], ServerID.IntValue);
@@ -863,22 +846,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	}
 		
 	//Make sure to not query updates on a bot, the database wouldn't be happy about that.
-	if(!IsFakeClient(victim))	{
-		Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[victim], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
-		
-		int death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
-		int victim_points = GetClientPoints(SteamID[victim]);
-		if(death_points > 0)	{
-			RemoveSessionPoints(victim, death_points);
-			CPrintToChat(victim, "%s %s (%i) lost %i points for dying.", Prefix, Name[victim], death_points, victim_points);
-			
-			Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
-			playerlist, death_points, SteamID[victim], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-		}
-	}
+	VictimDied(victim);
 		
 	Session[client].Kills++;
 	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
@@ -987,7 +955,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		
 		if(Debug.BoolValue)	{
 			PrintToServer(" ");
-			PrintToServer("Backstab");
+			PrintToServer("Revenge");
 		}
 	}
 		
@@ -1065,6 +1033,18 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			PrintToServer("Collateral");
 		}
 	}
+	
+	if(midair)	{
+		Session[client].MidAirKills++;
+		Format(query, sizeof(query), "update `%s` set MidAirKills = MidAirKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("MidAir Kill");
+		}
+	}
 		
 	switch(crits)	{
 		case	TFCritType_Minicrit:	{
@@ -1117,7 +1097,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		}
 		else if(midair && noscope && headshot)
 		{
-			Format(buffer, sizeof(buffer), "%t %t %t{default}", Kill_Type[2], Kill_Type[0]);
+			Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[2], Kill_Type[0]);
 		}
 		else if(midair && headshot)
 		{

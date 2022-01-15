@@ -15,8 +15,6 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Playername`						varchar(64) not null default '',");
 	len += Format(query[len], sizeof(query)-len, "`SteamID`							varchar(64) not null default '',");
 	len += Format(query[len], sizeof(query)-len, "`IPAddress`						varchar(64) not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Headshots`							int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Backstabs`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills`								int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Deaths`								int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Assists`								int(32) not null default '0',");
@@ -36,6 +34,9 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`CritKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TauntKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`CollatKills`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`MidAirKills`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Headshots`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Backstabs`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Noscopes`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Dominations`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Revenges`							int(32) not null default '0',");

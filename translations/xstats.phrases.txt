@@ -17,6 +17,40 @@
 	}
 	
 	//================================//
+	// Rounds.
+	//================================//
+	
+	"Round Start"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Round Start: Tracking enabled [{1}/{2}]"
+	}
+	
+	"Round Start Warmup"
+	{
+		//"#format"	"{1:i},{2:i}"
+		"en"		"Round Start: Warmup/Waiting for players detected, ignoring statistical tracking"
+	}
+	
+	"Round End"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Round End: Tracking disabled [{1}/{2}]"
+	}
+	
+	"Not Enough Players"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Not enough players [{1}/{2}], disabling.."
+	}
+	
+	"Enough Players"
+	{
+		"#format"	"{1:i},{2:i}"
+		"en"		"Emnough Players [{1}/{2}], enabling.."
+	}
+	
+	//================================//
 	// Kill Event.
 	//================================//
 	

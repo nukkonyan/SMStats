@@ -6,7 +6,6 @@
  *	Initializes includes for this game.
  */
 #include	"xstats/game/cstrike/database.sp"
-#include	"xstats/game/cstrike/events.sp"
 
 /**
  *	Initialize: Counter-Strike Source.
@@ -37,4 +36,170 @@ void PrepareGame_CSS()	{
 	
 	/* Events */
 	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_CSS, EventHookMode_Pre);
+}
+
+stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroadcast)	{
+	if(!IsValidStats())
+		return;
+	
+	char weapon[64];
+	event.GetString(EVENT_STR_WEAPON, weapon, sizeof(weapon));
+	
+	if(StrEqual(weapon, "world")
+	|| StrEqual(weapon, "player"))
+		return;
+	
+	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
+	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	if(IsValidAbuse(client))
+		return;
+
+	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_VICTIM));
+	if(!Tklib_IsValidClient(client))
+		return;
+	
+	if(IsFakeClient(victim) && !AllowBots.BoolValue)
+		return;
+	
+	if(IsSamePlayers(client, victim) || IsSameTeam(client, victim))
+		return;
+	
+	Format(weapon, sizeof(weapon), "weapon_%s", weapon);
+	int defindex = CSS_GetWeaponDefindex(weapon);
+	
+	if(Weapon[defindex] == null)	{
+		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", logprefix, weapon, defindex);
+		return;
+	}
+	
+	int assist = GetClientOfUserId(GetLatestAssister(victim, client));
+	int points = Weapon[defindex].IntValue;
+	bool midair = IsClientMidAir(client);
+	bool headshot = event.GetBool(EVENT_STR_HEADSHOT);
+	bool dominated = event.GetBool(EVENT_STR_DOMINATED);
+	bool revenge = event.GetBool(EVENT_STR_REVENGE);
+	bool noscope = ((StrEqual(weapon, "weapon_sg550")
+	|| StrEqual(weapon, "weapon_g3sg1")
+	|| StrEqual(weapon, "weapon_scout")
+	|| StrEqual(weapon, "weapon_awp")) && !CS_IsWeaponZoomedIn(GetClientActiveWeapon(client)));
+	
+	AssistedKill(assist, client, victim);
+	VictimDied(victim);
+	
+	char query[1024];
+	
+	Session[client].Kills++;
+	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s'", playerlist, SteamID[client]);
+	db.Query(DBQuery_Callback, query);
+	
+	Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s'", playerlist, weapon, weapon, SteamID[client]);
+	db.Query(DBQuery_Callback, query);
+	
+	if(headshot)	{
+		Session[client].Headshots++;
+		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s'", playerlist, SteamID[client]);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Headshot");
+		}
+	}
+	
+	if(dominated)	{
+		Session[client].Dominations++;
+		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s'", playerlist, SteamID[client]);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Dominated");
+		}
+	}
+	
+	if(revenge)	{
+		Session[client].Revenges++;
+		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s'", playerlist, SteamID[client]);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Revenge");
+		}
+	}
+	
+	if(noscope)	{
+		Session[client].Noscopes++;
+		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s'", playerlist, SteamID[client]);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Noscope");
+		}
+	}
+	
+	if(midair)	{
+		Session[client].MidAirKills++;
+		Format(query, sizeof(query), "update `%s` set MidAirKills = MidAirKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("MidAir Kill");
+		}
+	}
+	
+	if(points > 0)	{
+		AddSessionPoints(client, points);
+		Format(query, sizeof(query), "update `%s` set Points = Points+%i", playerlist, points);
+		db.Query(DBQuery_Callback, query);
+		
+		int points_client = GetClientPoints(SteamID[client]);
+		
+		char buffer[96];
+		if(midair)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
+		}
+		else if(midair && noscope)
+		{
+			Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[4], Kill_Type[0]);
+		}
+		else if(midair && noscope && headshot)
+		{
+			Format(buffer, sizeof(buffer), "%t %t %t{default}", Kill_Type[2], Kill_Type[0]);
+		}
+		else if(midair && headshot)
+		{
+			Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[3], Kill_Type[0]);
+		}
+		else if(noscope && headshot)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
+		}
+		else if(headshot)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);
+		}
+		
+		switch(IsValidString(buffer))	{
+			case	true:	CPrintToChat(client, "%s %t", Prefix, "Special Kill Event", Name[client], points_client, points, Name[victim], buffer);
+			case	false:	CPrintToChat(client, "%s %t", Prefix, "Default Kill Event", Name[client], points_client, points, Name[victim]);
+		}
+	}
+	
+	if(!IsFakeClient(victim))	{
+		char log[2048];
+		int len = 0;
+		len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);
+		len += Format(log[len], sizeof(log)-len, "(ServerID, Time, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope)");
+		len += Format(log[len], sizeof(log)-len, "values");
+		len += Format(log[len], sizeof(log)-len, "('%i', '%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i')",
+		ServerID.IntValue, GetTime(), Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope);
+		db.Query(DBQuery_Kill_Log, log);
+	}
 }

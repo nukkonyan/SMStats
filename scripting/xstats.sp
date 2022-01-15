@@ -54,7 +54,6 @@ char			ConnectSound[2][64];
  *	The kill events will be merged together automatically.
  *	Example: Headshot whilst Mid-Air or Headshot Through Smoke whilst Mid-Air, etc.. (You get it)
  */
-int				Kill_Scenario = 0; /* will be removed shortly */
 stock char		Kill_Type[][] = {
 	"Kill Event Type 0",	//Mid-Air.
 	"Kill Event Type 1",	//Through Smoke.
@@ -147,7 +146,6 @@ public void OnPluginStart()	{
 			playerlist = "playerlist_css";
 			kill_log = "kill_log_css";
 			maps_log = "maps_log_css";
-			supported = false;
 		}
 		case	Game_CSPromod:	{
 			logprefix = "[Xstats: CS:Promod]";
@@ -162,7 +160,6 @@ public void OnPluginStart()	{
 			kill_log = "kill_log_csgo";
 			item_found = "item_found_csgo";
 			maps_log = "maps_log_csgo";
-			supported = false;
 		}
 		case	Game_CSCO:	{
 			logprefix = "[Xstats: CS:CO]";
@@ -293,8 +290,10 @@ stock void RoundStarted()	{
 		}
 	}
 	
-	if(WarmupActive)
+	if(RoundActive && WarmupActive)	{
+		CPrintToChatAll("%s %t", Prefix, "Round Start Warmup");
 		return;
+	}
 	
 	int needed = MinimumPlayers.IntValue;
 	int players = GetClientCountEx(!AllowBots.BoolValue);
@@ -302,7 +301,7 @@ stock void RoundStarted()	{
 	if(DisableAfterWin.BoolValue)	{
 		if(needed <= players)	{
 			RankActive = true;
-			CPrintToChatAll("%s Round Start: Statistical Tracking Enabled [%i/%i]", Prefix, players, needed);
+			CPrintToChatAll("%s %t", Prefix, "Round Start", players, needed);
 		}
 	}
 }
@@ -331,7 +330,7 @@ stock void RoundEnded()	{
 		
 		if(DisableAfterWin.BoolValue)	{
 			RankActive = false;
-			CPrintToChatAll("%s Round End: Statistical Tracking Disabled [%i/%i]", Prefix, players, needed);
+			CPrintToChatAll("%s %t", Prefix, "Round End", players, needed);
 		}
 	}
 	

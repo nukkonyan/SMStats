@@ -163,7 +163,7 @@ stock void UpdateLastConnectedState(const char[] auth)	{
 stock void RemoveOldConnectedPlayers(int days = 30)	{
 	int time = GetTime() - (days * 86400);
 	char query[512];
-	Format(query, sizeof(query), "select SteamID `%s` where LastConnected < '%i' and ServerID='%i'",
+	Format(query, sizeof(query), "select SteamID from `%s` where LastConnected < '%i' and ServerID='%i'",
 	playerlist, time, ServerID.IntValue);
 	
 	DataPack pack = new DataPack();
@@ -263,7 +263,7 @@ stock void CheckActivePlayers()	{
 			if(needed > players)	{
 				RankActive = false;
 				
-				CPrintToChatAll("%s Not enough players [%i/%i], disabling..", Prefix, players, needed);
+				CPrintToChatAll("%s %t", Prefix, "Not Enough Players", players, needed);
 				if(Debug.BoolValue)
 					PrintToServer("%s Not enough players [%i/%i], disabling..", Prefix, players, needed);
 			}
@@ -272,7 +272,7 @@ stock void CheckActivePlayers()	{
 			if(needed <= players)	{
 				if(RoundActive)	{
 					RankActive = true;
-					CPrintToChatAll("%s Enough players [%i/%i], enabling..", Prefix, players, needed);
+					CPrintToChatAll("%s %t", Prefix, "Enough Players", players, needed);
 					if(Debug.BoolValue)
 						PrintToServer("%s Enough players [%i/%i], enabling..", Prefix, players, needed);
 				}
@@ -347,4 +347,79 @@ stock void PrepareOnSuicideForward(int client)	{
 	Call_StartForward(Fwd_Suicide);
 	Call_PushCell(client);
 	Call_Finish();
+}
+
+/**
+ *	Stuff
+ */
+ 
+/**
+ *	Assisted kill event.
+ *
+ *	@param	assist	Assisters user index.
+ *	@param	client	The client that was assisted.
+ *	@param	victim	The victim that was killed.
+ *
+ *	@return	Returns if the assister is valid.
+ */
+stock bool AssistedKill(int assist, int client, int victim)	{
+	if(Tklib_IsValidClient(assist, true))	{
+		char query[512];
+		Session[assist].Assists++;
+		Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[assist], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(AssistKill.IntValue > 0)	{
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
+			playerlist, SteamID[assist], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
+			
+			int assist_points = GetClientPoints(SteamID[assist]);
+			CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", assist_points, AssistKill.IntValue, Name[client], Name[victim]);
+		}
+		
+		return true;
+	}
+	
+	return false;
+}
+
+/**
+ *	Victim died.
+ *
+ *	@param	victim	The victims user index.
+ *
+ *	@return	Returns if the victim is valid.
+ */
+stock bool VictimDied(int victim)	{
+	if(Tklib_IsValidClient(victim, true))	{
+		char query[512];
+		Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[victim], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		int death_points;
+		
+		switch(game)	{
+			case	Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP:
+				death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
+			default:
+				death_points = Death.IntValue;
+		}
+		
+		int victim_points = GetClientPoints(SteamID[victim]);
+		if(death_points > 0)	{
+			RemoveSessionPoints(victim, death_points);
+			CPrintToChat(victim, "%s %s (%i) lost %i points for dying.", Prefix, Name[victim], death_points, victim_points);
+			
+			Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
+			playerlist, death_points, SteamID[victim], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
+		}
+		
+		return true;
+	}
+	
+	return false;
 }

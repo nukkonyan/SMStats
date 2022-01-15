@@ -27,7 +27,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		
 	int assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER));
 	int defindex = CSGO_GetWeaponDefindex(weapon);
-	
+	//int penetrated = event.GetInt(EVENT_STR_PENETRATED);
 	bool midair = IsClientMidAir(client);
 	bool headshot = event.GetBool(EVENT_STR_HEADSHOT);
 	bool dominated = event.GetBool(EVENT_STR_DOMINATED);
@@ -35,6 +35,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	bool noscope = event.GetBool(EVENT_STR_NOSCOPE);
 	bool thrusmoke = event.GetBool(EVENT_STR_THRUSMOKE);
 	bool attackerblind = event.GetBool(EVENT_STR_ATTACKERBLIND);
+	//bool collateral = (penetrated > 0);
 	
 	if(Weapon[defindex] == null)	{
 		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", logprefix, weapon, defindex);
@@ -63,36 +64,10 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		PrintToServer("Points %i", points);
 	}
 	
-	char query[1024];
+	AssistedKill(assist, client, victim);
+	VictimDied(victim);
 	
-	if(Tklib_IsValidClient(assist, true))	{
-		Session[assist].Assists++;
-		Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[assist], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
-		
-		if(AssistKill.IntValue > 0)	{
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[assist], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			//Optimize the servers performance, combining the callback inside the chat print may lag the server for a slight second.
-			int assist_points = GetClientPoints(SteamID[assist]);
-			CPrintToChat(client, "%s %s (%i) earned %i points for assisting %s in killing %s", Prefix, assist_points, points, Name[client], Name[victim]);
-		}
-	}
-		
-	if(!IsFakeClient(victim))	{
-		Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[victim], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
-		
-		if(Death.IntValue > 0)	{
-			Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
-			playerlist, Death.IntValue, SteamID[victim], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-		}
-	}
+	char query[1024];
 	
 	Session[client].Kills++;
 	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
@@ -146,58 +121,65 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		
 		int points_client = GetClientPoints(SteamID[client]);
 		
-		if(noscope && headshot)
-			Kill_Scenario = 1;
-		else if(noscope)
-			Kill_Scenario = 2;
-		else if(midair && headshot)
-			Kill_Scenario = 3;
-		else if(midair)
-			Kill_Scenario = 4;
-		else if(headshot)
-			Kill_Scenario = 5;
-		else if(thrusmoke)
-			Kill_Scenario = 7;
-		else
-			Kill_Scenario = 0;
-		
-		/*
-		char scenario[64];
-		
-		if(Kill_Scenario > 0)	{
-			//Fix the format.
-			Format(scenario, sizeof(scenario), "%t{default}", Kill_Type[Kill_Scenario]);
+		char buffer[96];
+		if(midair)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
 		}
-		
-		switch(IsValidString(scenario))	{
-			case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario);
-			case	false:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 2", Name[client], points_client, points, Name[victim]);
+		else if(midair && noscope)
+		{
+			switch(thrusmoke)
+			{
+				case	true:	Format(buffer, sizeof(buffer), "%t %t %t{default}", Kill_Type[4], Kill_Type[0], Kill_Type[1]);
+				case	false:	Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[4], Kill_Type[0]);
+			}
+		}
+		else if(midair && noscope && headshot)
+		{
+			switch(thrusmoke)
+			{
+				case	true:	Format(buffer, sizeof(buffer), "%t %t %t{default}", Kill_Type[2], Kill_Type[0], Kill_Type[1]);
+				case	false:	Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[2], Kill_Type[0]);
+			}
+		}
+		else if(midair && headshot)
+		{
+			switch(thrusmoke)
+			{
+				case	true:	Format(buffer, sizeof(buffer), "%t %t %t{default}", Kill_Type[3], Kill_Type[0], Kill_Type[1]);
+				case	false:	Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[3], Kill_Type[0]);
+			}
+		}
+		/*
+		else if(collateral)
+		{
+			switch(thrusmoke)
+			{
+				case	true:	Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[10], Kill_Type[1]);
+				case	false:	Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[10]);
+			}
 		}
 		*/
+		else if(noscope && headshot)
+		{
+			switch(thrusmoke)
+			{
+				case	true:	Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[2], Kill_Type[1]);
+				case	false:	Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
+			}
+		}
+		else if(headshot)
+		{
+			switch(thrusmoke)
+			{
+				case	true:	Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[3], Kill_Type[1]);
+				case	false:	Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);
+			}
+		}
 		
-		//Temporary
-		switch(Kill_Scenario)	{
-			case	0:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	1:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with {green}Noscope Headshot{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	2:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with {green}Noscope{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	3:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with {green}Mid-Air Headshot{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	4:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s whilst {green}Mid-Air{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	5:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with {green}Headshot{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	7:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s {green}Through Smoke{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
+		switch(IsValidString(buffer))	{
+			case	true:	CPrintToChat(client, "%s %t", Prefix, "Special Kill Event", Name[client], points_client, points, Name[victim], buffer);
+			case	false:	CPrintToChat(client, "%s %t", Prefix, "Default Kill Event", Name[client], points_client, points, Name[victim]);
 		}
 		
 		if(!IsFakeClient(victim))	{
