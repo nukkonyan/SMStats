@@ -20,53 +20,73 @@
 	// Kill Event.
 	//================================//
 	
-	//Kill event types.
+	//Kill event types. Will automatically merge with one and another if needed.
+	
+	//Mid-Air.
+	"Kill Event Type 0"
+	{
+		"en"	"whilst {green}Mid-Air"
+	}
+	
+	//Noscope
 	"Kill Event Type 1"
 	{
-		//Noscope headshot.
-		"en"	"with a {green}Noscope Headshot"
-	}
-	
-	"Kill Event Type 2"
-	{
-		//Noscope
-		"en"	"with a {green}Noscope"
-	}
-	
-	"Kill Event Type 3"
-	{
-		//Mid-air headshot.
-		"en"	"with a {green}Mid-air Headshot"
-	}
-	
-	"Kill Event Typep 4"
-	{
-		//Mid-air kill.
-		"en"	"with a {green}Mid-air Shot"
-	}
-	
-	"Kill Event Type 5"
-	{
-		//Headshot.
-		"en"	"with a {green}Headshot"
-	}
-	
-	"Kill Event Type 6"
-	{
-		//Backstab.
-		"en"	"with a {green}Backstab"
-	}
-	
-	"Kill Event Type 7"
-	{
-		//Through Smoke.
 		"en"	"{green}Through Smoke"
 	}
 	
+	//Noscope Headshot
+	"Kill Event Type 2"
+	{
+		"en"	"with a {green}Noscope Headshot"
+	}
+	
+	//Headshot.
+	"Kill Event Type 3"
+	{
+		"en"	"with a {green}Headshot"
+	}
+	
+	//Noscope.
+	"Kill Event Type 4"
+	{
+		"en"	"with a {green}Noscope"
+	}
+	
+	//Backstab.
+	"Kill Event Type 5"
+	{
+		
+		"en"	"with a {green}Backstab"
+	}
+	
+	//Airshot.
+	"Kill Event Type 6"
+	{
+		"en"	"{green}Airshot"
+	}
+	
+	//Airshot Deflect Kill.
+	"Kill Event Type 7"
+	{
+		"en"	"{green}Airshot Deflect Kill"
+	}
+	
+	//Deflect Kill.
 	"Kill Event Type 8"
 	{
-		//Teleport frag.
+		"en"	"with a {green}Deflect Kill"
+	}
+	
+	//Teleport frag.
+	"Kill Event Type 9"
+	{
 		"en"	"with a {green}Telefrag"
+	}
+	
+	//Collateral.
+	"Kill Event Type 10"
+	{
+		"en"	"with a {green}Collateral"
 	}
 	
 	//Assist
@@ -77,17 +97,18 @@
 		"en"		"{1} ({2}) Earned {3} points for assisting {4} in killing {5}."
 	}
 	
-	//Kill event
-	"Kill Event 1"
+	//Kill events
+	
+	//Special kill event.
+	"Special Kill Event"
 	{
-		//Special kill event.
 		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en"		"{1} ({2}) Earned {3} points for killing {4} {5}."
 	}
 	
-	"Kill Event 2"
+	//Default kill event.
+	"Default Kill Event"
 	{
-		//Default kill event.
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
 		"en"		"{1} ({2}) Earned {3} points for killing {4}."
 	}
@@ -118,27 +139,309 @@
 	// Team Fortress 2.
 	//================================//
 	
-	"Point Captured"
+	//===================//
+	// Capture Points.
+	//===================//
+	
+	//Captured the point.
+	"Capture Event Type 0"
+	{
+		"en"		"{green}Capturing Point"
+	}
+	
+	//Defended the point.
+	"Capture Event Type 1"
+	{
+		"en"		"{green}Defending Point"
+	}
+	
+	"Capture Point Event"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for capturing point {4}"
+		"en"		"{1} ({2}) Earned {3} points for capturing point {4}."
 	}
 	
-	"Point Defended"
+	//===================//
+	// Capture-The-Flag.
+	//===================//
+	
+	//Picked up opponents intelligence.
+	"Flag Event Type 0"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en"		"{1} ({2}) Earned {3} points for defending point {4} from {5} capturing"
+		"en"		"{green}Picking Up Intelligence"
 	}
 	
-	"Flag Picked Up"
+	//Stole the opponents intelligence.
+	"Flag Event Type 1"
+	{
+		"en"		"{green}Stealing Intelligence"
+	}
+	
+	//Captured the opponents intelligence.
+	"Flag Event Type 2"
+	{
+		"en"		"{green}Capturing Opponents Intelligence"
+	}
+	
+	//Defended the opponnents intelligence.
+	"Flag Event Type 3"
+	{
+		"en"		"{green}Defending Team Intelligence"
+	}
+	
+	//Dropped the opponents intelligence.
+	"Flag Event Type 4"
+	{
+		"en"		"{green}Dropping Opponents Intelligence"
+	}
+	
+	//Earned points on intelligence event.
+	"Flag Event 0"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {4}."
+	}
+	
+	//Lost points on intelligence event.
+	"Flag Event 1"
+	{
+		"format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Lost {3} points for {4}."
+	}
+	
+	//===================//
+	// Buildings.
+	//===================//
+	
+	//Sentrygun.
+	"Object Type 0"
+	{
+		"en"		"{green}Sentrygun"
+	}
+	//Dispenser.
+	"Object Type 1"
+	{
+		"en"		"{green}Dispenser"
+	}
+	//Teleporter Entrance.
+	"Object Type 2"
+	{
+		"en"		"{green}Teleporter Entrance"
+	}
+	//Teleporter Exit.
+	"Object Type 3"
+	{
+		"en"		"{green}Teleporter Exit"
+	}
+	//Mini-Sentrygun.
+	"Object Type 4"
+	{
+		"en"		"{green}Mini-Sentrygun"
+	}
+	"Object Type 5"
+	{
+		"en"		"{green}Sapper"
+	}
+	
+	//Building was built.
+	"Object Event Type 0"
+	{
+		"en"		"{green}Building"
+	}
+	
+	//Sapper was placed.
+	"Object Event Type 1"
+	{
+		"en"		"{green}Placing"
+	}
+	
+	//Object was destroyed.
+	"Object Event Type 2"
+	{
+		"en"		"{green}Destroying"
+	}
+	
+	//===================//
+	// Other.
+	//===================//
+	
+	"Player Ubercharged"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for übercharging {4}."
+	}
+	
+	"Player Used Teleporter"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {4} using your teleporter."
+	}
+	
+	"Player Steal Sandvich Scenario 1"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for stealing sandvich belonging to {4}."
+	}
+	"Player Steal Sandvich Scenario 2"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for picking up the enemy intelligence"
+		"en"		"{1} ({2}) Earned {3} points for stealing sandvich."
 	}
 	
-	"Flag Stolen"
+	"Player Stun Scenario 1"
 	{
-		"format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for stealing the enemy intelligence"
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for stunning {4} with a {green}Moon Shot{default}."
+	}
+	"Player Stun Scenario 2"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for stunning {4}."
+	}
+	
+	//===================//
+	// Pass Ball Mode.
+	//===================//
+	
+	"PassBall Grab Neutral Ball"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Grabbing {default}neutral ball."
+	}
+	
+	"PassBall Score Ball"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Scoring {default}ball."
+	}
+	
+	"PassBall Drop Ball"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Lost {3} points for {green}Dropping {default}the ball."
+	}
+	
+	"PassBall Catch Ball Scenario 1"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Catching {default}the ball from {4}."
+	}
+	"PassBall Catch Ball Scenario 2"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Catching the ball."
+	}
+	
+	"PassBall Steal Ball Scenario 1"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Stealing {default}the ball from {4}."
+	}
+	"PassBall Steal Ball Scenario 2"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Stealing the ball."
+	}
+	
+	"PassBall Block Ball Scenario 1"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Blocking {default}the ball from {4}."
+	}
+	"PassBall Block Ball Scenario 2"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Blocking the ball."
+	}
+	
+	//===================//
+	// Halloween.
+	//===================//
+	
+	//Horseless Headless Horsemann.
+	"Halloween Boss Type 1"
+	{
+		"en"		"{purple}Horseless Headless Horsemann"
+	}
+	
+	//Monoculus.
+	"Halloween Boss Type 2"
+	{
+		"en"		"{purple}Monoculus"
+	}
+	
+	//Merasmus.
+	"Halloween Boss Type 3"
+	{
+		"en"		"{lightgreen}Merasmus"
+	}
+	
+	//Skeleton King.
+	"Halloween Boss Type 4"
+	{
+		"en"		"{lightgreen}Skeleton King"
+	}
+	
+	//Killed boss.
+	"Halloween Kill Event"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for killing {4}"
+	}
+	
+	//Stunned boss.
+	"Halloween Stun Event"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for stunning {4}"
+	}
+	
+	//===================//
+	// Coated.
+	//===================//
+	
+	//Pissed opponent.
+	"Player Coated Jar"
+	{
+		"#format"	"{1:s},{2:i},{3:s},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for coating {4} with piss."
+	}
+	
+	//Milked opponent.
+	"Player Coated Milk"
+	{
+		"#format"	"{1:s},{2:i},{3:s},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for coating {4} with milk."
+	}
+	
+	//===================//
+	// Coated.
+	//===================//
+	"Player Extinguished"
+	{
+		"#format"	"{1:s},{2:i},{3:s},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for extinguishing {4}"
+	}
+	
+	//===================//
+	// MvM.
+	//===================//
+	
+	"MvM Team Destroyed Tank"
+	{
+		"#format"	"{1:s},{2:i}"
+		"en"		"Team {1} Earned {2} points for destroying the {cyan}Tank{default}."
+	}
+	
+	"MvM Kill Sentry Buster"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for killing {cyan}Sentry Buster{default}."
+	}
+	
+	"MvM Player Reset Bomb"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for resetting the bomb.
 	}
 }

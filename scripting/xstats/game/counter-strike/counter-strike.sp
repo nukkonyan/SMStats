@@ -12,9 +12,6 @@ void PrepareGame_CounterStrike()	{
 	HookEventEx(EVENT_BOMB_PLANTED,		CS_Bombs, EventHookMode_Pre);
 	HookEventEx(EVENT_BOMB_DEFUSED,		CS_Bombs, EventHookMode_Pre);
 	HookEventEx(EVENT_BOMB_EXPLODED,	CS_Bombs, EventHookMode_Pre);
-	
-	HookEventEx(EVENT_ROUND_END,	CS_Round, EventHookMode_Pre);
-	HookEventEx(EVENT_ROUND_START,	CS_Round, EventHookMode_Pre);
 }
 
 /**
@@ -93,8 +90,6 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 		}
 	}
 }
-
-stock void CS_Round(Event event, const char[] event_name, bool dontBroadcast)	{StrEqual(event_name, EVENT_ROUND_END) ? RoundEnded() : RoundStarted();}
 
 /**
  *	At the moment not gonna be super accurate

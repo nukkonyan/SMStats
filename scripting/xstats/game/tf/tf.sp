@@ -10,6 +10,11 @@
 ConVar TF2_MvM[25];
 
 /**
+ * 	Other.
+ */
+ConVar TF2_Collat;
+
+/**
  *	Initialize: Team Fortress 2.
  */
 void PrepareGame_TF2()	{
@@ -448,6 +453,9 @@ void PrepareGame_TF2()	{
 	Weapon[30668]	= CreateConVar("xstats_points_weapon_gigarcounter",		"10",	"Xstats: TF2 - Points given when killing with Gigar Counter.", _, true);
 	Weapon[30758]	= CreateConVar("xstats_points_weapon_prinnymachete",	"10",	"Xstats: TF2 - Points given when killing with Prinny Machete.", _, true);	
 	
+	/* Other */
+	TF2_Collat		= CreateConVar("xstats_points_collateralkill",	"2",	"Xstats: TF2 - Extra points given when pulling a collateral kill.", _, true);
+	
 	/* MvM - Arrayed to make it way easier to handle due to long event names */
 	TF2_MvM[0] = CreateConVar("xstats_points_mvm_destroytank",		"5",	"Xstats: TF2 - Points given to red team when tank is destroyed.", _, true);
 	TF2_MvM[1] = CreateConVar("xstats_points_mvm_killsentrybuster",	"5",	"Xstats: TF2 - Points given when killing Sentry Buster.", _, true);
@@ -491,8 +499,7 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 	if(count < 1)
 		return; /* Nothing happens after this if count is below 1 */
 	
-	CPrintToChatAll("%s Team %s earned %i points for destroying tank.",
-	Prefix, TF2_GetTeamStringName[2], points);
+	CPrintToChatAll("%s %t", Prefix, "MVM Team Destroyed Tank", TF2_GetTeamStringName[2], points);
 }
 
 /*	Need to use "player_death" event since "mvm_sentrybuster_killed"
@@ -528,10 +535,7 @@ stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool do
 	
 	Session[client].SentryBustersKilled++;
 	AddSessionPoints(client, points);
-	GetClientTeamString(client, Name[client], sizeof(Name[]));
-	
-	CPrintToChat(client, "%s %s (%i) earned %i points for killing Sentry Buster.",
-	Prefix, client, points_client, points);
+	CPrintToChat(client, "%s %t", Prefix, "MvM Kill Sentry Buster", Name[client], points_client, points);
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set Points = Points+%i, SentryBustersKilled = SentryBustersKilled+1 where SteamID='%s' and ServerID='%i'",
@@ -555,10 +559,7 @@ stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool d
 	
 	Session[client].BombsResetted++;
 	AddSessionPoints(client, points);
-	GetClientTeamString(client, Name[client], sizeof(Name[]));
-	
-	CPrintToChat(client, "%s %s (%i) earned %i points for resetting the bomb.",
-	Prefix, Name[client], points_client, points);
+	CPrintToChat(client, "%s %t", Prefix, "MvM Player Reset Bomb", Name[client], points_client, points);
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set Points = Points+%i, BombsResetted = BombsResetted+1 where SteamID='%s' and ServerID='%i'",
@@ -665,6 +666,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	int defindex = event.GetInt(EVENT_STR_WEAPON_DEF_INDEX);
 	int customkill = event.GetInt(EVENT_STR_CUSTOMKILL);
 	int deathflags = event.GetInt(EVENT_STR_DEATH_FLAGS);
+	int penetrated = event.GetInt(EVENT_STR_PLAYERPENETRATECOUNT);
 	TFCritType crits = TFCritType(event.GetInt(EVENT_STR_CRIT_TYPE));
 	int points = 0;
 	
@@ -685,6 +687,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	bool revenge = (deathflags == 4);
 	bool revenge_assister = (deathflags == 8);
 	bool gibkill = (deathflags == 128 || deathflags == 129);
+	bool collateral = (penetrated > 0);
 	
 	/*	Backup death flags checks incase exampled attacker
 		and assister gets domination or revenge at the same time. */
@@ -707,6 +710,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		revenge_assister = true;
 		if(Debug.BoolValue)
 			PrintToServer("Assister revenged");
+	}
+	if(deathflags & 128 || deathflags & 129)	{
+		gibkill = true;
+		if(Debug.BoolValue)
+			PrintToServer("Gibkill");
 	}
 	
 	bool deflectkill = ((StrContains(weapon, "deflect", false) != -1)
@@ -783,7 +791,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		defindex = 1151;
 	
 	/* Classic - since you can noscope headshot. */
-	if(defindex == 1098 && TF2_IsPlayerInCondition(client, TFCond_Zoomed))
+	if(defindex == 1098 && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
 		noscope = true;
 	
 	/* The database query upload ("bat" -> "weapon_bat") */
@@ -803,6 +811,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		PrintToServer("defindex %i", defindex);
 		PrintToServer("customkill %i", customkill);
 		PrintToServer("deathflags %i", deathflags);
+		PrintToServer("penetrated %i", penetrated);
 		PrintToServer(" ");
 		PrintToServer("crit type \"%s\"", TF2_GetCritTypeName[crits]);
 		PrintToServer(" ");
@@ -837,8 +846,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			
 			//Optimize the servers performance, combining the callback inside the chat print may lag the server for a slight second.
 			int assist_points = GetClientPoints(SteamID[assist]);
-			CPrintToChat(assist, "%s %s (%i) earned %i points for assisting %s in killing %s",
-			Prefix, Name[assist], assist_points, assistkill, Name[client], Name[victim]);
+			CPrintToChat(assist, "%s %t", Prefix, "Assist Kill Event", Name[assist], assist_points, assistkill, Name[client], Name[victim]);
 		}
 		
 		if(dominated_assister)	{
@@ -1042,6 +1050,21 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			PrintToServer("Airshot");
 		}
 	}
+	
+	if(collateral)	{
+		Session[client].Collaterals++;
+		Format(query, sizeof(query), "update `%s` set Collaterals = Collaterals+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(TF2_Collat.IntValue > 0)
+			points += TF2_Collat.IntValue;
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Collateral");
+		}
+	}
 		
 	switch(crits)	{
 		case	TFCritType_Minicrit:	{
@@ -1082,84 +1105,68 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		
 		int points_client = GetClientPoints(SteamID[client]);
 		
-		if(noscope && headshot)
-			Kill_Scenario = 1;
-		else if(noscope)
-			Kill_Scenario = 2;
-		else if(midair && headshot)
-			Kill_Scenario = 3;
-		else if(midair && deflectkill)
-			Kill_Scenario = 10;
-		else if(midair && airshot)
-			Kill_Scenario = 11;
-		else if(airshot)
-			Kill_Scenario = 12;
-		else if(deflectkill)
-			Kill_Scenario = 13;
-		else if(midair)
-			Kill_Scenario = 4;
-		else if(headshot)
-			Kill_Scenario = 5;
-		else if(backstab)
-			Kill_Scenario = 6;
-		else if(telefrag)
-			Kill_Scenario = 8;
-		else if(tauntkill)
-			Kill_Scenario = 9;
-		else
-			Kill_Scenario = 0;
-		
-		/*
-		//fix the format.
-		char scenario[64];
-		if(Kill_Scenario > 0)
-			Format(scenario, sizeof(scenario), "%t{default}", Kill_Type[Kill_Scenario]);
-		
-		
-		switch(IsValidString(scenario))	{
-			case	true:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 1", Name[client], points_client, points, Name[victim], scenario);
-			case	false:	CPrintToChat(client, "%s %t", Prefix, "Kill Event 2", Name[client], points_client, points, Name[victim]);
+		/* Lë ol' messy code but has to be it. */
+		char buffer[96];
+		if(midair)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
 		}
-		*/
+		else if(midair && noscope)
+		{
+			Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[4], Kill_Type[0]);
+		}
+		else if(midair && noscope && headshot)
+		{
+			Format(buffer, sizeof(buffer), "%t %t %t{default}", Kill_Type[2], Kill_Type[0]);
+		}
+		else if(midair && headshot)
+		{
+			Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[3], Kill_Type[0]);
+		}
+		else if(midair && airshot)
+		{
+			Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[6], Kill_Type[0]);
+		}
+		else if(midair && backstab)
+		{
+			Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[5], Kill_Type[0]);
+		}
+		else if(midair && airshot && deflectkill)
+		{
+			Format(buffer, sizeof(buffer), "%t %t{default}", Kill_Type[7], Kill_Type[0]);
+		}
+		else if(collateral)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[10]);
+		}
+		else if(backstab)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[5]);
+		}
+		else if(noscope && headshot)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
+		}
+		else if(headshot)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);
+		}
+		else if(airshot && deflectkill)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[7]);
+		}
+		else if(deflectkill)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[6]);
+		}
+		else if(telefrag)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[9]);
+		}
 		
-		/* Temporary */
-		switch(Kill_Scenario)	{
-			case	0:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	2:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Noscope{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	3:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Mid-Air Headshot{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	4:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s whilst {green}Mid-Air{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	5:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Headshot{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	6:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Backstab{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	8:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Telefrag{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	9:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Tauntkill{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	10:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Mid-Air Deflectkill{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	11:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Airshot{default} whilst {green}Mid-Air{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	12:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Airshot{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
-			case	13:
-				CPrintToChat(client, "%s %s (%i) earned %i points for killing %s with a {green}Deflectkill{default}.",
-				Prefix, Name[client], points_client, points, Name[victim]);
+		switch(IsValidString(buffer))	{
+			case	true:	CPrintToChat(client, "%s %t", Prefix, "Special Kill Event", Name[client], points_client, points, Name[victim], buffer);
+			case	false:	CPrintToChat(client, "%s %t", Prefix, "Default Kill Event", Name[client], points_client, points, Name[victim]);
 		}
 	}
 		
@@ -1167,10 +1174,10 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		char log[2048];
 		int len = 0;
 		len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);
-		len += Format(log[len], sizeof(log)-len, "(ServerID, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, Midair, CritType)");
+		len += Format(log[len], sizeof(log)-len, "(ServerID, Time, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, Midair, CritType)");
 		len += Format(log[len], sizeof(log)-len, "values");
-		len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
-		ServerID.IntValue, Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, midair, crits);
+		len += Format(log[len], sizeof(log)-len, "('%i', '%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
+		ServerID.IntValue, GetTime(), Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, midair, crits);
 		db.Query(DBQuery_Kill_Log, log);
 	}
 }

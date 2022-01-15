@@ -6,6 +6,13 @@ void PrepareEvents()	{
 	HookEventEx(EVENT_PLAYER_CONNECT, Connected, EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_CONNECT_CLIENT, Connected, EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_DISCONNECT, Disconnected, EventHookMode_Pre);
+	
+	/* Rounds */
+	HookEventEx(EVENT_ROUND_END,				Rounds, EventHookMode_Pre);
+	HookEventEx(EVENT_ROUND_START,				Rounds, EventHookMode_Pre);
+	HookEventEx(EVENT_TEAMPLAY_ROUND_ACTIVE,	Rounds, EventHookMode_Pre);
+	HookEventEx(EVENT_ARENA_ROUND_START,		Rounds, EventHookMode_Pre);
+	HookEventEx(EVENT_TEAMPLAY_ROUND_WIN,		Rounds, EventHookMode_Pre);
 }
 
 /* Check if it's a suicide */
@@ -106,4 +113,15 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 	
 	/* Clear the steamid. */
 	SteamID[client] = NULL_STRING;
+}
+
+stock void Rounds(Event event, const char[] event_name, bool dontBroadcast)	{
+	(StrEqual(event_name, EVENT_ROUND_END)
+	|| StrEqual(event_name, EVENT_TEAMPLAY_ROUND_WIN)) ? RoundEnded() : RoundStarted();
+	
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== Rounds =====//");
+		PrintToServer("\"%s\" Was fired", event_name);
+		PrintToServer(" ");
+	}
 }

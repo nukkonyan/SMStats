@@ -51,23 +51,22 @@ char			ConnectSound[2][64];
  *	Kill scenario | Used for translations but is currently unused for the moment
  *	due to in process of adding new stuff whole time during development process.
  *	Translations will be added later.
+ *	The kill events will be merged together automatically.
+ *	Example: Headshot whilst Mid-Air or Headshot Through Smoke whilst Mid-Air, etc.. (You get it)
  */
-int				Kill_Scenario = 0;
+int				Kill_Scenario = 0; /* will be removed shortly */
 stock char		Kill_Type[][] = {
-	"Kill Event Type 0", //unused
-	"Kill Event Type 1",
-	"Kill Event Type 2",
-	"Kill Event Type 3",
-	"Kill Event Type 4",
-	"Kill Event Type 5",
-	"Kill Event Type 6",
-	"Kill Event Type 7",
-	"Kill Event Type 8",
-	"Kill Event Type 9",
-	"Kill Event Type 10",
-	"Kill Event Type 11",
-	"Kill Event Type 12",
-	"Kill Event Type 13"
+	"Kill Event Type 0",	//Mid-Air.
+	"Kill Event Type 1",	//Through Smoke.
+	"Kill Event Type 2",	//Noscope Headshot.
+	"Kill Event Type 3",	//Headshot.
+	"Kill Event Type 4",	//Noscope.
+	"Kill Event Type 5",	//Backstab.
+	"Kill Event Type 6",	//Airshot.
+	"Kill Event Type 7",	//Airshot Deflect Kill.
+	"Kill Event Type 8",	//Deflect Kill.
+	"Kill Event Type 9",	//Telefrag.
+	"Kill Event Type 10",	//Collateral.
 };
 
 /* Session */
@@ -235,11 +234,12 @@ public void OnPluginStart()	{
 	PrepareEvents(); /* Global events */
 	PrepareSounds(); /* Connect sounds */
 	
-	//Translation. (Will be added later.)
-	//LoadTranslations("xstats.phrases");
+	//Translation.
+	LoadTranslations("xstats.phrases");
 	
 	/* Incase the plugin were launched manually or perhaps started (?)*/
 	for(int client = 1; client < MaxClients; client++)	{
+		/* Only gather the steamid from the players */
 		if(Tklib_IsValidClient(client, true, false, false))
 			GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
 		
