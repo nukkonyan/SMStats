@@ -21,6 +21,7 @@ void PrepareDB_CSS()	{
 	len += Format(query[len], sizeof(query)-len, "`Suicides`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`DamageDone`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`KnifeKills`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`MidAirKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Headshots`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Noscopes`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Dominations`							int(32) not null default '0',");
@@ -73,6 +74,7 @@ void PrepareDB_CSS()	{
 	len += Format(query[len], sizeof(query)-len, "`Weapon`						varchar(64)		not null default '',");
 	len += Format(query[len], sizeof(query)-len, "`Headshot`					bool			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Noscope`						bool			not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`MidAirKills`					int(32)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
 	db.Query(DBQuery_DB, query, 2);
@@ -93,6 +95,7 @@ void PrepareDB_CSS()	{
 	len += Format(query[len], sizeof(query)-len, "`Noscopes`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Dominations`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Revenges`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`MidAirKills`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ServerID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
 	db.Query(DBQuery_DB, query, 4);

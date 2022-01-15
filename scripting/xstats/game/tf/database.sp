@@ -316,6 +316,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Suicides`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Headshots`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Backstabs`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`MidAirKills`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`GibKills`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`CritKills`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TauntKills`						int(32) not null default '0',");
