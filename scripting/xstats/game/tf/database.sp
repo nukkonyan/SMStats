@@ -343,7 +343,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`PointsCaptured`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`PointsDefended`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`FlagsPickedUp`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`FlagsCaptured`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`FlagsCaptured`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`FlagsStolen`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`FlagsDefended`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Ubercharged`						int(32) not null default '0',");

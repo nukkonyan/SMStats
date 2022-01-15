@@ -19,6 +19,7 @@ void Games_DatabaseConnected()	{
 		case	Game_TF2:	PrepareDB_TF2();
 		case	Game_CSGO:	PrepareDB_CSGO();
 		case	Game_CSS:	PrepareDB_CSS();
+		case	Game_CSPro:	PrepareDB_CSS();
 	}
 }
 
@@ -37,7 +38,7 @@ void PrepareGame()	{
 		}
 		case	Game_CSPromod:	{
 			PrepareGame_CounterStrike();
-			//PrepareGame_CSPromod();
+			PrepareGame_CSS();
 		}
 		case	Game_CSGO:	{
 			PrepareGame_CounterStrike();

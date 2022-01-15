@@ -372,11 +372,11 @@ stock bool AssistedKill(int assist, int client, int victim)	{
 		
 		if(AssistKill.IntValue > 0)	{
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[assist], ServerID.IntValue);
+			playerlist, AssistKill.IntValue, SteamID[assist], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
 			int assist_points = GetClientPoints(SteamID[assist]);
-			CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", assist_points, AssistKill.IntValue, Name[client], Name[victim]);
+			CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", Name[assist], assist_points, AssistKill.IntValue, Name[client], Name[victim]);
 		}
 		
 		return true;

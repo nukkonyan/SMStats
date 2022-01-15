@@ -22,20 +22,17 @@
 	
 	"Round Start"
 	{
-		"#format"	"{1:i},{2:i}"
-		"en"		"Round Start: Tracking enabled [{1}/{2}]"
+		"en"		"Round Start: Tracking enabled"
 	}
 	
 	"Round Start Warmup"
 	{
-		//"#format"	"{1:i},{2:i}"
 		"en"		"Round Start: Warmup/Waiting for players detected, ignoring statistical tracking"
 	}
 	
 	"Round End"
 	{
-		"#format"	"{1:i},{2:i}"
-		"en"		"Round End: Tracking disabled [{1}/{2}]"
+		"en"		"Round End: Tracking disabled"
 	}
 	
 	"Not Enough Players"
@@ -47,7 +44,7 @@
 	"Enough Players"
 	{
 		"#format"	"{1:i},{2:i}"
-		"en"		"Emnough Players [{1}/{2}], enabling.."
+		"en"		"Enough Players [{1}/{2}], enabling.."
 	}
 	
 	//================================//
@@ -128,7 +125,7 @@
 	{
 		//Special kill event.
 		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en"		"{1} ({2}) Earned {3} points for assisting {4} in killing {5}."
+		"en"		"{1} ({2}) Earned {3} points for assisting {4} in killing {5}"
 	}
 	
 	//Kill events
@@ -137,14 +134,14 @@
 	"Special Kill Event"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en"		"{1} ({2}) Earned {3} points for killing {4} {5}."
+		"en"		"{1} ({2}) Earned {3} points for killing {4} {5}"
 	}
 	
 	//Default kill event.
 	"Default Kill Event"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for killing {4}."
+		"en"		"{1} ({2}) Earned {3} points for killing {4}"
 	}
 	
 	//================================//
@@ -154,19 +151,19 @@
 	"Bomb Planted"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for planting the bomb."
+		"en"		"{1} ({2}) Earned {3} points for planting the bomb"
 	}
 	
 	"Bomb Defused"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for defusing the bomb."
+		"en"		"{1} ({2}) Earned {3} points for defusing the bomb"
 	}
 	
 	"Bomb Explode"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for bomb exploding and winning the round."
+		"en"		"{1} ({2}) Earned {3} points for bomb exploding and winning the round"
 	}
 	
 	//================================//
@@ -192,7 +189,7 @@
 	"Capture Point Event"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for capturing point {4}."
+		"en"		"{1} ({2}) Earned {3} points for capturing point {4}"
 	}
 	
 	//===================//
@@ -233,14 +230,14 @@
 	"Flag Event 0"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {4}."
+		"en"		"{1} ({2}) Earned {3} points for {4}"
 	}
 	
 	//Lost points on intelligence event.
 	"Flag Event 1"
 	{
 		"format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Lost {3} points for {4}."
+		"en"		"{1} ({2}) Lost {3} points for {4}"
 	}
 	
 	//===================//
@@ -302,35 +299,35 @@
 	"Player Ubercharged"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for übercharging {4}."
+		"en"		"{1} ({2}) Earned {3} points for übercharging {4}"
 	}
 	
 	"Player Used Teleporter"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {4} using your teleporter."
+		"en"		"{1} ({2}) Earned {3} points for {4} using your teleporter"
 	}
 	
 	"Player Steal Sandvich Scenario 1"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for stealing sandvich belonging to {4}."
+		"en"		"{1} ({2}) Earned {3} points for stealing sandvich belonging to {4}"
 	}
 	"Player Steal Sandvich Scenario 2"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for stealing sandvich."
+		"en"		"{1} ({2}) Earned {3} points for stealing sandvich"
 	}
 	
 	"Player Stun Scenario 1"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for stunning {4} with a {green}Moon Shot{default}."
+		"en"		"{1} ({2}) Earned {3} points for stunning {4} with a {green}Moon Shot{default}"
 	}
 	"Player Stun Scenario 2"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for stunning {4}."
+		"en"		"{1} ({2}) Earned {3} points for stunning {4}"
 	}
 	
 	//===================//
@@ -340,52 +337,52 @@
 	"PassBall Grab Neutral Ball"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Grabbing {default}neutral ball."
+		"en"		"{1} ({2}) Earned {3} points for {green}Grabbing {default}neutral ball"
 	}
 	
 	"PassBall Score Ball"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Scoring {default}ball."
+		"en"		"{1} ({2}) Earned {3} points for {green}Scoring {default}ball"
 	}
 	
 	"PassBall Drop Ball"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Lost {3} points for {green}Dropping {default}the ball."
+		"en"		"{1} ({2}) Lost {3} points for {green}Dropping {default}the ball"
 	}
 	
 	"PassBall Catch Ball Scenario 1"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Catching {default}the ball from {4}."
+		"en"		"{1} ({2}) Earned {3} points for {green}Catching {default}the ball from {4}"
 	}
 	"PassBall Catch Ball Scenario 2"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Catching the ball."
+		"en"		"{1} ({2}) Earned {3} points for {green}Catching the ball"
 	}
 	
 	"PassBall Steal Ball Scenario 1"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Stealing {default}the ball from {4}."
+		"en"		"{1} ({2}) Earned {3} points for {green}Stealing {default}the ball from {4}"
 	}
 	"PassBall Steal Ball Scenario 2"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Stealing the ball."
+		"en"		"{1} ({2}) Earned {3} points for {green}Stealing the ball"
 	}
 	
 	"PassBall Block Ball Scenario 1"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Blocking {default}the ball from {4}."
+		"en"		"{1} ({2}) Earned {3} points for {green}Blocking {default}the ball from {4}"
 	}
 	"PassBall Block Ball Scenario 2"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Blocking the ball."
+		"en"		"{1} ({2}) Earned {3} points for {green}Blocking the ball"
 	}
 	
 	//===================//
@@ -438,14 +435,14 @@
 	"Player Coated Jar"
 	{
 		"#format"	"{1:s},{2:i},{3:s},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for coating {4} with piss."
+		"en"		"{1} ({2}) Earned {3} points for coating {4} with piss"
 	}
 	
 	//Milked opponent.
 	"Player Coated Milk"
 	{
 		"#format"	"{1:s},{2:i},{3:s},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for coating {4} with milk."
+		"en"		"{1} ({2}) Earned {3} points for coating {4} with milk"
 	}
 	
 	//===================//
@@ -464,18 +461,18 @@
 	"MvM Team Destroyed Tank"
 	{
 		"#format"	"{1:s},{2:i}"
-		"en"		"Team {1} Earned {2} points for destroying the {cyan}Tank{default}."
+		"en"		"Team {1} Earned {2} points for destroying the {cyan}Tank{default}"
 	}
 	
 	"MvM Kill Sentry Buster"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for killing {cyan}Sentry Buster{default}."
+		"en"		"{1} ({2}) Earned {3} points for killing {cyan}Sentry Buster{default}"
 	}
 	
 	"MvM Player Reset Bomb"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for resetting the bomb.
+		"en"		"{1} ({2}) Earned {3} points for resetting the bomb"
 	}
 }

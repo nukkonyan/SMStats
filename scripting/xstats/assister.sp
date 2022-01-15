@@ -37,8 +37,10 @@ int GetLatestAssister(int victim, int client)	{
 		//Make sure the user is in the game.
 		if(Tklib_IsValidClient(i))	{
 			//Make sure to not return the attacker if he did the most damage.
-			if(client != i && PlayerDamaged[victim][i] > 50)
+			if(/*client != i && */PlayerDamaged[victim][i] > 50)
 				userid = GetClientUserId(i);
+			if(client)
+				PrintToServer("Nice :)");
 		}
 	}
 	

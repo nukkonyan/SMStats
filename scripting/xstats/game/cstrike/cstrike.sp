@@ -12,27 +12,28 @@
  */
 void PrepareGame_CSS()	{
 	//Weapon cvars
-	Weapon[CSS_Weapon_Deagle]	= CreateConVar("xstats_weapon_deagle",	"5", "xStats: CSS - Points given when killing with Deagle.", _, true);
-	Weapon[CSS_Weapon_Glock]	= CreateConVar("xstats_weapon_glock",	"5", "xStats: CSS - Points given when killing with Glock.", _, true);
-	Weapon[CSS_Weapon_Ak47]		= CreateConVar("xstats_weapon_ak47",	"5", "xStats: CSS - Points given when killing with Ak47.", _, true);
-	Weapon[CSS_Weapon_Aug]		= CreateConVar("xstats_weapon_aug",		"5", "xStats: CSS - Points given when killing with Aug.", _, true);
-	Weapon[CSS_Weapon_AWP]		= CreateConVar("xstats_weapon_awp",		"5", "xStats: CSS - Points given when killing with Awp.", _, true);
-	Weapon[CSS_Weapon_Famas]	= CreateConVar("xstats_weapon_famas",	"5", "xStats: CSS - Points given when killing with Famas.", _, true);
-	Weapon[CSS_Weapon_G3SG1]	= CreateConVar("xstats_weapon_g3sg1",	"5", "xStats: CSS - Points given when killing with G3SG1.", _, true);
-	Weapon[CSS_Weapon_Galil]	= CreateConVar("xstats_weapon_galil",	"5", "xStats: CSS - Points given when killing with Galil.", _, true);
-	Weapon[CSS_Weapon_M249]		= CreateConVar("xstats_weapon_m249",	"5", "xStats: CSS - Points given when killing with M249.", _, true);
-	Weapon[CSS_Weapon_M4A1]		= CreateConVar("xstats_weapon_m4a1",	"5", "xStats: CSS - Points given when killing with M4a1.", _, true);
-	Weapon[CSS_Weapon_Mac10]	= CreateConVar("xstats_weapon_mac10",	"5", "xStats: CSS - Points given when killing with Mac10.", _, true);
-	Weapon[CSS_Weapon_P90]		= CreateConVar("xstats_weapon_p90",		"5", "xStats: CSS - Points given when killing with P90.", _, true);
-	Weapon[CSS_Weapon_MP5]		= CreateConVar("xstats_weapon_mp5",		"5", "xStats: CSS - Points given when killing with MP5.", _, true);
-	Weapon[CSS_Weapon_UMP45]	= CreateConVar("xstats_weapon_ump45",	"5", "xStats: CSS - Points given when killing with UMP45.", _, true);
-	Weapon[CSS_Weapon_XM1014]	= CreateConVar("xstats_weapon_xm1014",	"5", "xStats: CSS - Points given when killing with XM1014.", _, true);
-	Weapon[CSS_Weapon_M3]		= CreateConVar("xstats_weapon_m3",		"5", "xStats: CSS - Points given when killing with M3.", _, true);
-	Weapon[CSS_Weapon_USP]		= CreateConVar("xstats_weapon_usp",		"5", "xStats: CSS - Points given when killing with P2000.", _, true);
-	Weapon[CSS_Weapon_P228]		= CreateConVar("xstats_weapon_p250",	"5", "xStats: CSS - Points given when killing with P250.", _, true);
-	Weapon[CSS_Weapon_SG550]	= CreateConVar("xstats_weapon_sg550",	"5", "xStats: CSS - Points given when killing with SG550.", _, true);
-	Weapon[CSS_Weapon_SG552]	= CreateConVar("xstats_weapon_sg552",	"5", "xStats: CSS - Points given when killing with SG552.", _, true);
-	Weapon[CSS_Weapon_Scout]	= CreateConVar("xstats_weapon_scout",	"5", "xStats: CSS - Points given when killing with Scout.", _, true);
+	Weapon[CSS_Weapon_Deagle]	= CreateConVar("xstats_points_weapon_deagle",	"5", "XStats: CSS - Points given when killing with Deagle.", _, true);
+	Weapon[CSS_Weapon_Glock]	= CreateConVar("xstats_points_weapon_glock",	"5", "XStats: CSS - Points given when killing with Glock.", _, true);
+	Weapon[CSS_Weapon_Ak47]		= CreateConVar("xstats_points_weapon_ak47",		"5", "XStats: CSS - Points given when killing with Ak47.", _, true);
+	Weapon[CSS_Weapon_Aug]		= CreateConVar("xstats_points_weapon_aug",		"5", "XStats: CSS - Points given when killing with Aug.", _, true);
+	Weapon[CSS_Weapon_AWP]		= CreateConVar("xstats_points_weapon_awp",		"5", "XStats: CSS - Points given when killing with Awp.", _, true);
+	Weapon[CSS_Weapon_Famas]	= CreateConVar("xstats_points_weapon_famas",	"5", "XStats: CSS - Points given when killing with Famas.", _, true);
+	Weapon[CSS_Weapon_G3SG1]	= CreateConVar("xstats_points_weapon_g3sg1",	"5", "XStats: CSS - Points given when killing with G3SG1.", _, true);
+	Weapon[CSS_Weapon_Galil]	= CreateConVar("xstats_points_weapon_galil",	"5", "XStats: CSS - Points given when killing with Galil.", _, true);
+	Weapon[CSS_Weapon_M249]		= CreateConVar("xstats_points_weapon_m249",		"5", "XStats: CSS - Points given when killing with M249.", _, true);
+	Weapon[CSS_Weapon_M4A1]		= CreateConVar("xstats_points_weapon_m4a1",		"5", "XStats: CSS - Points given when killing with M4a1.", _, true);
+	Weapon[CSS_Weapon_Mac10]	= CreateConVar("xstats_points_weapon_mac10",	"5", "XStats: CSS - Points given when killing with Mac10.", _, true);
+	Weapon[CSS_Weapon_P90]		= CreateConVar("xstats_points_weapon_p90",		"5", "XStats: CSS - Points given when killing with P90.", _, true);
+	Weapon[CSS_Weapon_MP5]		= CreateConVar("xstats_points_weapon_mp5",		"5", "XStats: CSS - Points given when killing with MP5.", _, true);
+	Weapon[CSS_Weapon_UMP45]	= CreateConVar("xstats_points_weapon_ump45",	"5", "XStats: CSS - Points given when killing with UMP45.", _, true);
+	Weapon[CSS_Weapon_XM1014]	= CreateConVar("xstats_points_weapon_xm1014",	"5", "XStats: CSS - Points given when killing with XM1014.", _, true);
+	Weapon[CSS_Weapon_M3]		= CreateConVar("xstats_points_weapon_m3",		"5", "XStats: CSS - Points given when killing with M3.", _, true);
+	Weapon[CSS_Weapon_USP]		= CreateConVar("xstats_points_weapon_usp",		"5", "XStats: CSS - Points given when killing with P2000.", _, true);
+	Weapon[CSS_Weapon_P228]		= CreateConVar("xstats_points_weapon_p250",		"5", "XStats: CSS - Points given when killing with P250.", _, true);
+	Weapon[CSS_Weapon_SG550]	= CreateConVar("xstats_points_weapon_sg550",	"5", "XStats: CSS - Points given when killing with SG550.", _, true);
+	Weapon[CSS_Weapon_SG552]	= CreateConVar("xstats_points_weapon_sg552",	"5", "XStats: CSS - Points given when killing with SG552.", _, true);
+	Weapon[CSS_Weapon_Scout]	= CreateConVar("xstats_points_weapon_scout",	"5", "XStats: CSS - Points given when killing with Scout.", _, true);
+	Weapon[CSS_Weapon_Knife]	= CreateConVar("xstats_points_weapon_knife",	"5", "XStats: CSS - Points given when killing with Knife.", _, true);
 	
 	/* Events */
 	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_CSS, EventHookMode_Pre);
@@ -56,7 +57,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	if(IsValidAbuse(client))
 		return;
 
-	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_VICTIM));
+	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	if(!Tklib_IsValidClient(client))
 		return;
 	
@@ -84,6 +85,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	|| StrEqual(weapon, "weapon_g3sg1")
 	|| StrEqual(weapon, "weapon_scout")
 	|| StrEqual(weapon, "weapon_awp")) && !CS_IsWeaponZoomedIn(GetClientActiveWeapon(client)));
+	bool knifekill = StrEqual(weapon, "weapon_knife");
 	
 	AssistedKill(assist, client, victim);
 	VictimDied(victim);
@@ -150,6 +152,18 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		if(Debug.BoolValue)	{
 			PrintToServer(" ");
 			PrintToServer("MidAir Kill");
+		}
+	}
+	
+	if(knifekill)	{
+		Session[client].KnifeKills++;
+		Format(query, sizeof(query), "update `%s` set KnifeKills = KnifeKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Knife Kill");
 		}
 	}
 	

@@ -120,14 +120,13 @@ public void OnPluginStart()	{
 	
 	switch(game)	{
 		case	Game_DODS:	{
-			logprefix = "[Xstats: DOD:S]";
+			logprefix = "[XStats: DOD:S]";
 			playerlist = "playerlist_dods";
 			kill_log = "kill_log_dods";
 			maps_log = "maps_log_dods";
-			supported = false;
 		}
 		case	Game_TF2:	{
-			logprefix = "[Xstats: TF2]";
+			logprefix = "[XStats: TF2]";
 			playerlist = "playerlist_tf2";
 			kill_log = "kill_log_tf2";
 			item_found = "item_found_tf2";
@@ -135,81 +134,76 @@ public void OnPluginStart()	{
 			supported = true;
 		}
 		case	Game_TF2Classic:	{
-			logprefix = "[Xstats: TF2:C]";
+			logprefix = "[XStats: TF2:C]";
 			playerlist = "playerlist_tf2classic";
 			kill_log = "kill_log_tf2classic";
 			maps_log = "maps_log_tf2classic";
-			supported = false;
 		}
 		case	Game_CSS:	{
-			logprefix = "[Xstats: CS:S]";
+			logprefix = "[XStats: CS:S]";
 			playerlist = "playerlist_css";
 			kill_log = "kill_log_css";
 			maps_log = "maps_log_css";
+			supported = true;
 		}
 		case	Game_CSPromod:	{
-			logprefix = "[Xstats: CS:Promod]";
+			logprefix = "[XStats: CS:Promod]";
 			playerlist = "playerlist_promod";
 			kill_log = "kill_log_cspromod";
 			maps_log = "maps_log_cspromod";
-			supported = false;
 		}
 		case	Game_CSGO:	{
-			logprefix = "[Xstats: CS:GO]";
+			logprefix = "[XStats: CS:GO]";
 			playerlist = "playerlist_csgo";
 			kill_log = "kill_log_csgo";
 			item_found = "item_found_csgo";
 			maps_log = "maps_log_csgo";
+			supported = true;
 		}
 		case	Game_CSCO:	{
-			logprefix = "[Xstats: CS:CO]";
+			logprefix = "[XStats: CS:CO]";
 			playerlist = "playerlist_csco";
 			kill_log = "kill_log_csco";
 			maps_log = "maps_log_csco";
-			supported = false;
 		}
 		case	Game_L4D1:	{
-			logprefix = "[Xstats: L4D1]";
+			logprefix = "[XStats: L4D1]";
 			playerlist = "playerlist_l4d1";
 			kill_log = "kill_log_l4d1";
 			maps_log = "maps_log_l4d1";
-			supported = false;
 		}
 		case	Game_L4D2:	{
-			logprefix = "[Xstats: L4D2]";
+			logprefix = "[XStats: L4D2]";
 			playerlist = "playerlist_l4d2";
 			kill_log = "kill_log_l4d2";
 			maps_log = "maps_log_l4d2";
-			supported = false;
 		}
 		case	Game_Contagion:	{
-			logprefix = "[Xstats: Contagion]";
+			logprefix = "[XStats: Contagion]";
 			playerlist = "playerlist_contagion";
 			kill_log = "kill_log_contagion";
 			maps_log = "maps_log_contagion";
-			supported = false;
 		}
-		default:	supported = false;
 	}
 	
 	if(!supported)
 		SetFailState("%s Game \"%s\" is unsupported.", LogTag, title);
 	
-	PrintToServer("xStats Version %s Detected game: %s", Version, title);
+	PrintToServer("XStats Version %s Detected game: %s", Version, title);
 	
-	CreateConVar("xstats_version", Version, "Xstats - Version.").AddChangeHook(VersionChanged);
-	PluginActive	= CreateConVar("xstats_enabled",		"1", "Xstats - Should the tracking plugin be enabled?.", _, true, _, true, 1.0);
-	Debug			= CreateConVar("xstats_debug",			"0", "Xstats - Debug. (For development purposes)", FCVAR_DEVELOPMENTONLY, true, _, true, 1.0);
-	AllowBots		= CreateConVar("xstats_allow_bots",		"0", "Xstats - Should bots be allowed to be tracked as a valid opponent?.", _, true, _, true, 1.0);
-	AllowWarmup		= CreateConVar("xstats_allow_warmup",	"0", "Xstats - Should warmup be a valid round to track?.", _, true, _, true, 1.0);
-	ServerID		= CreateConVar("xstats_serverid",		"1", "Xstats - Server ID the server should be identified as.", _, true);
-	MinimumPlayers	= CreateConVar("xstats_minimumplayers",	"4", "Xstats - Minimum amount of players required.", _, true, 1.0);
-	DisableAfterWin	= CreateConVar("xstats_disableafterwin","1", "Xstats - Should tracking be disabled when a team wins/round ends?.", _, true, _, true, 1.0);
-	ConnectMsg		= CreateConVar("xstats_connectmsg",		"1", "Xstats - Should connect messages be enabled?", _, true, _, true, 1.0);
-	RemoveOldPlayers = CreateConVar("xstats_removeoldplayers", "0", "Xstats - Number of days of days to keep players in the database. (Since last connection). 0 Disables check.");
-	AntiAbuse		= CreateConVar("xstats_antiabuse",		"1", "Xstats - Should abusing players be avoided to make sure the event was legit? (Noclipping, sv_cheats, etc)", _, true, _, true, 1.0);
+	CreateConVar("xstats_version", Version, "XStats - Version.").AddChangeHook(VersionChanged);
+	PluginActive	= CreateConVar("xstats_enabled",		"1", "XStats - Should the tracking plugin be enabled?.", _, true, _, true, 1.0);
+	Debug			= CreateConVar("xstats_debug",			"0", "XStats - Debug. (For development purposes)", FCVAR_DEVELOPMENTONLY, true, _, true, 1.0);
+	AllowBots		= CreateConVar("xstats_allow_bots",		"0", "XStats - Should bots be allowed to be tracked as a valid opponent?.", _, true, _, true, 1.0);
+	AllowWarmup		= CreateConVar("xstats_allow_warmup",	"0", "XStats - Should warmup be a valid round to track?.", _, true, _, true, 1.0);
+	ServerID		= CreateConVar("xstats_serverid",		"1", "XStats - Server ID the server should be identified as.", _, true);
+	MinimumPlayers	= CreateConVar("xstats_minimumplayers",	"4", "XStats - Minimum amount of players required.", _, true, 1.0);
+	DisableAfterWin	= CreateConVar("xstats_disableafterwin","1", "XStats - Should tracking be disabled when a team wins/round ends?.", _, true, _, true, 1.0);
+	ConnectMsg		= CreateConVar("xstats_connectmsg",		"1", "XStats - Should connect messages be enabled?", _, true, _, true, 1.0);
+	RemoveOldPlayers = CreateConVar("xstats_removeoldplayers", "0", "XStats - Number of days of days to keep players in the database. (Since last connection). 0 Disables check.");
+	AntiAbuse		= CreateConVar("xstats_antiabuse",		"1", "XStats - Should abusing players be avoided to make sure the event was legit? (Noclipping, sv_cheats, etc)", _, true, _, true, 1.0);
 	
-	PrefixCvar = CreateConVar("xstats_prefix", "{green}Xstats", "Xstats - Prefix to be used ingame texts.");
+	PrefixCvar = CreateConVar("xstats_prefix", "{green}Xstats", "XStats - Prefix to be used ingame texts.");
 	PrefixCvar.AddChangeHook(PrefixCallback);
 	PrefixCvar.GetString(Prefix, sizeof(Prefix));
 	Format(Prefix, sizeof(Prefix), "%s{default}", Prefix);
@@ -218,9 +212,9 @@ public void OnPluginStart()	{
 	AllowBots.AddChangeHook(PlayerCvarUpdated);
 	
 	if(GetEngineVersion() != Engine_TF2)
-		Death	= CreateConVar("xstats_points_death",	"5", "Xstats - Points to remove from the player who died.", _, true);
+		Death	= CreateConVar("xstats_points_death",	"5", "XStats - Points to remove from the player who died.", _, true);
 	
-	AssistKill	= CreateConVar("xstats_points_assist",	"3", "Xstats - Points to give the assister.", _, true);
+	AssistKill	= CreateConVar("xstats_points_assist",	"3", "XStats - Points to give the assister.", _, true);
 	
 	//AutoExecConfig(true);
 	
@@ -301,7 +295,7 @@ stock void RoundStarted()	{
 	if(DisableAfterWin.BoolValue)	{
 		if(needed <= players)	{
 			RankActive = true;
-			CPrintToChatAll("%s %t", Prefix, "Round Start", players, needed);
+			CPrintToChatAll("%s %t", Prefix, "Round Start");
 		}
 	}
 }
@@ -325,12 +319,9 @@ stock void RoundEnded()	{
 	}
 	
 	if(!WarmupActive)	{
-		int needed = MinimumPlayers.IntValue;
-		int players = GetClientCountEx(!AllowBots.BoolValue);
-		
 		if(DisableAfterWin.BoolValue)	{
 			RankActive = false;
-			CPrintToChatAll("%s %t", Prefix, "Round End", players, needed);
+			CPrintToChatAll("%s %t", Prefix, "Round End");
 		}
 	}
 	

@@ -1,4 +1,4 @@
-public void OnClientAuthorized(int client, const char[] auth)	{	
+public void OnClientAuthorized(int client, const char[] auth)	{
 	if(!Tklib_IsValidClient(client, true, _, false))
 		return;
 	
