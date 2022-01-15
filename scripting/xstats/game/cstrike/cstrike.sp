@@ -195,6 +195,10 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		{
 			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
 		}
+		else if(noscope)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[4]);
+		}
 		else if(headshot)
 		{
 			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);

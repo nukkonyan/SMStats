@@ -131,6 +131,10 @@ public void OnMapStart()	{
 	
 	GetCurrentMap(CurrentMap, sizeof(CurrentMap));	
 	CreateTimer(60.0, MapLogTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== Map Log =====//");
+		PrintToServer("Creating a minute long repeating timer for map \"%s\"", CurrentMap);
+	}
 }
 
 Action MapLogTimer(Handle timer)	{
@@ -144,30 +148,55 @@ Action MapLogTimer(Handle timer)	{
 	Format(query, sizeof(query), "select '%s' from `%s`", CurrentMap, maps_log);
 	db.Query(DBQuery_MapLog_1, query);
 	
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== Map Log =====//");
+		PrintToServer("Checking if map \"%s\" exists on database table \"%s\"", CurrentMap, maps_log);
+		PrintToServer(" ");
+	}
+	
 	return Plugin_Handled;
 }
 
 void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error, any data)	{		
 	char query[512];
 	
-	switch(results == null)	{
-		/* Map was not found, lets add it */
+	if(results == null)
+		SetFailState("%s Map Log Updater failed! (%s)", LogTag, error);
+	
+	switch(results.FetchRow())	{
+		/* Map was found, lets update it */
 		case	true:	{
-			Format(query, sizeof(query), "insert into `%s` (MapName) values ('%s')",
-			maps_log, CurrentMap);
+			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
+			maps_log, CurrentMap, ServerID.IntValue);
 			db.Query(DBQuery_MapLog_2, query);
+			
+			if(Debug.BoolValue)	{
+				PrintToServer(" ");
+				PrintToServer("Map was found, updating the playtime for \"%s\" by adding additional minute on database table \"%s\"", CurrentMap, maps_log);
+				PrintToServer(" ");
+			}
+		}
+		/* Map was not found, lets add it */
+		case	false:	{
+			Format(query, sizeof(query), "insert into `%s` (MapName) values ('%s')", maps_log, CurrentMap);
+			db.Query(DBQuery_MapLog_2, query);
+			
+			if(Debug.BoolValue)	{
+				PrintToServer(" ");
+				PrintToServer("Map \"%s\" not found on database, inserting it..", CurrentMap);
+			}
 			
 			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
 			maps_log, CurrentMap, ServerID.IntValue);
 			db.Query(DBQuery_MapLog_2, query);
+			
+			if(Debug.BoolValue)	{
+				PrintToServer(" ");
+				PrintToServer("Updating the playtime on the added map by adding additional minute");
+				PrintToServer(" ");
+			}
 		}
-		/* Map was found, lets update it */
-		case	false:	{
-			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
-			maps_log, CurrentMap, ServerID.IntValue);
-			db.Query(DBQuery_MapLog_2, query);
-		}
-	}	
+	}
 }
 
 void DBQuery_MapLog_2(Database database, DBResultSet results, const char[] error, any data)	{

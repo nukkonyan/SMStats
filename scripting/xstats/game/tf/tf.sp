@@ -1127,6 +1127,10 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		{
 			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
 		}
+		else if(noscope)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[4]);
+		}
 		else if(headshot)
 		{
 			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);
@@ -1157,7 +1161,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		len += Format(log[len], sizeof(log)-len, "(ServerID, Time, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, Midair, CritType)");
 		len += Format(log[len], sizeof(log)-len, "values");
 		len += Format(log[len], sizeof(log)-len, "('%i', '%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
-		ServerID.IntValue, GetTime(), Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, midair, crits);
+		ServerID.IntValue, GetTime(), Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], fix_weapon, headshot, noscope, midair, crits);
 		db.Query(DBQuery_Kill_Log, log);
 	}
 }
