@@ -1,3 +1,5 @@
+![xstats](https://user-images.githubusercontent.com/49116354/149614840-440bb501-a222-486a-8a54-e7c35ffcabed.png)
+
 ``Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.) At the moment in early development stages.``
 
 # Regaring Issues
