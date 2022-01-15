@@ -120,6 +120,8 @@ stock float GetKDR(int kills, int deaths, int assists)	{
 		PrintToServer(" ");
 	}
 	
+	kdr = kdr / 100.0; /* Fix the KDR To be correct. 120.0 > 1.20 */
+	
 	return kdr;
 }
 

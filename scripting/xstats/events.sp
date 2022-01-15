@@ -79,6 +79,9 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 	if(!PluginActive.BoolValue)
 		return;
 	
+	/* Check active players */
+	CheckActivePlayers();
+	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	
 	char reason[96];
@@ -88,9 +91,6 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 	
 	if(!Tklib_IsValidClient(client, true))
 		return;
-	
-	/* Check active players */
-	CheckActivePlayers();
 	
 	for(int i = 1; i < MaxClients; i++)
 		PlayerDamaged[i][client] = 0;
