@@ -1,8 +1,8 @@
-![xstats](https://user-images.githubusercontent.com/49116354/149614840-440bb501-a222-486a-8a54-e7c35ffcabed.png)
+![xstats_2](https://user-images.githubusercontent.com/49116354/149617872-cbbd0be2-2bd6-45ee-95f4-e6f990285d4a.png)
 
 ``Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.) At the moment in early development stages.``
 
-# Regaring Issues
+# Regarding Issues
 You may discuss issues (crashes, errors, etc) within the [Discussions](https://github.com/Teamkiller324/Xstats/discussions)
 
 `` You may NOT modify the plugin and distribute on to another place/source``
