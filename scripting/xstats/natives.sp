@@ -139,6 +139,7 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 		case	SessionType_StunnedMonoculus: stats = Session[client].StunnedMonoculus;
 		case	SessionType_MadMilked: stats = Session[client].MadMilked;
 		case	SessionType_Jarated: stats = Session[client].Jarated;
+		case	SessionType_Ignited: stats = Session[client].Ignited;
 		
 		/* TF2 MvM */
 		case	SessionType_TanksDestroyed: stats = Session[client].TanksDestroyed;
@@ -158,7 +159,6 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 		case	SessionType_MoneySpent: stats = Session[client].MoneySpent;
 	}
 	
-	Fwd_GetStats = new PrivateForward(ET_Ignore, Param_Cell, Param_Cell, Param_Cell);
 	Fwd_GetStats.AddFunction(plugin, func);
 	
 	Call_StartForward(Fwd_GetStats);

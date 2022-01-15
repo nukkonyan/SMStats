@@ -456,15 +456,15 @@ void PrepareGame_TF2()	{
 	/* Events */
 	
 	/* MvM */
-	HookEventEx(EVENT_MVM_TANK_DESTROYED_BY_PLAYERS, MvM_Tank_Destroyed_By_Players);
-	HookEventEx(EVENT_PLAYER_DEATH, MvM_Sentrybuster_Killed);
-	HookEventEx(EVENT_MVM_BOMB_RESET_BY_PLAYER, MvM_Bomb_Reset_By_Player);
+	HookEventEx(EVENT_MVM_TANK_DESTROYED_BY_PLAYERS, MvM_Tank_Destroyed_By_Players, EventHookMode_Pre);
+	HookEventEx(EVENT_PLAYER_DEATH, MvM_Sentrybuster_Killed, EventHookMode_Pre);
+	HookEventEx(EVENT_MVM_BOMB_RESET_BY_PLAYER, MvM_Bomb_Reset_By_Player, EventHookMode_Pre);
 	
 	/* Item found, achieved, gained or traded */
-	HookEventEx(EVENT_ITEM_FOUND, Item_Found_TF2);
+	HookEventEx(EVENT_ITEM_FOUND, Item_Found_TF2, EventHookMode_Pre);
 	
 	/* Deaths */
-	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_TF2);
+	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_TF2, EventHookMode_Pre);
 }
 
 /* MvM */
@@ -476,7 +476,7 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 	int count = 0;
 	
 	for(int client = 1; client < MaxClients; client++)	{
-		if(Tklib_IsValidClient(client, true) && TF2_GetClientTeam(client) == TFTeam_Red)	{
+		if(Tklib_IsValidClient(client, true) && !IsValidAbuse(client) && TF2_GetClientTeam(client) == TFTeam_Red)	{
 			count++;
 			
 			AddSessionPoints(client, points);
@@ -505,12 +505,15 @@ stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool do
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	if(!Tklib_IsValidClient(client, true))
 		return;
+		
+	if(IsValidAbuse(client))
+		return;
 	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	if(!Tklib_IsValidClient(client))
 		return;
 	
-	if(!IsFakeClient(victim) || TF2_GetClientTeam(victim) != TFTeam_Blue)
+	if(!(IsFakeClient(victim) && TF2_GetClientTeam(victim) == TFTeam_Blue))
 		return; /* Make sure it's a TFBot and is on blue team. */
 	
 	char sentry_buster[64];
@@ -542,6 +545,9 @@ stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool d
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_PLAYER));
 	if(!Tklib_IsValidClient(client, true))
+		return;
+		
+	if(IsValidAbuse(client))
 		return;
 	
 	int points = TF2_MvM[2].IntValue;
@@ -637,6 +643,9 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	if(!Tklib_IsValidClient(client, true))
+		return;
+		
+	if(IsValidAbuse(client))
 		return;
 	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));

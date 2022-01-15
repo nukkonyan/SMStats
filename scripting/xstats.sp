@@ -24,8 +24,9 @@ public Plugin myinfo = {
 /* Functions. */
 GameIdentifier	game	= Game_Unknown;
 Database		db;
-GlobalForward	Fwd_Prepare;
+GlobalForward	Fwd_Prefix;
 GlobalForward	Fwd_Death;
+GlobalForward	Fwd_Suicide;
 PrivateForward	Fwd_GetStats;
 
 /* Plugin */
@@ -33,7 +34,7 @@ bool			RoundActive = false;
 bool			WarmupActive = false;
 bool			RankActive = false;
 ConVar			PluginActive, Debug, AllowBots, AllowWarmup, PrefixCvar, Death, AssistKill;
-ConVar			ServerID, MinimumPlayers, DisableAfterWin, ConnectMsg;
+ConVar			ServerID, MinimumPlayers, DisableAfterWin, ConnectMsg, AntiAbuse;
 ConVar			Weapon[40000];
 ConVar			RemoveOldPlayers;
 char			Prefix[96], logprefix[64], playerlist[64], kill_log[64], item_found[64], maps_log[64];
@@ -69,13 +70,11 @@ stock char		Kill_Type[][] = {
 	"Kill Event Type 13"
 };
 
-/* For experimental assister function. */
-int PlayerDamaged[MAXPLAYERS][MAXPLAYERS];
-
 /* Session */
 XStatsSession	Session[MAXPLAYERS];
 
 /* Includes. */
+#include	"xstats/assister.sp" /* Experimental Assister */
 #include	"xstats/database.sp" /* Database */
 #include	"xstats/game.sp" /* Game */
 #include	"xstats/forwards.sp" /* Forwards */
@@ -97,37 +96,66 @@ public void OnPluginStart()	{
 	//Initialize
 	game = IdentifyGame();
 	
+	/* Forwards */
+	Fwd_Prefix = new GlobalForward("Xstats_OnPrefixUpdated",
+		ET_Event,
+		Param_String);
+	Fwd_Death = new GlobalForward("XStats_OnDeathEvent",
+		ET_Ignore,
+		Param_Cell,
+		Param_Cell,
+		Param_Cell,
+		Param_String,
+		Param_Cell);
+	Fwd_Suicide = new GlobalForward("XStats_OnSuicideEvent",
+		ET_Ignore,
+		Param_Cell);
+	Fwd_GetStats = new PrivateForward(
+		ET_Ignore,
+		Param_Cell,
+		Param_Cell,
+		Param_Cell);
+	
 	char title[64];
 	GetGameName(title, sizeof(title));
+	bool supported = false; /* Temporary thing */
 	
 	switch(game)	{
+		case	Game_DODS:	{
+			logprefix = "[Xstats: DOD:S]";
+			playerlist = "playerlist_dods";
+			kill_log = "kill_log_dods";
+			maps_log = "maps_log_dods";
+			supported = false;
+		}
 		case	Game_TF2:	{
 			logprefix = "[Xstats: TF2]";
 			playerlist = "playerlist_tf2";
 			kill_log = "kill_log_tf2";
 			item_found = "item_found_tf2";
 			maps_log = "maps_log_tf2";
+			supported = true;
 		}
 		case	Game_TF2Classic:	{
 			logprefix = "[Xstats: TF2:C]";
 			playerlist = "playerlist_tf2classic";
 			kill_log = "kill_log_tf2classic";
 			maps_log = "maps_log_tf2classic";
-			SetFailState("%s Game is unsuppported for the moment.", LogTag);
+			supported = false;
 		}
 		case	Game_CSS:	{
 			logprefix = "[Xstats: CS:S]";
 			playerlist = "playerlist_css";
 			kill_log = "kill_log_css";
 			maps_log = "maps_log_css";
-			SetFailState("%s Game is unsuppported for the moment.", LogTag);
+			supported = false;
 		}
 		case	Game_CSPromod:	{
 			logprefix = "[Xstats: CS:Promod]";
 			playerlist = "playerlist_promod";
 			kill_log = "kill_log_cspromod";
 			maps_log = "maps_log_cspromod";
-			SetFailState("%s Game is unsuppported for the moment.", LogTag);
+			supported = false;
 		}
 		case	Game_CSGO:	{
 			logprefix = "[Xstats: CS:GO]";
@@ -135,17 +163,41 @@ public void OnPluginStart()	{
 			kill_log = "kill_log_csgo";
 			item_found = "item_found_csgo";
 			maps_log = "maps_log_csgo";
-			SetFailState("%s Game is unsuppported for the moment.", LogTag);
+			supported = false;
 		}
 		case	Game_CSCO:	{
 			logprefix = "[Xstats: CS:CO]";
 			playerlist = "playerlist_csco";
 			kill_log = "kill_log_csco";
 			maps_log = "maps_log_csco";
-			SetFailState("%s Game is unsuppported for the moment.", LogTag);
+			supported = false;
 		}
-		default:	SetFailState("%s Game is unsupported.", LogTag);
+		case	Game_L4D1:	{
+			logprefix = "[Xstats: L4D1]";
+			playerlist = "playerlist_l4d1";
+			kill_log = "kill_log_l4d1";
+			maps_log = "maps_log_l4d1";
+			supported = false;
+		}
+		case	Game_L4D2:	{
+			logprefix = "[Xstats: L4D2]";
+			playerlist = "playerlist_l4d2";
+			kill_log = "kill_log_l4d2";
+			maps_log = "maps_log_l4d2";
+			supported = false;
+		}
+		case	Game_Contagion:	{
+			logprefix = "[Xstats: Contagion]";
+			playerlist = "playerlist_contagion";
+			kill_log = "kill_log_contagion";
+			maps_log = "maps_log_contagion";
+			supported = false;
+		}
+		default:	supported = false;
 	}
+	
+	if(!supported)
+		SetFailState("%s Game \"%s\" is unsupported.", LogTag, title);
 	
 	PrintToServer("xStats Version %s Detected game: %s", Version, title);
 	
@@ -159,6 +211,7 @@ public void OnPluginStart()	{
 	DisableAfterWin	= CreateConVar("xstats_disableafterwin","1", "Xstats - Should tracking be disabled when a team wins/round ends?.", _, true, _, true, 1.0);
 	ConnectMsg		= CreateConVar("xstats_connectmsg",		"1", "Xstats - Should connect messages be enabled?", _, true, _, true, 1.0);
 	RemoveOldPlayers = CreateConVar("xstats_removeoldplayers", "0", "Xstats - Number of days of days to keep players in the database. (Since last connection). 0 Disables check.");
+	AntiAbuse		= CreateConVar("xstats_antiabuse",		"1", "Xstats - Should abusing players be avoided to make sure the event was legit? (Noclipping, sv_cheats, etc)", _, true, _, true, 1.0);
 	
 	PrefixCvar = CreateConVar("xstats_prefix", "{green}Xstats", "Xstats - Prefix to be used ingame texts.");
 	PrefixCvar.AddChangeHook(PrefixCallback);
@@ -211,59 +264,15 @@ void PrefixCallback(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
 	cvar.GetString(Prefix, sizeof(Prefix));
 	Format(Prefix, sizeof(Prefix), "%s{default}", Prefix);
 	
-	PreparePrefixForward();
+	PreparePrefixUpdatedForward();
 }
 
 void PlayerCvarUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)	{
 	CheckActivePlayers();
 }
 
-Action Assister_OnTakeDamage(int victim, int &client, int &inflictor, float &damage, int &damagetype)	{
-	if(Tklib_IsValidClient(victim) && Tklib_IsValidClient(client, true))	{
-		//Turn the float into a valid integer.
-		char getdmg[96];
-		FloatToString(damage, getdmg, sizeof(getdmg));
-		SplitString(getdmg, ".", getdmg, sizeof(getdmg));
-		int dmg = StringToInt(getdmg);
-		
-		PlayerDamaged[victim][client] = PlayerDamaged[victim][client]+dmg;
-
-		Session[client].DamageDone += dmg;
-	}
-}
-
 public void OnPluginEnd()	{
 	PrintToServer("%s Ending..", LogTag);
-}
-
-/**
- *	Resets the assisted array.
- */
-void ResetAssister()	{
-	for(int i = 1; i < MaxClients; i++)	{
-		for(int x = 1; x < MaxClients; x++)
-			PlayerDamaged[i][x] = 0;
-	}
-}
-
-/**
- *	Returns the user which done the most damage in the active round.
- *
- *	@param	victim	The victim that was damaged to check.
- *	@param	client	The attacker that gave damage to check.
- */
-int GetLatestAssister(int victim, int client)	{
-	int userid = 0;
-	for(int i = 1; i < MaxClients; i++)	{
-		//Make sure the user is in the game.
-		if(Tklib_IsValidClient(i))	{
-			//Make sure to not return the attacker if he did the most damage.
-			if(client != i && PlayerDamaged[victim][i] > 50)
-				userid = GetClientUserId(i);
-		}
-	}
-	
-	return userid;
 }
 
 /* When round starts */

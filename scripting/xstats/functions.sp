@@ -287,11 +287,32 @@ stock bool IsValidStats()	{
 }
 
 /**
+ *	Make sure the event wasn't abused.
+ *
+ *	@param	client	The users index to read.
+ */
+stock bool IsValidAbuse(int client)	{
+	bool abuse = false;
+	
+	if(AntiAbuse.BoolValue)	{
+		ConVar cvar = FindConVar("sv_cheats");
+		if(cvar != null && cvar.BoolValue)
+			abuse = true;
+		
+		delete cvar;
+		
+		if(IsClientNoclipping(client))
+			abuse = true;
+	}
+	
+	return	abuse;
+}
+
+/**
  *	Prepare prefix forward.
  */
-stock void PreparePrefixForward()	{
-	Fwd_Prepare = new GlobalForward("Xstats_OnPrefixUpdated", ET_Event, Param_String);
-	Call_StartForward(Fwd_Prepare);
+stock void PreparePrefixUpdatedForward()	{
+	Call_StartForward(Fwd_Prefix);
 	Call_PushString(Prefix);
 	Call_Finish();
 }
@@ -306,12 +327,22 @@ stock void PreparePrefixForward()	{
  *	@param	defindex	The weapon definition index. (0 if invalid for the game)
  */
 stock void PrepareOnDeathForward(int client, int victim, int assist, const char[] weapon, int defindex)	{
-	Fwd_Death = new GlobalForward("Xstats_OnDeathEvent", ET_Ignore, Param_Cell, Param_Cell, Param_Cell, Param_String, Param_Cell);
 	Call_StartForward(Fwd_Death);
 	Call_PushCell(client);
 	Call_PushCell(victim);
 	Call_PushCell(assist);
 	Call_PushString(weapon);
 	Call_PushCell(defindex);
+	Call_Finish();
+}
+
+/**
+ *	Prepare OnSuicide forward.
+ *
+ *	@param	client		The players user index.
+ */
+stock void PrepareOnSuicideForward(int client)	{
+	Call_StartForward(Fwd_Suicide);
+	Call_PushCell(client);
 	Call_Finish();
 }

@@ -139,6 +139,7 @@ void PrepareGame_TeamFortress()	{
 	/* User Messages */
 	HookUserMessageEx(GetUserMessageId("PlayerJarated"), PlayerJarated);
 	HookUserMessageEx(GetUserMessageId("PlayerExtinguished"), PlayerExtinguished);
+	HookUserMessageEx(GetUserMessageId("PlayerIgnited"), PlayerIgnited);
 	
 	/* For some arrays as they use multi-arrays (ArrayExample[MAXPLAYERS][10] for example) */
 	ResetAntiAbuseArrays();
@@ -167,7 +168,7 @@ stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool do
 	for(int i = 0; i < strlen(cappers); i++)	{
 		int client = cappers[i];
 		
-		if(Tklib_IsValidClient(client, true))	{
+		if(Tklib_IsValidClient(client, true) && !IsValidAbuse(client))	{
 			AddSessionPoints(client, points);			
 			int points_client = GetClientPoints(SteamID[client]);
 			CPrintToChat(client, "%s %s (%i) earned %i points for capturing %s", Prefix, Name[client], points_client, points, cpname);
@@ -189,6 +190,9 @@ stock void Teamplay_Capture_Blocked(Event event, const char[] event_name, bool d
 	
 	int client = event.GetInt(EVENT_STR_BLOCKER);
 	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	if(IsValidAbuse(client))
 		return;
 	
 	int victim = event.GetInt(EVENT_STR_VICTIM);
@@ -219,6 +223,9 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 	
 	int client = event.GetInt(EVENT_STR_PLAYER);
 	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	if(IsValidAbuse(client))
 		return;
 	
 	int carrier = event.GetInt(EVENT_STR_CARRIER);
@@ -328,6 +335,9 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
+	if(IsValidAbuse(client))
+		return;
+	
 	TFBuilding building = TF2_GetBuildingType(event.GetInt(EVENT_STR_INDEX));
 	int type = int(building);
 	
@@ -410,6 +420,9 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
+	if(IsValidAbuse(client))
+		return;
+	
 	TFBuilding building = TF2_GetBuildingType(event.GetInt(EVENT_STR_INDEX));
 	int points = TF2_DestroyObject[int(building)].IntValue;
 	if(points < 1)
@@ -477,6 +490,9 @@ stock void Player_Invulned(Event event, const char[] event_name, bool dontBroadc
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
+	if(IsValidAbuse(client))
+		return;
+	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	if(!Tklib_IsValidClient(victim))
 		return;
@@ -514,6 +530,9 @@ stock void Player_Teleported(Event event, const char[] event_name, bool dontBroa
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_BUILDERID));
 	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	if(IsValidAbuse(client))
 		return;
 	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
@@ -554,6 +573,9 @@ stock void Player_StealSandvich(Event event, const char[] event_name, bool dontB
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
+	if(IsValidAbuse(client))
+		return;
+	
 	int points = TF2_SandvichStolen.IntValue;
 	int points_client = GetClientPoints(SteamID[client]);
 	AddSessionPoints(client, points);
@@ -584,6 +606,9 @@ stock void Player_Stunned(Event event, const char[] event_name, bool dontBroadca
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_STUNNER));
 	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	if(IsValidAbuse(client))
 		return;
 	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_VICTIM));
@@ -632,6 +657,9 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
+		if(IsValidAbuse(client))
+			return;
+		
 		int points_client = GetClientPoints(SteamID[client]);
 		AddSessionPoints(client, points);
 		
@@ -646,6 +674,9 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(StrEqual(event_name, EVENT_PASS_SCORE) && (client = event.GetInt(EVENT_STR_SCORER)) > 0 && (points = TF2_PassBall[1].IntValue) > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
+			return;
+		
+		if(IsValidAbuse(client))
 			return;
 		
 		int points_client = GetClientPoints(SteamID[client]);
@@ -664,6 +695,9 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
+		if(IsValidAbuse(client))
+			return;
+		
 		int points_client = GetClientPoints(SteamID[client]);
 		AddSessionPoints(client, points);
 		
@@ -678,6 +712,9 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(StrEqual(event_name, EVENT_PASS_PASS_CAUGHT) && (client = event.GetInt(EVENT_STR_CATCHER)) > 0 && (points = TF2_PassBall[3].IntValue) > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
+			return;
+		
+		if(IsValidAbuse(client))
 			return;
 		
 		int passer = GetClientOfUserId(event.GetInt(EVENT_STR_PASSER));
@@ -706,6 +743,9 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
+		if(IsValidAbuse(client))
+			return;
+		
 		int victim = GetClientOfUserId(event.GetInt(EVENT_STR_VICTIM));
 		int points_client = GetClientPoints(SteamID[client]);
 		AddSessionPoints(client, points);
@@ -729,6 +769,9 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(StrEqual(event_name, EVENT_PASS_BALL_BLOCKED) && (client = event.GetInt(EVENT_STR_BLOCKER)) > 0 && TF2_PassBall[5].IntValue > 0)
 	{
 		if(!Tklib_IsValidClient(client, true))
+			return;
+		
+		if(IsValidAbuse(client))
 			return;
 		
 		int victim = GetClientOfUserId(event.GetInt(EVENT_STR_OWNER));
@@ -759,6 +802,9 @@ stock void Halloween_Boss_Killed(Event event, const char[] event_name, bool dont
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_KILLER));
 	if(!Tklib_IsValidClient(client, true))
+		return;
+		
+	if(IsValidAbuse(client))
 		return;
 	
 	/*	Halloween bosses.
@@ -832,6 +878,9 @@ stock void Halloween_Skeleton_Killed(Event event, const char[] event_name, bool 
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
+	if(IsValidAbuse(client))
+		return;
+	
 	int points = TF2_BossKilled[4].IntValue;
 	int points_client = GetClientPoints(SteamID[client]);
 	AddSessionPoints(client, points);
@@ -854,6 +903,9 @@ stock void Eyeball_Boss_Stunned(Event event, const char[] event_name, bool dontB
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
+	if(IsValidAbuse(client))
+		return;
+	
 	int points = TF2_BossStunned[0].IntValue;
 	int points_client = GetClientPoints(SteamID[client]);
 	AddSessionPoints(client, points);
@@ -874,6 +926,9 @@ stock void Merasmus_Stunned(Event event, const char[] event_name, bool dontBroad
 	
 	int client = event.GetInt(EVENT_STR_PLAYER_ENTINDEX);
 	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	if(IsValidAbuse(client))
 		return;
 	
 	int points = TF2_BossStunned[1].IntValue;
@@ -901,6 +956,9 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 	
 	int client = bf.ReadByte();
 	if(!Tklib_IsValidClient(client, true))
+		return Plugin_Handled;
+	
+	if(IsValidAbuse(client))
 		return Plugin_Handled;
 	
 	int victim = bf.ReadByte();
@@ -990,6 +1048,14 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 		}
 	}
 	
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== PlayerJarated =====//");
+		PrintToServer("client: %N (index %i)", client, client);
+		PrintToServer("victim: %N (index %i)", victim, victim);
+		PrintToServer("defindex: %i", defindex);
+		PrintToServer(" ");
+	}
+	
 	if(points > 0)	{
 		AddSessionPoints(client, points);
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i, Coated = Coated+1 where SteamID='%s' and ServerID='%i'",
@@ -1009,9 +1075,19 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 	if(!Tklib_IsValidClient(client, true))
 		return Plugin_Handled;
 	
+	if(IsValidAbuse(client))
+		return Plugin_Handled;
+	
 	int victim = bf.ReadByte();
 	if(!Tklib_IsValidClient(victim))
 		return Plugin_Handled;
+	
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== PlayerExtinguished =====//");
+		PrintToServer("client: %N (index %i)", client, client);
+		PrintToServer("victim: %N (index %i)", victim, victim);
+		PrintToServer(" ");
+	}
 	
 	if(Extinguished[client])
 		return Plugin_Handled;
@@ -1044,6 +1120,33 @@ Action TimerPlayerExtinguished(Handle timer, DataPack pack)	{
 		
 	Extinguished[client] = true;
 	CreateTimer(Extinguished_Timer, Timer_PlayerExtinguished, client);
+}
+
+Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{
+	if(!IsValidStats())
+		return Plugin_Handled;
+	
+	int client = bf.ReadByte();
+	if(!Tklib_IsValidClient(client, true))
+		return Plugin_Handled;
+	
+	if(IsValidAbuse(client))
+		return Plugin_Handled;
+	
+	int victim = bf.ReadByte();
+	if(!Tklib_IsValidClient(client))
+		return Plugin_Handled;
+	
+	Session[client].Ignited++;
+	
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== PlayerIginted =====//");
+		PrintToServer("client: %N (index %i)", client, client);
+		PrintToServer("victim: %N (index %i)", victim, victim);
+		PrintToServer(" ");
+	}
+	
+	return Plugin_Continue;
 }
 
 /* Callbacks & Forwards */
@@ -1107,6 +1210,9 @@ public void TF2_OnWaitingForPlayersEnd()	{	WarmupActive = false;	}
  *	@param	victim	The user index who got killed.
  */
 stock void TF2_ClientKillVictim(int client, int victim)	{
+	if(IsValidAbuse(client))
+		return;
+	
 	TFClassType type = TF2_GetPlayerClass(victim);
 	if(type < TFClass_Scout)
 		return; /* Make sure it's a valid class. */
