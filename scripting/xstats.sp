@@ -10,11 +10,11 @@
  *	Xstats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX.
  */
 
-#define LogTag "[Xstats]"
+#define LogTag "[XStats]"
 #define Version "0.01_dev1"
 
 public Plugin myinfo = {
-	name		=	"Xstats - Statistical Tracker",
+	name		=	"XStats - Statistical Tracker",
 	author		=	"Tk /id/Teamkiller324",
 	description	=	"Xstats - Track kills, maps, kill events, achievements, etc.",
 	version		=	Version,
@@ -66,6 +66,7 @@ stock char		Kill_Type[][] = {
 	"Kill Event Type 8",	//Deflect Kill.
 	"Kill Event Type 9",	//Telefrag.
 	"Kill Event Type 10",	//Collateral.
+	"Kill Event Type 11",	//Grenade Kill.
 };
 
 /* Session */
@@ -203,7 +204,7 @@ public void OnPluginStart()	{
 	RemoveOldPlayers = CreateConVar("xstats_removeoldplayers", "0", "XStats - Number of days of days to keep players in the database. (Since last connection). 0 Disables check.");
 	AntiAbuse		= CreateConVar("xstats_antiabuse",		"1", "XStats - Should abusing players be avoided to make sure the event was legit? (Noclipping, sv_cheats, etc)", _, true, _, true, 1.0);
 	
-	PrefixCvar = CreateConVar("xstats_prefix", "{green}Xstats", "XStats - Prefix to be used ingame texts.");
+	PrefixCvar = CreateConVar("xstats_prefix", "{green}XStats", "XStats - Prefix to be used ingame texts.");
 	PrefixCvar.AddChangeHook(PrefixCallback);
 	PrefixCvar.GetString(Prefix, sizeof(Prefix));
 	Format(Prefix, sizeof(Prefix), "%s{default}", Prefix);
@@ -329,4 +330,8 @@ stock void RoundEnded()	{
 		RemoveOldConnectedPlayers(RemoveOldPlayers.IntValue);
 	
 	ResetAssister();
+}
+
+public void OnEntityCreated(int entity, const char[] classname)	{
+	OnEntityCreated_CounterStrike(entity, classname);
 }

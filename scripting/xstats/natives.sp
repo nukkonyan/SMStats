@@ -83,6 +83,7 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 		case	SessionType_Noscopes: stats = Session[client].Noscopes;
 		case	SessionType_Collaterals: stats = Session[client].Collaterals;
 		case	SessionType_MidAirKills: stats = Session[client].MidAirKills;
+		case	SessionType_GrenadeKills: stats = Session[client].GrenadeKills;
 		
 		/* TF2 */
 		case	SessionType_ScoutsKilled: stats = Session[client].ScoutsKilled;

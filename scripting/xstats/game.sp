@@ -1,15 +1,20 @@
 /**
  *	Game Events.
  */
-#include	"xstats/game/team-fortress/team-fortress.sp"
-#include	"xstats/game/counter-strike/counter-strike.sp"
+#include	"xstats/game/team-fortress.sp"
+#include	"xstats/game/counter-strike.sp"
 
 /**
  *	Initialize the includes.
  */
-#include	"xstats/game/tf/tf.sp"
-#include	"xstats/game/csgo/csgo.sp"
-#include	"xstats/game/cstrike/cstrike.sp"
+#include	"xstats/game/tf.sp"
+#include	"xstats/game/csgo.sp"
+#include	"xstats/game/cstrike.sp"
+
+/**
+ *	Initializes callback includes.
+ */
+#include	"xstats/game/callbacks.sp"
 
 /**
  *	Initialize the database.

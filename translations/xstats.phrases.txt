@@ -120,6 +120,12 @@
 		"en"	"with a {green}Collateral"
 	}
 	
+	//Grenade Kill.
+	"Kill Event Type 11"
+	{
+		"en"	"with a {green}Grenade Kill"
+	}
+	
 	//Assist
 	"Assist Kill Event"
 	{

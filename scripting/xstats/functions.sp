@@ -120,7 +120,7 @@ stock float GetKDR(int kills, int deaths, int assists)	{
 		PrintToServer(" ");
 	}
 	
-	kdr = kdr / 100.0; /* Fix the KDR To be correct. 120.0 > 1.20 */
+	kdr = kdr / 100.0; /* Fix the KDR To be correct. 120.0 -> 1.20 */
 	
 	return kdr;
 }
@@ -291,9 +291,9 @@ stock bool IsValidStats()	{
 /**
  *	Make sure the event wasn't abused.
  *
- *	@param	client	The users index to read.
+ *	@param	client	The users index to read. (0 disables reading the client)
  */
-stock bool IsValidAbuse(int client)	{
+stock bool IsValidAbuse(int client=0)	{
 	bool abuse = false;
 	
 	if(AntiAbuse.BoolValue)	{
@@ -303,8 +303,10 @@ stock bool IsValidAbuse(int client)	{
 		
 		delete cvar;
 		
-		if(IsClientNoclipping(client))
-			abuse = true;
+		if(client > 0)	{
+			if(IsClientNoclipping(client))
+				abuse = true;
+		}
 	}
 	
 	return	abuse;

@@ -160,10 +160,7 @@ Action MapLogTimer(Handle timer)	{
 void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error, any data)	{		
 	char query[512];
 	
-	if(results == null)
-		SetFailState("%s Map Log Updater failed! (%s)", LogTag, error);
-	
-	switch(results.FetchRow())	{
+	switch(results != null && results.FetchRow())	{
 		/* Map was found, lets update it */
 		case	true:	{
 			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
@@ -171,7 +168,6 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 			db.Query(DBQuery_MapLog_2, query);
 			
 			if(Debug.BoolValue)	{
-				PrintToServer(" ");
 				PrintToServer("Map was found, updating the playtime for \"%s\" by adding additional minute on database table \"%s\"", CurrentMap, maps_log);
 				PrintToServer(" ");
 			}
@@ -182,8 +178,8 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 			db.Query(DBQuery_MapLog_2, query);
 			
 			if(Debug.BoolValue)	{
-				PrintToServer(" ");
 				PrintToServer("Map \"%s\" not found on database, inserting it..", CurrentMap);
+				PrintToServer(" ");
 			}
 			
 			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
@@ -191,7 +187,6 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 			db.Query(DBQuery_MapLog_2, query);
 			
 			if(Debug.BoolValue)	{
-				PrintToServer(" ");
 				PrintToServer("Updating the playtime on the added map by adding additional minute");
 				PrintToServer(" ");
 			}
