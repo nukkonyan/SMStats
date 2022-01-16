@@ -29,6 +29,9 @@ void PrepareDB_CSS()	{
 	len += Format(query[len], sizeof(query)-len, "`MoneySpent`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`FlashedOpponents`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`GrenadeKills`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BombsPlanted`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BombsDefused`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BombsExploded`						int(32) not null default '0',"); 
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_flashbang`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_smokegrenade`			int(32) not null default '0',");
@@ -186,7 +189,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	|| StrEqual(weapon, "weapon_g3sg1")
 	|| StrEqual(weapon, "weapon_scout")
 	|| StrEqual(weapon, "weapon_awp")) && !CS_IsWeaponZoomedIn(GetClientActiveWeapon(client)));
-	bool knifekill = (StrContains(weapon, "knife") != -1); /* Support custom plugins */
+	bool knifekill = (StrContains(weapon, "knife", false) != -1); /* Support custom plugins */
 	
 	if(Debug.BoolValue)	{
 		PrintToServer("//===== Player_Death_CSS =====//");

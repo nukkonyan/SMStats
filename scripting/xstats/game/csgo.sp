@@ -33,6 +33,9 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`MoneySpent`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`FlashedOpponents`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`GrenadeKills`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BombsPlanted`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BombsDefused`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BombsExploded`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_frag`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_flashbang`				int(32) not null default '0',");
@@ -277,6 +280,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	bool noscope = event.GetBool(EVENT_STR_NOSCOPE);
 	bool thrusmoke = event.GetBool(EVENT_STR_THRUSMOKE);
 	bool attackerblind = event.GetBool(EVENT_STR_ATTACKERBLIND);
+	bool knifekill = (StrContains(weapon, "knife", false) != -1); /* Support custom plugins */
 	//bool collateral = (penetrated > 0);
 	
 	if(Weapon[defindex] == null)	{
@@ -354,6 +358,18 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Format(query, sizeof(query), "update `%s` set ThruSmokes = ThruSmokes+1 where SteamID='%s' and ServerID='%i'",
 		playerlist, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
+	}
+	
+	if(knifekill)	{
+		Session[client].KnifeKills++;
+		Format(query, sizeof(query), "update `%s` set KnifeKills = KnifeKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if(Debug.BoolValue)	{
+			PrintToServer(" ");
+			PrintToServer("Knife Kill");
+		}
 	}
 	
 	if(grenadekill)	{
