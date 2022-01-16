@@ -31,7 +31,8 @@ void PrepareDB_CSS()	{
 	len += Format(query[len], sizeof(query)-len, "`GrenadeKills`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`BombsPlanted`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`BombsDefused`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`BombsExploded`						int(32) not null default '0',"); 
+	len += Format(query[len], sizeof(query)-len, "`BombsExploded`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BombKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_flashbang`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_smokegrenade`			int(32) not null default '0',");
@@ -190,6 +191,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	|| StrEqual(weapon, "weapon_scout")
 	|| StrEqual(weapon, "weapon_awp")) && !CS_IsWeaponZoomedIn(GetClientActiveWeapon(client)));
 	bool knifekill = (StrContains(weapon, "knife", false) != -1); /* Support custom plugins */
+	bool c4kill = (StrContains(weapon, "c4", false) != -1);
 	
 	if(Debug.BoolValue)	{
 		PrintToServer("//===== Player_Death_CSS =====//");
@@ -206,6 +208,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		PrintToServer("noscope: %s", Bool[noscope]);
 		PrintToServer("knifekill: %s", Bool[knifekill]);
 		PrintToServer("grenadekill: %s", Bool[grenadekill]);
+		PrintToServer("c4kill: %s", Bool[c4kill]);
 		PrintToServer(" ");
 		PrintToServer("points: %i", points);
 	}
@@ -297,6 +300,13 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		db.Query(DBQuery_Callback, query);
 	}
 	
+	if(c4kill)	{
+		Session[client].BombKills++;
+		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+	}
+	
 	if(points > 0)	{
 		AddSessionPoints(client, points);
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i", playerlist, points);
@@ -304,7 +314,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		
 		int points_client = GetClientPoints(SteamID[client]);
 		
-		char buffer[96];
+		char buffer[256];
 		if(midair && noscope && headshot)
 		{
 			Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[2], Kill_Type[0]);

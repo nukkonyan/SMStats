@@ -159,6 +159,7 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 		case	SessionType_BombsPlanted: stats = Session[client].BombsPlanted;
 		case	SessionType_BombsDefused: stats = Session[client].BombsDefused;
 		case	SessionType_BombsExploded: stats = Session[client].BombsExploded;
+		case	SessionType_BombKills: stats = Session[client].BombKills;
 		case	SessionType_MoneySpent: stats = Session[client].MoneySpent;
 		case	SessionType_KnifeKills: stats = Session[client].KnifeKills;
 	}

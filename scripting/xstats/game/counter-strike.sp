@@ -16,6 +16,8 @@ int m_hSmokeGrenadeEntity[MAXPLAYERS] = {0, ...};
 int m_hSmokeGrenadeParticleOwner[MAXPLAYERS] = {0, ...};
 int m_hSmokeGrenadeParticleEntity[MAXPLAYERS] = {0, ...};
 
+int m_hLastFirebombGrenade[MAXPLAYERS] = {0, ...};
+
 stock int LatestFlash = 0; /* The most recent flashbang entity that went off */
 
 void PrepareGame_CounterStrike()	{
@@ -28,6 +30,9 @@ void PrepareGame_CounterStrike()	{
 	HookEventEx(EVENT_BOMB_DEFUSED,		CS_Bombs, EventHookMode_Pre);
 	HookEventEx(EVENT_BOMB_EXPLODED,	CS_Bombs, EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_BLIND,		CS_Flashed, EventHookMode_Pre);
+	
+	if(IsCurrentGame(Game_CSGO))
+		HookEventEx(EVENT_WEAPON_FIRE, Weapon_Fire_CSGO, EventHookMode_Pre);
 }
 
 /**
@@ -141,6 +146,26 @@ void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	{
 	db.Query(DBQuery_Callback, query);
 }
 
+void Weapon_Fire_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	
+	/* Since both Incendiary and Molotov counts as 'firebomb', we need to get the correct grenade. */
+	char[] weapon = new char[64];
+	event.GetString(EVENT_STR_WEAPON, weapon, 64); /* You can use sizeof() on construction character function */
+	
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== Weapon_Fire_CSGO =====//");
+		PrintToServer("Client: %N", client);
+		PrintToServer("weapon: \%s\"", weapon);
+		PrintToServer(" ");
+	}
+	
+	if(StrEqual(weapon, "weapon_incgrenade"))
+		m_hLastFirebombGrenade[client] = CSGO_Grenade_Incendiary;
+	if(StrEqual(weapon, "weapon_molotov"))
+		m_hLastFirebombGrenade[client] = CSGO_Grenade_Molotov;
+}
+
 /**
  *	At the moment not gonna be super accurate
  *	but will be fixed up later and be more accurate.
@@ -178,11 +203,15 @@ Action Timer_OnBuyCommand(Handle timer, DataPack pack)	{
 }
 
 void OnEntityCreated_CounterStrike(int entity, const char[] classname)	{
+	if(!IsValidEntityEx(entity)
+	|| entity == -1)
+		return; /* In CS:GO, at round start, some entity with index -1 (for some odd reason) is spawned, so this will fix the errors. */
+	
 	/* Need a short delay so we can get the entity owner. */
 	if((StrEqual(classname, "flashbang_projectile")
 	|| StrEqual(classname, "hegrenade_projectile")
 	|| StrEqual(classname, "smokegrenade_projectile")
-	|| StrEqual(classname, "env_particlesmokegrenade")) && IsValidEntityEx(entity))	{
+	|| StrEqual(classname, "env_particlesmokegrenade")))	{
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteString(classname);

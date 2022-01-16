@@ -1453,7 +1453,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		int points_client = GetClientPoints(SteamID[client]);
 		
 		/* Lë ol' messy code but has to be it. */
-		char buffer[96];
+		char buffer[256];
 		if(midair && noscope && headshot)
 		{
 			Format(buffer, sizeof(buffer), "{default}%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);

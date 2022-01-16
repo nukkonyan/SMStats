@@ -67,6 +67,7 @@ stock char		Kill_Type[][] = {
 	"Kill Event Type 9",	//Telefrag.
 	"Kill Event Type 10",	//Collateral.
 	"Kill Event Type 11",	//Grenade Kill.
+	"Kill Event Type 12",	//Bomb Kill.
 };
 
 /* Session */

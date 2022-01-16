@@ -126,6 +126,12 @@
 		"en"	"with a {green}Grenade Kill"
 	}
 	
+	//Bomb/C4 Kill.
+	"Kill Event Type 11"
+	{
+		"en"	"with a {green}Bomb Kill"
+	}
+	
 	//Assist
 	"Assist Kill Event"
 	{

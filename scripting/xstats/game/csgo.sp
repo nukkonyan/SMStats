@@ -1,8 +1,4 @@
 /**
- *	Functions.
- */
-
-/**
  *	Prepare database.
  */
 void PrepareDB_CSGO()	{
@@ -36,6 +32,7 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`BombsPlanted`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`BombsDefused`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`BombsExploded`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BombKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_frag`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_flashbang`				int(32) not null default '0',");
@@ -46,6 +43,7 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_tagrenade`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_snowball`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_breachcharge`			int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_c4`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_deagle`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_glock`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_ak47`					int(32) not null default '0',");
@@ -193,7 +191,10 @@ void PrepareGame_CSGO()	{
 	Weapon[CSGO_Grenade_SmokeGrenade]	= CreateConVar("xstats_points_weapon_smokegrenade",	"5", "XStats: CS:GO - Points given when killing with Smokegrenade", _, true);
 	Weapon[CSGO_Grenade_Molotov]		= CreateConVar("xstats_points_weapon_molotov",		"5", "XStats: CS:GO - Points given when killing with Molotov.", _, true);
 	Weapon[CSGO_Grenade_Decoy]			= CreateConVar("xstats_points_weapon_decoy",		"5", "XStats: CS:GO - Points given when killing with Decoy.", _, true);
-	Weapon[CSGO_Grenade_Incendiary]		= CreateConVar("xstats_points_weapon_incendiary",	"5", "Xstats: CS:GO - Points given when killing with Incendiary.", _, true);
+	Weapon[CSGO_Grenade_Incendiary]		= CreateConVar("xstats_points_weapon_incendiary",	"5", "XStats: CS:GO - Points given when killing with Incendiary.", _, true);
+	Weapon[CSGO_Grenade_TAGrenade]		= CreateConVar("xstats_points_weapon_tagrenade",	"5", "XStats: CS:GO - Points given when killing with Tactical Awareness Grenade. (lol)", _, true);
+	Weapon[CSGO_Grenade_BreachCharge]	= CreateConVar("xstats_points_weapon_breachcharge",	"5", "XStats: CS:GO - Points given when killing with Breach Charge. (:D)", _, true);
+	Weapon[CSGO_Weapon_C4]			= CreateConVar("xstats_points_weapon_c4",		"5", "Xstats: CS:GO - Points given when killing with C4.", _, true);
 	Weapon[CSGO_Knife_T]			= Weapon[CSGO_Knife_CT];
 	Weapon[CSGO_Weapon_M4A1_S]		= CreateConVar("xstats_points_weapon_m4a1_silencer",	"5", "XStats: CS:GO - Points given when killing with M4A1-S.", _, true);
 	Weapon[CSGO_Weapon_USP_S]		= CreateConVar("xstats_points_weapon_usp_silencer",		"5", "XStats: CS:GO - Points given when killing with USP-S", _, true);
@@ -254,22 +255,35 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	/* Fix the weapon entity prefix */
 	Format(weapon, sizeof(weapon), "weapon_%s", weapon);
 	
-	if(StrEqual(weapon, "weapon_firebomb"))
-		weapon = "weapon_molotov";
-	if(StrEqual(weapon, "weapon_incgrenade"))
-		weapon = "weapon_incendiary";
+	if(StrEqual(weapon, "weapon_breachcharge_projectile"))
+		weapon = "weapon_breachcharge";
+	if(StrEqual(weapon, "weapon_planted_c4_survival"))
+		weapon = "weapon_c4";
+	if(StrEqual(weapon, "weapon_planted_c4"))
+		weapon = "weapon_c4";
+	
+	/* Since 'inferno' applies for Incendiary and Molotov. */
+	if(StrEqual(weapon, "weapon_inferno"))	{
+		switch(m_hLastFirebombGrenade[client])	{
+			case	CSGO_Grenade_Molotov:
+				weapon = "weapon_molotov";
+			case	CSGO_Grenade_Incendiary:
+				weapon = "weapon_incendiary";
+		}
+	}
 	
 	/* Make sure the midair is unchecked for grenade kills. */
 	bool grenadekill = (StrEqual(weapon, "weapon_molotov")
-	|| StrEqual(weapon, "weapon_incendiary")
+	|| StrEqual(weapon, "weapon_incgrenade")
 	|| StrEqual(weapon, "weapon_flashbang")
 	|| StrEqual(weapon, "weapon_decoy")
 	|| StrEqual(weapon, "weapon_hegrenade")
 	|| StrEqual(weapon, "weapon_frag")
 	|| StrEqual(weapon, "weapon_tagrenade")
 	|| StrEqual(weapon, "weapon_snowball")
-	|| StrEqual(weapon, "weapon_breachcharge"));
-		
+	|| StrEqual(weapon, "weapon_breachcharge")
+	|| StrEqual(weapon, "weapon_c4")); /* Not really a grenade but whatever, just for some specific stuff */
+	
 	int assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER));
 	int defindex = CSGO_GetWeaponDefindex(weapon);
 	//int penetrated = event.GetInt(EVENT_STR_PENETRATED);
@@ -281,6 +295,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	bool thrusmoke = event.GetBool(EVENT_STR_THRUSMOKE);
 	bool attackerblind = event.GetBool(EVENT_STR_ATTACKERBLIND);
 	bool knifekill = (StrContains(weapon, "knife", false) != -1); /* Support custom plugins */
+	bool c4kill = (StrContains(weapon, "c4", false) != -1);
 	//bool collateral = (penetrated > 0);
 	
 	if(Weapon[defindex] == null)	{
@@ -307,6 +322,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		PrintToServer("thrusmoke: %s", Bool[thrusmoke]);
 		PrintToServer("attackerblind: %s", Bool[attackerblind]);
 		PrintToServer("grenadekill: %s", Bool[grenadekill]);
+		PrintToServer("c4kill: %s", Bool[c4kill]);
 		PrintToServer(" ");
 		PrintToServer("Points %i", points);
 	}
@@ -379,6 +395,13 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		db.Query(DBQuery_Callback, query);
 	}
 	
+	if(c4kill)	{
+		Session[client].BombKills++;
+		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+	}
+	
 	if(points > 0)	{
 		AddSessionPoints(client, points);
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
@@ -387,10 +410,14 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		
 		int points_client = GetClientPoints(SteamID[client]);
 		
-		char buffer[96];
-		if(midair)
+		char buffer[256];
+		if(midair && noscope && headshot)
 		{
-			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
+			switch(thrusmoke)
+			{
+				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t {default}%t{default}", Kill_Type[2], Kill_Type[0], Kill_Type[1]);
+				case	false:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[2], Kill_Type[0]);
+			}
 		}
 		else if(midair && noscope)
 		{
@@ -400,14 +427,6 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 				case	false:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[4], Kill_Type[0]);
 			}
 		}
-		else if(midair && noscope && headshot)
-		{
-			switch(thrusmoke)
-			{
-				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t {default}%t{default}", Kill_Type[2], Kill_Type[0], Kill_Type[1]);
-				case	false:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[2], Kill_Type[0]);
-			}
-		}
 		else if(midair && headshot)
 		{
 			switch(thrusmoke)
@@ -415,6 +434,10 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t {default}%t{default}", Kill_Type[3], Kill_Type[0], Kill_Type[1]);
 				case	false:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[3], Kill_Type[0]);
 			}
+		}
+		else if(midair)
+		{
+			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
 		}
 		/*
 		else if(collateral)
@@ -446,6 +469,10 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		{
 			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[11]);
 		}
+		else if(c4kill)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[12]);
+		}
 		
 		switch(IsValidString(buffer))	{
 			case	true:	CPrintToChat(client, "%s %t", Prefix, "Special Kill Event", Name[client], points_client, points, Name[victim], buffer);
@@ -456,9 +483,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 			char log[2048];
 			int len = 0;
 			len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);
-			len += Format(log[len], sizeof(log)-len, "(Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, ThruSmoke, BlindedKill)");
+			len += Format(log[len], sizeof(log)-len, "(ServerID, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, ThruSmoke, BlindedKill)");
 			len += Format(log[len], sizeof(log)-len, "values");
-			len += Format(log[len], sizeof(log)-len, "('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
+			len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
 			Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, thrusmoke, attackerblind);
 			db.Query(DBQuery_Kill_Log, log);
 		}
