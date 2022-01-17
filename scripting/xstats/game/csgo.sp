@@ -33,6 +33,7 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`BombsDefused`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`BombsExploded`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`BombKills`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`ChickenKills`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_frag`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_flashbang`				int(32) not null default '0',");
@@ -222,14 +223,35 @@ void PrepareGame_CSGO()	{
 	Weapon[CSGO_Knife_Skeleton]		= Weapon[CSGO_Knife_CT];
 	
 	/* Events */
-	HookEvent(EVENT_PLAYER_DEATH, Player_Death_CSGO, EventHookMode_Pre);
+	
+	/* Deaths */
+	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_CSGO, EventHookMode_Pre);
+	
+	/* Other Deaths */
+	HookEventEx(EVENT_OTHER_DEATH, Other_Death_CSGO, EventHookMode_Pre);
 }
 
+/* Deaths */
 stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats())
 		return;
-
-	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
+	
+	char weapon[64];
+	event.GetString(EVENT_STR_WEAPON, weapon, sizeof(weapon));
+	if(StrEqual(weapon, "world")
+	|| StrEqual(weapon, "player"))
+		return; //Since it's not a valid killer, lets end here.
+	
+	/* Another method but is not used.
+	Entity planted_c4 = Entity_Invalid;
+	while((planted_c4 = Entity.FindByClassname(planted_c4, "planted_c4")) != Entity_Invalid)	{
+		if(planted_c4.IsValid() && planted_c4.Owner > 0)
+			client = planted_c4.Owner;
+	}
+	*/
+	
+	int client = StrEqual(weapon, "planted_c4") ? m_hLastBombPlanter : GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
+	
 	if(!Tklib_IsValidClient(client, true))
 		return;
 
@@ -246,20 +268,12 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	if(IsValidAbuse(client))
 		return;
 	
-	char weapon[64];
-	event.GetString(EVENT_STR_WEAPON, weapon, sizeof(weapon));
-	if(StrEqual(weapon, "world")
-	|| StrEqual(weapon, "player"))
-		return; //Since it's not a valid killer, lets end here.
-	
 	/* Fix the weapon entity prefix */
 	Format(weapon, sizeof(weapon), "weapon_%s", weapon);
 	
 	if(StrEqual(weapon, "weapon_breachcharge_projectile"))
 		weapon = "weapon_breachcharge";
-	if(StrEqual(weapon, "weapon_planted_c4_survival"))
-		weapon = "weapon_c4";
-	if(StrEqual(weapon, "weapon_planted_c4"))
+	if(StrContains(weapon, "weapon_planted_c4") != -1)
 		weapon = "weapon_c4";
 	
 	/* Since 'inferno' applies for Incendiary and Molotov. */
@@ -489,5 +503,51 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 			Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, thrusmoke, attackerblind);
 			db.Query(DBQuery_Kill_Log, log);
 		}
+	}
+}
+
+/* Other Deaths */
+stock void Other_Death_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
+	int client = GetClientOfUserId(event.GetInt("attacker"));
+	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	int entity = event.GetInt("otherid");
+	if(!IsValidEntity(entity))
+		return;
+	
+	char classname[128], weapon[4][128];
+	event.GetString("othertype", classname, sizeof(classname));
+	event.GetString("weapon", weapon[0], sizeof(weapon[]));
+	event.GetString("weapon_itemid", weapon[1], sizeof(weapon[]));
+	event.GetString("weapon_fauxitemid", weapon[2], sizeof(weapon[]));
+	event.GetString("weapon_originalowner_xuid", weapon[3], sizeof(weapon[]));
+	bool headshot = event.GetBool("headshot");
+	int penetrated = event.GetInt("penetrated");
+	bool noscope = event.GetBool("noscope");
+	bool thrusmoke = event.GetBool("thrusmoke");
+	bool attackerblind = event.GetBool("attackerblind");
+	
+	/* Chicken Kill */
+	if(StrEqual(classname, "chicken", false))
+		Session[client].ChickenKills++;
+	
+	if(Debug.BoolValue)	{
+		PrintToServer("//===== Other_Death_CSGO =====//");
+		PrintToServer("Client: %N", client);
+		PrintToServer("Entity index: %d", entity);
+		PrintToServer("Entity Classname: \"%s\"", classname);
+		PrintToServer(" ");
+		PrintToServer("Weapon: \"%s\"", weapon[0]);
+		PrintToServer("Weapon ID: \"%s\"", weapon[1]);
+		PrintToServer("Weapon Faux ID: \"%s\"", weapon[2]);
+		PrintToServer("Weapon Original Owner xuid: \"%s\"", weapon[3]);
+		PrintToServer(" ");
+		PrintToServer("Headshot: %s", Bool[headshot]);
+		PrintToServer("Penetrated: %i", penetrated);
+		PrintToServer("Noscope: %s", Bool[noscope]);
+		PrintToServer("Through Smoke: %s", Bool[thrusmoke]);
+		PrintToServer("Attacker was blind: %s", Bool[attackerblind]);
+		PrintToServer(" ");
 	}
 }

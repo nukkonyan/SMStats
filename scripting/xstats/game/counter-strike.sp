@@ -2,28 +2,31 @@
  *	Functions.
  */
 ConVar	BombEvent[3];
+//ConVar	HostageEvent[2];
 
 /* Custom network props */
-int m_hFlashBangOwner[MAXPLAYERS] = {0, ...};
-int m_hFlashBangEntity[MAXPLAYERS] = {0, ...};
+stock int m_hLastFlashBangGrenade[MAXPLAYERS] = {0, ...};
+stock int m_hLastFlashBangGrenadeOwner[MAXPLAYERS] = {0, ...};
 
-int m_hHeGrenadeOwner[MAXPLAYERS] = {0, ...};
-int m_hHeGrenadeEntity[MAXPLAYERS] = {0, ...};
+stock int m_hLastHeGrenade[MAXPLAYERS] = {0, ...};
+stock int m_hLastHeGrenadeOwner[MAXPLAYERS] = {0, ...};
 
-int m_hSmokeGrenadeOwner[MAXPLAYERS] = {0, ...};
-int m_hSmokeGrenadeEntity[MAXPLAYERS] = {0, ...};
+stock int m_hLastSmokeGrenade[MAXPLAYERS] = {0, ...};
+stock int m_hLastSmokeGrenadeOwner[MAXPLAYERS] = {0, ...};
 
-int m_hSmokeGrenadeParticleOwner[MAXPLAYERS] = {0, ...};
-int m_hSmokeGrenadeParticleEntity[MAXPLAYERS] = {0, ...};
+stock int m_hLastFirebombGrenade[MAXPLAYERS] = {0, ...};
 
-int m_hLastFirebombGrenade[MAXPLAYERS] = {0, ...};
-
-stock int LatestFlash = 0; /* The most recent flashbang entity that went off */
+stock int m_hLastBombPlanter = 0;
+stock int m_hLastBombDefuser = 0;
 
 void PrepareGame_CounterStrike()	{
+	/* Bomb events */
 	BombEvent[0] = CreateConVar("xstats_points_bomb_planted",	"2", "xStats: Counter-Strike - Points given when planting the bomb.", _, true);
 	BombEvent[1] = CreateConVar("xstats_points_bomb_defused",	"2", "xStats: Counter-Strike - Points given when defusing the bomb.", _, true);
 	BombEvent[2] = CreateConVar("xstats_points_bomb_exploded",	"2", "xStats: Counter-Strike - Points given when bomb explodes.", _, true);
+	
+	/* Hostage events */
+	
 	
 	/* Events */
 	HookEventEx(EVENT_BOMB_PLANTED,		CS_Bombs, EventHookMode_Pre);
@@ -55,14 +58,14 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 	int points = 0;
 	
 	if(StrEqual(event_name, EVENT_BOMB_PLANTED) && CS_GetClientTeam(client) == CSTeam_T)	{
-		points = BombEvent[0].IntValue;
+		m_hLastBombPlanter = client;
 		
 		Session[client].BombsPlanted++;
 		Format(query, sizeof(query), "update `%s` set BombsPlanted = BombsPlanted+1 where SteamID='%s' and ServerID='%i'",
 		playerlist, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
-		if(points > 0)	{
+		if((points = BombEvent[0].IntValue) > 0)	{
 			AddSessionPoints(client, points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 			db.Query(DBQuery_Callback, query);
@@ -74,14 +77,14 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 	}
 	
 	if(StrEqual(event_name, EVENT_BOMB_DEFUSED) && CS_GetClientTeam(client) == CSTeam_CT)	{
-		points = BombEvent[1].IntValue;
+		m_hLastBombDefuser = client;
 		
 		Session[client].BombsDefused++;
 		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s' and ServerID='%i'",
 		playerlist, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
-		if(points > 0)	{
+		if((points = BombEvent[1].IntValue) > 0)	{
 			AddSessionPoints(client, points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 			db.Query(DBQuery_Callback, query);
@@ -92,14 +95,12 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 		}
 		
 		if(StrEqual(event_name, EVENT_BOMB_EXPLODED) && CS_GetClientTeam(client) == CSTeam_T)	{
-			points = BombEvent[2].IntValue;
-			
 			Session[client].BombsExploded++;
 			Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s' and ServerID='%i'",
 			playerlist, SteamID[client], ServerID.IntValue);
 			db.Query(DBQuery_Callback, query);
 			
-			if(points > 0)	{
+			if((points = BombEvent[2].IntValue) > 0)	{
 				AddSessionPoints(client, points);
 				Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 				db.Query(DBQuery_Callback, query);
@@ -112,11 +113,11 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 	}
 }
 
-void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	{
+stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	{
 	int client;
 	switch(game)	{
 		case	Game_CSS, Game_CSPromod:
-			client = m_hFlashBangOwner[client];
+			client = m_hLastFlashBangGrenadeOwner[client];
 		case	Game_CSGO, Game_CSCO:
 			client = event.GetInt(EVENT_STR_ATTACKER);
 	}
@@ -146,7 +147,7 @@ void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	{
 	db.Query(DBQuery_Callback, query);
 }
 
-void Weapon_Fire_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
+stock void Weapon_Fire_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
 	/* Since both Incendiary and Molotov counts as 'firebomb', we need to get the correct grenade. */
@@ -179,7 +180,7 @@ public Action CS_OnBuyCommand(int client, const char[] weapon)	{
 	}
 }
 
-Action Timer_OnBuyCommand(Handle timer, DataPack pack)	{
+stock Action Timer_OnBuyCommand(Handle timer, DataPack pack)	{
 	pack.Reset();
 	int client = pack.ReadCell();
 	char weapon[64];
@@ -202,16 +203,15 @@ Action Timer_OnBuyCommand(Handle timer, DataPack pack)	{
 	return Plugin_Handled;
 }
 
-void OnEntityCreated_CounterStrike(int entity, const char[] classname)	{
+stock void OnEntityCreated_CounterStrike(int entity, const char[] classname)	{
 	if(!IsValidEntityEx(entity)
 	|| entity == -1)
 		return; /* In CS:GO, at round start, some entity with index -1 (for some odd reason) is spawned, so this will fix the errors. */
 	
 	/* Need a short delay so we can get the entity owner. */
-	if((StrEqual(classname, "flashbang_projectile")
+	if(StrEqual(classname, "flashbang_projectile")
 	|| StrEqual(classname, "hegrenade_projectile")
-	|| StrEqual(classname, "smokegrenade_projectile")
-	|| StrEqual(classname, "env_particlesmokegrenade")))	{
+	|| StrEqual(classname, "smokegrenade_projectile"))	{
 		DataPack pack = new DataPack();
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteString(classname);
@@ -219,7 +219,7 @@ void OnEntityCreated_CounterStrike(int entity, const char[] classname)	{
 	}
 }
 
-Action Timer_OnEntityCreated(Handle timer, DataPack pack)	{
+stock Action Timer_OnEntityCreated(Handle timer, DataPack pack)	{
 	pack.Reset();
 	int ref = pack.ReadCell();
 	char[] classname = new char[96];
@@ -228,26 +228,20 @@ Action Timer_OnEntityCreated(Handle timer, DataPack pack)	{
 	
 	int entity = EntRefToEntIndex(ref);
 	int client = Ent(entity).Owner; /*GetEntPropEntEx(entity, Prop_Send, "m_hThrower");*/
-	LatestFlash = client;
 	
-	if(StrEqual(classname, "flashbang_projectile"))	{	
-		m_hFlashBangEntity[client] = entity;
-		m_hFlashBangOwner[client] = client;
+	if(StrEqual(classname, "flashbang_projectile"))	{
+		m_hLastFlashBangGrenade[client] = entity;
+		m_hLastFlashBangGrenadeOwner[client] = client;
 	}
 	
 	if(StrEqual(classname, "hegrenade_projectile"))	{
-		m_hHeGrenadeEntity[client] = entity;
-		m_hHeGrenadeOwner[client] = client;
+		m_hLastHeGrenade[client] = entity;
+		m_hLastHeGrenadeOwner[client] = client;
 	}
 	
 	if(StrEqual(classname, "smokegrenade_projectile"))	{
-		m_hSmokeGrenadeEntity[client] = entity;
-		m_hSmokeGrenadeOwner[client] = client;
-	}
-	
-	if(StrEqual(classname, "env_particlesmokegrenade"))	{
-		m_hSmokeGrenadeParticleEntity[client] = entity;
-		m_hSmokeGrenadeParticleOwner[client] = client;
+		m_hLastSmokeGrenade[client] = entity;
+		m_hLastSmokeGrenadeOwner[client] = client;
 	}
 	
 	if(Debug.BoolValue)	{

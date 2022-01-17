@@ -1,10 +1,12 @@
-#include	<geoip>
-#include	<tklib>
-#include	<multicolors>
-#include	<xstats>
-#include	<updater>
-#pragma		semicolon	1
-#pragma		newdecls	required
+#define _tklib_disable_resize
+#include <tklib>
+#include <multicolors>
+#include <xstats>
+#include <updater>
+#include <geoip>
+#pragma semicolon 1
+#pragma newdecls required
+#pragma tabsize 0
 
 /**
  *	Xstats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX.
@@ -83,6 +85,7 @@ XStatsSession	Session[MAXPLAYERS];
 #include	"xstats/natives.sp" /* Natives */
 #include	"xstats/updater.sp" /* Updater Support */
 #include	"xstats/events.sp" /* Global Events */
+
 #include	"xstats/sounds.sp" /* Player Connect Sound */
 //#include	"xstats/achievements.sp" /* Achievements */
 
@@ -97,7 +100,7 @@ public void OnPluginStart()	{
 	game = IdentifyGame();
 	
 	/* Forwards */
-	Fwd_Prefix = new GlobalForward("Xstats_OnPrefixUpdated",
+	Fwd_Prefix = new GlobalForward("XStats_OnPrefixUpdated",
 		ET_Event,
 		Param_String);
 	Fwd_Death = new GlobalForward("XStats_OnDeathEvent",

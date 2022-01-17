@@ -8,11 +8,11 @@ void PrepareEvents()	{
 	HookEventEx(EVENT_PLAYER_DISCONNECT, Disconnected, EventHookMode_Pre);
 	
 	/* Rounds */
-	HookEventEx(EVENT_ROUND_END,				Rounds, EventHookMode_Pre);
-	HookEventEx(EVENT_ROUND_START,				Rounds, EventHookMode_Pre);
-	HookEventEx(EVENT_TEAMPLAY_ROUND_ACTIVE,	Rounds, EventHookMode_Pre);
-	HookEventEx(EVENT_ARENA_ROUND_START,		Rounds, EventHookMode_Pre);
-	HookEventEx(EVENT_TEAMPLAY_ROUND_WIN,		Rounds, EventHookMode_Pre);
+	HookEventEx(EVENT_ROUND_END,				Rounds);
+	HookEventEx(EVENT_ROUND_START,				Rounds);
+	HookEventEx(EVENT_TEAMPLAY_ROUND_ACTIVE,	Rounds);
+	HookEventEx(EVENT_ARENA_ROUND_START,		Rounds);
+	HookEventEx(EVENT_TEAMPLAY_ROUND_WIN,		Rounds);
 }
 
 /* Check if it's a suicide */
@@ -116,12 +116,23 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 }
 
 stock void Rounds(Event event, const char[] event_name, bool dontBroadcast)	{
-	(StrEqual(event_name, EVENT_ROUND_END)
-	|| StrEqual(event_name, EVENT_TEAMPLAY_ROUND_WIN)) ? RoundEnded() : RoundStarted();
-	
 	if(Debug.BoolValue)	{
 		PrintToServer("//===== Rounds =====//");
 		PrintToServer("\"%s\" Was fired", event_name);
 		PrintToServer(" ");
 	}
+	
+	DataPack pack = new DataPack();
+	pack.WriteString(event_name);
+	CreateTimer(0.1, Timer_Rounds, pack);
+}
+
+stock Action Timer_Rounds(Handle timer, DataPack pack)	{
+	pack.Reset();
+	char event_name[64];
+	pack.ReadString(event_name, sizeof(event_name));
+	delete pack;
+	
+	(StrEqual(event_name, EVENT_ROUND_END)
+	|| StrEqual(event_name, EVENT_TEAMPLAY_ROUND_WIN)) ? RoundEnded() : RoundStarted();
 }

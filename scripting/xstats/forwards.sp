@@ -94,10 +94,12 @@ public void OnClientPutInServer(int client)	{
 	CPrintToChatAll("%s %s (Pos #%i, %i points) has connected from %s", Prefix, Name[client], position, points, Country[client]);
 	PrintToServer("%s %s (Pos #%i, %i points) has connected from %s", LogTag, Playername[client], position, points, Country[client]);
 	
-	if(position <= 10 && !StrEqual(ConnectSound[0], NULL_STRING))
-		EmitSoundToAll(ConnectSound[0]);
-	else if(!StrEqual(ConnectSound[1], NULL_STRING))
-		EmitSoundToAll(ConnectSound[1]);
+	if(!IsFakeClient(client))	{
+		if(position <= 10 && !StrEqual(ConnectSound[0], NULL_STRING))
+			EmitSoundToAll(ConnectSound[0]);
+		else if(!StrEqual(ConnectSound[1], NULL_STRING))
+			EmitSoundToAll(ConnectSound[1]);
+	}
 	
 	CreateTimer(60.0, IntervalPlayTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
@@ -134,6 +136,7 @@ public void OnMapStart()	{
 	if(Debug.BoolValue)	{
 		PrintToServer("//===== Map Log =====//");
 		PrintToServer("Creating a minute long repeating timer for map \"%s\"", CurrentMap);
+		PrintToServer(" ");
 	}
 }
 
