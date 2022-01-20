@@ -79,8 +79,10 @@ Action RankCmd(int client, int args=-1)	{
 	panel.Send(client, RankPanelCallback, MENU_TIME_FOREVER);
 	delete panel;
 	
-	CPrintToChat(client, "%s %s is positioned #%i out of %i players with %.2f KDR and %i total minutes in playtime",
-	Prefix, Name[client], position, players, kdr, playtime);
+	if(args != -1)	{
+		CPrintToChat(client, "%s %s is positioned #%i out of %i players with %.2f KDR and %i total minutes in playtime",
+		Prefix, Name[client], position, players, kdr, playtime);
+	}
 	
 	delete database;
 	delete results;
