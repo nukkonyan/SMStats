@@ -313,6 +313,22 @@ stock bool IsValidAbuse(int client=0)	{
 }
 
 /**
+ *	Returns if the client is inside a smoke.
+ *	Used as alternative for CS:S since 'attackerblind' is only available in CS:GO.
+ *
+ *	@param	client	The users index.
+ */
+stock bool CS_IsClientInsideSmoke(int client)	{
+	Entity entity = Entity_Empty;
+	while((entity = Entity.FindByClassname(entity, "env_particlesmokegrenade")) != Entity_Invalid)	{
+		if(entity.GetDistance(client) <= 3.0)
+			return true;
+	}
+	
+	return false;
+}
+
+/**
  *	Prepare prefix forward.
  */
 stock void PreparePrefixUpdatedForward()	{

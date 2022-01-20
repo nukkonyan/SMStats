@@ -14,6 +14,8 @@ stock int m_hLastGrenade[MAXPLAYERS] = {0, ...};
 stock int m_hLastBombPlanter = 0;
 stock int m_hLastBombDefuser = 0;
 
+stock bool m_bIsFlashed[MAXPLAYERS] = false;
+
 void PrepareGame_CounterStrike()	{
 	/* Bomb events */
 	BombEvent[0] = CreateConVar("xstats_points_bomb_planted",	"2", "XStats: Counter-Strike - Points given when planting the bomb.", _, true);
@@ -151,6 +153,15 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 	if(!IsValidStats())
 		return;
 	
+	int victim = event.GetInt(EVENT_STR_USERID);
+	if(!Tklib_IsValidClient(victim, !(IsFakeClient(victim) && !AllowBots.BoolValue)))
+		return;
+	
+	float m_flFlashDuration = GetEntPropFloatEx(victim, Prop_Send, "m_flFlashDuration");
+	m_bIsFlashed[victim] = (m_flFlashDuration > 1.0);
+	
+	CreateTimer(m_flFlashDuration-1.1257525125, Timer_CS_Flashed, victim);
+	
 	int client;
 	switch(game)	{
 		case	Game_CSS, Game_CSPromod:
@@ -160,10 +171,6 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 	}
 	
 	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	int victim = event.GetInt(EVENT_STR_USERID);
-	if(!Tklib_IsValidClient(victim, !(IsFakeClient(client) && !AllowBots.BoolValue)))
 		return;
 	
 	if(IsSameTeam(victim, client) || IsSamePlayers(victim, client))
@@ -183,6 +190,8 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 	playerlist, SteamID[client], ServerID.IntValue);
 	db.Query(DBQuery_Callback, query);
 }
+
+Action Timer_CS_Flashed(Handle timer, int client)	{	m_bIsFlashed[client] = false;	}
 
 stock void Weapon_Fire_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
 	int client = GetClientOfUserId(event.GetInt("userid"));

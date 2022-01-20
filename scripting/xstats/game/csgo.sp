@@ -296,14 +296,12 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	|| StrEqual(weapon, "weapon_hegrenade")
 	|| StrEqual(weapon, "weapon_frag")
 	|| StrEqual(weapon, "weapon_tagrenade")
-	|| StrEqual(weapon, "weapon_snowball")
-	|| StrEqual(weapon, "weapon_breachcharge")
-	|| StrEqual(weapon, "weapon_c4")); /* Not really a grenade but whatever, just for some specific stuff */
+	|| StrEqual(weapon, "weapon_snowball")); /* Not really a grenade but whatever, just for some specific stuff */
 	
 	int assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER));
 	int defindex = CSGO_GetWeaponDefindex(weapon);
 	//int penetrated = event.GetInt(EVENT_STR_PENETRATED);
-	bool midair = (!grenadekill && IsClientMidAir(client));
+	bool midair = IsClientMidAir(client);
 	bool headshot = event.GetBool(EVENT_STR_HEADSHOT);
 	bool dominated = event.GetBool(EVENT_STR_DOMINATED);
 	bool revenge = event.GetBool(EVENT_STR_REVENGE);
@@ -311,7 +309,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	bool thrusmoke = event.GetBool(EVENT_STR_THRUSMOKE);
 	bool attackerblind = event.GetBool(EVENT_STR_ATTACKERBLIND);
 	bool knifekill = (StrContains(weapon, "knife", false) != -1); /* Support custom plugins */
-	bool c4kill = (StrContains(weapon, "c4", false) != -1);
+	bool bombkill = ((StrContains(weapon, "c4", false) != -1) || StrContains(weapon, "breachcharge") != -1);
 	//bool collateral = (penetrated > 0);
 	
 	if(Weapon[defindex] == null)	{
@@ -338,7 +336,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		PrintToServer("thrusmoke: %s", Bool[thrusmoke]);
 		PrintToServer("attackerblind: %s", Bool[attackerblind]);
 		PrintToServer("grenadekill: %s", Bool[grenadekill]);
-		PrintToServer("c4kill: %s", Bool[c4kill]);
+		PrintToServer("bombkill: %s", Bool[bombkill]);
 		PrintToServer(" ");
 		PrintToServer("Points %i", points);
 	}
@@ -349,9 +347,10 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	KillMsg[client].HeadshotKill = headshot;
 	KillMsg[client].NoscopeKill = noscope;
 	KillMsg[client].GrenadeKill = grenadekill;
-	KillMsg[client].BombKill = c4kill;
+	KillMsg[client].BombKill = bombkill;
 	KillMsg[client].BlindedKill = attackerblind;
 	
+	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
 	AssistedKill(assist, client, victim);
 	VictimDied(victim);
 	
@@ -420,7 +419,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		db.Query(DBQuery_Callback, query);
 	}
 	
-	if(c4kill)	{
+	if(bombkill)	{
 		Session[client].BombKills++;
 		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID='%i'",
 		playerlist, SteamID[client], ServerID.IntValue);

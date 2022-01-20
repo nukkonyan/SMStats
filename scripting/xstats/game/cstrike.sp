@@ -181,9 +181,9 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	|| StrEqual(weapon, "weapon_hegrenade"));
 	
 	int assist = GetClientOfUserId(GetLatestAssister(victim, client));
-	event.SetInt("assister", GetLatestAssister(victim, client));
+	event.SetInt("assister", assist);
 	int points = Weapon[defindex].IntValue;
-	bool midair = (!grenadekill && IsClientMidAir(client));
+	bool midair = IsClientMidAir(client);
 	bool headshot = event.GetBool(EVENT_STR_HEADSHOT);
 	bool dominated = event.GetBool(EVENT_STR_DOMINATED);
 	bool revenge = event.GetBool(EVENT_STR_REVENGE);
@@ -191,8 +191,12 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	|| StrEqual(weapon, "weapon_g3sg1")
 	|| StrEqual(weapon, "weapon_scout")
 	|| StrEqual(weapon, "weapon_awp")) && !CS_IsWeaponZoomedIn(GetClientActiveWeapon(client)));
+	bool thrusmoke = CS_IsClientInsideSmoke(victim);
+	event.SetBool("thrusmoke", thrusmoke);
+	bool attackerblind = m_bIsFlashed[client];
+	event.SetBool("attackerblind", attackerblind);
 	bool knifekill = (StrContains(weapon, "knife", false) != -1); /* Support custom plugins */
-	bool c4kill = (StrContains(weapon, "c4", false) != -1);
+	bool bombkill = (StrContains(weapon, "c4", false) != -1);
 	
 	if(Debug.BoolValue)	{
 		PrintToServer("//===== Player_Death_CSS =====//");
@@ -207,22 +211,24 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		PrintToServer("dominated: %s", Bool[dominated]);
 		PrintToServer("revenge: %s", Bool[revenge]);
 		PrintToServer("noscope: %s", Bool[noscope]);
+		PrintToServer("thrusmok: %s", Bool[thrusmoke]);
 		PrintToServer("knifekill: %s", Bool[knifekill]);
 		PrintToServer("grenadekill: %s", Bool[grenadekill]);
-		PrintToServer("c4kill: %s", Bool[c4kill]);
+		PrintToServer("bombkill: %s", Bool[bombkill]);
 		PrintToServer(" ");
 		PrintToServer("points: %i", points);
 	}
 	
 	/* Kill msg stuff */
 	KillMsg[client].MidAirKill = midair;
-	//KillMsg[client].SmokeKill = thrusmoke; /* To be implemented soon */
+	KillMsg[client].SmokeKill = thrusmoke;
 	KillMsg[client].HeadshotKill = headshot;
 	KillMsg[client].NoscopeKill = noscope;
 	KillMsg[client].GrenadeKill = grenadekill;
-	KillMsg[client].BombKill = c4kill;
-	//KillMsg[client].BlindedKill = attackerblind; /* To be implemented soon */
+	KillMsg[client].BombKill = bombkill;
+	KillMsg[client].BlindedKill = attackerblind;
 	
+	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
 	AssistedKill(assist, client, victim);
 	VictimDied(victim);
 	
@@ -310,7 +316,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		db.Query(DBQuery_Callback, query);
 	}
 	
-	if(c4kill)	{
+	if(bombkill)	{
 		Session[client].BombKills++;
 		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID='%i'",
 		playerlist, SteamID[client], ServerID.IntValue);
