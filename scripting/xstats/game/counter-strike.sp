@@ -154,13 +154,18 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 		return;
 	
 	int victim = event.GetInt(EVENT_STR_USERID);
-	if(!Tklib_IsValidClient(victim, !(IsFakeClient(victim) && !AllowBots.BoolValue)))
+	if(!Tklib_IsValidClient(victim))
 		return;
 	
-	float m_flFlashDuration = GetEntPropFloatEx(victim, Prop_Send, "m_flFlashDuration");
-	m_bIsFlashed[victim] = (m_flFlashDuration > 1.0);
+	if(IsFakeClient(victim) && !AllowBots.BoolValue)
+		return;
 	
-	CreateTimer(m_flFlashDuration-1.1257525125, Timer_CS_Flashed, victim);
+	if(!IsFakeClient(victim))	{
+		float m_flFlashDuration = GetEntPropFloatEx(victim, Prop_Send, "m_flFlashDuration");
+		m_bIsFlashed[victim] = (m_flFlashDuration > 1.0);
+		
+		CreateTimer(m_flFlashDuration-1.1257525125, Timer_CS_Flashed, victim);
+	}
 	
 	int client;
 	switch(game)	{
