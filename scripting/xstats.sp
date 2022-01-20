@@ -13,7 +13,7 @@
  */
 
 #define LogTag "[XStats]"
-#define Version "0.01_dev1"
+#define Version "0.01a"
 
 public Plugin myinfo = {
 	name		=	"XStats - Statistical Tracker",
