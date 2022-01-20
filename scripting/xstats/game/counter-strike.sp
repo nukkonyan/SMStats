@@ -153,7 +153,7 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 	if(!IsValidStats())
 		return;
 	
-	int victim = event.GetInt(EVENT_STR_USERID);
+	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	if(!Tklib_IsValidClient(victim))
 		return;
 	
@@ -172,7 +172,7 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 		case	Game_CSS, Game_CSPromod:
 			client = (m_hLastFlashBangGrenade = client) ? client : 0;
 		case	Game_CSGO, Game_CSCO:
-			client = event.GetInt(EVENT_STR_ATTACKER);
+			client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	}
 	
 	if(!Tklib_IsValidClient(client, true))
