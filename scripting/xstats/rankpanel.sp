@@ -4,9 +4,9 @@
 stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selection)	{
 	switch(selection)	{
 		/* Current Session */
-		case	1:	RankPanel_CurrentSession(client);
+		case	2:	RankPanel_CurrentSession(client);
 		/* Total Statistics */
-		case	2:	RankPanel_TotalStatistics(client);
+		case	3:	RankPanel_TotalStatistics(client);
 	}
 }
 
@@ -29,7 +29,7 @@ stock void RankPanel_CurrentSession(int client)	{
 	
 	switch(game)	{
 		case Game_TF2, Game_TF2V:	{
-			panel.DrawItem("%s Stats", IsCurrentGame(Game_TF2) ? "TF2":"TF2:V");
+			panel.DrawItem("TF Stats");
 			panel.DrawText("%i Dominations", Session[client].Dominations);
 			panel.DrawText("%i Revenges", Session[client].Revenges);
 			panel.DrawText("%i Headshots", Session[client].Headshots);
@@ -64,7 +64,7 @@ stock void RankPanel_CurrentSession(int client)	{
 			}
 		}
 		case Game_TF2C:	{
-			panel.DrawItem("TF2:Classic Stats");
+			panel.DrawItem("TF Stats");
 			panel.DrawText("%i Dominations", Session[client].Dominations);
 			panel.DrawText("%i Revenges", Session[client].Revenges);
 			panel.DrawText("%i Headshots", Session[client].Headshots);
@@ -93,7 +93,7 @@ stock void RankPanel_CurrentSession(int client)	{
 			panel.DrawText("%i Ignited", Session[client].Ignited);
 		}
 		case Game_TF2OP:	{
-			panel.DrawItem("TF2:OP Stats");
+			panel.DrawItem("TF Stats");
 			panel.DrawText("%i Dominations", Session[client].Dominations);
 			panel.DrawText("%i Revenges", Session[client].Revenges);
 			panel.DrawText("%i Headshots", Session[client].Headshots);
@@ -120,37 +120,8 @@ stock void RankPanel_CurrentSession(int client)	{
 			panel.DrawText("%i Sappers Destroyed", Session[client].SappersDestroyed);
 			panel.DrawText("%i Ignited", Session[client].Ignited);
 		}
-		case Game_CSS:	{
-			panel.DrawItem("CS:S Stats");
-			panel.DrawText("%i Dominations", Session[client].Dominations);
-			panel.DrawText("%i Revenges", Session[client].Revenges);
-			panel.DrawText("%i Headshots", Session[client].Headshots);
-			panel.DrawText("%i Noscopes", Session[client].Noscopes);
-			panel.DrawText("%i Grenade kills", Session[client].GrenadeKills);
-			panel.DrawText("%i Money spent", Session[client].MoneySpent);
-		}
-		case Game_CSPromod:	{
-			panel.DrawItem("CS:Promod Stats");
-			panel.DrawText("%i Dominations", Session[client].Dominations);
-			panel.DrawText("%i Revenges", Session[client].Revenges);
-			panel.DrawText("%i Headshots", Session[client].Headshots);
-			panel.DrawText("%i Noscopes", Session[client].Noscopes);
-			panel.DrawText("%i Grenade kills", Session[client].GrenadeKills);
-			panel.DrawText("%i Money spent", Session[client].MoneySpent);
-		}
-		case Game_CSGO:	{
-			panel.DrawItem("CS:GO Stats");
-			panel.DrawText("%i Dominations", Session[client].Dominations);
-			panel.DrawText("%i Revenges", Session[client].Revenges);
-			panel.DrawText("%i Headshots", Session[client].Headshots);
-			panel.DrawText("%i Noscopes", Session[client].Noscopes);
-			panel.DrawText("%i Through smoke kills", Session[client].SmokeKills);
-			panel.DrawText("%i Blinded kills", Session[client].BlindKills);
-			panel.DrawText("%i Grenade kills", Session[client].GrenadeKills);
-			panel.DrawText("%i Money spent", Session[client].MoneySpent);
-		}
-		case Game_CSCO:	{
-			panel.DrawItem("CS:CO Stats");
+		case Game_CSS, Game_CSPromod, Game_CSGO, Game_CSCO:	{
+			panel.DrawItem("CS Stats");
 			panel.DrawText("%i Dominations", Session[client].Dominations);
 			panel.DrawText("%i Revenges", Session[client].Revenges);
 			panel.DrawText("%i Headshots", Session[client].Headshots);
