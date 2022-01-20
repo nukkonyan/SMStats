@@ -191,6 +191,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	|| StrEqual(weapon, "weapon_g3sg1")
 	|| StrEqual(weapon, "weapon_scout")
 	|| StrEqual(weapon, "weapon_awp")) && !CS_IsWeaponZoomedIn(GetClientActiveWeapon(client)));
+	event.SetBool("noscope", noscope);
 	bool thrusmoke = CS_IsClientInsideSmoke(victim);
 	event.SetBool("thrusmoke", thrusmoke);
 	bool attackerblind = m_bIsFlashed[client];
@@ -211,7 +212,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		PrintToServer("dominated: %s", Bool[dominated]);
 		PrintToServer("revenge: %s", Bool[revenge]);
 		PrintToServer("noscope: %s", Bool[noscope]);
-		PrintToServer("thrusmok: %s", Bool[thrusmoke]);
+		PrintToServer("thrusmoke: %s", Bool[thrusmoke]);
 		PrintToServer("knifekill: %s", Bool[knifekill]);
 		PrintToServer("grenadekill: %s", Bool[grenadekill]);
 		PrintToServer("bombkill: %s", Bool[bombkill]);
