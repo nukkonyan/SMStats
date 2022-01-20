@@ -161,7 +161,6 @@ stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int sele
 		 * 3: Back.
 		 * 4. Exit.
 		 */
-		case	3:	RankPanel_TotalStatistics(client);
-		case	4:	RankCmd(client);
+		case	3:	RankCmd(client);
 	}
 }
