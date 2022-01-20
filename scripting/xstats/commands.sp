@@ -6,10 +6,10 @@
 
 void PrepareCommands()	{
 	RegConsoleCmd("rank", RankCmd, "Xstats - Returns the rank position.");
-	RegConsoleCmd("xstats", XstatsCmd, "Xstats - About the project.");
+	RegConsoleCmd("xstats", XStatsCmd, "Xstats - About the project.");
 }
 
-Action RankCmd(int client, int args)	{
+Action RankCmd(int client, int args=-1)	{
 	Database database = SQL_Connect2(Xstats, false);
 	
 	if(database == null)	{
@@ -88,14 +88,14 @@ Action RankCmd(int client, int args)	{
 	return	Plugin_Handled;
 }
 
-Action XstatsCmd(int client, int args)	{
+Action XStatsCmd(int client, int args=-1)	{
 	if(!Tklib_IsValidClient(client, true))	{
 		ReplyToCommand(client, "You may only use this ingame.");
 		return	Plugin_Handled;
 	}
 	
-	CPrintToChat(client, "{green}Xstats {default}is a solo project created and managed by {orange}Teamkiller324 (/id/Teamkiller324)");
+	CPrintToChat(client, "{green}XStats {default}is a solo project created and managed by {orange}Teamkiller324 (/id/Teamkiller324)");
 	CPrintToChat(client, "Running version {lightgreen}%s", Version);
-	CPrintToChat(client, "More info @ https://teamkiller324.github.io/Xstats/");
+	CPrintToChat(client, "More info @ https://teamkiller324.github.io/XStats/");
 	return	Plugin_Handled;
 }

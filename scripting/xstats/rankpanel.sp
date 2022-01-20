@@ -3,9 +3,14 @@
  */
 stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selection)	{
 	switch(selection)	{
-		/* Current Session */
+		/**
+		 * 1: Panel info.
+		 * 2: Session.
+		 * 3: Stats.
+		 * 4. Exit.
+		 */
+		case	1:	XStatsCmd(client);
 		case	2:	RankPanel_CurrentSession(client);
-		/* Total Statistics */
 		case	3:	RankPanel_TotalStatistics(client);
 	}
 }
@@ -134,12 +139,29 @@ stock void RankPanel_CurrentSession(int client)	{
 	}
 	
 	panel.DrawText(" ");
+	panel.DrawItem("Back");
 	panel.DrawItem("Exit");
-	panel.Send(client, PanelCallback, MENU_TIME_FOREVER);
+	panel.Send(client, RankPanelCallback2, MENU_TIME_FOREVER);
 	delete panel;
 }
 
 /* Total Statistics */
 stock void RankPanel_TotalStatistics(int client)	{
 	
+}
+
+/**
+ *	Rank panel callback.
+ */
+stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int selection)	{
+	switch(selection)	{
+		/**
+		 * 1: Session.
+		 * 2: Stats.
+		 * 3: Back.
+		 * 4. Exit.
+		 */
+		case	3:	RankPanel_TotalStatistics(client);
+		case	4:	RankCmd(client);
+	}
 }
