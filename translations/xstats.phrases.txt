@@ -86,7 +86,6 @@
 	//Backstab.
 	"Kill Event Type 5"
 	{
-		
 		"en"	"with a {green}Backstab"
 	}
 	
@@ -96,32 +95,26 @@
 		"en"	"{green}Airshot"
 	}
 	
-	//Airshot Deflect Kill.
+	//Deflect Kill.
 	"Kill Event Type 7"
 	{
-		"en"	"{green}Airshot Deflect Kill"
-	}
-	
-	//Deflect Kill.
-	"Kill Event Type 8"
-	{
-		"en"	"with a {green}Deflect Kill"
+		"en"	"{green}Deflect Kill"
 	}
 	
 	//Teleport frag.
-	"Kill Event Type 9"
+	"Kill Event Type 8"
 	{
 		"en"	"with a {green}Telefrag"
 	}
 	
 	//Collateral.
-	"Kill Event Type 10"
+	"Kill Event Type 9"
 	{
 		"en"	"with a {green}Collateral"
 	}
 	
 	//Grenade Kill.
-	"Kill Event Type 11"
+	"Kill Event Type 10"
 	{
 		"en"	"with a {green}Grenade Kill"
 	}
@@ -130,6 +123,12 @@
 	"Kill Event Type 11"
 	{
 		"en"	"with a {green}Bomb Kill"
+	}
+	
+	//Blinded Kill.
+	"Kill Event Type 12"
+	{
+		"en"	"while {green}Blinded"
 	}
 	
 	//Assist
@@ -172,7 +171,7 @@
 		"en"		"{1} ({2}) Earned {3} points for defusing the bomb"
 	}
 	
-	"Bomb Explode"
+	"Bomb Exploded"
 	{
 		"#format"	"{1:s},{2:i},{3:i}"
 		"en"		"{1} ({2}) Earned {3} points for bomb exploding and winning the round"

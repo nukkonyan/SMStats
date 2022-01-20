@@ -2,36 +2,38 @@
  *	Functions.
  */
 ConVar	BombEvent[3];
-//ConVar	HostageEvent[2];
+ConVar	HostageEvent[2];
 
 /* Custom network props */
-stock int m_hLastFlashBangGrenade[MAXPLAYERS] = {0, ...};
-stock int m_hLastFlashBangGrenadeOwner[MAXPLAYERS] = {0, ...};
-
-stock int m_hLastHeGrenade[MAXPLAYERS] = {0, ...};
-stock int m_hLastHeGrenadeOwner[MAXPLAYERS] = {0, ...};
-
-stock int m_hLastSmokeGrenade[MAXPLAYERS] = {0, ...};
-stock int m_hLastSmokeGrenadeOwner[MAXPLAYERS] = {0, ...};
-
+stock int m_hLastFlashBangGrenade = 0;
+stock int m_hLastHeGrenade = 0;
+stock int m_hLastSmokeGrenade = 0;
 stock int m_hLastFirebombGrenade[MAXPLAYERS] = {0, ...};
+stock int m_hLastGrenade[MAXPLAYERS] = {0, ...};
 
 stock int m_hLastBombPlanter = 0;
 stock int m_hLastBombDefuser = 0;
 
 void PrepareGame_CounterStrike()	{
 	/* Bomb events */
-	BombEvent[0] = CreateConVar("xstats_points_bomb_planted",	"2", "xStats: Counter-Strike - Points given when planting the bomb.", _, true);
-	BombEvent[1] = CreateConVar("xstats_points_bomb_defused",	"2", "xStats: Counter-Strike - Points given when defusing the bomb.", _, true);
-	BombEvent[2] = CreateConVar("xstats_points_bomb_exploded",	"2", "xStats: Counter-Strike - Points given when bomb explodes.", _, true);
+	BombEvent[0] = CreateConVar("xstats_points_bomb_planted",	"2", "XStats: Counter-Strike - Points given when planting the bomb.", _, true);
+	BombEvent[1] = CreateConVar("xstats_points_bomb_defused",	"2", "XStats: Counter-Strike - Points given when defusing the bomb.", _, true);
+	BombEvent[2] = CreateConVar("xstats_points_bomb_exploded",	"2", "XStats: Counter-Strike - Points given when bomb explodes.", _, true);
 	
 	/* Hostage events */
-	
+	HostageEvent[0] = CreateConVar("xstats_points_hostage_rescued",	"2", "XStats: Counter-Strike - Points given when hostage is rescued.", _, true);
+	HostageEvent[1] = CreateConVar("xstats_points_hostage_killed",	"2", "XStats: Counter-Strike - Points taken when hostage is killed.", _, true);
 	
 	/* Events */
 	HookEventEx(EVENT_BOMB_PLANTED,		CS_Bombs, EventHookMode_Pre);
 	HookEventEx(EVENT_BOMB_DEFUSED,		CS_Bombs, EventHookMode_Pre);
 	HookEventEx(EVENT_BOMB_EXPLODED,	CS_Bombs, EventHookMode_Pre);
+	
+	/* Hostages */
+	HookEventEx(EVENT_HOSTAGE_RESCUED,	CS_Hostages, EventHookMode_Pre);
+	HookEventEx(EVENT_HOSTAGE_KILLED,	CS_Hostages, EventHookMode_Pre);
+	
+	/* Blinded */
 	HookEventEx(EVENT_PLAYER_BLIND,		CS_Flashed, EventHookMode_Pre);
 	
 	if(IsCurrentGame(Game_CSGO))
@@ -69,10 +71,8 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 			AddSessionPoints(client, points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 			db.Query(DBQuery_Callback, query);
-			int points_client = GetClientPoints(SteamID[client]);
 			
-			CPrintToChat(client, "%s %s (%i) earned %i points for planting the bomb.",
-			Prefix, Name[client], points_client, points);
+			CPrintToChat(client, "%s %t", Prefix, "Bomb Planted", Name[client], GetClientPoints(SteamID[client]), points);
 		}
 	}
 	
@@ -88,36 +88,73 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 			AddSessionPoints(client, points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 			db.Query(DBQuery_Callback, query);
-			int points_client = GetClientPoints(SteamID[client]);
 			
-			CPrintToChat(client, "%s %s (%i) earned %i points for defusing the bomb.",
-			Prefix, Name[client], points_client, points);
+			CPrintToChat(client, "%s %t", Prefix, "Bomb Defused", Name[client], GetClientPoints(SteamID[client]), points);
 		}
+	}
 		
-		if(StrEqual(event_name, EVENT_BOMB_EXPLODED) && CS_GetClientTeam(client) == CSTeam_T)	{
-			Session[client].BombsExploded++;
-			Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s' and ServerID='%i'",
-			playerlist, SteamID[client], ServerID.IntValue);
+	if(StrEqual(event_name, EVENT_BOMB_EXPLODED) && CS_GetClientTeam(client) == CSTeam_T)	{
+		Session[client].BombsExploded++;
+		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s' and ServerID='%i'",
+		playerlist, SteamID[client], ServerID.IntValue);
+		db.Query(DBQuery_Callback, query);
+		
+		if((points = BombEvent[2].IntValue) > 0)	{
+			AddSessionPoints(client, points);
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
 			db.Query(DBQuery_Callback, query);
 			
-			if((points = BombEvent[2].IntValue) > 0)	{
-				AddSessionPoints(client, points);
-				Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", playerlist, points, SteamID[client]);
-				db.Query(DBQuery_Callback, query);
-				int points_client = GetClientPoints(SteamID[client]);
-				
-				CPrintToChat(client, "%s %s (%i) earned %i points for letting bomb explode.",
-				Prefix, Name[client], points_client, points);
-			}
+			CPrintToChat(client, "%s %t", Prefix, "Bomb Exploded", Name[client], GetClientPoints(SteamID[client]), points);
 		}
 	}
 }
 
+/* Hostages */
+stock void CS_Hostages(Event event, const char[] event_name, bool dontBroadcast)	{
+	if(!IsValidStats())
+		return;
+	
+	int client = GetClientOfUserId(event.GetInt("userid"));
+	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	char query[512];
+	int points = 0;
+	
+	if(StrEqual(event_name, EVENT_HOSTAGE_RESCUED))	{
+		Session[client].HostagesRescued++;
+		
+		if((points = HostageEvent[0].IntValue) > 0)	{	
+			CPrintToChat(client, "Hostage Rescued", Name[client], GetClientPoints(SteamID[client]), points);
+			
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, HostagesRescued = HostagesRescued+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, points, SteamID[client], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
+		}
+	}
+	
+	if(StrEqual(event_name, EVENT_HOSTAGE_KILLED))	{
+		Session[client].HostagesRescued++;
+		
+		if((points = HostageEvent[1].IntValue) > 0)	{
+			CPrintToChat(client, "Hostage Killed", Name[client], GetClientPoints(SteamID[client]), points);
+			
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, HostagesKilled = HostagesKilled+1 where SteamID='%s' and ServerID='%i'",
+			playerlist, points, SteamID[client], ServerID.IntValue);
+			db.Query(DBQuery_Callback, query);
+		}
+	}
+}
+
+/* Flashed */
 stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	{
+	if(!IsValidStats())
+		return;
+	
 	int client;
 	switch(game)	{
 		case	Game_CSS, Game_CSPromod:
-			client = m_hLastFlashBangGrenadeOwner[client];
+			client = (m_hLastFlashBangGrenade = client) ? client : 0;
 		case	Game_CSGO, Game_CSCO:
 			client = event.GetInt(EVENT_STR_ATTACKER);
 	}
@@ -229,20 +266,14 @@ stock Action Timer_OnEntityCreated(Handle timer, DataPack pack)	{
 	int entity = EntRefToEntIndex(ref);
 	int client = Ent(entity).Owner; /*GetEntPropEntEx(entity, Prop_Send, "m_hThrower");*/
 	
-	if(StrEqual(classname, "flashbang_projectile"))	{
-		m_hLastFlashBangGrenade[client] = entity;
-		m_hLastFlashBangGrenadeOwner[client] = client;
-	}
+	if(StrEqual(classname, "flashbang_projectile"))
+		m_hLastFlashBangGrenade = client;
 	
-	if(StrEqual(classname, "hegrenade_projectile"))	{
-		m_hLastHeGrenade[client] = entity;
-		m_hLastHeGrenadeOwner[client] = client;
-	}
+	if(StrEqual(classname, "hegrenade_projectile"))
+		m_hLastHeGrenade = client;
 	
-	if(StrEqual(classname, "smokegrenade_projectile"))	{
-		m_hLastSmokeGrenade[client] = entity;
-		m_hLastSmokeGrenadeOwner[client] = client;
-	}
+	if(StrEqual(classname, "smokegrenade_projectile"))
+		m_hLastSmokeGrenade = client;
 	
 	if(Debug.BoolValue)	{
 		PrintToServer("//===== OnEntityCreated_CounterStrike =====//");

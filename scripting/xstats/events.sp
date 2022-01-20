@@ -13,6 +13,8 @@ void PrepareEvents()	{
 	HookEventEx(EVENT_TEAMPLAY_ROUND_ACTIVE,	Rounds);
 	HookEventEx(EVENT_ARENA_ROUND_START,		Rounds);
 	HookEventEx(EVENT_TEAMPLAY_ROUND_WIN,		Rounds);
+	HookEventEx(EVENT_DOD_ROUND_ACTIVE,			Rounds);
+	HookEventEx(EVENT_DOD_ROUND_WIN,			Rounds);
 }
 
 /* Check if it's a suicide */
@@ -134,5 +136,6 @@ stock Action Timer_Rounds(Handle timer, DataPack pack)	{
 	delete pack;
 	
 	(StrEqual(event_name, EVENT_ROUND_END)
-	|| StrEqual(event_name, EVENT_TEAMPLAY_ROUND_WIN)) ? RoundEnded() : RoundStarted();
+	|| StrEqual(event_name, EVENT_TEAMPLAY_ROUND_WIN)
+	|| StrEqual(event_name, EVENT_DOD_ROUND_WIN)) ? RoundEnded() : RoundStarted();
 }

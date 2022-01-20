@@ -1187,6 +1187,16 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		PrintToServer("Points %i", points);
 	}
 	
+	/* Kill msg stuff */
+	KillMsg[client].MidAirKill = midair;
+	KillMsg[client].HeadshotKill = headshot;
+	KillMsg[client].NoscopeKill = noscope;
+	KillMsg[client].BackstabKill = backstab;
+	KillMsg[client].AirshotKill = airshot;
+	KillMsg[client].DeflectKill = deflectkill;
+	KillMsg[client].TeleFragKill = telefrag;
+	KillMsg[client].CollateralKill = collateral;
+	
 	/* Make sure the weapon definition index exists on the array */
 	if(Weapon[defindex] == null)	{
 		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", logprefix, weapon, defindex);
@@ -1450,75 +1460,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		playerlist, points, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
-		int points_client = GetClientPoints(SteamID[client]);
-		
-		/* Lë ol' messy code but has to be it. */
-		char buffer[256];
-		if(midair && noscope && headshot)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
-		}
-		else if(midair && noscope)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default} %t{default}", Kill_Type[4], Kill_Type[0]);
-		}
-		else if(midair && headshot)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default} %t{default}", Kill_Type[3], Kill_Type[0]);
-		}
-		else if(midair && airshot)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default} %t{default}", Kill_Type[6], Kill_Type[0]);
-		}
-		else if(midair && backstab)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default} %t{default}", Kill_Type[5], Kill_Type[0]);
-		}
-		else if(midair && airshot && deflectkill)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default} %t{default}", Kill_Type[7], Kill_Type[0]);
-		}
-		else if(collateral)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[10]);
-		}
-		else if(backstab)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[5]);
-		}
-		else if(noscope && headshot)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[2]);
-		}
-		else if(noscope)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[4]);
-		}
-		else if(headshot)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[3]);
-		}
-		else if(airshot && deflectkill)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[7]);
-		}
-		else if(deflectkill)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[6]);
-		}
-		else if(telefrag)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[9]);
-		}
-		else if(midair)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[0]);
-		}
-		
-		switch(IsValidString(buffer))	{
-			case	true:	CPrintToChat(client, "%s %t", Prefix, "Special Kill Event", Name[client], points_client, points, Name[victim], buffer);
-			case	false:	CPrintToChat(client, "%s %t", Prefix, "Default Kill Event", Name[client], points_client, points, Name[victim]);
-		}
+		PrepareKillMessage(client, victim, points);
 	}
 		
 	if(!IsFakeClient(victim))	{

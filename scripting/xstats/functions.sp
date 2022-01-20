@@ -425,3 +425,246 @@ stock bool VictimDied(int victim)	{
 	
 	return false;
 }
+
+/**
+ *	Prepare the kill message.
+ *
+ *	@param	client	The client who killed.
+ *	@param	victim	The victim who died.
+ *	@param	points	The points the client was given
+ */
+stock void PrepareKillMessage(int client, int victim, int points)	{
+	int points_client = GetClientPoints(SteamID[client]);
+	
+	char buffer[256];
+	
+	/* Lë ol' messy code but has to be it. */
+	
+	/* Deflect kill */
+	if(KillMsg[client].DeflectKill)
+	{
+		/* Airshot deflect kill */
+		if(KillMsg[client].AirshotKill)
+		{
+			switch(KillMsg[client].HeadshotKill)
+			{
+				/* Headshot airshot deflect kill */
+				case true:
+					Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[6], Kill_Type[7]);
+				/* Airshot deflect kill */
+				case false:
+					Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[6], Kill_Type[7]);
+			}
+		}
+		else
+		{
+			switch(KillMsg[client].HeadshotKill)
+			{
+				/* Headshot deflect kill */
+				case true:
+					Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[7]);
+				/* Deflect kill */
+				case false:
+					Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[7]);
+			}
+		}
+	}
+	
+	/* Airshot kill */
+	else if(KillMsg[client].AirshotKill)
+	{
+		/* Mid air airshot kill */
+		if(KillMsg[client].MidAirKill)
+		{
+			switch(KillMsg[client].HeadshotKill)
+			{
+				/* Mid air airshot headshot kill */
+				case true:
+					Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[6], Kill_Type[0]);
+				/* Mid air airshot kill */
+				case false:
+					Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[6], Kill_Type[0]);
+			}
+		}
+		/* Airshot kill */
+		else
+		{
+			switch(KillMsg[client].HeadshotKill)
+			{
+				/* Airshot headshot kill */
+				case true:
+					Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3], Kill_Type[6]);
+				/* Airshot kill */
+				case false:
+					Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[6]);
+			}
+		}
+	}
+	
+	/* Backstab kill */
+	else if(KillMsg[client].BackstabKill)
+	{
+		switch(KillMsg[client].MidAirKill)
+		{
+			/* Mid air backstab kill */
+			case true:
+				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[5], Kill_Type[0]);
+			case false:
+				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[5]);
+		}
+	}
+	
+	/* Headshot kill */
+	else if(KillMsg[client].HeadshotKill)
+	{
+		/* Noscope headshot kill */
+		if(KillMsg[client].NoscopeKill)
+		{
+			/* Noscope headshot kill through smoke */
+			if(KillMsg[client].SmokeKill)
+			{
+				/* Noscope headshot through smoke whilst blinded */
+				if(KillMsg[client].BlindedKill)
+				{
+					switch(KillMsg[client].MidAirKill)
+					{
+						/* Mid air noscope headshot kill through smoke whilst blinded */
+						case true:
+							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[12], Kill_Type[0]);
+						/* Noscope headshot through smoke whilst blinded */
+						case false:
+							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[12]);
+					}
+				}
+				/* Noscope headshot kill through smoke */
+				else
+				{
+					switch(KillMsg[client].MidAirKill)
+					{
+						/* Mid air noscope headshot kill through smoke */
+						case true:
+							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[0]);
+						/* Noscope headshot kill through smoke */
+						case false:
+							Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[1]);
+					}
+				}
+			}
+			/* Noscope headshot kill */
+			else
+			{
+				switch(KillMsg[client].MidAirKill)
+				{
+					/* Mid air noscope headshot */
+					case true:
+						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
+					/* Noscope headshot kill */
+					case false:
+						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
+				}
+
+			}
+		}
+		/* Mid air headshot kill */
+		else if(KillMsg[client].MidAirKill)
+		{
+			/* Mid air headshot kill through smoke */
+			if(KillMsg[client].SmokeKill)
+			{
+				switch(KillMsg[client].BlindedKill)
+				{
+					/* Mid air headshot kill through smoke whilst blinded */
+					case true:
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[12], Kill_Type[0]);
+					/* Mid air headshot kill through smoke */
+					case false:
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[0]);
+				}
+			}
+			/* Mid air headshot kill */
+			else
+			{
+				switch(KillMsg[client].BlindedKill)
+				{
+					/* Mid air eadshot kill while blinded */
+					case true:
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[12], Kill_Type[0]);
+					/* Mid air headshot kill */
+					case false:
+						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[0]);
+				}
+			}
+		}
+		/* Headshot kill */
+		else
+		{
+			/* Headshot kill through smoke */
+			if(KillMsg[client].SmokeKill)
+			{
+				switch(KillMsg[client].BlindedKill)
+				{
+					/* Headshot kill through smoke while blinded */
+					case true:
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[12]);
+					/* Headshot kill through smoke */
+					case false:
+						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[1]);
+				}
+			}
+			/* Headshot kill */
+			else
+			{
+				switch(KillMsg[client].BlindedKill)
+				{
+					/* Headshot kill whilst blinded */
+					case true:
+						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[12]);
+					/* Headshot kill */
+					case false:
+						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);
+				}
+			}
+		}
+	}
+	
+	/* Telefrag */
+	else if(KillMsg[client].TeleFragKill)
+	{
+		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[8]);
+	}
+	else if(KillMsg[client].CollateralKill)
+	{
+		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[9]);
+	}
+	else if(KillMsg[client].GrenadeKill)
+	{
+		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[10]);
+	}
+	else if(KillMsg[client].BombKill)
+	{
+		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[11]);
+	}
+	else if(KillMsg[client].BlindedKill)
+	{
+		switch(KillMsg[client].MidAirKill)
+		{
+			/* Mid air blinded kill */
+			case true:
+				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[12], Kill_Type[0]);
+			/* Blinded kill */
+			case false:
+				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[12]);
+		}
+	}
+	
+	/* Mid air kill */
+	else if(KillMsg[client].MidAirKill)
+	{
+		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
+	}
+	
+	switch(IsValidString(buffer))	{
+		case	true:	CPrintToChat(client, "%s %t", Prefix, "Special Kill Event", Name[client], points_client, points, Name[victim], buffer);
+		case	false:	CPrintToChat(client, "%s %t", Prefix, "Default Kill Event", Name[client], points_client, points, Name[victim]);
+	}
+}

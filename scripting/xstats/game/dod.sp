@@ -1,11 +1,11 @@
 /**
  *	Prepare database.
  */
-void PrepareDB_CSS()	{
+void PrepareDB_DODS()	{
 	char query[8192];
 	int len = 0;
 	
-	len += Format(query[len], sizeof(query)-len, "create table if not exists `playerlist_css`");
+	len += Format(query[len], sizeof(query)-len, "create table if not exists `playerlist_dods`");
 	len += Format(query[len], sizeof(query)-len, "(");
 	len += Format(query[len], sizeof(query)-len, "`ServerID`							int(16) not null default '1' comment 'Servers unique ID',");
 	len += Format(query[len], sizeof(query)-len, "`Points`								int(32) not null default '1000',");
@@ -20,45 +20,10 @@ void PrepareDB_CSS()	{
 	len += Format(query[len], sizeof(query)-len, "`Assists`								int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Suicides`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`DamageDone`							int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`KnifeKills`							int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`MidAirKills`							int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Headshots`							int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Noscopes`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Dominations`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Revenges`							int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`MoneySpent`							int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`FlashedOpponents`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`GrenadeKills`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`BombsPlanted`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`BombsDefused`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`BombsExploded`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`BombKills`							int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`				int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_flashbang`				int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_smokegrenade`			int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_deagle`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_glock`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_ak47`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_aug`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_awp`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_famas`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_g3sg1`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_galilar`				int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_m249`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_m4a1`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_mac10`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_p90`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_mp5`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_ump45`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_xm1014`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_m9`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_usp`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_nova`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_p228`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_scar20`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_sg552`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_scout`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_knife`					int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`MidAirKills`							int(32) not null default '0',");
+	((len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`SteamID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
 	db.Query(DBQuery_DB, query, 1);
@@ -67,20 +32,18 @@ void PrepareDB_CSS()	{
 	query = NULL_STRING;
 	len = 0;
 	
-	len += Format(query[len], sizeof(query)-len, "create table if not exists `kill_log_css`");
+	len += Format(query[len], sizeof(query)-len, "create table if not exists `kill_log_dods`");
 	len += Format(query[len], sizeof(query)-len, "(");
-	len += Format(query[len], sizeof(query)-len, "`ID`							int(32)			not null auto_increment,");
-	len += Format(query[len], sizeof(query)-len, "`Playername`					varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`SteamID`						varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Victim_Playername`			varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Victim_SteamID`				varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Assister_Playername`			varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Assister_SteamID`			varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Timestamp`					timestamp		not null default current_timestamp,");
-	len += Format(query[len], sizeof(query)-len, "`Weapon`						varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Headshot`					bool			not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Noscope`						bool			not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`MidAirKills`					int(32)			not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`ID`									int(32) not null auto_increment,");
+	len += Format(query[len], sizeof(query)-len, "`Playername`						varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`SteamID`							varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Victim_Playername`				varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Victim_SteamID`					varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Assister_Playername`				varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Assister_SteamID`				varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Timestamp`						timestamp	not null default current_timestamp,");
+	len += Format(query[len], sizeof(query)-len, "`Weapon`							varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`MidAirKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
 	db.Query(DBQuery_DB, query, 2);
@@ -88,7 +51,7 @@ void PrepareDB_CSS()	{
 	query = NULL_STRING;
 	len = 0;
 	
-	len += Format(query[len], sizeof(query)-len, "create table if not exists `maps_log_css`");
+	len += Format(query[len], sizeof(query)-len, "create table if not exists `maps_log_dods`");
 	len += Format(query[len], sizeof(query)-len, "(");
 	len += Format(query[len], sizeof(query)-len, "`ServerID`						int(32) not null default '1',");
 	len += Format(query[len], sizeof(query)-len, "`MapName`						varchar(64) not null default '',");
@@ -110,36 +73,15 @@ void PrepareDB_CSS()	{
 /**
  *	Initialize: Counter-Strike Source.
  */
-void PrepareGame_CSS()	{
+void PrepareGame_DODS()	{
 	//Weapon cvars
-	Weapon[CSS_Weapon_Deagle]	= CreateConVar("xstats_points_weapon_deagle",	"5", "XStats: CSS - Points given when killing with Deagle.", _, true);
-	Weapon[CSS_Weapon_Glock]	= CreateConVar("xstats_points_weapon_glock",	"5", "XStats: CSS - Points given when killing with Glock.", _, true);
-	Weapon[CSS_Weapon_Ak47]		= CreateConVar("xstats_points_weapon_ak47",		"5", "XStats: CSS - Points given when killing with Ak47.", _, true);
-	Weapon[CSS_Weapon_Aug]		= CreateConVar("xstats_points_weapon_aug",		"5", "XStats: CSS - Points given when killing with Aug.", _, true);
-	Weapon[CSS_Weapon_AWP]		= CreateConVar("xstats_points_weapon_awp",		"5", "XStats: CSS - Points given when killing with Awp.", _, true);
-	Weapon[CSS_Weapon_Famas]	= CreateConVar("xstats_points_weapon_famas",	"5", "XStats: CSS - Points given when killing with Famas.", _, true);
-	Weapon[CSS_Weapon_G3SG1]	= CreateConVar("xstats_points_weapon_g3sg1",	"5", "XStats: CSS - Points given when killing with G3SG1.", _, true);
-	Weapon[CSS_Weapon_Galil]	= CreateConVar("xstats_points_weapon_galil",	"5", "XStats: CSS - Points given when killing with Galil.", _, true);
-	Weapon[CSS_Weapon_M249]		= CreateConVar("xstats_points_weapon_m249",		"5", "XStats: CSS - Points given when killing with M249.", _, true);
-	Weapon[CSS_Weapon_M4A1]		= CreateConVar("xstats_points_weapon_m4a1",		"5", "XStats: CSS - Points given when killing with M4a1.", _, true);
-	Weapon[CSS_Weapon_Mac10]	= CreateConVar("xstats_points_weapon_mac10",	"5", "XStats: CSS - Points given when killing with Mac10.", _, true);
-	Weapon[CSS_Weapon_P90]		= CreateConVar("xstats_points_weapon_p90",		"5", "XStats: CSS - Points given when killing with P90.", _, true);
-	Weapon[CSS_Weapon_MP5]		= CreateConVar("xstats_points_weapon_mp5",		"5", "XStats: CSS - Points given when killing with MP5.", _, true);
-	Weapon[CSS_Weapon_UMP45]	= CreateConVar("xstats_points_weapon_ump45",	"5", "XStats: CSS - Points given when killing with UMP45.", _, true);
-	Weapon[CSS_Weapon_XM1014]	= CreateConVar("xstats_points_weapon_xm1014",	"5", "XStats: CSS - Points given when killing with XM1014.", _, true);
-	Weapon[CSS_Weapon_M3]		= CreateConVar("xstats_points_weapon_m3",		"5", "XStats: CSS - Points given when killing with M3.", _, true);
-	Weapon[CSS_Weapon_USP]		= CreateConVar("xstats_points_weapon_usp",		"5", "XStats: CSS - Points given when killing with P2000.", _, true);
-	Weapon[CSS_Weapon_P228]		= CreateConVar("xstats_points_weapon_p250",		"5", "XStats: CSS - Points given when killing with P250.", _, true);
-	Weapon[CSS_Weapon_SG550]	= CreateConVar("xstats_points_weapon_sg550",	"5", "XStats: CSS - Points given when killing with SG550.", _, true);
-	Weapon[CSS_Weapon_SG552]	= CreateConVar("xstats_points_weapon_sg552",	"5", "XStats: CSS - Points given when killing with SG552.", _, true);
-	Weapon[CSS_Weapon_Scout]	= CreateConVar("xstats_points_weapon_scout",	"5", "XStats: CSS - Points given when killing with Scout.", _, true);
-	Weapon[CSS_Weapon_Knife]	= CreateConVar("xstats_points_weapon_knife",	"5", "XStats: CSS - Points given when killing with Knife.", _, true);
+	//Weapon[CSS_Weapon_Deagle]	= CreateConVar("xstats_points_weapon_deagle",	"5", "XStats: CSS - Points given when killing with Deagle.", _, true);
 	
 	/* Events */
-	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_CSS, EventHookMode_Pre);
+	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_DODS, EventHookMode_Pre);
 }
 
-stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroadcast)	{
+stock void Player_Death_DODS(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats())
 		return;
 	
@@ -181,7 +123,6 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	|| StrEqual(weapon, "weapon_hegrenade"));
 	
 	int assist = GetClientOfUserId(GetLatestAssister(victim, client));
-	event.SetInt("assister", GetLatestAssister(victim, client));
 	int points = Weapon[defindex].IntValue;
 	bool midair = (!grenadekill && IsClientMidAir(client));
 	bool headshot = event.GetBool(EVENT_STR_HEADSHOT);
@@ -213,15 +154,6 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		PrintToServer(" ");
 		PrintToServer("points: %i", points);
 	}
-	
-	/* Kill msg stuff */
-	KillMsg[client].MidAirKill = midair;
-	//KillMsg[client].SmokeKill = thrusmoke; /* To be implemented soon */
-	KillMsg[client].HeadshotKill = headshot;
-	KillMsg[client].NoscopeKill = noscope;
-	KillMsg[client].GrenadeKill = grenadekill;
-	KillMsg[client].BombKill = c4kill;
-	//KillMsg[client].BlindedKill = attackerblind; /* To be implemented soon */
 	
 	AssistedKill(assist, client, victim);
 	VictimDied(victim);
@@ -322,7 +254,46 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i", playerlist, points);
 		db.Query(DBQuery_Callback, query);
 		
-		PrepareKillMessage(client, victim, points);
+		int points_client = GetClientPoints(SteamID[client]);
+		
+		char buffer[256];
+		if(midair && noscope && headshot)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[2], Kill_Type[0]);
+		}
+		else if(midair && noscope)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[4], Kill_Type[0]);
+		}
+		else if(midair && headshot)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[3], Kill_Type[0]);
+		}
+		else if(noscope && headshot)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[2]);
+		}
+		else if(noscope)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[4]);
+		}
+		else if(headshot)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[3]);
+		}
+		else if(midair)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[0]);
+		}
+		else if(grenadekill)
+		{
+			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[11]);
+		}
+		
+		switch(IsValidString(buffer))	{
+			case	true:	CPrintToChat(client, "%s %t", Prefix, "Special Kill Event", Name[client], points_client, points, Name[victim], buffer);
+			case	false:	CPrintToChat(client, "%s %t", Prefix, "Default Kill Event", Name[client], points_client, points, Name[victim]);
+		}
 	}
 	
 	if(!IsFakeClient(victim))	{

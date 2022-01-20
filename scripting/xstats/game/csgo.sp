@@ -33,6 +33,8 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`BombsDefused`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`BombsExploded`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`BombKills`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`HostagesRescued`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`HostagesKilled`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`ChickenKills`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_hegrenade`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_frag`					int(32) not null default '0',");
@@ -90,19 +92,19 @@ void PrepareDB_CSGO()	{
 	
 	len += Format(query[len], sizeof(query)-len, "create table if not exists `kill_log_csgo`");
 	len += Format(query[len], sizeof(query)-len, "(");
-	len += Format(query[len], sizeof(query)-len, "`ID`							int(32)			not null auto_increment,");
-	len += Format(query[len], sizeof(query)-len, "`Playername`					varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`SteamID`						varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Victim_Playername`			varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Victim_SteamID`				varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Assister_Playername`			varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Assister_SteamID`			varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Timestamp`					timestamp		not null default current_timestamp,");
-	len += Format(query[len], sizeof(query)-len, "`Weapon`						varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`Headshot`					bool			not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Noscope`						bool			not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`ThruSmoke`					bool			not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`BlindedKill`					bool			not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`ID`									int(32) not null auto_increment,");
+	len += Format(query[len], sizeof(query)-len, "`Playername`						varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`SteamID`							varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Victim_Playername`				varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Victim_SteamID`					varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Assister_Playername`				varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Assister_SteamID`				varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Timestamp`						timestamp not null default current_timestamp,");
+	len += Format(query[len], sizeof(query)-len, "`Weapon`							varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Headshot`							bool not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Noscope`								bool not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`ThruSmoke`							bool not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BlindedKill`							bool not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
 	db.Query(DBQuery_DB, query, 2);
@@ -132,20 +134,20 @@ void PrepareDB_CSGO()	{
 	
 	len += Format(query[len], sizeof(query)-len, "create table if not exists `maps_log_csgo`");
 	len += Format(query[len], sizeof(query)-len, "(");
-	len += Format(query[len], sizeof(query)-len, "`ServerID`					int(32) not null default '1',");
-	len += Format(query[len], sizeof(query)-len, "`MapName`					varchar(64) not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`PlayTime`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Kills`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Deaths`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Assists`						int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Suicides`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Headshots`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Noscopes`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Dominations`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Revenges`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`MidAirKills`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`ThruSmokes`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`BlindedKills`				int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`ServerID`						int(32) not null default '1',");
+	len += Format(query[len], sizeof(query)-len, "`MapName`						varchar(64) not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`PlayTime`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Kills`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Deaths`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Assists`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Suicides`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Headshots`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Noscopes`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Dominations`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Revenges`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`MidAirKills`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`ThruSmokes`						int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`BlindedKills`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ServerID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
 	db.Query(DBQuery_DB, query, 4);
@@ -341,6 +343,15 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		PrintToServer("Points %i", points);
 	}
 	
+	/* Kill msg stuff */
+	KillMsg[client].MidAirKill = midair;
+	KillMsg[client].SmokeKill = thrusmoke;
+	KillMsg[client].HeadshotKill = headshot;
+	KillMsg[client].NoscopeKill = noscope;
+	KillMsg[client].GrenadeKill = grenadekill;
+	KillMsg[client].BombKill = c4kill;
+	KillMsg[client].BlindedKill = attackerblind;
+	
 	AssistedKill(assist, client, victim);
 	VictimDied(victim);
 	
@@ -422,76 +433,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		playerlist, points, SteamID[client], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
-		int points_client = GetClientPoints(SteamID[client]);
-		
-		char buffer[256];
-		if(midair && noscope && headshot)
-		{
-			switch(thrusmoke)
-			{
-				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t {default}%t{default}", Kill_Type[2], Kill_Type[0], Kill_Type[1]);
-				case	false:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[2], Kill_Type[0]);
-			}
-		}
-		else if(midair && noscope)
-		{
-			switch(thrusmoke)
-			{
-				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t {default}%t{default}", Kill_Type[4], Kill_Type[0], Kill_Type[1]);
-				case	false:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[4], Kill_Type[0]);
-			}
-		}
-		else if(midair && headshot)
-		{
-			switch(thrusmoke)
-			{
-				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t {default}%t{default}", Kill_Type[3], Kill_Type[0], Kill_Type[1]);
-				case	false:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[3], Kill_Type[0]);
-			}
-		}
-		else if(midair)
-		{
-			Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
-		}
-		/*
-		else if(collateral)
-		{
-			switch(thrusmoke)
-			{
-				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[10], Kill_Type[1]);
-				case	false:	Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[10]);
-			}
-		}
-		*/
-		else if(noscope && headshot)
-		{
-			switch(thrusmoke)
-			{
-				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[2], Kill_Type[1]);
-				case	false:	Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[2]);
-			}
-		}
-		else if(headshot)
-		{
-			switch(thrusmoke)
-			{
-				case	true:	Format(buffer, sizeof(buffer), "{default}%t {default}%t{default}", Kill_Type[3], Kill_Type[1]);
-				case	false:	Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[3]);
-			}
-		}
-		else if(grenadekill)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[11]);
-		}
-		else if(c4kill)
-		{
-			Format(buffer, sizeof(buffer), "{default}%t{default}", Kill_Type[12]);
-		}
-		
-		switch(IsValidString(buffer))	{
-			case	true:	CPrintToChat(client, "%s %t", Prefix, "Special Kill Event", Name[client], points_client, points, Name[victim], buffer);
-			case	false:	CPrintToChat(client, "%s %t", Prefix, "Default Kill Event", Name[client], points_client, points, Name[victim]);
-		}
+		PrepareKillMessage(client, victim, points);
 		
 		if(!IsFakeClient(victim))	{
 			char log[2048];

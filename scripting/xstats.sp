@@ -56,7 +56,7 @@ char			ConnectSound[2][64];
  *	The kill events will be merged together automatically.
  *	Example: Headshot whilst Mid-Air or Headshot Through Smoke whilst Mid-Air, etc.. (You get it)
  */
-stock char		Kill_Type[][] = {
+stock char Kill_Type[][] = {
 	"Kill Event Type 0",	//Mid-Air.
 	"Kill Event Type 1",	//Through Smoke.
 	"Kill Event Type 2",	//Noscope Headshot.
@@ -64,16 +64,17 @@ stock char		Kill_Type[][] = {
 	"Kill Event Type 4",	//Noscope.
 	"Kill Event Type 5",	//Backstab.
 	"Kill Event Type 6",	//Airshot.
-	"Kill Event Type 7",	//Airshot Deflect Kill.
-	"Kill Event Type 8",	//Deflect Kill.
-	"Kill Event Type 9",	//Telefrag.
-	"Kill Event Type 10",	//Collateral.
-	"Kill Event Type 11",	//Grenade Kill.
-	"Kill Event Type 12",	//Bomb Kill.
+	"Kill Event Type 7",	//Deflect Kill.
+	"Kill Event Type 8",	//Telefrag.
+	"Kill Event Type 9",	//Collateral.
+	"Kill Event Type 10",	//Grenade Kill.
+	"Kill Event Type 11",	//Bomb Kill.
+	"Kill Event Type 12",	//Blinded Kill.
 };
 
 /* Session */
 XStatsSession	Session[MAXPLAYERS];
+XStatsKillMsg	KillMsg[MAXPLAYERS];
 
 /* Includes. */
 #include	"xstats/assister.sp" /* Experimental Assister */
@@ -129,6 +130,7 @@ public void OnPluginStart()	{
 			playerlist = "playerlist_dods";
 			kill_log = "kill_log_dods";
 			maps_log = "maps_log_dods";
+			//supported = true;
 		}
 		case	Game_TF2:	{
 			logprefix = "[XStats: TF2]";

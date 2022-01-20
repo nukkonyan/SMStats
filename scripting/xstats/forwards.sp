@@ -30,7 +30,7 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 			
 			if(Debug.BoolValue)	{
 				/* Avoid showing ip due to privacy */
-				PrintToServer("[Xstats Debug] Updating table \"%s\" \nPlayername \"%s\" in SteamID \"%s\" (ServerID %i)",
+				PrintToServer("[XStats Debug] Updating table \"%s\" \nPlayername \"%s\" in SteamID \"%s\" (ServerID %i)",
 				playerlist, Playername[client], SteamID[client], ServerID.IntValue);
 			}
 			
@@ -46,7 +46,7 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 			playerlist, Playername[client], SteamID[client], IP[client], ServerID.IntValue);
 			
 			if(Debug.BoolValue)	{
-				PrintToServer("[Xstats Debug] Inserting into table \"%s\" \nPlayername \"%s\"\nSteamID \"%s\" (ServerID %i)",
+				PrintToServer("[XStats Debug] Inserting into table \"%s\" \nPlayername \"%s\"\nSteamID \"%s\" (ServerID %i)",
 				playerlist, Playername[client], SteamID[client], ServerID.IntValue);
 			}
 			
