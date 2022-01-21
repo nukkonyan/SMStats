@@ -334,6 +334,8 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			db.Query(DBQuery_Callback, query);
 		}
 	}
+	
+	PrepareTF2FlagEventForward(client, carrier, flag, home);
 }
 
 /* Objects | Buildings */

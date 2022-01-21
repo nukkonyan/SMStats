@@ -9,7 +9,7 @@ Action Assister_OnTakeDamage(int victim, int &client, int &inflictor, float &dam
 		SplitString(getdmg, ".", getdmg, sizeof(getdmg));
 		int dmg = StringToInt(getdmg);
 		
-		PlayerDamaged[victim][client] = PlayerDamaged[victim][client]+dmg;
+		PlayerDamaged[victim][client] += dmg;
 
 		Session[client].DamageDone += dmg;
 	}

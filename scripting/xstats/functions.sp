@@ -317,7 +317,7 @@ stock bool IsValidAbuse(int client=0)	{
 
 /**
  *	Returns if the client is inside a smoke.
- *	Used as alternative for CS:S since 'attackerblind' is only available in CS:GO.
+ *	Used as alternative for CS:S since 'thrusmoke' is only available in CS:GO.
  *
  *	@param	client	The users index.
  */
@@ -331,8 +331,12 @@ stock bool CS_IsClientInsideSmoke(int client)	{
 	return false;
 }
 
+/* Forwards */
+
 /**
  *	Prepare prefix forward.
+ *
+ *	@noreturn
  */
 stock void PreparePrefixUpdatedForward()	{
 	Call_StartForward(Fwd_Prefix);
@@ -348,6 +352,8 @@ stock void PreparePrefixUpdatedForward()	{
  *	@param	assist		The assisting users index.
  *	@param	weapon		The weapon string to forward.
  *	@param	defindex	The weapon definition index. (0 if invalid for the game)
+ *
+ *	@noreturn
  */
 stock void PrepareOnDeathForward(int client, int victim, int assist, const char[] weapon, int defindex)	{
 	Call_StartForward(Fwd_Death);
@@ -363,6 +369,8 @@ stock void PrepareOnDeathForward(int client, int victim, int assist, const char[
  *	Prepare OnSuicide forward.
  *
  *	@param	client		The players user index.
+ *
+ *	@noreturn
  */
 stock void PrepareOnSuicideForward(int client)	{
 	Call_StartForward(Fwd_Suicide);
@@ -371,8 +379,25 @@ stock void PrepareOnSuicideForward(int client)	{
 }
 
 /**
- *	Stuff
+ *	Prepare flag event forward.
+ *
+ *	@param	client		The players user index.
+ *	@param	carrier		The carriers user index.
+ *	@param	flag		The flag event type.
+ *	@param	home		The flag was stolen.
+ *
+ *	@noreturn
  */
+stock void PrepareTF2FlagEventForward(int client, int carrier, TFFlag flag, bool home)	{
+	Call_StartForward(Fwd_TF2_FlagEvent);
+	Call_PushCell(client);
+	Call_PushCell(carrier);
+	Call_PushCell(flag);
+	Call_PushCell(home);
+	Call_Finish();
+}
+
+/* Stuff */
  
 /**
  *	Assisted kill event.
@@ -384,26 +409,25 @@ stock void PrepareOnSuicideForward(int client)	{
  *	@return	Returns if the assister is valid.
  */
 stock bool AssistedKill(int assist, int client, int victim)	{
-	if(Tklib_IsValidClient(assist, true))	{
-		char query[512];
-		Session[assist].Assists++;
-		Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[assist], ServerID.IntValue);
+	if(!Tklib_IsValidClient(assist, true))
+		return false;
+	
+	char query[512];
+	Session[assist].Assists++;
+	Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
+	playerlist, SteamID[assist], ServerID.IntValue);
+	db.Query(DBQuery_Callback, query);
+	
+	if(AssistKill.IntValue > 0)	{
+		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
+		playerlist, AssistKill.IntValue, SteamID[assist], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
 		
-		if(AssistKill.IntValue > 0)	{
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-			playerlist, AssistKill.IntValue, SteamID[assist], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-			
-			int assist_points = GetClientPoints(SteamID[assist]);
-			CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", Name[assist], assist_points, AssistKill.IntValue, Name[client], Name[victim]);
-		}
-		
-		return true;
+		int assist_points = GetClientPoints(SteamID[assist]);
+		CPrintToChat(client, "%s %t", Prefix, "Assist Kill Event", Name[assist], assist_points, AssistKill.IntValue, Name[client], Name[victim]);
 	}
-	
-	return false;
+		
+	return true;
 }
 
 /**
@@ -414,35 +438,34 @@ stock bool AssistedKill(int assist, int client, int victim)	{
  *	@return	Returns if the victim is valid.
  */
 stock bool VictimDied(int victim)	{
-	if(Tklib_IsValidClient(victim, true))	{
-		char query[512];
-		Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[victim], ServerID.IntValue);
+	if(!Tklib_IsValidClient(victim, true))
+		return false;
+	
+	char query[512];
+	Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
+	playerlist, SteamID[victim], ServerID.IntValue);
+	db.Query(DBQuery_Callback, query);
+	
+	int death_points;
+	
+	switch(game)	{
+		case	Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP:
+			death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
+		default:
+			death_points = Death.IntValue;
+	}
+		
+	int victim_points = GetClientPoints(SteamID[victim]);
+	if(death_points > 0)	{
+		RemoveSessionPoints(victim, death_points);
+		CPrintToChat(victim, "%s %s (%i) lost %i points for dying.", Prefix, Name[victim], death_points, victim_points);
+		
+		Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
+		playerlist, death_points, SteamID[victim], ServerID.IntValue);
 		db.Query(DBQuery_Callback, query);
-		
-		int death_points;
-		
-		switch(game)	{
-			case	Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP:
-				death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
-			default:
-				death_points = Death.IntValue;
-		}
-		
-		int victim_points = GetClientPoints(SteamID[victim]);
-		if(death_points > 0)	{
-			RemoveSessionPoints(victim, death_points);
-			CPrintToChat(victim, "%s %s (%i) lost %i points for dying.", Prefix, Name[victim], death_points, victim_points);
-			
-			Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
-			playerlist, death_points, SteamID[victim], ServerID.IntValue);
-			db.Query(DBQuery_Callback, query);
-		}
-		
-		return true;
 	}
 	
-	return false;
+	return true;
 }
 
 /**

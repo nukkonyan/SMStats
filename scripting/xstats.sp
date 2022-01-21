@@ -31,6 +31,8 @@ GlobalForward	Fwd_Death;
 GlobalForward	Fwd_Suicide;
 PrivateForward	Fwd_GetStats;
 
+GlobalForward	Fwd_TF2_FlagEvent;
+
 /* Plugin */
 bool			RoundActive = false;
 bool			WarmupActive = false;
@@ -116,6 +118,12 @@ public void OnPluginStart()	{
 		Param_Cell);
 	Fwd_GetStats = new PrivateForward(
 		ET_Ignore,
+		Param_Cell,
+		Param_Cell,
+		Param_Cell);
+	Fwd_TF2_FlagEvent = new GlobalForward("XStats_TF2_OnFlagEvent",
+		ET_Ignore,
+		Param_Cell,
 		Param_Cell,
 		Param_Cell,
 		Param_Cell);

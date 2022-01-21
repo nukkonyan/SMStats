@@ -428,7 +428,7 @@
 	"Halloween Kill Event"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for killing {4}"
+		"en"		"{1} ({2}) Earned {3} points for eliminating {4}"
 	}
 	
 	//Stunned boss.
@@ -457,7 +457,7 @@
 	}
 	
 	//===================//
-	// Coated.
+	// Extinguished.
 	//===================//
 	"Player Extinguished"
 	{
