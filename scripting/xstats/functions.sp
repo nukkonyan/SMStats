@@ -512,6 +512,20 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 		}
 	}
 	
+	/* Collateral */
+	else if(KillMsg[client].CollateralKill)
+	{
+		switch(KillMsg[client].HeadshotKill)
+		{
+			/* Headshot collateral kill */
+			case true:
+				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[9]);
+			/* Colllateral kill */
+			case false:
+				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[9]);
+		}
+	}
+	
 	/* Airshot kill */
 	else if(KillMsg[client].AirshotKill)
 	{
@@ -769,26 +783,17 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[8]);
 	}
-	else if(KillMsg[client].CollateralKill)
-	{
-		switch(KillMsg[client].HeadshotKill)
-		{
-			/* Headshot collateral kill */
-			case true:
-				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[9]);
-			/* Colllateral kill */
-			case false:
-				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[9]);
-		}
-	}
+	/* Grenade Frag */
 	else if(KillMsg[client].GrenadeKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[10]);
 	}
+	/* Bomb Kill */
 	else if(KillMsg[client].BombKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[11]);
 	}
+	/* Blinded Kill */
 	else if(KillMsg[client].BlindedKill)
 	{
 		switch(KillMsg[client].MidAirKill)
