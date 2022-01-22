@@ -3,17 +3,29 @@
  */
 void PrepareNatives()
 {
-	CreateNative("Xstats_GetClientPoints", Native_GetClientPoints);
-	CreateNative("Xstats.GetPoints", Public_GetClientPoints);
+	CreateNative("XStats_GetClientPoints", Native_GetClientPoints);
+	CreateNative("XStats.GetPoints", Public_GetClientPoints);
 	
-	CreateNative("Xstats_GetClientPlayTime", Native_GetClientPlayTime);
-	CreateNative("Xstats.GetPlayTime", Public_GetClientPlayTime);
+	CreateNative("XStats_GetClientPlayTime", Native_GetClientPlayTime);
+	CreateNative("XStats.GetPlayTime", Public_GetClientPlayTime);
 	
-	CreateNative("Xstats_GetClientSession", Native_GetClientSession);
-	CreateNative("Xstats.GetSession", Public_GetClientSession);
+	CreateNative("XStats_GetClientSession", Native_GetClientSession);
+	CreateNative("XStats.GetSession", Public_GetClientSession);
 	
-	CreateNative("Xstats_GetPrefix", Native_GetPrefix);
-	CreateNative("Xstats.GetPrefix", Public_GetPrefix);
+	CreateNative("XStats_GetPrefix", Native_GetPrefix);
+	CreateNative("XStats.GetPrefix", Public_GetPrefix);
+	
+	CreateNative("XStats_Enabled", Native_Enabled);
+	CreateNative("XStats.Enabled.get", Public_Enabled);
+	
+	CreateNative("XStats_Active", Native_Active);
+	CreateNative("XStats.Active.get", Public_Active);
+	
+	CreateNative("XStats_AllowBots", Native_AllowBots);
+	CreateNative("XStats.AllowBots.get", Public_AllowBots);
+	
+	CreateNative("XStats_Debug", Native_Debug);
+	CreateNative("XStats.Debug.get", Public_Debug);
 }
 
 any Native_GetClientPoints(Handle plugin, int params)
@@ -63,6 +75,14 @@ any Public_GetClientSession(Handle plugin, int params)
 
 any Native_GetPrefix(Handle plugin, int params)	{	SetNativeString(1, Prefix, GetNativeCell(2), GetNativeCell(3));	}
 any Public_GetPrefix(Handle plugin, int params)	{	SetNativeString(2, Prefix, GetNativeCell(3), GetNativeCell(4));	}
+any Native_Enabled(Handle plugin, int params)	{	return PluginActive.BoolValue;	}
+any Public_Enabled(Handle plugin, int params)	{	return PluginActive.BoolValue;	}
+any Native_Active(Handle plugin, int params)	{	return RankActive;				}
+any Public_Active(Handle plugin, int params)	{	return RankActive;				}
+any Native_AllowBots(Handle plugin, int params)	{	return AllowBots.BoolValue;		}
+any Public_AllowBots(Handle plugin, int params)	{	return AllowBots.BoolValue;		}
+any Native_Debug(Handle plugin, int params)		{	return Debug.BoolValue;			}
+any Public_Debug(Handle plugin, int params)		{	return Debug.BoolValue;			}
 
 int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function func)	{
 	int stats = 0;

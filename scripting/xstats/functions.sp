@@ -232,7 +232,7 @@ stock void DBQuery_Kill_Log(Database database, DBResultSet results, const char[]
 /**
  *	Callback query for playtimer.
  */
-void DBQuery_IntervalPlayTimer(Database database, DBResultSet results, const char[] error, int client)	{
+stock void DBQuery_IntervalPlayTimer(Database database, DBResultSet results, const char[] error, int client)	{
 	if(!IsClientConnected(client))
 		return;
 	
@@ -243,7 +243,7 @@ void DBQuery_IntervalPlayTimer(Database database, DBResultSet results, const cha
 /**
  *	Callback query for database query insertions.
  */
-void DBQuery_DB(Database database, DBResultSet results, const char[] error, int data)	{
+stock void DBQuery_DB(Database database, DBResultSet results, const char[] error, int data)	{
 	if(results == null)
 		SetFailState("%s Creating query for database table id %i failed! (%s)", logprefix, data, error);
 }

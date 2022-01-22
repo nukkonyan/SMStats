@@ -18,7 +18,7 @@
 public Plugin myinfo = {
 	name		=	"XStats - Statistical Tracker",
 	author		=	"Tk /id/Teamkiller324",
-	description	=	"Xstats - Track kills, maps, kill events, achievements, etc.",
+	description	=	"XStats - Track kills, maps, kill events, achievements, etc.",
 	version		=	Version,
 	url			=	"https://steamcommunity.com/id/Teamkiller324"
 }

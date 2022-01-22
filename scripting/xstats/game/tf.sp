@@ -994,7 +994,9 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		return;
 	
 	//It's a fake death.
-	if(event.GetInt(EVENT_STR_DEATH_FLAGS) == 32)	{
+	bool fakedeath = (event.GetInt(EVENT_STR_DEATH_FLAGS) == 32);
+	event.SetBool("fakedeath", fakedeath);
+	if(fakedeath)	{
 		if(Debug.BoolValue)	{
 			PrintToServer("//===== Player_Death_TF2 =====//");
 			PrintToServer("Detected fake death, ignoring.");
@@ -1045,9 +1047,13 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	/* Kill event stuff */
 	bool headshot = (customkill == 1 || customkill == 51);
+	event.SetBool("headshot", headshot);
 	bool backstab = (customkill == 2);
+	event.SetBool("backstab", backstab);
 	bool noscope = (customkill == 11);
+	event.SetBool("noscope", noscope);
 	bool bleedkill = (customkill == 34);
+	event.SetBool("bleedkill", bleedkill);
 	
 	bool dominated = (deathflags == 1);
 	bool dominated_assister = (deathflags == 2);
@@ -1056,36 +1062,42 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	bool gibkill = (deathflags == 128 || deathflags == 129);
 	bool collateral = (penetrated > 0);
 	
-	/*	Backup death flags checks incase exampled attacker
+	/*	Backup death flags checks incase example attacker
 		and assister gets domination or revenge at the same time. */
 	if(deathflags & 1)	{
 		dominated = true;
 		if(Debug.BoolValue)
 			PrintToServer("Killer dominated");
 	}
+	event.SetBool("dominated", dominated);
 	if(deathflags & 2)	{
 		dominated_assister = true;
 		if(Debug.BoolValue)
 			PrintToServer("Assister dominated");
 	}
+	event.SetBool("dominated_assister", dominated_assister);
 	if(deathflags & 4)	{
 		revenge = true;
 		if(Debug.BoolValue)
 			PrintToServer("Killer revenged");
 	}
+	event.SetBool("revenge", revenge);
 	if(deathflags & 8)	{
 		revenge_assister = true;
 		if(Debug.BoolValue)
 			PrintToServer("Assister revenged");
 	}
+	event.SetBool("revenge_assister", revenge);
 	if(deathflags & 128 || deathflags & 129)	{
 		gibkill = true;
 		if(Debug.BoolValue)
 			PrintToServer("Gibkill");
 	}
+	event.SetBool("gibkill", gibkill);
 	
 	bool deflectkill = ((StrContains(weapon, "deflect", false) != -1)
 	|| StrContains(weapon, "reflect") != -1);
+	event.SetBool("deflectkill", deflectkill);
 	bool tauntkill = ((StrContains(weapon, "taunt", false) != -1)
 	/* Rainblower tauntkill */
 	|| (StrEqual(weapon, "armageddon", false))
@@ -1093,9 +1105,13 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	|| (StrEqual(weapon, "gas_blast", false))
 	/* Spy knife taunt kill */
 	|| customkill == 13);
+	event.SetBool("tauntkill", tauntkill);
 	bool telefrag = StrEqual(weapon, "telefrag");
+	event.SetBool("telefrag", telefrag);
 	bool midair = IsClientMidAir(client);
+	event.SetBool("midair", midair);
 	bool airshot = (GetClientFlags(victim) == 258);
+	event.SetBool("airshot", airshot);
 		
 	// The 'weapon_def_index' on the player_death is same as if you're gathering the killers
 	// current active weapon definition index and is NOT gathering the correct definition index at the time of the event.
@@ -1156,6 +1172,9 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	/* Iron Bomber. */
 	if(StrEqual(weapon, "iron_bomber", false))
 		defindex = 1151;
+	
+	/* Correct the event's weapon definition index. */
+	event.SetInt(EVENT_STR_WEAPON_DEF_INDEX, defindex);
 	
 	/* Classic - since you can noscope headshot. */
 	if(defindex == 1098 && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
