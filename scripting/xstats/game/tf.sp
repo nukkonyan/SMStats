@@ -273,7 +273,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Weapon`						varchar(64)		not null default '',");
 	len += Format(query[len], sizeof(query)-len, "`Headshot`					bool			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Noscope`						bool			not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`Collateral`					bool			not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`Collateral`					bool			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`MidAir`						bool			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`CritType`					int(2)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
@@ -840,6 +840,9 @@ void PrepareGame_TF2()	{
 	
 	/* Deaths */
 	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_TF2, EventHookMode_Pre);
+	
+	/* Config file */
+	AutoExecConfig(true, "tf2.xstats.plugin");
 }
 
 /* MvM */
