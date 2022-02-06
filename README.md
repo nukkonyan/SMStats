@@ -2,7 +2,7 @@
 
 ``Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.) At the moment in early development stages.``
 
-# Note: plugin is not finished, don't come over to complain about plugin not working. Not my fault you install without thinking.
+# Note: plugin is currently not finished, don't come over to complain about plugin not working. Not my fault you install without thinking.
 
 # Regarding Issues
 You may discuss issues (crashes, errors, etc) within the [Discussions](https://github.com/Teamkiller324/Xstats/discussions)
