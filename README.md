@@ -32,6 +32,7 @@ Xstats is a Multi-Statistics tracking plugin.
 # Discussions
 ### [Achievement Ideas](https://github.com/Teamkiller324/Xstats/discussions/2)
 ### [Issues](https://github.com/Teamkiller324/Xstats/discussions/3)
+### [Discord](https://discord.gg/XKKJJ8SAc3)
 
 ## Requirements
 ### [Tk Libraries](https://github.com/Teamkiller324/Tklib) (To compile)
