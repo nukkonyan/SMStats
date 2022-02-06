@@ -4,12 +4,13 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.02d"
+			"Latest"	"0.02e"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Fixed invalid translation errors for connect & disconnect events."
+		"Notes" "Fixed dying event printing incorrectly."
+		"Notes" "Added translation for dying event."
 	}
 	
 	"Files"

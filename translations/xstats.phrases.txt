@@ -107,26 +107,32 @@
 		"en"	"with a {green}Telefrag"
 	}
 	
-	//Collateral.
+	//Taunt Kill.
 	"Kill Event Type 9"
+	{
+		"en"	"with a {green}Taunt Kill"
+	}
+	
+	//Collateral.
+	"Kill Event Type 10"
 	{
 		"en"	"with a {green}Collateral"
 	}
 	
 	//Grenade Kill.
-	"Kill Event Type 10"
+	"Kill Event Type 11"
 	{
 		"en"	"with a {green}Grenade Kill"
 	}
 	
 	//Bomb/C4 Kill.
-	"Kill Event Type 11"
+	"Kill Event Type 12"
 	{
 		"en"	"with a {green}Bomb Kill"
 	}
 	
 	//Blinded Kill.
-	"Kill Event Type 12"
+	"Kill Event Type 13"
 	{
 		"en"	"while {green}Blinded"
 	}
@@ -137,6 +143,13 @@
 		//Special kill event.
 		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en"		"{1} ({2}) Earned {3} points for assisting {4} in killing {5}"
+	}
+	
+	//Death.
+	"Death Kill Event"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Lost {3} points for dying"
 	}
 	
 	//Kill events

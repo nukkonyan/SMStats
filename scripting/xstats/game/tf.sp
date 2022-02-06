@@ -1218,6 +1218,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	KillMsg[client].DeflectKill = deflectkill;
 	KillMsg[client].TeleFragKill = telefrag;
 	KillMsg[client].CollateralKill = collateral;
+	KillMsg[client].TauntKill = tauntkill;
 	
 	/* Make sure the weapon definition index exists on the array */
 	if(Weapon[defindex] == null)	{

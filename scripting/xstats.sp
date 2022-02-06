@@ -13,7 +13,7 @@
  */
 
 #define LogTag "[XStats]"
-#define Version "0.02d"
+#define Version "0.02e"
 
 public Plugin myinfo = {
 	name		=	"XStats - Statistical Tracker",
@@ -68,10 +68,11 @@ stock char Kill_Type[][] = {
 	"Kill Event Type 6",	//Airshot.
 	"Kill Event Type 7",	//Deflect Kill.
 	"Kill Event Type 8",	//Telefrag.
-	"Kill Event Type 9",	//Collateral.
-	"Kill Event Type 10",	//Grenade Kill.
-	"Kill Event Type 11",	//Bomb Kill.
-	"Kill Event Type 12",	//Blinded Kill.
+	"Kill Event Type 9",	//Taunt Kill.
+	"Kill Event Type 10",	//Collateral.
+	"Kill Event Type 11",	//Grenade Kill.
+	"Kill Event Type 12",	//Bomb Kill.
+	"Kill Event Type 13",	//Blinded Kill.
 };
 
 /* Session */

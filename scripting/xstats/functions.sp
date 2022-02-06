@@ -458,7 +458,7 @@ stock bool VictimDied(int victim)	{
 	int victim_points = GetClientPoints(SteamID[victim]);
 	if(death_points > 0)	{
 		RemoveSessionPoints(victim, death_points);
-		CPrintToChat(victim, "%s %s (%i) lost %i points for dying.", Prefix, Name[victim], death_points, victim_points);
+		CPrintToChat(victim, "%s %t", Prefix, "Death Kill Event", Name[victim], victim_points, death_points);
 		
 		Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
 		playerlist, death_points, SteamID[victim], ServerID.IntValue);
@@ -782,6 +782,11 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 	else if(KillMsg[client].TeleFragKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[8]);
+	}
+	/* Taunt Kill */
+	else if(KillMsg[client].TauntKill)
+	{
+		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[9]);
 	}
 	/* Grenade Frag */
 	else if(KillMsg[client].GrenadeKill)
