@@ -4,13 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.02a"
+			"Latest"	"0.02b"
 		}
 		
-		"Notes"	"More info @ https://github.com/Teamkiller324/Xstats"
+		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Fixed 'Collateral' invalid query."
-		"Notes" "'tf2.xstats.plugin' is now created in /cfg/sourcemod"
+		"Notes" "Fixed 'Time' invalid query id."
 	}
 	
 	"Files"
