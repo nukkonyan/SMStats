@@ -3,8 +3,6 @@ void PrepareEvents()	{
 	HookEventEx(EVENT_PLAYER_DEATH, Suicide, EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_TEAM, UploadStuff);
 	HookEventEx(EVENT_PLAYER_CHANGENAME, UploadStuff);
-	HookEventEx(EVENT_PLAYER_CONNECT, Connected, EventHookMode_Pre);
-	HookEventEx(EVENT_PLAYER_CONNECT_CLIENT, Connected, EventHookMode_Pre);
 	HookEventEx(EVENT_PLAYER_DISCONNECT, Disconnected, EventHookMode_Pre);
 	
 	/* Rounds */
@@ -76,17 +74,16 @@ Action Timer_UploadStuff(Handle timer, int client)	{
 
 /**
  *	If connected messages are enabled, make sure to disable the ingame ones
- *	since otherwise we get double join and left messages.
+ *	since otherwise we get double disconnect messages.
  */
-stock void Connected(Event event, const char[] event_name, bool dontBroadcast)	{
-	event.BroadcastDisabled = (ConnectMsg.BoolValue && PluginActive.BoolValue);
-}
-
 stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast)	{
-	event.BroadcastDisabled = (ConnectMsg.BoolValue && PluginActive.BoolValue);	
-	
 	if(!PluginActive.BoolValue)
 		return;
+	
+	if(!ConnectMsg.BoolValue)
+		return;
+	
+	event.BroadcastDisabled = true;	
 	
 	/* Check active players */
 	CheckActivePlayers();
@@ -107,7 +104,7 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 	if(ConnectMsg.BoolValue)	{
 		int points = GetClientPoints(SteamID[client]);
 		int position = GetClientPosition(SteamID[client]);
-		CPrintToChatAll("%s %s (Pos #%i, %i points) has disconnected from %s {grey}(%s)", Prefix, Name[client], position, points, Country[client], reason);
+		CPrintToChatAll("%s %t", "Player Disconnected", Prefix, Name[client], position, points, Country[client], reason);
 		PrintToServer("%s %s (Pos #%i, %i points) has disconnected from %s", LogTag, Playername[client], position, points, Country[client]);
 		
 		UpdateLastConnectedState(SteamID[client]);

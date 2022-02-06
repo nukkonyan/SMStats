@@ -91,7 +91,7 @@ public void OnClientPutInServer(int client)	{
 	int points = GetClientPoints(SteamID[client]);
 	int position = GetClientPosition(SteamID[client]);
 	
-	CPrintToChatAll("%s %s (Pos #%i, %i points) has connected from %s", Prefix, Name[client], position, points, Country[client]);
+	CPrintToChatAll("%s %t", "Player Connected", Prefix, Name[client], position, points, Country[client]);
 	PrintToServer("%s %s (Pos #%i, %i points) has connected from %s", LogTag, Playername[client], position, points, Country[client]);
 	
 	if(!IsFakeClient(client))	{

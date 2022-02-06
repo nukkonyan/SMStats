@@ -294,7 +294,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`Quality`						varchar(64)		not null default '',");
 	len += Format(query[len], sizeof(query)-len, "`MethodID`					int(32)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Method`						varchar(64)		not null default '',");
-	len += Format(query[len], sizeof(query)-len, "`DefinitionIndex`				int(32)			not null default '',");
+	len += Format(query[len], sizeof(query)-len, "`DefinitionIndex`				int(32)			not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Wear`						float			not null default '0.0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
