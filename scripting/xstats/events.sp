@@ -104,7 +104,7 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 	if(ConnectMsg.BoolValue)	{
 		int points = GetClientPoints(SteamID[client]);
 		int position = GetClientPosition(SteamID[client]);
-		CPrintToChatAll("%s %t", "Player Disconnected", Prefix, Name[client], position, points, Country[client], reason);
+		CPrintToChatAll("%s %t", Prefix, "Player Disconnected", Name[client], position, points, Country[client], reason);
 		PrintToServer("%s %s (Pos #%i, %i points) has disconnected from %s", LogTag, Playername[client], position, points, Country[client]);
 		
 		UpdateLastConnectedState(SteamID[client]);

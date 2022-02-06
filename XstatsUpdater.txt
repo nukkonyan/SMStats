@@ -4,13 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.02c"
+			"Latest"	"0.02d"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Fixed 'DefinitionIndex' invalid query id 3."
-		"Notes" "Updated translations"
+		"Notes" "Fixed invalid translation errors for connect & disconnect events."
 	}
 	
 	"Files"
