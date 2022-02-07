@@ -2,8 +2,10 @@ void PrepareDatabase()	{
 	if(DB.Threaded == null) /* If it's not null, we don't need to gather new connection since we already have one, prevent corruption. */
 		Database.Connect(DBConnect, Xstats);
 	
-	if((DB.Direct = SQL_Connect2(Xstats, false)) != null)
-		DB.Direct.SetCharset("utf8mb4"); /* Fix characters */
+	if(DB.Direct == null)	{
+		if((DB.Direct = SQL_Connect2(Xstats, false)) != null)
+			DB.Direct.SetCharset("utf8mb4"); /* Fix characters */
+	}
 }
 
 void DBConnect(Database database, const char[] error, any data)	{

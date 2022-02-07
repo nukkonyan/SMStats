@@ -148,14 +148,22 @@ stock void RemoveSessionPoints(int client, int value)	{
  *	@param	auth	The players steam authentication id.
  */
 stock void UpdateLastConnectedState(const char[] auth)	{
+	char error[256];
+	Database database = SQL_Connect(Xstats, false, error, sizeof(error));
+	if(database == null)	{
+		if(Cvars.Debug.BoolValue)
+			PrintToServer("%s Failed to establish connection for UpdateLastConnectedState. (%s)", LogTag, error);
+		return;
+	}
+	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, GetTime(), auth, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	database.Query(DBQuery_Callback, query);
 	
 	Format(query, sizeof(query), "update `%s` set LastConnectedServerID='%i' where SteamID='%s'",
 	Global.playerlist, Cvars.ServerID.IntValue, auth);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	database.Query(DBQuery_Callback, query);
 }
 
 /**
@@ -474,10 +482,8 @@ stock void RoundStarted()	{
 	Global.RoundActive = true;
 	
 	switch(Global.Game)	{
-		case	Game_CSGO, Game_CSCO:
-			Global.WarmupActive = CS_IsWarmupRound();
-		case	Game_TF2, Game_TF2C, Game_TF2B, Game_TF2V, Game_TF2OP:
-			Global.WarmupActive = TF2_IsWaitingForPlayers();
+		case Game_CSGO, Game_CSCO: Global.WarmupActive = CS_IsWarmupRound();
+		case Game_TF2, Game_TF2C, Game_TF2B, Game_TF2V, Game_TF2OP: Global.WarmupActive = TF2_IsWaitingForPlayers();
 	}
 	
 	if(Cvars.Debug.BoolValue)	{
@@ -508,10 +514,8 @@ stock void RoundEnded()	{
 	Global.RoundActive = false;
 	
 	switch(Global.Game)	{
-		case Game_CSGO, Game_CSCO:
-			Global.WarmupActive = CS_IsWarmupRound();
-		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2OP:
-			Global.WarmupActive = TF2_IsWaitingForPlayers();
+		case Game_CSGO, Game_CSCO: Global.WarmupActive = CS_IsWarmupRound();
+		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2OP: Global.WarmupActive = TF2_IsWaitingForPlayers();
 	}
 			
 	if(Cvars.Debug.BoolValue)	{
@@ -546,11 +550,13 @@ stock void CheckPlayersPluginStart()	{
 		if(Tklib_IsValidClient(client, true, false, false))	{
 			GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
 			GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
+			GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
+			GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
 			if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
 				Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 			
 			if(database != null)	{
-				results = SQL_QueryEx(database, "select `Points` from %s where SteamID = '%s' and ServerID = '%i'",
+				results = SQL_QueryEx(database, "select Points from `%s` where SteamID = '%s' and ServerID = '%i'",
 				Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 				switch(results != null && results.FetchRow())	{
 					/* Player exists */
@@ -558,8 +564,13 @@ stock void CheckPlayersPluginStart()	{
 					
 					/* Player wasn't found. */
 					case false:	{
-						results = SQL_QueryEx(database, "insert into playerlist (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
-						Player[client].SteamID, Player[client].Playername, Player[client].IP, Cvars.ServerID.IntValue);
+						char temp_playername[64];
+						temp_playername = Player[client].Playername;
+						TrimString(temp_playername);
+						DB.Direct.Escape(temp_playername, temp_playername, sizeof(temp_playername));
+						
+						results = SQL_QueryEx(database, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
+						Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
 						if(results != null)
 							OnClientPutInServer(client);
 					}
@@ -621,7 +632,6 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			}
 		}
 	}
-	
 	/* Collateral */
 	else if(KillMsg[client].CollateralKill)
 	{
@@ -635,7 +645,6 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[9]);
 		}
 	}
-	
 	/* Airshot kill */
 	else if(KillMsg[client].AirshotKill)
 	{
@@ -666,7 +675,6 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			}
 		}
 	}
-	
 	/* Backstab kill */
 	else if(KillMsg[client].BackstabKill)
 	{
@@ -679,7 +687,6 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[5]);
 		}
 	}
-	
 	/* Noscope kill */
 	else if(KillMsg[client].NoscopeKill)
 	{
@@ -792,7 +799,6 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			}
 		}
 	}
-	
 	/* Headshot kill */
 	else if(KillMsg[client].HeadshotKill)
 	{

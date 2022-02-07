@@ -952,8 +952,6 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	int quality = event.GetInt(EVENT_STR_QUALITY);
 	int method = event.GetInt(EVENT_STR_METHOD);
 	int defindex = event.GetInt(EVENT_STR_ITEMDEF);
-	bool isstrange = event.GetBool(EVENT_STR_ISSTRANGE);
-	bool isunusual = event.GetBool(EVENT_STR_ISUNUSUAL);
 	float wear = event.GetFloat(EVENT_STR_WEAR);
 	
 	char method_name[][] = {
@@ -984,10 +982,10 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	char query[512];
 	int len = 0;
 	len += Format(query[len], sizeof(query)-len, "insert into `%s`", Global.item_found);
-	len += Format(query[len], sizeof(query)-len, "(ServerID, Playername, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, IsStrange, IsUnusual, Wear)");
+	len += Format(query[len], sizeof(query)-len, "(ServerID, Playername, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)");
 	len += Format(query[len], sizeof(query)-len, "values");
 	len += Format(query[len], sizeof(query)-len, "('%i', '%s', '%s', '%i', '%s', '%i', '%s', '%i', '%i', '%i', '%f')",
-	Cvars.ServerID.IntValue, Player[client].Playername, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, isstrange, isunusual, wear);
+	Cvars.ServerID.IntValue, Player[client].Playername, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, wear);
 	DB.Threaded.Query(DBQuery_Callback, query);
 }
 
