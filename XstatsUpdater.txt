@@ -4,13 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.0.1b"
+			"Latest"	"0.0.1c"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Fixed invalid translations for building events."
-		"Notes" "Fixed up invalid and missing database tables."
+		"Notes" "Fixed invalid table creation."
 	}
 	
 	"Files"
