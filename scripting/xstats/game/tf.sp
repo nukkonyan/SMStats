@@ -5,7 +5,7 @@ void PrepareDB_TF2()	{
 	char query[16177];
 	int len = 0;
 	
-	len += Format(query[len], sizeof(query)-len, "create table if not exists `Global.playerlist_tf2`");
+	len += Format(query[len], sizeof(query)-len, "create table if not exists `playerlist_tf2`");
 	len += Format(query[len], sizeof(query)-len, "(");
 	len += Format(query[len], sizeof(query)-len, "`ServerID`							int(16) not null default '1' comment 'Servers unique ID',");
 	len += Format(query[len], sizeof(query)-len, "`Points`								int(32) not null default '1000',");

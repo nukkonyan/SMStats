@@ -5,7 +5,7 @@ void PrepareDB_CSS()	{
 	char query[8192];
 	int len = 0;
 	
-	len += Format(query[len], sizeof(query)-len, "create table if not exists `Global.playerlist_css`");
+	len += Format(query[len], sizeof(query)-len, "create table if not exists `playerlist_css`");
 	len += Format(query[len], sizeof(query)-len, "(");
 	len += Format(query[len], sizeof(query)-len, "`ServerID`							int(16) not null default '1' comment 'Servers unique ID',");
 	len += Format(query[len], sizeof(query)-len, "`Points`								int(32) not null default '1000',");
