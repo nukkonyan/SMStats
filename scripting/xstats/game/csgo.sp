@@ -313,33 +313,31 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	//bool collateral = (penetrated > 0);
 	
 	if(Cvars.Weapon[defindex] == null)	{
-		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", Global.logprefix, weapon, defindex);
+		XStats_DebugText(false, "weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", weapon, defindex);
 		return;
 	}
 	
 	int points = Cvars.Weapon[defindex].IntValue;
 	
 	/* Debug */
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== Player_Death_CSGO =====//");
-		PrintToServer("client: %i", client);
-		PrintToServer("victim: %i", victim);
-		PrintToServer("assist: %i", assist);
-		PrintToServer("defindex: %i", defindex);
-		PrintToServer("weapon: \"%s\"", weapon);
-		PrintToServer(" ");
-		PrintToServer("midair: %s", Bool[midair]);
-		PrintToServer("headshot: %s", Bool[headshot]);
-		PrintToServer("dominated: %s", Bool[dominated]);
-		PrintToServer("revenge: %s", Bool[revenge]);
-		PrintToServer("noscope: %s", Bool[noscope]);
-		PrintToServer("thrusmoke: %s", Bool[thrusmoke]);
-		PrintToServer("attackerblind: %s", Bool[attackerblind]);
-		PrintToServer("grenadekill: %s", Bool[grenadekill]);
-		PrintToServer("bombkill: %s", Bool[bombkill]);
-		PrintToServer(" ");
-		PrintToServer("Points %i", points);
-	}
+	XStats_DebugText(false, "//===== Player_Death_CSGO =====//");
+	XStats_DebugText(false, "client: %N (%i)", client, client);
+	XStats_DebugText(false, "victim: %N (%i)", victim, client);
+	XStats_DebugText(false, "assist: %N (%i)", Tklib_IsValidClient(assist) ? assist : 0, assist);
+	XStats_DebugText(false, "defindex: %i", defindex);
+	XStats_DebugText(false, "weapon: \"%s\"", weapon);
+	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "midair: %s", Bool[midair]);
+	XStats_DebugText(false, "headshot: %s", Bool[headshot]);
+	XStats_DebugText(false, "dominated: %s", Bool[dominated]);
+	XStats_DebugText(false, "revenge: %s", Bool[revenge]);
+	XStats_DebugText(false, "noscope: %s", Bool[noscope]);
+	XStats_DebugText(false, "thrusmoke: %s", Bool[thrusmoke]);
+	XStats_DebugText(false, "attackerblind: %s", Bool[attackerblind]);
+	XStats_DebugText(false, "grenadekill: %s", Bool[grenadekill]);
+	XStats_DebugText(false, "bombkill: %s", Bool[bombkill]);
+	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Points %i", points);
 	
 	/* Kill msg stuff */
 	KillMsg[client].MidAirKill = midair;
@@ -370,6 +368,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		
+		XStats_DebugText(false, "Headshot");
+		XStats_DebugText(false, " ");
 	}
 	
 	if(dominated)	{
@@ -377,6 +378,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		
+		XStats_DebugText(false, "Dominated");
+		XStats_DebugText(false, " ");
 	}
 		
 	if(revenge)	{
@@ -384,6 +388,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		
+		XStats_DebugText(false, "Revenge");
+		XStats_DebugText(false, " ");
 	}
 	
 	if(noscope)	{
@@ -391,6 +398,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		
+		XStats_DebugText(false, "Noscope");
+		XStats_DebugText(false, " ");
 	}
 	
 	if(thrusmoke)	{
@@ -398,6 +408,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Format(query, sizeof(query), "update `%s` set ThruSmokes = ThruSmokes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		
+		XStats_DebugText(false, "Thru smoke");
+		XStats_DebugText(false, " ");
 	}
 	
 	if(knifekill)	{
@@ -406,10 +419,8 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(Cvars.Debug.BoolValue)	{
-			PrintToServer(" ");
-			PrintToServer("Knife Kill");
-		}
+		XStats_DebugText(false, " ");
+		XStats_DebugText(false, "Knife Kill");
 	}
 	
 	if(grenadekill)	{
@@ -417,6 +428,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Format(query, sizeof(query), "update `%s` set GrenadeKills = GrenadeKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		
+		XStats_DebugText(false, "Grenade kill");
+		XStats_DebugText(false, " ");
 	}
 	
 	if(bombkill)	{
@@ -424,6 +438,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		
+		XStats_DebugText(false, "Bomb kill");
+		XStats_DebugText(false, " ");
 	}
 	
 	if(points > 0)	{
@@ -443,6 +460,9 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 			len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
 			Cvars.ServerID.IntValue, GetTime(), Player[client].Playername, Player[client].SteamID, Player[victim].Playername, Player[victim].SteamID, Player[assist].Playername, Player[assist].SteamID, weapon, headshot, noscope, thrusmoke, attackerblind);
 			DB.Threaded.Query(DBQuery_Kill_Log, log);
+			
+			XStats_DebugText(false, "Inserting (ServerID, Time, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, ThruSmoke, BlindedKill) values ('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i') into %s",
+			Cvars.ServerID.IntValue, GetTime(), Player[client].Playername, Player[client].SteamID, Player[victim].Playername, Player[victim].SteamID, Player[assist].Playername, Player[assist].SteamID, weapon, headshot, noscope, thrusmoke, attackerblind, Global.kill_log);
 		}
 	}
 }
@@ -473,22 +493,20 @@ stock void Other_Death_CSGO(Event event, const char[] event_name, bool dontBroad
 	if(StrEqual(classname, "chicken", false))
 		Session[client].ChickenKills++;
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== Other_Death_CSGO =====//");
-		PrintToServer("Client: %N", client);
-		PrintToServer("Entity index: %d", entity);
-		PrintToServer("Entity Classname: \"%s\"", classname);
-		PrintToServer(" ");
-		PrintToServer("Weapon: \"%s\"", Cvars.Weapon[0]);
-		PrintToServer("Weapon ID: \"%s\"", Cvars.Weapon[1]);
-		PrintToServer("Weapon Faux ID: \"%s\"", Cvars.Weapon[2]);
-		PrintToServer("Weapon Original Owner xuid: \"%s\"", Cvars.Weapon[3]);
-		PrintToServer(" ");
-		PrintToServer("Headshot: %s", Bool[headshot]);
-		PrintToServer("Penetrated: %i", penetrated);
-		PrintToServer("Noscope: %s", Bool[noscope]);
-		PrintToServer("Through Smoke: %s", Bool[thrusmoke]);
-		PrintToServer("Attacker was blind: %s", Bool[attackerblind]);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "//===== Other_Death_CSGO =====//");
+	XStats_DebugText(false, "Client: %N", client);
+	XStats_DebugText(false, "Entity index: %d", entity);
+	XStats_DebugText(false, "Entity Classname: \"%s\"", classname);
+	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Weapon: \"%s\"", Cvars.Weapon[0]);
+	XStats_DebugText(false, "Weapon ID: \"%s\"", Cvars.Weapon[1]);
+	XStats_DebugText(false, "Weapon Faux ID: \"%s\"", Cvars.Weapon[2]);
+	XStats_DebugText(false, "Weapon Original Owner xuid: \"%s\"", Cvars.Weapon[3]);
+	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Headshot: %s", Bool[headshot]);
+	XStats_DebugText(false, "Penetrated: %i", penetrated);
+	XStats_DebugText(false, "Noscope: %s", Bool[noscope]);
+	XStats_DebugText(false, "Through Smoke: %s", Bool[thrusmoke]);
+	XStats_DebugText(false, "Attacker was blind: %s", Bool[attackerblind]);
+	XStats_DebugText(false, " ");
 }

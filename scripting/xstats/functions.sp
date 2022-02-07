@@ -13,6 +13,7 @@ stock int GetClientPoints(const char[] auth)	{
 		delete results;
 	}
 	
+	XStats_DebugText(false, "GetClientPoints was fired for \"%s\", returning %i", auth, points);
 	delete database;
 	return points;
 }
@@ -40,6 +41,7 @@ stock int GetClientPosition(const char[] auth)	{
 		delete results;
 	}
 	
+	XStats_DebugText(false, "GetClientPosition was fired for \"%s\", returning %i", auth, position);
 	delete database;
 	return position;
 }
@@ -59,6 +61,7 @@ stock int GetTablePlayerCount()	{
 		delete results;
 	}
 	
+	XStats_DebugText(false, "GetTablePlayerCount was fired, returning %i", playercount);
 	delete database;
 	return playercount;
 }
@@ -78,6 +81,7 @@ stock int GetClientPlayTime(const char[] auth)	{
 		delete results;
 	}
 	
+	XStats_DebugText(false, "GetClientPlayTime was fired for \"%s\", returning %i", auth, playtime);
 	delete database;
 	return playtime;
 }
@@ -97,34 +101,30 @@ stock float GetKDR(int kills, int deaths, int assists)	{
 	
 	fkills = fkills + (fassists / 2.0);
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== GetKDR =====//");
-		PrintToServer("kills: %i", kills);
-		PrintToServer("deaths: %i", deaths);
-		PrintToServer("assists: %i", assists);
-		PrintToServer("fkills: %.2f", float(kills));
-		PrintToServer("fkills = fkills + (fassists / 2.0): %.2f", fkills);
-		PrintToServer("fdeaths: %.2f", fdeaths);
-		PrintToServer("fassists: %.2f", fassists);
-	}
+	XStats_DebugText(false, "//===== GetKDR =====//");
+	XStats_DebugText(false, "kills: %i", kills);
+	XStats_DebugText(false, "deaths: %i", deaths);
+	XStats_DebugText(false, "assists: %i", assists);
+	XStats_DebugText(false, "fkills: %.2f", float(kills));
+	XStats_DebugText(false, "fkills = fkills + (fassists / 2.0): %.2f", fkills);
+	XStats_DebugText(false, "fdeaths: %.2f", fdeaths);
+	XStats_DebugText(false, "fassists: %.2f", fassists);
 	
 	if(fdeaths == 0.0)
 		fdeaths = 1.0;
 	
-	if(Cvars.Debug.BoolValue)
-		PrintToServer("after fdeaths check: %.2f", fdeaths);
+	XStats_DebugText(false, "after fdeaths check: %.2f", fdeaths);
 	
 	kdr = fkills / fdeaths;
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("kdr: %.2f", kdr);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "kdr: %.2f", kdr);
+	XStats_DebugText(false, " ");
 	
 	kdr = kdr / 100.0; /* Fix the KDR To be correct. 120.0 -> 1.20 */
 	
 	if(kdr == 0.00)
 		kdr = 1.00;
 	
+	XStats_DebugText(false, "GetKDR was fired (%i kills, %i deaths, %i assists), returning %.1f", kills, deaths, assists, kdr);
 	return kdr;
 }
 
@@ -151,8 +151,7 @@ stock void UpdateLastConnectedState(const char[] auth)	{
 	char error[256];
 	Database database = SQL_Connect(Xstats, false, error, sizeof(error));
 	if(database == null)	{
-		if(Cvars.Debug.BoolValue)
-			PrintToServer("%s Failed to establish connection for UpdateLastConnectedState. (%s)", LogTag, error);
+		XStats_DebugText(true, "Failed to establish connection for UpdateLastConnectedState. (%s)", error);
 		return;
 	}
 	
@@ -190,7 +189,7 @@ stock void DBQuery_RemoveOldPlayers_1(Database database, DBResultSet results, co
 	delete pack;
 	
 	if(results == null)
-		SetFailState("%s Deleting old players failed! (%s)", LogTag, error);
+		XStats_DebugText(true, "Deleting old players failed! (%s)", error);
 	
 	int count = 0;
 	while(results.FetchRow())	{
@@ -214,7 +213,7 @@ stock void DBQuery_RemoveOldPlayers_1(Database database, DBResultSet results, co
 
 stock void DBQuery_RemoveOldPlayers_2(Database database, DBResultSet results, const char[] error, any data)	{
 	if(results == null)
-		SetFailState("%s Deleting old players failed! (%s)", LogTag, error);
+		XStats_DebugText(true, "Deleting old players failed! (%s)", error);
 }
 
 //====================//
@@ -226,7 +225,7 @@ stock void DBQuery_RemoveOldPlayers_2(Database database, DBResultSet results, co
  */
 stock void DBQuery_Callback(Database database, DBResultSet results, const char[] error, any data)	{
 	if(results == null)
-		SetFailState("%s Updating table \"%s\" failed! (%s)", Global.logprefix, Global.playerlist, error);
+		XStats_DebugText(true, "Updating table \"%s\" failed! (%s)", Global.playerlist, error);
 }
 
 /**
@@ -234,7 +233,7 @@ stock void DBQuery_Callback(Database database, DBResultSet results, const char[]
  */
 stock void DBQuery_Kill_Log(Database database, DBResultSet results, const char[] error, any data)	{
 	if(results == null)
-		SetFailState("%s Adding kill log event to \"%s\" failed! (%s)", Global.logprefix, Global.kill_log, error);
+		XStats_DebugText(true, "Adding kill log event to \"%s\" failed! (%s)", Global.kill_log, error);
 }
 
 /**
@@ -245,7 +244,7 @@ stock void DBQuery_IntervalPlayTimer(Database database, DBResultSet results, con
 		return;
 	
 	if(results == null)
-		SetFailState("%s Updating playtime by 1 minute for client index %i to \"%s\" failed! (%s)", Global.logprefix, client, Global.playerlist, error);
+		XStats_DebugText(true, "Updating playtime by 1 minute for client index %i to \"%s\" failed! (%s)", client, Global.playerlist, error);
 }
 
 /**
@@ -253,7 +252,7 @@ stock void DBQuery_IntervalPlayTimer(Database database, DBResultSet results, con
  */
 stock void DBQuery_DB(Database database, DBResultSet results, const char[] error, int data)	{
 	if(results == null)
-		SetFailState("%s Creating query for database table id %i failed! (%s)", Global.logprefix, data, error);
+		XStats_DebugText(true, "Creating query for database table id %i failed! (%s)", data, error);
 }
 
 /**
@@ -275,8 +274,7 @@ stock void CheckActivePlayers()	{
 				Global.RankActive = false;
 				
 				CPrintToChatAll("%s %t", Global.Prefix, "Not Enough Players", players, needed);
-				if(Cvars.Debug.BoolValue)
-					PrintToServer("%s Not enough players [%i/%i], disabling..", LogTag, players, needed);
+				XStats_DebugText(false, "Not enough players [%i/%i], disabling..", players, needed);
 			}
 		}
 		case	false:	{
@@ -284,8 +282,7 @@ stock void CheckActivePlayers()	{
 				if(Global.RoundActive)	{
 					Global.RankActive = true;
 					CPrintToChatAll("%s %t", Global.Prefix, "Enough Players", players, needed);
-					if(Cvars.Debug.BoolValue)
-						PrintToServer("%s Enough players [%i/%i], enabling..", LogTag, players, needed);
+					XStats_DebugText(false, "Enough players [%i/%i], enabling..", players, needed);
 				}
 			}
 		}
@@ -347,6 +344,7 @@ stock bool CS_IsClientInsideSmoke(int client)	{
  *	@noreturn
  */
 stock void PreparePrefixUpdatedForward()	{
+	XStats_DebugText(false, "Preparing prefix forward..");
 	Call_StartForward(Forward.Prefix);
 	Call_PushString(Global.Prefix);
 	Call_Finish();
@@ -364,6 +362,7 @@ stock void PreparePrefixUpdatedForward()	{
  *	@noreturn
  */
 stock void PrepareOnDeathForward(int client, int victim, int assist, const char[] weapon, int defindex)	{
+	XStats_DebugText(false, "Preparing OnDeathEvent forward..");
 	Call_StartForward(Forward.Death);
 	Call_PushCell(client);
 	Call_PushCell(victim);
@@ -381,6 +380,7 @@ stock void PrepareOnDeathForward(int client, int victim, int assist, const char[
  *	@noreturn
  */
 stock void PrepareOnSuicideForward(int client)	{
+	XStats_DebugText(false, "Preparing OnSuicideEvent forward..");
 	Call_StartForward(Forward.Suicide);
 	Call_PushCell(client);
 	Call_Finish();
@@ -397,6 +397,7 @@ stock void PrepareOnSuicideForward(int client)	{
  *	@noreturn
  */
 stock void PrepareTF2FlagEventForward(int client, int carrier, TFFlag flag, bool home)	{
+	XStats_DebugText(false, "Preparing TF2_OnFlagEvent forward..");
 	Call_StartForward(Forward.TF2_FlagEvent);
 	Call_PushCell(client);
 	Call_PushCell(carrier);
@@ -425,11 +426,13 @@ stock bool AssistedKill(int assist, int client, int victim)	{
 	Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
+	XStats_DebugText(false, "Updating assist count for %s", Player[assist].Playername);
 	
 	if(Cvars.AssistKill.IntValue > 0)	{
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Cvars.AssistKill.IntValue, Player[assist].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		XStats_DebugText(false, "Updating points for %s due to assisting a kill", Player[victim].Playername);
 		
 		Player[assist].Points = GetClientPoints(Player[assist].SteamID);
 		CPrintToChat(client, "%s %t",
@@ -454,14 +457,12 @@ stock bool VictimDied(int victim)	{
 	Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[victim].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
+	XStats_DebugText(false, "Updating death count for %s", Player[victim].Playername);
 	
 	int death_points;
-	
 	switch(Global.Game)	{
-		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP:
-			death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
-		default:
-			death_points = Cvars.Death.IntValue;
+		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP: death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
+		default: death_points = Cvars.Death.IntValue;
 	}
 		
 	int victim_points = GetClientPoints(Player[victim].SteamID);
@@ -472,6 +473,7 @@ stock bool VictimDied(int victim)	{
 		Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, death_points, Player[victim].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
+		XStats_DebugText(false, "Updating points for %s due to dying", Player[victim].Playername);
 	}
 	
 	return true;
@@ -486,11 +488,9 @@ stock void RoundStarted()	{
 		case Game_TF2, Game_TF2C, Game_TF2B, Game_TF2V, Game_TF2OP: Global.WarmupActive = TF2_IsWaitingForPlayers();
 	}
 	
-	if(Cvars.Debug.BoolValue)	{
-		switch(Global.WarmupActive)	{
-			case true: PrintToServer("%s Warmup Round Started", LogTag);
-			case false: PrintToServer("%s Round Started", LogTag);
-		}
+	switch(Global.WarmupActive)	{
+		case true: XStats_DebugText(false, "Warmup Round Started");
+		case false: XStats_DebugText(false, "Round Started");
 	}
 	
 	if(Global.RoundActive && Global.WarmupActive)	{
@@ -518,11 +518,9 @@ stock void RoundEnded()	{
 		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2OP: Global.WarmupActive = TF2_IsWaitingForPlayers();
 	}
 			
-	if(Cvars.Debug.BoolValue)	{
-		switch(Global.WarmupActive)	{
-			case true: PrintToServer("%s Warmup Round Ended", LogTag);
-			case false: PrintToServer("%s Round Ended", LogTag);
-		}
+	switch(Global.WarmupActive)	{
+		case true: XStats_DebugText(false, "Warmup Round Ended");
+		case false: XStats_DebugText(false, "Round Ended");
 	}
 	
 	if(!Global.WarmupActive)	{
@@ -558,6 +556,7 @@ stock void CheckPlayersPluginStart()	{
 			if(database != null)	{
 				results = SQL_QueryEx(database, "select Points from `%s` where SteamID = '%s' and ServerID = '%i'",
 				Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+				XStats_DebugText(false, "Gathering points directly from database for %s", Player[client].Playername);
 				switch(results != null && results.FetchRow())	{
 					/* Player exists */
 					case true: OnClientPutInServer(client);
@@ -571,6 +570,7 @@ stock void CheckPlayersPluginStart()	{
 						
 						results = SQL_QueryEx(database, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
 						Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
+						XStats_DebugText(false, "Failed to gather points from %s, inserting new table directly onto database.", Player[client].Playername);
 						if(results != null)
 							OnClientPutInServer(client);
 					}
@@ -935,7 +935,35 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 	}
 	
 	switch(IsValidString(buffer))	{
-		case	true:	CPrintToChat(client, "%s %t", Global.Prefix, "Special Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name, buffer);
-		case	false:	CPrintToChat(client, "%s %t", Global.Prefix, "Default Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name);
+		case true: CPrintToChat(client, "%s %t", Global.Prefix, "Special Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name, buffer);
+		case false: CPrintToChat(client, "%s %t", Global.Prefix, "Default Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name);
+	}
+}
+
+/**
+ *	Debugs to server console and logs to a file.
+ *
+ *	@param	text	The text to write.
+ *	@param	...		Additional parameters.
+ *
+ *	@noreturn
+ */
+stock void XStats_DebugText(bool FailState, const char[] text, any ...)	{
+	if(!Cvars.Debug.BoolValue)
+		return;
+	
+	char format[512];
+	VFormat(format, sizeof(format), text, 3);
+	
+	char path[64];
+	BuildPath(Path_SM, path, sizeof(path), "logs/xstats_debug.log.txt");
+	if(!FileExists(path))
+		delete OpenFile(path, "a+");
+	
+	LogToFileEx(path, format);
+	
+	switch(FailState)	{
+		case true: SetFailState("%s %s", Global.logprefix, format);
+		case false: PrintToServer("%s %s", Global.logprefix, format);
 	}
 }

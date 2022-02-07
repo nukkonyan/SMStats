@@ -171,7 +171,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	int defindex = CSS_GetWeaponDefindex(weapon);
 	
 	if(Cvars.Weapon[defindex] == null)	{
-		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", Global.logprefix, weapon, defindex);
+		XStats_DebugText(false, "weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", weapon, defindex);
 		return;
 	}
 	
@@ -199,26 +199,24 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	bool knifekill = (StrContains(weapon, "knife", false) != -1); /* Support custom plugins */
 	bool bombkill = (StrContains(weapon, "c4", false) != -1);
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== Player_Death_CSS =====//");
-		PrintToServer("client: %i", client);
-		PrintToServer("victim: %i", victim);
-		PrintToServer("assist: %i", assist);
-		PrintToServer("defindex: %i", defindex);
-		PrintToServer("weapon: \"%s\"", weapon);
-		PrintToServer(" ");
-		PrintToServer("midair: %s", Bool[midair]),
-		PrintToServer("headshot: %s", Bool[headshot]);
-		PrintToServer("dominated: %s", Bool[dominated]);
-		PrintToServer("revenge: %s", Bool[revenge]);
-		PrintToServer("noscope: %s", Bool[noscope]);
-		PrintToServer("thrusmoke: %s", Bool[thrusmoke]);
-		PrintToServer("knifekill: %s", Bool[knifekill]);
-		PrintToServer("grenadekill: %s", Bool[grenadekill]);
-		PrintToServer("bombkill: %s", Bool[bombkill]);
-		PrintToServer(" ");
-		PrintToServer("points: %i", points);
-	}
+	XStats_DebugText(false, "//===== Player_Death_CSS =====//");
+	XStats_DebugText(false, "client: %N (%i)", client, client);
+	XStats_DebugText(false, "victim: %N (%i)", victim, client);
+	XStats_DebugText(false, "assist: %N (%i)", Tklib_IsValidClient(assist) ? assist : 0, assist);
+	XStats_DebugText(false, "defindex: %i", defindex);
+	XStats_DebugText(false, "weapon: \"%s\"", weapon);
+	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "midair: %s", Bool[midair]),
+	XStats_DebugText(false, "headshot: %s", Bool[headshot]);
+	XStats_DebugText(false, "dominated: %s", Bool[dominated]);
+	XStats_DebugText(false, "revenge: %s", Bool[revenge]);
+	XStats_DebugText(false, "noscope: %s", Bool[noscope]);
+	XStats_DebugText(false, "thrusmoke: %s", Bool[thrusmoke]);
+	XStats_DebugText(false, "knifekill: %s", Bool[knifekill]);
+	XStats_DebugText(false, "grenadekill: %s", Bool[grenadekill]);
+	XStats_DebugText(false, "bombkill: %s", Bool[bombkill]);
+	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "points: %i", points);
 	
 	/* Kill msg stuff */
 	KillMsg[client].MidAirKill = midair;
@@ -247,10 +245,8 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s'", Global.playerlist, Player[client].SteamID);
 		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(Cvars.Debug.BoolValue)	{
-			PrintToServer(" ");
-			PrintToServer("Headshot");
-		}
+		XStats_DebugText(false, " ");
+		XStats_DebugText(false, "Headshot");
 	}
 	
 	if(dominated)	{
@@ -258,10 +254,8 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s'", Global.playerlist, Player[client].SteamID);
 		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(Cvars.Debug.BoolValue)	{
-			PrintToServer(" ");
-			PrintToServer("Dominated");
-		}
+		XStats_DebugText(false, " ");
+		XStats_DebugText(false, "Dominated");
 	}
 	
 	if(revenge)	{
@@ -269,10 +263,8 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s'", Global.playerlist, Player[client].SteamID);
 		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(Cvars.Debug.BoolValue)	{
-			PrintToServer(" ");
-			PrintToServer("Revenge");
-		}
+		XStats_DebugText(false, " ");
+		XStats_DebugText(false, "Revenge");
 	}
 	
 	if(noscope)	{
@@ -280,10 +272,8 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s'", Global.playerlist, Player[client].SteamID);
 		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(Cvars.Debug.BoolValue)	{
-			PrintToServer(" ");
-			PrintToServer("Noscope");
-		}
+		XStats_DebugText(false, " ");
+		XStats_DebugText(false, "Noscope");
 	}
 	
 	if(midair)	{
@@ -292,10 +282,8 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(Cvars.Debug.BoolValue)	{
-			PrintToServer(" ");
-			PrintToServer("MidAir Kill");
-		}
+		XStats_DebugText(false, " ");
+		XStats_DebugText(false, "MidAir Kill");
 	}
 	
 	if(knifekill)	{
@@ -304,10 +292,8 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(Cvars.Debug.BoolValue)	{
-			PrintToServer(" ");
-			PrintToServer("Knife Kill");
-		}
+		XStats_DebugText(false, " ");
+		XStats_DebugText(false, "Knife Kill");
 	}
 	
 	if(grenadekill)	{

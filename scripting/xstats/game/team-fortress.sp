@@ -234,22 +234,20 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 	TFTeam team = TFTeam(event.GetInt(EVENT_STR_TEAM));
 	TFFlag flag = TFFlag(eventtype);
 	
-	if(Cvars.Debug.BoolValue)	{
-		char teamname[][] = {
-			/* 0 */ "Unassigned",
-			/* 1 */ "SPEC",
-			/* 2 */ "BLU",
-			/* 3 */ "RED"
-		};
-		
-		PrintToServer("//===== Teamplay_Flag_Event =====//");
-		PrintToServer("player %N (%i)", client, client);
-		PrintToServer("carrier %N (%i)", carrier, carrier);
-		PrintToServer("eventtype %s", TF2_GetFlagTypeName[eventtype]);
-		PrintToServer("home %s", Bool[home]);
-		PrintToServer("teamname %s", teamname[team]);
-		PrintToServer(" ");
-	}
+	char teamname[][] = {
+		/* 0 */ "Unassigned",
+		/* 1 */ "SPEC",
+		/* 2 */ "BLU",
+		/* 3 */ "RED"
+	};
+	
+	XStats_DebugText(false, "//===== Teamplay_Flag_Event =====//");
+	XStats_DebugText(false, "player %N (%i)", client, client);
+	XStats_DebugText(false, "carrier %N (%i)", carrier, carrier);
+	XStats_DebugText(false, "eventtype %s", TF2_GetFlagTypeName[eventtype]);
+	XStats_DebugText(false, "home %s", Bool[home]);
+	XStats_DebugText(false, "teamname %s", teamname[team]);
+	XStats_DebugText(false, " ");
 	
 	if(TF2_FlagEvent[eventtype] == null || TF2_FlagEvent[eventtype].IntValue < 1)
 		return;
@@ -290,6 +288,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 					Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1, FlagsStolen = FlagsStolen+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue); 
 					DB.Threaded.Query(DBQuery_Callback, query);
+					XStats_DebugText(false, "Updating points, flags picked up and stolen flags for %s", Player[client].Playername);
 				}
 				/* Flag was not stolen (phew, that was close *heavy voice*) */
 				case	false:	{
@@ -300,6 +299,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 					Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue); 
 					DB.Threaded.Query(DBQuery_Callback, query);
+					XStats_DebugText(false, "Updating points and flags picked up for %s", Player[client].Playername);
 				}
 			}
 		}
@@ -312,6 +312,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsCaptured = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
+			XStats_DebugText(false, "Updating points for %s due to capturing flag", Player[client].Playername);
 		}
 		/* Flag was defended */
 		case	TFFlag_Defended:	{
@@ -322,6 +323,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsDefended = FlagsCaptured+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
+			XStats_DebugText(false, "Updating points for %s due to defending flag", Player[client].Playername);
 		}
 		/* Flag was dropped */
 		case	TFFlag_Dropped:	{
@@ -332,6 +334,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
+			XStats_DebugText(false, "Updating points for %s due to dropping flag", Player[client].Playername);
 		}
 	}
 	
@@ -1040,7 +1043,7 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 			Session[client].Jarated++;
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Player Coated Jar", Player[client].Name, Player[client].Points, points, Player[victim].Name);
-				
+			
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
@@ -1066,13 +1069,11 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 		}
 	}
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== PlayerJarated =====//");
-		PrintToServer("client: %N (index %i)", client, client);
-		PrintToServer("victim: %N (index %i)", victim, victim);
-		PrintToServer("defindex: %i", defindex);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "//===== PlayerJarated =====//");
+	XStats_DebugText(false, "Client: %N (index %i)", client, client);
+	XStats_DebugText(false, "Victim: %N (index %i)", victim, victim);
+	XStats_DebugText(false, "Defindex: %i", defindex);
+	XStats_DebugText(false, " ");
 	
 	return Plugin_Handled;
 }
@@ -1094,12 +1095,10 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 	if(!Tklib_IsValidClient(victim))
 		return Plugin_Handled;
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== PlayerExtinguished =====//");
-		PrintToServer("client: %N (index %i)", client, client);
-		PrintToServer("victim: %N (index %i)", victim, victim);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "//===== PlayerExtinguished =====//");
+	XStats_DebugText(false, "Client: %N (index %i)", client, client);
+	XStats_DebugText(false, "Victim: %N (index %i)", victim, victim);
+	XStats_DebugText(false, " ");
 	
 	if(Extinguished[client])
 		return Plugin_Handled;
@@ -1151,12 +1150,10 @@ Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int players
 	
 	Session[client].Ignited++;
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== PlayerIginted =====//");
-		PrintToServer("client: %N (index %i)", client, client);
-		PrintToServer("victim: %N (index %i)", victim, victim);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "//===== PlayerIginted =====//");
+	XStats_DebugText(false, "Client: %N (index %i)", client, client);
+	XStats_DebugText(false, "Victim: %N (index %i)", victim, victim);
+	XStats_DebugText(false, " ");
 	
 	return Plugin_Continue;
 }
@@ -1260,4 +1257,5 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
 	Global.playerlist, class[type], class[type], Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
+	XStats_DebugText(false, "Updating class for %s (\"%s\")", Player[client].Playername, class[type]);
 }

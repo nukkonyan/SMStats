@@ -4,12 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.0.1c"
+			"Latest"	"0.0.1d"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Fixed invalid table creation."
+		"Notes" "Updated how debugging works by also saving onto a logfile (/logs/xstats_debug.log.txt)"
 	}
 	
 	"Files"

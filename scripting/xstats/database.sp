@@ -11,14 +11,13 @@ void PrepareDatabase()	{
 void DBConnect(Database database, const char[] error, any data)	{
 	if(!IsValidDatabase(database))	{
 		delete database;
-		SetFailState("%s Database connection failed! (%s)", LogTag, error);
+		XStats_DebugText(true, "Database connection failed! (%s)", error);
 		return;
 	}
 	
 	DB.Threaded = database;
 	DB.Threaded.SetCharset("utf8mb4"); //Fix characters.
-	PrintToServer("%s Database connection was successful!", LogTag);
-	
+	XStats_DebugText(false, "Database connection was successful!");
 	Games_DatabaseConnected();
 }
 
