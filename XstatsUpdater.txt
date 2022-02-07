@@ -10,6 +10,7 @@
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
 		"Notes" "Fixed invalid translations for building events."
+		"Notes" "Fixed up invalid and missing database tables."
 	}
 	
 	"Files"
