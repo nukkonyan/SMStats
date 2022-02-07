@@ -15,7 +15,7 @@ Xstats is a Multi-Statistics tracking plugin.
 
 `Aswell first statistical tracking plugin to support blinded and through smoke kill events on Counter-Strike: Source.`
 
-### Xstats is not made to supersede any statistical plugins, it's just made for fun and improving skills.
+### XStats is not made to supersede any statistical plugins, it's just made for fun and improving skills.
 
 ### Influenced by gameMe & HLStatsX:CE (Community driven HLStatsX version) 
 
