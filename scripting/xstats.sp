@@ -14,11 +14,11 @@
 #define Version "0.0.1"
 
 public Plugin myinfo = {
-	name		=	"XStats - Statistical Tracker",
-	author		=	"Tk /id/Teamkiller324",
-	description	=	"XStats - Track kills, maps, kill events, achievements, etc.",
-	version		=	Version,
-	url			=	"https://steamcommunity.com/id/Teamkiller324"
+	name		= "XStats - Statistical Tracker",
+	author		= "Tk /id/Teamkiller324",
+	description	= "XStats - Track kills, maps, kill events, achievements, etc.",
+	version		= Version,
+	url			= "https://steamcommunity.com/id/Teamkiller324"
 }
 
 /* Functions. */
