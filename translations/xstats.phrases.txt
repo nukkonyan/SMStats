@@ -271,31 +271,31 @@
 	//Sentrygun.
 	"Object Type 0"
 	{
-		"en"		"{green}Sentrygun"
+		"en"		"Sentrygun"
 	}
 	//Dispenser.
 	"Object Type 1"
 	{
-		"en"		"{green}Dispenser"
+		"en"		"Dispenser"
 	}
 	//Teleporter Entrance.
 	"Object Type 2"
 	{
-		"en"		"{green}Teleporter Entrance"
+		"en"		"Teleporter Entrance"
 	}
 	//Teleporter Exit.
 	"Object Type 3"
 	{
-		"en"		"{green}Teleporter Exit"
+		"en"		"Teleporter Exit"
 	}
 	//Mini-Sentrygun.
 	"Object Type 4"
 	{
-		"en"		"{green}Mini-Sentrygun"
+		"en"		"Mini-Sentrygun"
 	}
 	"Object Type 5"
 	{
-		"en"		"{green}Sapper"
+		"en"		"Sapper"
 	}
 	
 	//Building was built.
@@ -314,6 +314,13 @@
 	"Object Event Type 2"
 	{
 		"en"		"{green}Destroying"
+	}
+	
+	//Object was destroyed.
+	"Object Event"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en"		"{1} ({2}) Earned {3} points for {4} {5}"
 	}
 	
 	//===================//

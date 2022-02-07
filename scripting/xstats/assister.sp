@@ -2,7 +2,7 @@
 int PlayerDamaged[MAXPLAYERS][MAXPLAYERS];
 
 Action Assister_OnTakeDamage(int victim, int &client, int &inflictor, float &damage, int &damagetype)	{
-	if(Tklib_IsValidClient(victim) && Tklib_IsValidClient(client, true))	{
+	if(Tklib_IsValidClient(victim) && Tklib_IsValidClient(client, true) && !IsSameTeam(victim, client))	{
 		//Turn the float into a valid integer.
 		char getdmg[96];
 		FloatToString(damage, getdmg, sizeof(getdmg));

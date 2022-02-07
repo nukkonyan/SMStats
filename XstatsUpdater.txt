@@ -4,13 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.0.1a"
+			"Latest"	"0.0.1b"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Several fixes here & there."
-		"Notes" "Fixed invalid 'IsStrange' and 'IsUnusual'. (Removed)"
+		"Notes" "Fixed invalid translations for building events."
 	}
 	
 	"Files"

@@ -339,7 +339,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 }
 
 /* Objects | Buildings */
-float BuiltObject_Timer[6] = {40.0, ...};
+float BuiltObject_Timer[6] = {240.0, ...};
 bool BuiltObject[MAXPLAYERS][6];
 stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats())
@@ -362,10 +362,15 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 		"Object Type 3", /* Teleporter Exit */
 		"Object Type 4", /* Mini-Sentrygun */
 		"Object Type 5", /* Sapper */
+	}, event_type[][] = {
+		"Object Event Type 0", /* Building */
+		"Object Event Type 1", /* Placing */
+		"Object Event Type 2", /* Destroying */
 	};
 	
-	char object_name[64];
+	char object_name[64], type_name[64];
 	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
+	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[2]);
 	
 	char query[256];
 	switch(building)	{
@@ -418,9 +423,7 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 			int points = TF2_BuiltObject[type].IntValue;
 			Player[client].Points = GetClientPoints(Player[client].SteamID);
 			AddSessionPoints(client, points);
-			
-			CPrintToChat(client, "%s %t",
-			Global.Prefix, building == TFBuilding_Sapper ? "Object Event Type 1" : "Object Event Type 0", Player[client].Name, Player[client].Points, points, object_name);
+			CPrintToChat(client, "%s %t", Global.Prefix, "Object Event", Player[client].Name, Player[client].Points, points, type_name, object_name);
 			
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -458,10 +461,15 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 		"Object Type 3", /* Teleporter Exit */
 		"Object Type 4", /* Mini-Sentrygun */
 		"Object Type 5", /* Sapper */
+	}, event_type[][] = {
+		"Object Event Type 0", /* Building */
+		"Object Event Type 1", /* Placing */
+		"Object Event Type 2", /* Destroying */
 	};
 	
-	char object_name[64];
+	char object_name[64], type_name[64];
 	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
+	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[2]);
 	
 	char query[512];
 	switch(building)	{
@@ -514,9 +522,7 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 			int points = TF2_DestroyedObject[type].IntValue;
 			Player[client].Points = GetClientPoints(Player[client].SteamID);
 			AddSessionPoints(client, points);
-			
-			CPrintToChat(client, "%s %t",
-			Global.Prefix, building == TFBuilding_Sapper ? "Object Event Type 1" : "Object Event Type 0", Player[client].Name, Player[client].Points, points, object_name);
+			CPrintToChat(client, "%s %t", Global.Prefix, "Object Event", Player[client].Name, Player[client].Points, points, type_name, object_name);
 			
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);

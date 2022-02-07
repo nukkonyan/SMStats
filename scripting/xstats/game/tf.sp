@@ -55,8 +55,10 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`SappersPlaced`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`TotalBuildingsDestroyed`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`MiniSentryGunsDestroyed`				int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`SentryGunDestroyed`					int(32) not null default '0',");
-	len += Format(query[len], sizeof(query)-len, "`DispenserDestroyed`					int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`SentryGunsDestroyed`					int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`DispensersDestroyed`					int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`TeleporterExitsDestroyed`			int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`TeleporterEntrancesDestroyed`		int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`SappersDestroyed`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`PointsCaptured`						int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`PointsDefended`						int(32) not null default '0',");
