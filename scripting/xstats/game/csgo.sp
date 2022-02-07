@@ -5,7 +5,7 @@ void PrepareDB_CSGO()	{
 	char query[8192];
 	int len = 0;
 	
-	len += Format(query[len], sizeof(query)-len, "create table if not exists `playerlist_csgo`");
+	len += Format(query[len], sizeof(query)-len, "create table if not exists `Global.playerlist_csgo`");
 	len += Format(query[len], sizeof(query)-len, "(");
 	len += Format(query[len], sizeof(query)-len, "`ServerID`							int(16) not null default '1' comment 'Servers unique ID',");
 	len += Format(query[len], sizeof(query)-len, "`Points`								int(32) not null default '1000',");
@@ -84,7 +84,7 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`Kills_weapon_knife_t`				int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`SteamID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
-	db.Query(DBQuery_DB, query, 1);
+	DB.Threaded.Query(DBQuery_DB, query, 1);
 	
 	//Reset for new query.
 	query = NULL_STRING;
@@ -107,7 +107,7 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`BlindedKill`							bool not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
-	db.Query(DBQuery_DB, query, 2);
+	DB.Threaded.Query(DBQuery_DB, query, 2);
 	
 	query = NULL_STRING;
 	len = 0;
@@ -127,7 +127,7 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`ItemID`							int(32) not null default '0.0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
-	db.Query(DBQuery_DB, query, 3);
+	DB.Threaded.Query(DBQuery_DB, query, 3);
 	
 	query = NULL_STRING;
 	len = 0;
@@ -150,7 +150,7 @@ void PrepareDB_CSGO()	{
 	len += Format(query[len], sizeof(query)-len, "`BlindedKills`					int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "primary key (`ServerID`)");
 	len += Format(query[len], sizeof(query)-len, ")");
-	db.Query(DBQuery_DB, query, 4);
+	DB.Threaded.Query(DBQuery_DB, query, 4);
 }
 
 /**
@@ -158,71 +158,71 @@ void PrepareDB_CSGO()	{
  */
 void PrepareGame_CSGO()	{
 	//Weapon cvars
-	Weapon[CSGO_Weapon_Deagle]		= CreateConVar("xstats_points_weapon_deagle",	"5", "XStats: CS:GO - Points given when killing with Deagle.", _, true);
-	Weapon[CSGO_Weapon_Glock]		= CreateConVar("xstats_points_weapon_glock",	"5", "XStats: CS:GO - Points given when killing with Glock.", _, true);
-	Weapon[CSGO_Weapon_Ak47]		= CreateConVar("xstats_points_weapon_ak47",		"5", "XStats: CS:GO - Points given when killing with Ak47.", _, true);
-	Weapon[CSGO_Weapon_Aug]			= CreateConVar("xstats_points_weapon_aug",		"5", "XStats: CS:GO - Points given when killing with Aug.", _, true);
-	Weapon[CSGO_Weapon_AWP]			= CreateConVar("xstats_points_weapon_awp",		"5", "XStats: CS:GO - Points given when killing with Awp.", _,true, 0.0);
-	Weapon[CSGO_Weapon_Famas]		= CreateConVar("xstats_points_weapon_famas",	"5", "XStats: CS:GO - Points given when killing with Famas.", _, true);
-	Weapon[CSGO_Weapon_G3SG1]		= CreateConVar("xstats_points_weapon_g3sg1",	"5", "XStats: CS:GO - Points given when killing with G3sg1.", _, true);
-	Weapon[CSGO_Weapon_GalilAR]		= CreateConVar("xstats_points_weapon_galilar",	"5", "XStats: CS:GO - Points given when killing with Galilar.", _, true);
-	Weapon[CSGO_Weapon_M249]		= CreateConVar("xstats_points_weapon_m249",		"5", "XStats: CS:GO - Points given when killing with M249.", _, true);
-	Weapon[CSGO_Weapon_M4A4]		= CreateConVar("xstats_points_weapon_m4a4",		"5", "XStats: CS:GO - Points given when killing with M4a4.", _, true);
-	Weapon[CSGO_Weapon_Mac10]		= CreateConVar("xstats_points_weapon_mac10",	"5", "XStats: CS:GO - Points given when killing with Mac10.", _, true);
-	Weapon[CSGO_Weapon_P90]			= CreateConVar("xstats_points_weapon_p90",		"5", "XStats: CS:GO - Points given when killing with P90.", _, true);
-	Weapon[CSGO_Weapon_MP5]			= CreateConVar("xstats_points_weapon_mp5",		"5", "XStats: CS:GO - Points given when killing with MP5.", _, true);
-	Weapon[CSGO_Weapon_UMP45]		= CreateConVar("xstats_points_weapon_ump45",	"5", "XStats: CS:GO - Points given when killing with UMP45.", _, true);
-	Weapon[CSGO_Weapon_XM1014]		= CreateConVar("xstats_points_weapon_xm1014",	"5", "XStats: CS:GO - Points given when killing with XM1014.", _, true);
-	Weapon[CSGO_Weapon_Bizon]		= CreateConVar("xstats_points_weapon_bizon",	"5", "XStats: CS:GO - Points given when killing with Bizon.", _, true);
-	Weapon[CSGO_Weapon_MAG7]		= CreateConVar("xstats_points_weapon_mag7",		"5", "XStats: CS:GO - Points given when killing with MAG-7", _, true);
-	Weapon[CSGO_Weapon_Negev]		= CreateConVar("xstats_points_weapon_negev",	"5", "XStats: CS:GO - Points given when killing with Negev.", _, true);
-	Weapon[CSGO_Weapon_SawedOff]	= CreateConVar("xstats_points_weapon_sawedoff",	"5", "XStats: CS:GO - Points given when killing with Sawed-Off.", _, true);
-	Weapon[CSGO_Weapon_Tec9]		= CreateConVar("xstats_points_weapon_tec9",		"5", "XStats: CS:GO - Points given when killing with Tec9.", _, true);
-	Weapon[CSGO_Weapon_Taser]		= CreateConVar("xstats_points_weapon_taser",	"5", "XStats: CS:GO - Points given when killing with Taser.", _, true);
-	Weapon[CSGO_Weapon_P2000]		= CreateConVar("xstats_points_weapon_hkp2000",	"5", "XStats: CS:GO - Points given when killing with P2000.", _, true);
-	Weapon[CSGO_Weapon_MP7]			= CreateConVar("xstats_points_weapon_mp7",		"5", "XStats: CS:GO - Points given when killing with MP7.", _, true);
-	Weapon[CSGO_Weapon_MP9]			= CreateConVar("xstats_points_weapon_mp9",		"5", "XStats: CS:GO - Points given when killing with MP9.", _, true);
-	Weapon[CSGO_Weapon_Nova]		= CreateConVar("xstats_points_weapon_nova",		"5", "XStats: CS:GO - Points given when killing with Nova.", _, true);
-	Weapon[CSGO_Weapon_P250]		= CreateConVar("xstats_points_weapon_p250",		"5", "XStats: CS:GO - Points given when killing with P250.", _, true);
-	Weapon[CSGO_Weapon_Scar20]		= CreateConVar("xstats_points_weapon_scar20",	"5", "XStats: CS:GO - Points given when killing with Scar-20.", _, true);
-	Weapon[CSGO_Weapon_SG556]		= CreateConVar("xstats_points_weapon_sg556",	"5", "XStats: CS:GO - Points given when killing with SG556.", _, true);
-	Weapon[CSGO_Weapon_SSG08]		= CreateConVar("xstats_points_weapon_ssg08",	"5", "XStats: CS:GO - Points given when killing with Scout.", _, true);
-	Weapon[CSGO_Knife_CT]			= CreateConVar("xstats_points_weapon_knife",	"5", "XStats: CS:GO - Points given when killing with Knife.", _, true);
-	Weapon[CSGO_Knife_Gold]			= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Grenade_Flashbang]		= CreateConVar("xstats_points_weapon_flashbang",	"5", "XStats: CS:GO - Points given when killing with Flashbang.", _, true);
-	Weapon[CSGO_Grenade_HEGrenade]		= CreateConVar("xstats_points_weapon_hegrenade",	"5", "XStats: CS:GO - Points given when killing with HE Grenade.", _, true);
-	Weapon[CSGO_Grenade_SmokeGrenade]	= CreateConVar("xstats_points_weapon_smokegrenade",	"5", "XStats: CS:GO - Points given when killing with Smokegrenade", _, true);
-	Weapon[CSGO_Grenade_Molotov]		= CreateConVar("xstats_points_weapon_molotov",		"5", "XStats: CS:GO - Points given when killing with Molotov.", _, true);
-	Weapon[CSGO_Grenade_Decoy]			= CreateConVar("xstats_points_weapon_decoy",		"5", "XStats: CS:GO - Points given when killing with Decoy.", _, true);
-	Weapon[CSGO_Grenade_Incendiary]		= CreateConVar("xstats_points_weapon_incendiary",	"5", "XStats: CS:GO - Points given when killing with Incendiary.", _, true);
-	Weapon[CSGO_Grenade_TAGrenade]		= CreateConVar("xstats_points_weapon_tagrenade",	"5", "XStats: CS:GO - Points given when killing with Tactical Awareness Grenade. (lol)", _, true);
-	Weapon[CSGO_Grenade_BreachCharge]	= CreateConVar("xstats_points_weapon_breachcharge",	"5", "XStats: CS:GO - Points given when killing with Breach Charge. (:D)", _, true);
-	Weapon[CSGO_Weapon_C4]			= CreateConVar("xstats_points_weapon_c4",		"5", "Xstats: CS:GO - Points given when killing with C4.", _, true);
-	Weapon[CSGO_Knife_T]			= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Weapon_M4A1_S]		= CreateConVar("xstats_points_weapon_m4a1_silencer",	"5", "XStats: CS:GO - Points given when killing with M4A1-S.", _, true);
-	Weapon[CSGO_Weapon_USP_S]		= CreateConVar("xstats_points_weapon_usp_silencer",		"5", "XStats: CS:GO - Points given when killing with USP-S", _, true);
-	Weapon[CSGO_Weapon_CZ75_A]		= CreateConVar("xstats_points_weapon_cz75a",			"5", "XStats: CS:GO - Points given when killing with CZ75-A", _, true);
-	Weapon[CSGO_Weapon_Revolver]	= CreateConVar("xstats_points_weapon_revolver",			"5", "XStats: CS:GO - Points given when killing with Revolver.", _, true);
-	Weapon[CSGO_Knife_Ghost]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Bayonet]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Classic]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Flip]			= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Gut]			= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Karambit]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_M9_Bayonet]	= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Huntsman]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Falchion]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Bowie]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Butterfly]	= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_ButtPlugs]	= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Paracord]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Survival]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Ursus]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Navaja]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Nomad]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Stiletto]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Talon]		= Weapon[CSGO_Knife_CT];
-	Weapon[CSGO_Knife_Skeleton]		= Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Weapon_Deagle]		= CreateConVar("xstats_points_weapon_deagle",	"5", "XStats: CS:GO - Points given when killing with Deagle.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Glock]			= CreateConVar("xstats_points_weapon_glock",	"5", "XStats: CS:GO - Points given when killing with Glock.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Ak47]			= CreateConVar("xstats_points_weapon_ak47",		"5", "XStats: CS:GO - Points given when killing with Ak47.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Aug]			= CreateConVar("xstats_points_weapon_aug",		"5", "XStats: CS:GO - Points given when killing with Aug.", _, true);
+	Cvars.Weapon[CSGO_Weapon_AWP]			= CreateConVar("xstats_points_weapon_awp",		"5", "XStats: CS:GO - Points given when killing with Awp.", _,true, 0.0);
+	Cvars.Weapon[CSGO_Weapon_Famas]			= CreateConVar("xstats_points_weapon_famas",	"5", "XStats: CS:GO - Points given when killing with Famas.", _, true);
+	Cvars.Weapon[CSGO_Weapon_G3SG1]			= CreateConVar("xstats_points_weapon_g3sg1",	"5", "XStats: CS:GO - Points given when killing with G3sg1.", _, true);
+	Cvars.Weapon[CSGO_Weapon_GalilAR]		= CreateConVar("xstats_points_weapon_galilar",	"5", "XStats: CS:GO - Points given when killing with Galilar.", _, true);
+	Cvars.Weapon[CSGO_Weapon_M249]			= CreateConVar("xstats_points_weapon_m249",		"5", "XStats: CS:GO - Points given when killing with M249.", _, true);
+	Cvars.Weapon[CSGO_Weapon_M4A4]			= CreateConVar("xstats_points_weapon_m4a4",		"5", "XStats: CS:GO - Points given when killing with M4a4.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Mac10]			= CreateConVar("xstats_points_weapon_mac10",	"5", "XStats: CS:GO - Points given when killing with Mac10.", _, true);
+	Cvars.Weapon[CSGO_Weapon_P90]			= CreateConVar("xstats_points_weapon_p90",		"5", "XStats: CS:GO - Points given when killing with P90.", _, true);
+	Cvars.Weapon[CSGO_Weapon_MP5]			= CreateConVar("xstats_points_weapon_mp5",		"5", "XStats: CS:GO - Points given when killing with MP5.", _, true);
+	Cvars.Weapon[CSGO_Weapon_UMP45]			= CreateConVar("xstats_points_weapon_ump45",	"5", "XStats: CS:GO - Points given when killing with UMP45.", _, true);
+	Cvars.Weapon[CSGO_Weapon_XM1014]		= CreateConVar("xstats_points_weapon_xm1014",	"5", "XStats: CS:GO - Points given when killing with XM1014.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Bizon]			= CreateConVar("xstats_points_weapon_bizon",	"5", "XStats: CS:GO - Points given when killing with Bizon.", _, true);
+	Cvars.Weapon[CSGO_Weapon_MAG7]			= CreateConVar("xstats_points_weapon_mag7",		"5", "XStats: CS:GO - Points given when killing with MAG-7", _, true);
+	Cvars.Weapon[CSGO_Weapon_Negev]			= CreateConVar("xstats_points_weapon_negev",	"5", "XStats: CS:GO - Points given when killing with Negev.", _, true);
+	Cvars.Weapon[CSGO_Weapon_SawedOff]		= CreateConVar("xstats_points_weapon_sawedoff",	"5", "XStats: CS:GO - Points given when killing with Sawed-Off.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Tec9]			= CreateConVar("xstats_points_weapon_tec9",		"5", "XStats: CS:GO - Points given when killing with Tec9.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Taser]			= CreateConVar("xstats_points_weapon_taser",	"5", "XStats: CS:GO - Points given when killing with Taser.", _, true);
+	Cvars.Weapon[CSGO_Weapon_P2000]			= CreateConVar("xstats_points_weapon_hkp2000",	"5", "XStats: CS:GO - Points given when killing with P2000.", _, true);
+	Cvars.Weapon[CSGO_Weapon_MP7]			= CreateConVar("xstats_points_weapon_mp7",		"5", "XStats: CS:GO - Points given when killing with MP7.", _, true);
+	Cvars.Weapon[CSGO_Weapon_MP9]			= CreateConVar("xstats_points_weapon_mp9",		"5", "XStats: CS:GO - Points given when killing with MP9.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Nova]			= CreateConVar("xstats_points_weapon_nova",		"5", "XStats: CS:GO - Points given when killing with Nova.", _, true);
+	Cvars.Weapon[CSGO_Weapon_P250]			= CreateConVar("xstats_points_weapon_p250",		"5", "XStats: CS:GO - Points given when killing with P250.", _, true);
+	Cvars.Weapon[CSGO_Weapon_Scar20]		= CreateConVar("xstats_points_weapon_scar20",	"5", "XStats: CS:GO - Points given when killing with Scar-20.", _, true);
+	Cvars.Weapon[CSGO_Weapon_SG556]			= CreateConVar("xstats_points_weapon_sg556",	"5", "XStats: CS:GO - Points given when killing with SG556.", _, true);
+	Cvars.Weapon[CSGO_Weapon_SSG08]			= CreateConVar("xstats_points_weapon_ssg08",	"5", "XStats: CS:GO - Points given when killing with Scout.", _, true);
+	Cvars.Weapon[CSGO_Knife_CT]				= CreateConVar("xstats_points_weapon_knife",	"5", "XStats: CS:GO - Points given when killing with Knife.", _, true);
+	Cvars.Weapon[CSGO_Knife_Gold]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Grenade_Flashbang]	= CreateConVar("xstats_points_weapon_flashbang",	"5", "XStats: CS:GO - Points given when killing with Flashbang.", _, true);
+	Cvars.Weapon[CSGO_Grenade_HEGrenade]	= CreateConVar("xstats_points_weapon_hegrenade",	"5", "XStats: CS:GO - Points given when killing with HE Grenade.", _, true);
+	Cvars.Weapon[CSGO_Grenade_SmokeGrenade]	= CreateConVar("xstats_points_weapon_smokegrenade",	"5", "XStats: CS:GO - Points given when killing with Smokegrenade", _, true);
+	Cvars.Weapon[CSGO_Grenade_Molotov]		= CreateConVar("xstats_points_weapon_molotov",		"5", "XStats: CS:GO - Points given when killing with Molotov.", _, true);
+	Cvars.Weapon[CSGO_Grenade_Decoy]		= CreateConVar("xstats_points_weapon_decoy",		"5", "XStats: CS:GO - Points given when killing with Decoy.", _, true);
+	Cvars.Weapon[CSGO_Grenade_Incendiary]	= CreateConVar("xstats_points_weapon_incendiary",	"5", "XStats: CS:GO - Points given when killing with Incendiary.", _, true);
+	Cvars.Weapon[CSGO_Grenade_TAGrenade]	= CreateConVar("xstats_points_weapon_tagrenade",	"5", "XStats: CS:GO - Points given when killing with Tactical Awareness Grenade. (lol)", _, true);
+	Cvars.Weapon[CSGO_Grenade_BreachCharge]	= CreateConVar("xstats_points_weapon_breachcharge",	"5", "XStats: CS:GO - Points given when killing with Breach Charge. (:D)", _, true);
+	Cvars.Weapon[CSGO_Weapon_C4]			= CreateConVar("xstats_points_weapon_c4",		"5", "Xstats: CS:GO - Points given when killing with C4.", _, true);
+	Cvars.Weapon[CSGO_Knife_T]				= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Weapon_M4A1_S]		= CreateConVar("xstats_points_weapon_m4a1_silencer",	"5", "XStats: CS:GO - Points given when killing with M4A1-S.", _, true);
+	Cvars.Weapon[CSGO_Weapon_USP_S]			= CreateConVar("xstats_points_weapon_usp_silencer",		"5", "XStats: CS:GO - Points given when killing with USP-S", _, true);
+	Cvars.Weapon[CSGO_Weapon_CZ75_A]		= CreateConVar("xstats_points_weapon_cz75a",			"5", "XStats: CS:GO - Points given when killing with CZ75-A", _, true);
+	Cvars.Weapon[CSGO_Weapon_Revolver]		= CreateConVar("xstats_points_weapon_revolver",			"5", "XStats: CS:GO - Points given when killing with Revolver.", _, true);
+	Cvars.Weapon[CSGO_Knife_Ghost]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Bayonet]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Classic]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Flip]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Gut]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Karambit]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_M9_Bayonet]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Huntsman]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Falchion]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Bowie]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Butterfly]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_ButtPlugs]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Paracord]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Survival]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Ursus]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Navaja]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Nomad]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Stiletto]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Talon]			= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.Weapon[CSGO_Knife_Skeleton]		= Cvars.Weapon[CSGO_Knife_CT];
 	
 	/* Events */
 	
@@ -261,7 +261,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	if(!Tklib_IsValidClient(victim))
 		return;
 	
-	if(IsFakeClient(victim) && !AllowBots.BoolValue)
+	if(IsFakeClient(victim) && !Cvars.ServerID.IntValue)
 		return;
 	
 	if(IsSamePlayers(client, victim) || IsSameTeam(client, victim))
@@ -270,7 +270,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	if(IsValidAbuse(client))
 		return;
 	
-	/* Fix the weapon entity prefix */
+	/* Fix the weapon entity Global.Prefix */
 	Format(weapon, sizeof(weapon), "weapon_%s", weapon);
 	
 	if(StrEqual(weapon, "weapon_breachcharge_projectile"))
@@ -312,15 +312,15 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	bool bombkill = ((StrContains(weapon, "c4", false) != -1) || StrContains(weapon, "breachcharge") != -1);
 	//bool collateral = (penetrated > 0);
 	
-	if(Weapon[defindex] == null)	{
-		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", logprefix, weapon, defindex);
+	if(Cvars.Weapon[defindex] == null)	{
+		PrintToServer("%s weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", Global.logprefix, weapon, defindex);
 		return;
 	}
 	
-	int points = Weapon[defindex].IntValue;
+	int points = Cvars.Weapon[defindex].IntValue;
 	
 	/* Debug */
-	if(Debug.BoolValue)	{
+	if(Cvars.Debug.BoolValue)	{
 		PrintToServer("//===== Player_Death_CSGO =====//");
 		PrintToServer("client: %i", client);
 		PrintToServer("victim: %i", victim);
@@ -358,55 +358,55 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	
 	Session[client].Kills++;
 	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
-	playerlist, SteamID[client], ServerID.IntValue);
-	db.Query(DBQuery_Callback, query);
+	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+	DB.Threaded.Query(DBQuery_Callback, query);
 	
 	Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s' and ServerID='%i'",
-	playerlist, weapon, weapon, SteamID[client], ServerID.IntValue);
-	db.Query(DBQuery_Callback, query);
+	Global.playerlist, weapon, weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
+	DB.Threaded.Query(DBQuery_Callback, query);
 	
 	if(headshot)	{
 		Session[client].Headshots++;
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
 	if(dominated)	{
 		Session[client].Dominations++;
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 		
 	if(revenge)	{
 		Session[client].Revenges++;
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
 	if(noscope)	{
 		Session[client].Noscopes++;
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
 	if(thrusmoke)	{
 		Session[client].SmokeKills++;
 		Format(query, sizeof(query), "update `%s` set ThruSmokes = ThruSmokes+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
 	if(knifekill)	{
 		Session[client].KnifeKills++;
 		Format(query, sizeof(query), "update `%s` set KnifeKills = KnifeKills+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(Debug.BoolValue)	{
+		if(Cvars.Debug.BoolValue)	{
 			PrintToServer(" ");
 			PrintToServer("Knife Kill");
 		}
@@ -415,34 +415,34 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	if(grenadekill)	{
 		Session[client].GrenadeKills++;
 		Format(query, sizeof(query), "update `%s` set GrenadeKills = GrenadeKills+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
 	if(bombkill)	{
 		Session[client].BombKills++;
 		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID='%i'",
-		playerlist, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
 	if(points > 0)	{
 		AddSessionPoints(client, points);
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-		playerlist, points, SteamID[client], ServerID.IntValue);
-		db.Query(DBQuery_Callback, query);
+		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query);
 		
 		PrepareKillMessage(client, victim, points);
 		
 		if(!IsFakeClient(victim))	{
 			char log[2048];
 			int len = 0;
-			len += Format(log[len], sizeof(log)-len, "insert into `%s`", kill_log);
-			len += Format(log[len], sizeof(log)-len, "(ServerID, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, ThruSmoke, BlindedKill)");
+			len += Format(log[len], sizeof(log)-len, "insert into `%s`", Global.kill_log);
+			len += Format(log[len], sizeof(log)-len, "(ServerID, Time, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, ThruSmoke, BlindedKill)");
 			len += Format(log[len], sizeof(log)-len, "values");
 			len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
-			Playername[client], SteamID[client], Playername[victim], SteamID[victim], Playername[assist], SteamID[assist], weapon, headshot, noscope, thrusmoke, attackerblind);
-			db.Query(DBQuery_Kill_Log, log);
+			Cvars.ServerID.IntValue, GetTime(), Player[client].Playername, Player[client].SteamID, Player[victim].Playername, Player[victim].SteamID, Player[assist].Playername, Player[assist].SteamID, weapon, headshot, noscope, thrusmoke, attackerblind);
+			DB.Threaded.Query(DBQuery_Kill_Log, log);
 		}
 	}
 }
@@ -473,16 +473,16 @@ stock void Other_Death_CSGO(Event event, const char[] event_name, bool dontBroad
 	if(StrEqual(classname, "chicken", false))
 		Session[client].ChickenKills++;
 	
-	if(Debug.BoolValue)	{
+	if(Cvars.Debug.BoolValue)	{
 		PrintToServer("//===== Other_Death_CSGO =====//");
 		PrintToServer("Client: %N", client);
 		PrintToServer("Entity index: %d", entity);
 		PrintToServer("Entity Classname: \"%s\"", classname);
 		PrintToServer(" ");
-		PrintToServer("Weapon: \"%s\"", weapon[0]);
-		PrintToServer("Weapon ID: \"%s\"", weapon[1]);
-		PrintToServer("Weapon Faux ID: \"%s\"", weapon[2]);
-		PrintToServer("Weapon Original Owner xuid: \"%s\"", weapon[3]);
+		PrintToServer("Weapon: \"%s\"", Cvars.Weapon[0]);
+		PrintToServer("Weapon ID: \"%s\"", Cvars.Weapon[1]);
+		PrintToServer("Weapon Faux ID: \"%s\"", Cvars.Weapon[2]);
+		PrintToServer("Weapon Original Owner xuid: \"%s\"", Cvars.Weapon[3]);
 		PrintToServer(" ");
 		PrintToServer("Headshot: %s", Bool[headshot]);
 		PrintToServer("Penetrated: %i", penetrated);

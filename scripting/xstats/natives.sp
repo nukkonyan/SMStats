@@ -73,16 +73,16 @@ any Public_GetClientSession(Handle plugin, int params)
 	GetStats(plugin, client, GetNativeCell(3), GetNativeFunction(4));
 }
 
-any Native_GetPrefix(Handle plugin, int params)	{	SetNativeString(1, Prefix, GetNativeCell(2), GetNativeCell(3));	}
-any Public_GetPrefix(Handle plugin, int params)	{	SetNativeString(2, Prefix, GetNativeCell(3), GetNativeCell(4));	}
-any Native_Enabled(Handle plugin, int params)	{	return PluginActive.BoolValue;	}
-any Public_Enabled(Handle plugin, int params)	{	return PluginActive.BoolValue;	}
-any Native_Active(Handle plugin, int params)	{	return RankActive;				}
-any Public_Active(Handle plugin, int params)	{	return RankActive;				}
-any Native_AllowBots(Handle plugin, int params)	{	return AllowBots.BoolValue;		}
-any Public_AllowBots(Handle plugin, int params)	{	return AllowBots.BoolValue;		}
-any Native_Debug(Handle plugin, int params)		{	return Debug.BoolValue;			}
-any Public_Debug(Handle plugin, int params)		{	return Debug.BoolValue;			}
+any Native_GetPrefix(Handle plugin, int params)	{	SetNativeString(1, Global.Prefix, GetNativeCell(2), GetNativeCell(3));	}
+any Public_GetPrefix(Handle plugin, int params)	{	SetNativeString(2, Global.Prefix, GetNativeCell(3), GetNativeCell(4));	}
+any Native_Enabled(Handle plugin, int params)	{	return Cvars.PluginActive.BoolValue;	}
+any Public_Enabled(Handle plugin, int params)	{	return Cvars.PluginActive.BoolValue;	}
+any Native_Active(Handle plugin, int params)	{	return Global.RankActive;				}
+any Public_Active(Handle plugin, int params)	{	return Global.RankActive;				}
+any Native_AllowBots(Handle plugin, int params)	{	return Cvars.AllowBots.BoolValue;		}
+any Public_AllowBots(Handle plugin, int params)	{	return Cvars.AllowBots.BoolValue;		}
+any Native_Debug(Handle plugin, int params)		{	return Cvars.Debug.BoolValue;			}
+any Public_Debug(Handle plugin, int params)		{	return Cvars.Debug.BoolValue;			}
 
 int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function func)	{
 	int stats = 0;
@@ -185,8 +185,8 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 		case SessionType_KnifeKills: stats = Session[client].KnifeKills;
 	}
 	
-	Fwd_GetStats.AddFunction(plugin, func);
-	Call_StartForward(Fwd_GetStats);
+	Forward.GetStats.AddFunction(plugin, func);
+	Call_StartForward(Forward.GetStats);
 	Call_PushCell(sessiontype);
 	Call_PushCell(client);
 	Call_PushCell(stats);

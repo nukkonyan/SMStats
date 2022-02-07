@@ -2,24 +2,24 @@ Action RankPanel(int client, int args=-1)	{
 	Database database = SQL_Connect2(Xstats, false);
 	
 	if(database == null)	{
-		CPrintToChat(client, "%s The database connection is unavailable, please contact the server author.", Prefix);
+		CPrintToChat(client, "%s The database connection is unavailable, please contact the server author.", Global.Prefix);
 		delete database;
 		return	Plugin_Handled;
 	}
 	
 	DBResultSet results = SQL_QueryEx(database,
 	"select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
-	playerlist, SteamID[client], ServerID.IntValue);
+	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	
 	if(results == null)	{
-		CPrintToChat(client, "%s You don't seem to be on the database, you may try rejoin or contact the server author.", Prefix);
+		CPrintToChat(client, "%s You don't seem to be on the database, you may try rejoin or contact the server author.", Global.Prefix);
 		delete database;
 		delete results;
 		return	Plugin_Handled;
 	}
 	
 	if(!results.FetchRow())	{
-		CPrintToChat(client, "%s Player stats were unable to be fetched from the database, please contact the server author.", Prefix);
+		CPrintToChat(client, "%s Player stats were unable to be fetched from the database, please contact the server author.", Global.Prefix);
 		delete database;
 		delete results;
 		return	Plugin_Handled;
@@ -28,7 +28,7 @@ Action RankPanel(int client, int args=-1)	{
 	char playername[64];
 	results.FetchString(0, playername, sizeof(playername));
 	
-	int position = GetClientPosition(SteamID[client]);
+	Player[client].Position = GetClientPosition(Player[client].SteamID);
 	int players = GetTablePlayerCount();
 	int points = results.FetchInt(1);
 	int playtime = results.FetchInt(2);
@@ -42,7 +42,7 @@ Action RankPanel(int client, int args=-1)	{
 	XStatsRankPanel panel = new XStatsRankPanel();
 	panel.DrawItem("XStats Panel");
 	panel.DrawText("Playername: %s", playername);
-	panel.DrawText("Position #%i out of %i players", position, players);
+	panel.DrawText("Position #%i out of %i players", Player[client].Position, players);
 	panel.DrawText(" ");
 	panel.DrawItem("Current Session");
 	panel.DrawText("%i Points", Session[client].Points);
@@ -70,7 +70,7 @@ Action RankPanel(int client, int args=-1)	{
 	
 	if(args != -1)	{
 		CPrintToChat(client, "%s %s is positioned #%i out of %i players with %.2f KDR and %i total minutes in playtime",
-		Prefix, Name[client], position, players, kdr, playtime);
+		Global.Prefix, Player[client].Name, Player[client].Position, players, kdr, playtime);
 	}
 	
 	delete database;
@@ -113,7 +113,7 @@ stock void RankPanel_CurrentSession(int client)	{
 	panel.DrawText("KDR: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
 	panel.DrawText(" ");
 	
-	switch(game)	{
+	switch(Global.Game)	{
 		case Game_TF2, Game_TF2V:	{
 			panel.DrawItem("TF Stats");
 			panel.DrawText("%i Dominations", Session[client].Dominations);

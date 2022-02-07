@@ -2,77 +2,73 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 	if(!Tklib_IsValidClient(client, true, _, false))
 		return;
 	
-	Database database = SQL_Connect2(Xstats, false);
-	
-	if(database == null)	{
-		delete database;
-		SetFailState("Failed to connect to database");
-		return;
+	if(DB.Direct == null)	{
+		if((DB.Direct = SQL_Connect2(Xstats, false)) == null)	{
+			SetFailState("Failed to connect to database");
+			return;
+		}
 	}
 	
-	database.SetCharset("utf8mb4"); /* Fix characters */
-	DBResultSet results = SQL_QueryEx(database, "select * from `%s` where SteamID='%s' and ServerID='%i'", playerlist, auth, ServerID.IntValue);
-	GetClientNameEx(client, Playername[client], sizeof(Playername[]));
-	GetClientTeamString(client, Name[client], sizeof(Name[]));
-	GetClientIP(client, IP[client], sizeof(IP[]));
-	Format(SteamID[client], sizeof(SteamID[]), auth);
+	GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
+	GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
+	GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
+	Format(Player[client].SteamID, sizeof(Player[].SteamID), auth);
+	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
+		Player[client].Country = "unknown country";
 	
-	if(!GeoipCountry(IP[client], Country[client], sizeof(Country[])))
-		Country[client] = "unknown country";
-	
-	UpdateLastConnectedState(SteamID[client]);
+	DBResultSet results = SQL_QueryEx(DB.Direct, "select * from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
+	UpdateLastConnectedState(Player[client].SteamID);
 	
 	switch(results != null && results.FetchRow())	{
 		/* Player was found */
 		case	true:	{			
-			results = SQL_QueryEx(database, "update `%s` set Playername = '%s', IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
-			playerlist, Playername[client], IP[client], SteamID[client], ServerID.IntValue);
+			results = SQL_QueryEx(DB.Direct, "update `%s` set Playername = '%s', IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
+			Global.playerlist, Player[client].Playername, Player[client].IP, Player[client].SteamID, Cvars.ServerID.IntValue);
 			
-			if(Debug.BoolValue)	{
+			if(Cvars.Debug.BoolValue)	{
 				/* Avoid showing ip due to privacy */
 				PrintToServer("[XStats Debug] Updating table \"%s\" \nPlayername \"%s\" in SteamID \"%s\" (ServerID %i)",
-				playerlist, Playername[client], SteamID[client], ServerID.IntValue);
+				Global.playerlist, Player[client].Playername, Player[client].SteamID, Cvars.ServerID.IntValue);
 			}
 			
 			if(results == null)	{
 				char error[256];
-				SQL_GetError(database, error, sizeof(error));
-				SetFailState("%s Updating player table into \"%s\" failed! (%s)", LogTag, playerlist, error);
+				SQL_GetError(DB.Direct, error, sizeof(error));
+				SetFailState("%s Updating player table into \"%s\" failed! (%s)", LogTag, Global.playerlist, error);
 			}
 		}
 		/* Player wasn't found, adding.. */
 		case	false:	{
-			results = SQL_QueryEx(database, "insert into `%s` (Playername, SteamID, IPAddress, ServerID) values ('%s', '%s', '%s', '%i')",
-			playerlist, Playername[client], SteamID[client], IP[client], ServerID.IntValue);
+			results = SQL_QueryEx(DB.Direct, "insert into `%s` (Playername, SteamID, IPAddress, ServerID) values ('%s', '%s', '%s', '%i')",
+			Global.playerlist, Player[client].Playername, Player[client].SteamID, Player[client].IP, Cvars.ServerID.IntValue);
 			
-			if(Debug.BoolValue)	{
+			if(Cvars.Debug.BoolValue)	{
 				PrintToServer("[XStats Debug] Inserting into table \"%s\" \nPlayername \"%s\"\nSteamID \"%s\" (ServerID %i)",
-				playerlist, Playername[client], SteamID[client], ServerID.IntValue);
+				Global.playerlist, Player[client].Playername, Player[client].SteamID, Cvars.ServerID.IntValue);
 			}
 			
 			if(results == null)	{
 				char error[256];
-				SQL_GetError(database, error, sizeof(error));
-				SetFailState("%s Inserting player table into \"%s\" failed! (%s)", LogTag, playerlist, error);
+				SQL_GetError(DB.Direct, error, sizeof(error));
+				SetFailState("%s Inserting player table into \"%s\" failed! (%s)", LogTag, Global.playerlist, error);
 			}
 		}
 	}
 	
-	delete database;
 	delete results;
 }
 
 public void OnClientPutInServer(int client)	{
-	if(!PluginActive.BoolValue)
+	if(!Cvars.ServerID.IntValue)
 		return;
 	
 	/* Make sure names aren't empty just to be sure */
-	GetClientTeamString(client, Name[client], sizeof(Name[]));
+	GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
 
-	if(IsFakeClient(client) && AllowBots.BoolValue)	{
-		CPrintToChatAll("%s BOT %s was added", Prefix, Name[client]);
-		if(!StrEqual(ConnectSound[0], NULL_STRING))
-			EmitSoundToAll(ConnectSound[0]);
+	if(IsFakeClient(client) && Cvars.ServerID.IntValue)	{
+		CPrintToChatAll("%s BOT %s was added", Global.Prefix, Player[client].Name);
+		if(!StrEqual(Sound[0].path, NULL_STRING))
+			EmitSoundToAll(Sound[0].path);
 	}
 	
 	/* Experimental Assister */
@@ -88,29 +84,30 @@ public void OnClientPutInServer(int client)	{
 	if(!Tklib_IsValidClient(client, true, false, false))
 		return;
 
-	int points = GetClientPoints(SteamID[client]);
-	int position = GetClientPosition(SteamID[client]);
+	Player[client].Points = GetClientPoints(Player[client].SteamID);
+	Player[client].Position = GetClientPosition(Player[client].SteamID);
 	
-	CPrintToChatAll("%s %t", Prefix, "Player Connected", Name[client], position, points, Country[client]);
-	PrintToServer("%s %s (Pos #%i, %i points) has connected from %s", LogTag, Playername[client], position, points, Country[client]);
+	CPrintToChatAll("%s %t", Global.Prefix, "Player Connected", Player[client].Name, Player[client].Position, Player[client].Points, Player[client].Country);
+	PrintToServer("%s %s (Pos #%i, %i points) has connected from %s",
+	LogTag, Player[client].Playername, Player[client].Position, Player[client].Points, Player[client].Country);
 	
 	if(!IsFakeClient(client))	{
-		if(position <= 10 && !StrEqual(ConnectSound[0], NULL_STRING))
-			EmitSoundToAll(ConnectSound[0]);
-		else if(!StrEqual(ConnectSound[1], NULL_STRING))
-			EmitSoundToAll(ConnectSound[1]);
+		if(Player[client].Position <= 10 && !StrEqual(Sound[0].path, NULL_STRING))
+			EmitSoundToAll(Sound[0].path);
+		else if(!StrEqual(Sound[1].path, NULL_STRING))
+			EmitSoundToAll(Sound[1].path);
 	}
 	
 	CreateTimer(60.0, IntervalPlayTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	/* Safety callback if the steamid weren't acquired. (for some reason) */
-	if(StrEqual(SteamID[client], NULL_STRING))
-		GetClientAuth(client, SteamID[client], sizeof(SteamID[]));
+	if(StrEqual(Player[client].SteamID, NULL_STRING))
+		GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
 }
 
 Action IntervalPlayTimer(Handle timer, int client)	{	
 	/* Incase the player disconnected or plugin is disabled. */
-	if(!PluginActive.BoolValue || !IsClientConnected(client))	{
+	if(!Cvars.ServerID.IntValue || !IsClientConnected(client))	{
 		KillTimer(timer);
 		return	Plugin_Handled;
 	}
@@ -118,42 +115,42 @@ Action IntervalPlayTimer(Handle timer, int client)	{
 	Session[client].Time++;
 	char query[256];
 	Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where SteamID='%s' and ServerID='%i'",
-	playerlist, SteamID[client], ServerID.IntValue);
-	db.Query(DBQuery_IntervalPlayTimer, query, client);
+	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+	DB.Threaded.Query(DBQuery_IntervalPlayTimer, query, client);
 	
 	return	Plugin_Handled;
 }
 
 public void OnMapStart()	{
-	if(!PluginActive.BoolValue)
+	if(!Cvars.ServerID.IntValue)
 		return;
 	
 	/* If database lost connection or plugin was late loaded */
 	PrepareDatabase(); /* Database */
 	
-	GetCurrentMap(CurrentMap, sizeof(CurrentMap));	
+	GetCurrentMap(Global.CurrentMap, sizeof(Global.CurrentMap));	
 	CreateTimer(60.0, MapLogTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	if(Debug.BoolValue)	{
+	if(Cvars.Debug.BoolValue)	{
 		PrintToServer("//===== Map Log =====//");
-		PrintToServer("Creating a minute long repeating timer for map \"%s\"", CurrentMap);
+		PrintToServer("Creating a minute long repeating timer for map \"%s\"", Global.CurrentMap);
 		PrintToServer(" ");
 	}
 }
 
 Action MapLogTimer(Handle timer)	{
-	if(!PluginActive.BoolValue)	{
+	if(!Cvars.ServerID.IntValue)	{
 		KillTimer(timer);
 		return Plugin_Handled;
 	}
 	
 	/* Check if map exists in database table */
-	char query[512];
-	Format(query, sizeof(query), "select '%s' from `%s`", CurrentMap, maps_log);
-	db.Query(DBQuery_MapLog_1, query);
+	char query[256];
+	Format(query, sizeof(query), "select '%s' from `%s`", Global.CurrentMap, Global.maps_log);
+	DB.Threaded.Query(DBQuery_MapLog_1, query);
 	
-	if(Debug.BoolValue)	{
+	if(Cvars.Debug.BoolValue)	{
 		PrintToServer("//===== Map Log =====//");
-		PrintToServer("Checking if map \"%s\" exists on database table \"%s\"", CurrentMap, maps_log);
+		PrintToServer("Checking if map \"%s\" exists on database table \"%s\"", Global.CurrentMap, Global.maps_log);
 		PrintToServer(" ");
 	}
 	
@@ -167,29 +164,29 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 		/* Map was found, lets update it */
 		case	true:	{
 			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
-			maps_log, CurrentMap, ServerID.IntValue);
-			db.Query(DBQuery_MapLog_2, query);
+			Global.maps_log, Global.CurrentMap, Cvars.ServerID.IntValue);
+			DB.Threaded.Query(DBQuery_MapLog_2, query);
 			
-			if(Debug.BoolValue)	{
-				PrintToServer("Map was found, updating the playtime for \"%s\" by adding additional minute on database table \"%s\"", CurrentMap, maps_log);
+			if(Cvars.Debug.BoolValue)	{
+				PrintToServer("Map was found, updating the playtime for \"%s\" by adding additional minute on database table \"%s\"", Global.CurrentMap, Global.maps_log);
 				PrintToServer(" ");
 			}
 		}
 		/* Map was not found, lets add it */
 		case	false:	{
-			Format(query, sizeof(query), "insert into `%s` (MapName) values ('%s')", maps_log, CurrentMap);
-			db.Query(DBQuery_MapLog_2, query);
+			Format(query, sizeof(query), "insert into `%s` (MapName) values ('%s')", Global.maps_log, Global.CurrentMap);
+			DB.Threaded.Query(DBQuery_MapLog_2, query);
 			
-			if(Debug.BoolValue)	{
-				PrintToServer("Map \"%s\" not found on database, inserting it..", CurrentMap);
+			if(Cvars.Debug.BoolValue)	{
+				PrintToServer("Map \"%s\" not found on database, inserting it..", Global.CurrentMap);
 				PrintToServer(" ");
 			}
 			
 			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
-			maps_log, CurrentMap, ServerID.IntValue);
-			db.Query(DBQuery_MapLog_2, query);
+			Global.maps_log, Global.CurrentMap, Cvars.ServerID.IntValue);
+			DB.Threaded.Query(DBQuery_MapLog_2, query);
 			
-			if(Debug.BoolValue)	{
+			if(Cvars.Debug.BoolValue)	{
 				PrintToServer("Updating the playtime on the added map by adding additional minute");
 				PrintToServer(" ");
 			}

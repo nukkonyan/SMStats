@@ -4,13 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.02e"
+			"Latest"	"0.0.1"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Fixed dying event printing incorrectly."
-		"Notes" "Added translation for dying event."
+		"Notes" "Completely reworked the code."
 	}
 	
 	"Files"

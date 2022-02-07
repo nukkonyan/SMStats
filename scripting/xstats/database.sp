@@ -1,8 +1,9 @@
 void PrepareDatabase()	{
-	if(db != null)
-		return; /* no need to gather new connection since we already have one, prevent corruption. */
+	if(DB.Threaded == null) /* If it's not null, we don't need to gather new connection since we already have one, prevent corruption. */
+		Database.Connect(DBConnect, Xstats);
 	
-	Database.Connect(DBConnect, Xstats);
+	if((DB.Direct = SQL_Connect2(Xstats, false)) != null)
+		DB.Direct.SetCharset("utf8mb4"); /* Fix characters */
 }
 
 void DBConnect(Database database, const char[] error, any data)	{
@@ -12,8 +13,8 @@ void DBConnect(Database database, const char[] error, any data)	{
 		return;
 	}
 	
-	db = database;
-	db.SetCharset("utf8mb4"); //Fix characters.
+	DB.Threaded = database;
+	DB.Threaded.SetCharset("utf8mb4"); //Fix characters.
 	PrintToServer("%s Database connection was successful!", LogTag);
 	
 	Games_DatabaseConnected();
