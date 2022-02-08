@@ -10,6 +10,7 @@
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
 		"Notes" "Updated the updater function to work properly."
+		"Notes" "Added a timer to every 5 minute check if there's an update."
 	}
 	
 	"Files"
