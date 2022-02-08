@@ -962,8 +962,8 @@ stock void XStats_DebugText(bool FailState, const char[] text, any ...)	{
 	
 	LogToFileEx(path, format);
 	
-	switch(FailState)	{
-		case true: SetFailState("%s %s", Global.logprefix, format);
-		case false: PrintToServer("%s %s", Global.logprefix, format);
-	}
+	if(FailState)//	{
+		SetFailState("%s %s", Global.logprefix, format);
+		//case false: PrintToServer("%s %s", Global.logprefix, format);
+	//}
 }
