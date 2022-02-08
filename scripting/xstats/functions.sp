@@ -952,7 +952,7 @@ stock void XStats_DebugText(bool FailState, const char[] text, any ...)	{
 	if(!Cvars.Debug.BoolValue)
 		return;
 	
-	char format[512];
+	char format[8192];
 	VFormat(format, sizeof(format), text, 3);
 	
 	char path[64];

@@ -975,25 +975,31 @@ float Jarated_Timer = 25.0;
 float MadMilked_Timer = 25.0;
 bool Jarated[MAXPLAYERS] = {false, ...};
 bool MadMilked[MAXPLAYERS] = {false, ...};
-Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{
+Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{	
+	/* Manually fire a broken event */
+	Event event = CreateEvent("player_jarated", true);
+	int client = bf.ReadByte();
+	int victim = bf.ReadByte();
+	int defindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Secondary)).DefinitionIndex;
+	event.SetInt("thrower_entindex", client);
+	event.SetInt("victim_entindex", victim);
+	event.SetInt("itemdefindex", defindex);
+	event.Fire();
+	
 	if(!IsValidStats() || TF2_Jarated.IntValue < 1)
 		return Plugin_Handled; /* Should do no harm to the usermessage event */
 	
-	int client = bf.ReadByte();
 	if(!Tklib_IsValidClient(client, true))
 		return Plugin_Handled;
 	
 	if(IsValidAbuse(client))
 		return Plugin_Handled;
 	
-	int victim = bf.ReadByte();
 	if(!Tklib_IsValidClient(victim))
 		return Plugin_Handled;
 	
 	if(IsFakeClient(victim) && !Cvars.ServerID.IntValue)
 		return Plugin_Handled;
-	
-	int defindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Secondary)).DefinitionIndex;
 	
 	DataPack pack = new DataPack();
 	pack.WriteCell(client);
@@ -1074,24 +1080,30 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 	XStats_DebugText(false, "Victim: %N (index %i)", victim, victim);
 	XStats_DebugText(false, "Defindex: %i", defindex);
 	XStats_DebugText(false, " ");
-	
 	return Plugin_Handled;
 }
 
 float Extinguished_Timer = 10.0;
 bool Extinguished[MAXPLAYERS] = {false, ...};
-Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{
+Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{	
+	/* Because event "player_extinguished" is broken, we can manually force the event to be fired. */
+	Event event = CreateEvent("player_extinguished", true);
+	int client = bf.ReadByte();
+	int victim = bf.ReadByte();
+	int defindex = bf.ReadByte();
+	event.SetInt("healer", client);
+	event.SetInt("itemdefindex", defindex);
+	event.Fire();
+	
 	if(!IsValidStats() || TF2_Extinguished.IntValue < 1)
 		return Plugin_Handled;
 	
-	int client = bf.ReadByte();
 	if(!Tklib_IsValidClient(client, true))
 		return Plugin_Handled;
 	
 	if(IsValidAbuse(client))
 		return Plugin_Handled;
 	
-	int victim = bf.ReadByte();
 	if(!Tklib_IsValidClient(victim))
 		return Plugin_Handled;
 	
@@ -1106,9 +1118,7 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 	DataPack pack = new DataPack();
 	pack.WriteCell(client);
 	pack.WriteCell(victim);
-	
 	CreateTimer(0.0, TimerPlayerExtinguished, pack);
-	
 	return Plugin_Continue;
 }
 
@@ -1133,28 +1143,31 @@ Action TimerPlayerExtinguished(Handle timer, DataPack pack)	{
 	CreateTimer(Extinguished_Timer, Timer_PlayerExtinguished, client);
 }
 
-Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{
+Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{	
+	Event event = CreateEvent("player_ignited", true);
+	int client = bf.ReadByte();
+	int victim = bf.ReadByte();
+	event.SetInt("pyro_entindex", client);
+	event.SetInt("victim_entindex", victim);
+	event.Fire();
+	
 	if(!IsValidStats())
 		return Plugin_Handled;
 	
-	int client = bf.ReadByte();
 	if(!Tklib_IsValidClient(client, true))
 		return Plugin_Handled;
 	
 	if(IsValidAbuse(client))
 		return Plugin_Handled;
 	
-	int victim = bf.ReadByte();
 	if(!Tklib_IsValidClient(victim))
 		return Plugin_Handled;
 	
 	Session[client].Ignited++;
-	
-	XStats_DebugText(false, "//===== PlayerIginted =====//");
+	XStats_DebugText(false, "//===== PlayerIgnited =====//");
 	XStats_DebugText(false, "Client: %N (index %i)", client, client);
 	XStats_DebugText(false, "Victim: %N (index %i)", victim, victim);
 	XStats_DebugText(false, " ");
-	
 	return Plugin_Continue;
 }
 

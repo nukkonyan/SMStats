@@ -4,12 +4,14 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.0.1d"
+			"Latest"	"0.0.1e"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Updated how debugging works by also saving onto a logfile (/logs/xstats_debug.log.txt)"
+		"Notes" "Extended buffer storage for debug messages."
+		"Notes" "Fixed few typos in debug messages."
+		"Notes" "Fixed incorrect messages when coating enemy with a jar."
 	}
 	
 	"Files"

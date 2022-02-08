@@ -465,14 +465,14 @@
 	//Pissed opponent.
 	"Player Coated Jar"
 	{
-		"#format"	"{1:s},{2:i},{3:s},{4:s}"
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
 		"en"		"{1} ({2}) Earned {3} points for coating {4} with piss"
 	}
 	
 	//Milked opponent.
 	"Player Coated Milk"
 	{
-		"#format"	"{1:s},{2:i},{3:s},{4:s}"
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
 		"en"		"{1} ({2}) Earned {3} points for coating {4} with milk"
 	}
 	
