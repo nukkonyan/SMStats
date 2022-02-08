@@ -4,7 +4,7 @@
  *	Initialize updater addition.
  */
 void PrepareUpdater()	{
-	if(LibraryExists("updater"))	{
+	if(IsUpdaterLoaded())	{
 		Updater_AddPlugin(UpdateUrl);
 		Updater_ForceUpdate();
 	}
@@ -12,12 +12,29 @@ void PrepareUpdater()	{
 
 public void OnLibraryAdded(const char[] name)	{
 	if(StrEqual(name, "updater"))	{
-		PrintToServer("[xStats Updater] Updater plugin was detected, adding plugin to update list..");
+		PrintToServer("[XStats Updater] Updater plugin was detected, adding plugin to update list..");
 		Updater_AddPlugin(UpdateUrl);
+		
+		if(Global.UpdateTimer == null)
+			Global.UpdateTimer = CreateTimer(300.0, Timer_CheckForUpdate, _, TIMER_REPEAT);
 	}
 }
 
 public void Updater_OnPluginUpdated()	{
-	PrintToServer("[xStats Updater] New update found and installed, Restarting plugin..");
+	XStats_DebugText(false, "New update found and installed, Restarting plugin..");
 	ReloadPlugin();
+}
+
+stock Action Timer_CheckForUpdate(Handle timer)	{	
+	XStats_DebugText(false, "Checking for new update..");
+	XStats_DebugText(false, "Current version: %s", Version);
+	XStats_DebugText(false, " ");
+	Updater_ForceUpdate();
+}
+
+/**
+ *	Returns if the updater is loaded.
+ */
+stock bool IsUpdaterLoaded()	{
+	return view_as<bool>(GetFeatureStatus(FeatureType_Native, "Updater_AddPlugin") == FeatureStatus_Available);
 }

@@ -4,13 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.0.1f"
+			"Latest"	"0.0.1g"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Updated code."
-		"Notes" "Added additional/fixed some debug messages."
+		"Notes" "Updated the updater function to work properly."
 	}
 	
 	"Files"
