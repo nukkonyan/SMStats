@@ -105,7 +105,7 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 		Player[client].Points = GetClientPoints(Player[client].SteamID);
 		Player[client].Position = GetClientPosition(Player[client].SteamID);
 		CPrintToChatAll("%s %t", Global.Prefix, "Player Disconnected", Player[client].Name, Player[client].Position, Player[client].Points, Player[client].Country, reason);
-		PrintToServer("%s %s (Pos #%i, %i points) has disconnected from %s", LogTag, Player[client].Playername, Player[client].Position, Player[client].Points, Player[client].Country);
+		XStats_DebugText(false, "%s (Pos #%i, %i points) has disconnected from %s", Player[client].Playername, Player[client].Position, Player[client].Points, Player[client].Country);
 		
 		UpdateLastConnectedState(Player[client].SteamID);
 	}
@@ -115,11 +115,9 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 }
 
 stock void Rounds(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== Rounds =====//");
-		PrintToServer("\"%s\" Was fired", event_name);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "//===== Rounds =====//");
+	XStats_DebugText(false, "\"%s\" Was fired", event_name);
+	XStats_DebugText(false, " ");
 	
 	DataPack pack = new DataPack();
 	pack.WriteString(event_name);

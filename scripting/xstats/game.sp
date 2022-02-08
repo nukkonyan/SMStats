@@ -34,6 +34,12 @@ void Games_DatabaseConnected()	{
  *	Prepare the game.
  */
 void PrepareGame()	{
+	//Initialize
+	Global.Game = IdentifyGame();
+	GetGameName(Global.GameTitle, sizeof(Global.GameTitle));
+	Global.RoundActive = true;
+	Global.WarmupActive = false;
+	
 	bool supported = false; /* Temporary thing */
 	
 	switch(Global.Game)	{
@@ -140,6 +146,6 @@ void PrepareGame()	{
 	
 	switch(supported)	{
 		case true: PrintToServer("XStats Version %s Detected game: %s", Version, Global.GameTitle);
-		case false: SetFailState("%s Game \"%s\" is unsupported.", LogTag, Global.GameTitle);
+		case false: SetFailState("[XStats] Game \"%s\" is unsupported.", Global.GameTitle);
 	}
 }

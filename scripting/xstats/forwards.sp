@@ -1,3 +1,31 @@
+/* Prepare forwards */
+stock void PrepareForwards()	{
+	Forward.Prefix = new GlobalForward("XStats_OnPrefixUpdated",
+		ET_Event,
+		Param_String);
+	Forward.Death = new GlobalForward("XStats_OnDeathEvent",
+		ET_Ignore,
+		Param_Cell,
+		Param_Cell,
+		Param_Cell,
+		Param_String,
+		Param_Cell);
+	Forward.Suicide = new GlobalForward("XStats_OnSuicideEvent",
+		ET_Ignore,
+		Param_Cell);
+	Forward.GetStats = new PrivateForward(
+		ET_Ignore,
+		Param_Cell,
+		Param_Cell,
+		Param_Cell);
+	Forward.TF2_FlagEvent = new GlobalForward("XStats_TF2_OnFlagEvent",
+		ET_Ignore,
+		Param_Cell,
+		Param_Cell,
+		Param_Cell,
+		Param_Cell);
+}
+
 public void OnClientAuthorized(int client, const char[] auth)	{
 	if(!Tklib_IsValidClient(client, true, _, false))
 		return;
@@ -180,5 +208,9 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 
 void DBQuery_MapLog_2(Database database, DBResultSet results, const char[] error, any data)	{
 	if(results == null)
-		XStats_DebugText(true, "%s Map Log Updater failed! (%s)", LogTag, error);
+		XStats_DebugText(true, "Map Log Updater failed! (%s)", error);
+}
+
+public void OnEntityCreated(int entity, const char[] classname)	{
+	OnEntityCreated_CounterStrike(entity, classname);
 }

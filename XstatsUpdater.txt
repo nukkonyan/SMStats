@@ -4,14 +4,13 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.0.1e"
+			"Latest"	"0.0.1f"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Extended buffer storage for debug messages."
-		"Notes" "Fixed few typos in debug messages."
-		"Notes" "Fixed incorrect messages when coating enemy with a jar."
+		"Notes" "Updated code."
+		"Notes" "Added additional/fixed some debug messages."
 	}
 	
 	"Files"

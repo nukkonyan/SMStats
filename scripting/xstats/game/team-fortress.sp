@@ -584,27 +584,18 @@ stock void Player_Invulned(Event event, const char[] event_name, bool dontBroadc
 float Teleported_Timer = 15.0;
 bool Teleported[MAXPLAYERS] = {false, ...};
 stock void Player_Teleported(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || TF2_Teleported.IntValue < 1)
-		return;
-	
+	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_BUILDERID));
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	if(IsValidAbuse(client))
-		return;
-	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(victim))
+	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim))
 		return;
 	
-	if(IsFakeClient(victim) && !Cvars.ServerID.IntValue)
+	if(IsValidAbuse(client) || !IsValidStats() || IsFakeClient(victim) && !Cvars.ServerID.IntValue || (points = TF2_Teleported.IntValue) < 1)
 		return;
 	
 	if(Teleported[victim])
 		return;
 	
-	int points = TF2_Teleported.IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	AddSessionPoints(client, points);
 	CPrintToChat(client, "%s %t", Global.Prefix, "Player Used Teleporter", Player[client].Name, Player[client].Points, points, Player[victim].Name);
@@ -650,27 +641,18 @@ stock void Player_StealSandvich(Event event, const char[] event_name, bool dontB
 	DB.Threaded.Query(DBQuery_Callback, query);
 }
 
-stock void Player_Stunned(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!Cvars.ServerID.IntValue || !Global.RankActive || TF2_Stunned.IntValue < 1)
-		return;
-	
+stock void Player_Stunned(Event event, const char[] event_name, bool dontBroadcast)	{	
+	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_STUNNER));
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	if(IsValidAbuse(client))
-		return;
-	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_VICTIM));
-	if(!Tklib_IsValidClient(victim))
-		return;
-	
-	if(IsFakeClient(victim) && !Cvars.ServerID.IntValue)
-		return;
-	
-	AddSessionPoints(client, TF2_Stunned.IntValue);
 	bool big_stun = event.GetBool(EVENT_STR_BIG_STUN);
-	int points = TF2_Stunned.IntValue;
+	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim, true))
+		return;
+	
+	if(IsValidAbuse(client) || !Cvars.AllowBots.BoolValue && IsFakeClient(victim) || !IsValidStats() || (points = TF2_Stunned.IntValue) < 1)
+		return;
+	
+	AddSessionPoints(client, points);
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
 	char query[512];
@@ -816,14 +798,11 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 
 /* Bosses */
 stock void Halloween_Boss_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats())
-		return;
-	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_KILLER));
 	if(!Tklib_IsValidClient(client, true))
 		return;
 		
-	if(IsValidAbuse(client))
+	if(!IsValidAbuse(client))
 		return;
 	
 	/*	Halloween bosses.
@@ -892,18 +871,14 @@ stock void Halloween_Boss_Killed(Event event, const char[] event_name, bool dont
 }
 
 /* Skeleton King */
-stock void Halloween_Skeleton_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || TF2_BossKilled[4].IntValue < 1)
-		return;
-	
-	int client = GetClientOfUserId(event.GetInt(EVENT_STR_PLAYER));
+stock void Halloween_Skeleton_Killed(Event event, const char[] event_name, bool dontBroadcast)	{	
+	int points, client = GetClientOfUserId(event.GetInt(EVENT_STR_PLAYER));
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
-	if(IsValidAbuse(client))
+	if(IsValidAbuse(client) ||!IsValidStats() || (points = TF2_BossKilled[4].IntValue) < 1)
 		return;
 	
-	int points = TF2_BossKilled[4].IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	AddSessionPoints(client, points);
 	Session[client].KilledSkeletonKing++;
@@ -918,18 +893,14 @@ stock void Halloween_Skeleton_Killed(Event event, const char[] event_name, bool 
 	DB.Threaded.Query(DBQuery_Callback, query);
 }
 
-stock void Eyeball_Boss_Stunned(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || TF2_BossStunned[0].IntValue < 1)
-		return;
-	
-	int client = event.GetInt(EVENT_STR_PLAYER_ENTINDEX);
+stock void Eyeball_Boss_Stunned(Event event, const char[] event_name, bool dontBroadcast)	{	
+	int points, client = event.GetInt(EVENT_STR_PLAYER_ENTINDEX);
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
-	if(IsValidAbuse(client))
+	if(IsValidAbuse(client) || !IsValidStats() || (points = TF2_BossStunned[0].IntValue) < 1)
 		return;
 	
-	int points = TF2_BossStunned[0].IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	AddSessionPoints(client, points);
 	Session[client].StunnedMonoculus++;
@@ -1024,7 +995,7 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 	char query[512];
 	switch(defindex)	{
 		/* Madmilk & Mutated Milk */
-		case	222, 1121:	{
+		case 222, 1121:	{
 			if(MadMilked[client])
 				return Plugin_Handled;
 			
@@ -1038,10 +1009,10 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 			DB.Threaded.Query(DBQuery_Callback, query);
 			
 			MadMilked[client] = true;
-			CreateTimer(MadMilked_Timer, Timer_PlayerMadMilked, client);
+			CreateTimer(0.15, Delay_PlayerMadMilked, client);
 		}
 		/* Jarate & The Self-Aware Beauty Mark */
-		case	58, 1105:	{
+		case 58, 1105:	{
 			if(Jarated[client])
 				return Plugin_Handled;
 			
@@ -1055,7 +1026,7 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 			DB.Threaded.Query(DBQuery_Callback, query);
 			
 			Jarated[client] = true;
-			CreateTimer(Jarated_Timer, Timer_PlayerJarated, client);
+			CreateTimer(0.15, Delay_PlayerJarated, client);
 		}
 		/* Incase the player was coated with piss via Sydney Sleeper. */
 		default:	{
@@ -1070,7 +1041,7 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 				DB.Threaded.Query(DBQuery_Callback, query);
 				
 				Jarated[client] = true;
-				CreateTimer(Jarated_Timer, Timer_PlayerJarated, client);
+				CreateTimer(0.15, Delay_PlayerJarated, client);
 			}
 		}
 	}
@@ -1191,7 +1162,9 @@ stock Action Timer_Player_DestroyedObject(Handle timer, DataPack pack)	{
 
 stock Action Timer_Player_Invulned(Handle timer, int client)	{	Ubercharged[client] = false;	}
 stock Action Timer_Player_Teleported(Handle timer, int client)	{	Teleported[client] = false;		}
+stock Action Delay_PlayerJarated(Handle timer, int client)		{	CreateTimer(Jarated_Timer, Timer_PlayerJarated, client);	}
 stock Action Timer_PlayerJarated(Handle timer, int client)		{	Jarated[client] = false;		}
+stock Action Delay_PlayerMadMilked(Handle timer, int client)	{	CreateTimer(MadMilked_Timer, Timer_PlayerMadMilked, client);	}
 stock Action Timer_PlayerMadMilked(Handle timer, int client)	{	MadMilked[client] = false;		}
 stock Action Timer_PlayerExtinguished(Handle timer, int client)	{	Extinguished[client] = false;	}
 

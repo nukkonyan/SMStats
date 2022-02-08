@@ -197,9 +197,7 @@ stock void DBQuery_RemoveOldPlayers_1(Database database, DBResultSet results, co
 		
 		char auth[64];
 		results.FetchString(0, auth, sizeof(auth));
-		if(Cvars.Debug.BoolValue)
-			PrintToServer("%s [%i] Deleted %s from database after %i days of no activity",
-			LogTag, count, auth, days);
+		XStats_DebugText(false, "[%i] Deleted %s from database after %i days of no activity", count, auth, days);
 	}
 	
 	/* Avoid spamming this in the while loop */
@@ -293,7 +291,7 @@ stock void CheckActivePlayers()	{
  *	Make sure the stats is properly configured.
  */
 stock bool IsValidStats()	{
-	return	!(!Cvars.ServerID.IntValue || !Global.RoundActive || !Global.RankActive || Global.WarmupActive && !Cvars.AllowWarmup.BoolValue);
+	return !(!Cvars.ServerID.IntValue || !Global.RoundActive || !Global.RankActive || Global.WarmupActive && !Cvars.AllowWarmup.BoolValue);
 }
 
 /**
@@ -966,4 +964,25 @@ stock void XStats_DebugText(bool FailState, const char[] text, any ...)	{
 		SetFailState("%s %s", Global.logprefix, format);
 		//case false: PrintToServer("%s %s", Global.logprefix, format);
 	//}
+}
+
+/**
+ *	Updates a table on the playerlist via threaded database connection.
+ *
+ *	@param	table		The table to update.
+ *	@param	client		The user to target.
+ *	@param	increment	If true, it will increment. Decrement if false.
+ *
+ *	@error	If the user is invalid, nothing happens.
+ *
+ *	@noreturn
+ */
+stock void XStats_UpdateTable(const char[] table, int client, bool increment=true)	{
+	if(!Tklib_IsValidClient(client, true))
+		return; /* Make sure to safely proceed. */
+	
+	char query[8192];
+	Format(query, sizeof(query), "alter table %s update '%s' = '%s' %s 1 where SteamID = '%s' and ServerID = '%i'",
+	Global.playerlist, table, table, increment ? "+":"-", Player[client].SteamID, Cvars.ServerID.IntValue);
+	DB.Threaded.Query(DBQuery_Callback, query);
 }
