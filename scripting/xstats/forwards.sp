@@ -96,6 +96,9 @@ public void OnClientPutInServer(int client)	{
 		return;
 	}
 	
+	/* Session */
+	ClearSessions(client);
+	
 	/* Experimental Assister */
 	SDKHook(client, SDKHook_OnTakeDamage, Assister_OnTakeDamage);
 	
@@ -147,8 +150,9 @@ public void OnClientDisconnect(int client)	{
 	
 	char query[512];
 	Format(query, sizeof(query), "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'",
-	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+	Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query, _, DBPrio_Low); /* Low priority to lower chances of lag spikes */
+	Session[client].DamageDone = 0;
 }
 
 public void OnMapStart()	{

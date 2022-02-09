@@ -91,12 +91,20 @@ stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selec
 		case 2:	{
 			RankPanel_CurrentSession(client);
 			StatsPanel[client].Main = false;
+			StatsPanel[client].Session = false;
+			StatsPanel[client].TotalPage = 0;
 		}
 		case 3:	{
 			RankPanel_TotalStatistics(client);
 			StatsPanel[client].Main = false;
+			StatsPanel[client].Session = false;
+			StatsPanel[client].TotalPage = 0;
 		}
-		case 4: StatsPanel[client].Main = false;
+		case 4:	{
+			StatsPanel[client].Main = false;
+			StatsPanel[client].Session = false;
+			StatsPanel[client].TotalPage = 0;
+		}
 	}
 }
 
@@ -268,7 +276,11 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 				case 2: RankPanel_TotalPage(client, page);
 				case 3:	RankPanel(client);
 				case 4: RankPanel_TotalPage(client, page+1);
-				case 5:	StatsPanel[client].TotalPage = 0;
+				case 5:	{
+					StatsPanel[client].Main = false;
+					StatsPanel[client].Session = false;
+					StatsPanel[client].TotalPage = 0;
+				}
 			}
 		}
 		
@@ -283,7 +295,11 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 				case 1: RankPanel_TotalPage(client, page);
 				case 2: RankPanel_TotalPage(client, page-1);
 				case 3:	RankPanel_TotalPage(client, page+1);
-				case 4: StatsPanel[client].TotalPage = 0;
+				case 4:	{
+					StatsPanel[client].Main = false;
+					StatsPanel[client].Session = false;
+					StatsPanel[client].TotalPage = 0;
+				}
 			}
 		}
 		
@@ -298,7 +314,11 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 				case 1: RankPanel_TotalPage(client, page);
 				case 2: RankPanel_TotalPage(client, page-1);
 				case 3:	RankPanel_TotalPage(client, page+1);
-				case 4: StatsPanel[client].TotalPage = 0;
+				case 4:	{
+					StatsPanel[client].Main = false;
+					StatsPanel[client].Session = false;
+					StatsPanel[client].TotalPage = 0;
+				}
 			}
 		}
 		
@@ -311,7 +331,11 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 			switch(selection)	{
 				case 1: RankPanel_Total_TF2(client, page);
 				case 2:	RankPanel_Total_TF2(client, page-1);
-				case 3: StatsPanel[client].TotalPage = 0;
+				case 3: {
+					StatsPanel[client].Main = false;
+					StatsPanel[client].Session = false;
+					StatsPanel[client].TotalPage = 0;
+				}
 			}
 		}
 	}

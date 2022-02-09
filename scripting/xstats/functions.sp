@@ -79,6 +79,121 @@ stock int GetClientPlayTime(const char[] auth)	{
 }
 
 /**
+ *	Clears the players sessions.
+ *
+ *	@param	client	The users index.
+ */
+stock void ClearSessions(int client)	{
+	/* Core */
+	Session[client].PlayTime = 0;
+	Session[client].Points = 0;
+	Session[client].Kills = 0;
+	Session[client].Deaths = 0;
+	Session[client].Suicides = 0;
+	Session[client].Assists = 0;
+	Session[client].DamageDone = 0;
+	
+	/* Generic */
+	Session[client].Dominations = 0;
+	Session[client].Revenges = 0;
+	Session[client].Airshots = 0;
+	Session[client].Headshots = 0;
+	Session[client].Noscopes = 0;
+	Session[client].Collaterals = 0;
+	Session[client].MidAirKills = 0;
+	Session[client].GrenadeKills = 0;
+	
+	/* TF2 */
+	Session[client].ScoutsKilled = 0;
+	Session[client].SoldiersKilled = 0;
+	Session[client].PyrosKilled = 0;
+	Session[client].DemosKilled = 0;
+	Session[client].HeaviesKilled = 0;
+	Session[client].EngiesKilled = 0;
+	Session[client].MedicsKilled = 0;
+	Session[client].SnipersKilled = 0;
+	Session[client].SpiesKilled = 0;
+	Session[client].CiviliansKilled = 0; /* TF2 Classic */
+	Session[client].Backstabs = 0;
+	Session[client].TauntKills = 0;
+	Session[client].GibKills = 0;
+	Session[client].DeflectKills = 0;
+	Session[client].Ubercharged = 0;
+	Session[client].SandvichesStolen = 0;
+	Session[client].Coated = 0;
+	Session[client].Extinguished = 0;
+	Session[client].TeleFrags = 0;
+	Session[client].SentryKills = 0;
+	Session[client].MiniSentryKills = 0;
+	Session[client].MiniCritKills = 0;
+	Session[client].CritKills = 0;
+	Session[client].PointsCaptured = 0;
+	Session[client].PointsDefended = 0;
+	Session[client].FlagsStolen = 0;
+	Session[client].FlagsPickedUp = 0;
+	Session[client].FlagsCaptured = 0;
+	Session[client].FlagsDefended = 0;
+	Session[client].FlagsDropped = 0;
+	Session[client].PassBallsGotten = 0;
+	Session[client].PassBallsScored = 0;
+	Session[client].PassBallsDropped = 0;
+	Session[client].PassBallsCatched = 0;
+	Session[client].PassBallsStolen = 0;
+	Session[client].PassBallsBlocked = 0;
+	Session[client].BuildingsBuilt = 0;
+	Session[client].SentryGunsBuilt = 0;
+	Session[client].DispensersBuilt = 0;
+	Session[client].MiniSentryGunsBuilt = 0;
+	Session[client].TeleporterEntrancesBuilt = 0;
+	Session[client].TeleporterExitsBuilt = 0;
+	Session[client].SappersPlaced = 0;
+	Session[client].TotalBuildingsDestroyed = 0;
+	Session[client].BuildingsDestroyed = 0;
+	Session[client].SentryGunsDestroyed = 0;
+	Session[client].DispensersDestroyed = 0;
+	Session[client].MiniSentryGunsDestroyed = 0;
+	Session[client].TeleporterEntrancesDestroyed = 0;
+	Session[client].TeleporterExitsDestroyed = 0;
+	Session[client].SappersDestroyed = 0;
+	Session[client].PlayerTeleported = 0;
+	Session[client].PlayersTeleported = 0;
+	Session[client].StunnedPlayers = 0;
+	Session[client].MoonShotStunnedPlayers = 0;
+	Session[client].KilledHHH = 0;
+	Session[client].KilledMonoculus = 0;
+	Session[client].KilledMerasmus = 0;
+	Session[client].KilledSkeletonKing = 0;
+	Session[client].StunnedMonoculus = 0;
+	Session[client].StunnedMerasmus = 0;
+	Session[client].MadMilked = 0;
+	Session[client].Jarated = 0;
+	Session[client].Ignited = 0;
+	
+	/* TF2 MvM */
+	Session[client].TanksDestroyed = 0;
+	Session[client].SentryBustersKilled = 0;
+	Session[client].BombsResetted = 0;
+	
+	/* CS:GO */
+	Session[client].BlindKills = 0;
+	Session[client].SmokeKills = 0;
+	Session[client].Wipes = 0;
+	Session[client].ChickenKills = 0;
+	
+	/* Counter-Strike Overall */
+	Session[client].MVPs = 0;
+	Session[client].BombsPlanted = 0;
+	Session[client].BombsDefused = 0;
+	Session[client].BombsExploded = 0;
+	Session[client].BombKills = 0;
+	Session[client].MoneySpent = 0;
+	Session[client].FlashedOpponents = 0;
+	Session[client].KnifeKills = 0;
+	Session[client].HostagesRescued = 0;
+	Session[client].HostagesKilled = 0;
+}
+
+/**
  *	Returns the KDR (Kill-Death-Ratio)
  *
  *	@param	kills	The kill count to check.

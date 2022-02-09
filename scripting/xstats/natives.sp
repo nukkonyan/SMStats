@@ -13,6 +13,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("XStats_GetClientSession", Native_GetClientSession);
 	CreateNative("XStats.GetSession", Public_GetClientSession);
 	
+	CreateNative("XStats_ClearSessions", Native_ClearSessions);
+	CreateNative("XStats.ClearSessions", Public_ClearSessions);
+	
 	CreateNative("XStats_GetPrefix", Native_GetPrefix);
 	CreateNative("XStats.GetPrefix", Public_GetPrefix);
 	
@@ -74,6 +77,8 @@ any Public_GetClientSession(Handle plugin, int params)
 	GetStats(plugin, client, GetNativeCell(3), GetNativeFunction(4));
 }
 
+any Native_ClearSessions(Handle plugin, int params)	{	ClearSessions(GetNativeCell(1));	}
+any Public_ClearSessions(Handle plugin, int params)	{	ClearSessions(GetNativeCell(2));	}
 any Native_GetPrefix(Handle plugin, int params)	{	SetNativeString(1, Global.Prefix, GetNativeCell(2), GetNativeCell(3));	}
 any Public_GetPrefix(Handle plugin, int params)	{	SetNativeString(2, Global.Prefix, GetNativeCell(3), GetNativeCell(4));	}
 any Native_Enabled(Handle plugin, int params)	{	return Cvars.PluginActive.BoolValue;	}
