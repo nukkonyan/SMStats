@@ -4,13 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01f"
+			"Latest"	"0.01a_01b"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Updated database to load upon plugin start instead."
-		"Notes" "Fixed rank panel regarding on kill event."
+		"Notes" "Fixed additional small problems with rank panel regarding on kill event."
 	}
 	
 	"Files"

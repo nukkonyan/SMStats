@@ -90,12 +90,13 @@ stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selec
 		case 1: XStatsCmd(client);
 		case 2:	{
 			RankPanel_CurrentSession(client);
-			StatsPanel[client].Session = false;
+			StatsPanel[client].Main = false;
 		}
 		case 3:	{
 			RankPanel_TotalStatistics(client);
-			StatsPanel[client].Session = false;
+			StatsPanel[client].Main = false;
 		}
+		case 4: StatsPanel[client].Main = false;
 	}
 }
 
@@ -232,11 +233,14 @@ stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int sele
 		 * 4. Exit.
 		 */
 		case 3:	RankPanel(client);
+		case 4: StatsPanel[client].Session = false;
 	}
 }
 
 stock void OnDeathRankPanel(int client)	{
-	if(StatsPanel[client].Session)
+	if(StatsPanel[client].Main)
+		RankPanel(client);
+	else if(StatsPanel[client].Session)
 		RankPanel_CurrentSession(client);
 	else if(StatsPanel[client].TotalPage > 0)
 		RankPanel_TotalPage(client, StatsPanel[client].TotalPage);
@@ -264,7 +268,7 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 				case 2: RankPanel_TotalPage(client, page);
 				case 3:	RankPanel(client);
 				case 4: RankPanel_TotalPage(client, page+1);
-				case 5: StatsPanel[client].TotalPage = 0;
+				case 5:	StatsPanel[client].TotalPage = 0;
 			}
 		}
 		
