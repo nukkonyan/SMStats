@@ -7,7 +7,7 @@
 #pragma tabsize 0
 
 /* XStats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX. */
-#define Version "0.0.1g"
+#define Version "0.01a_01"
 
 public Plugin myinfo = {
 	name		= "XStats - Statistical Tracker",
@@ -26,7 +26,9 @@ XStatsConnectSound Sound[2];
 
 /* Session */
 XStatsPlayer Player[MAXPLAYERS];
+XStatsPanel StatsPanel[MAXPLAYERS];
 XStatsSession Session[MAXPLAYERS];
+XStatsSession TotalStats[MAXPLAYERS];
 XStatsKillMsg KillMsg[MAXPLAYERS];
 
 /* Includes. */
@@ -59,6 +61,3 @@ public void OnPluginStart()	{
 	/* Incase the plugin were launched manually or perhaps started (?)*/
 	CheckPlayersPluginStart();
 }
-
-public void OnConfigsExecuted() { CheckActivePlayers(); }
-public void OnPluginEnd() { XStats_DebugText(false, "Ending.."); }

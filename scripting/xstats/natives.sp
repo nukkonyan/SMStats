@@ -89,7 +89,7 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 	int stats = 0;
 	switch(sessiontype)	{
 		/* Stats */
-		case SessionType_Time: stats = Session[client].Time;
+		case SessionType_PlayTime: stats = Session[client].PlayTime;
 		case SessionType_Points: stats = Session[client].Points;
 		case SessionType_Kills: stats = Session[client].Kills;
 		case SessionType_Deaths: stats = Session[client].Deaths;

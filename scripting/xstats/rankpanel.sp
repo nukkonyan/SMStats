@@ -1,28 +1,24 @@
 Action RankPanel(int client, int args=-1)	{
-	Database database = SQL_Connect2(Xstats, false);
-	
-	if(database == null)	{
-		CPrintToChat(client, "%s The database connection is unavailable, please contact the server author.", Global.Prefix);
-		delete database;
-		return	Plugin_Handled;
+	if(DB.Direct == null)	{
+		if((DB.Direct = SQL_Connect2(Xstats, false)) == null)	{
+			CPrintToChat(client, "%s The database connection is unavailable, please contact the server author.", Global.Prefix);		
+			return Plugin_Handled;
+		}
+		DB.Direct.SetCharset("utf8mb4");
 	}
 	
-	DBResultSet results = SQL_QueryEx(database,
+	DBResultSet results = SQL_QueryEx(DB.Direct,
 	"select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	
 	if(results == null)	{
 		CPrintToChat(client, "%s You don't seem to be on the database, you may try rejoin or contact the server author.", Global.Prefix);
-		delete database;
-		delete results;
-		return	Plugin_Handled;
+		return Plugin_Handled;
 	}
 	
 	if(!results.FetchRow())	{
 		CPrintToChat(client, "%s Player stats were unable to be fetched from the database, please contact the server author.", Global.Prefix);
-		delete database;
-		delete results;
-		return	Plugin_Handled;
+		return Plugin_Handled;
 	}
 	
 	char playername[64];
@@ -39,6 +35,10 @@ Action RankPanel(int client, int args=-1)	{
 	int damagedone = results.FetchInt(7);
 	float kdr = GetKDR(kills, deaths, assists);
 	
+	delete results;
+	
+	StatsPanel[client].Main = true;
+	
 	XStatsRankPanel panel = new XStatsRankPanel();
 	panel.DrawItem("XStats Panel");
 	panel.DrawText("Playername: %s", playername);
@@ -46,7 +46,7 @@ Action RankPanel(int client, int args=-1)	{
 	panel.DrawText(" ");
 	panel.DrawItem("Current Session");
 	panel.DrawText("%i Points", Session[client].Points);
-	panel.DrawText("%i Minutes played", Session[client].Time);
+	panel.DrawText("%i Minutes played", Session[client].PlayTime);
 	panel.DrawText("%i Kills", Session[client].Kills);
 	panel.DrawText("%i Assists", Session[client].Assists);
 	panel.DrawText("%i Deaths", Session[client].Deaths);
@@ -73,10 +73,7 @@ Action RankPanel(int client, int args=-1)	{
 		Global.Prefix, Player[client].Name, Player[client].Position, players, kdr, playtime);
 	}
 	
-	delete database;
-	delete results;
-	
-	return	Plugin_Handled;
+	return Plugin_Handled;
 }
 
 /**
@@ -90,9 +87,15 @@ stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selec
 		 * 3: Stats.
 		 * 4. Exit.
 		 */
-		case	1:	XStatsCmd(client);
-		case	2:	RankPanel_CurrentSession(client);
-		case	3:	RankPanel_TotalStatistics(client);
+		case 1: XStatsCmd(client);
+		case 2:	{
+			RankPanel_CurrentSession(client);
+			StatsPanel[client].Session = false;
+		}
+		case 3:	{
+			RankPanel_TotalStatistics(client);
+			StatsPanel[client].Session = false;
+		}
 	}
 }
 
@@ -103,7 +106,7 @@ stock void RankPanel_CurrentSession(int client)	{
 	
 	/* Insert the generic ones first */
 	panel.DrawText("%i Points", Session[client].Points);
-	panel.DrawText("%i Minutes played", Session[client].Time);
+	panel.DrawText("%i Minutes played", Session[client].PlayTime);
 	panel.DrawText("%i Kills", Session[client].Kills);
 	panel.DrawText("%i Assists", Session[client].Assists);
 	panel.DrawText("%i Deaths", Session[client].Deaths);
@@ -133,6 +136,7 @@ stock void RankPanel_CurrentSession(int client)	{
 			panel.DrawText("%i Sappers Destroyed", Session[client].SappersDestroyed);
 			panel.DrawText("%i Coated with milk", Session[client].MadMilked);
 			panel.DrawText("%i Coated with jar", Session[client].Jarated);
+			panel.DrawText("%i Extinguished", Session[client].Extinguished);
 			panel.DrawText("%i Ignited", Session[client].Ignited);
 			if(TF2_IsMvMGameMode())	{
 				panel.DrawText("%i Sentry busters killed", Session[client].SentryBustersKilled);
@@ -157,6 +161,7 @@ stock void RankPanel_CurrentSession(int client)	{
 			panel.DrawText("%i Buildings Destroyed", Session[client].BuildingsDestroyed);
 			panel.DrawText("%i Sappers Placed", Session[client].SappersPlaced);
 			panel.DrawText("%i Sappers Destroyed", Session[client].SappersDestroyed);
+			panel.DrawText("%i Extinguished", Session[client].Extinguished);
 			panel.DrawText("%i Ignited", Session[client].Ignited);
 		}
 		case Game_TF2OP:	{
@@ -176,6 +181,7 @@ stock void RankPanel_CurrentSession(int client)	{
 			panel.DrawText("%i Buildings Destroyed", Session[client].BuildingsDestroyed);
 			panel.DrawText("%i Sappers Placed", Session[client].SappersPlaced);
 			panel.DrawText("%i Sappers Destroyed", Session[client].SappersDestroyed);
+			panel.DrawText("%i Extinguished", Session[client].Extinguished);
 			panel.DrawText("%i Ignited", Session[client].Ignited);
 		}
 		case Game_CSS, Game_CSPromod, Game_CSGO, Game_CSCO:	{
@@ -196,12 +202,23 @@ stock void RankPanel_CurrentSession(int client)	{
 	panel.DrawItem("Exit");
 	panel.Send(client, RankPanelCallback2, MENU_TIME_FOREVER);
 	delete panel;
+	
+	StatsPanel[client].Session = true;
 }
 
 /* Total Statistics */
 stock void RankPanel_TotalStatistics(int client)	{
+	if(DB.Threaded == null)	{
+		CPrintToChat(client, "%s The threaded database connection is unavailable, please contact the server author.", Global.Prefix);
+		return;
+	}
 	
+	switch(Global.Game)	{
+		case Game_TF2:	TotalStatistics_TF2(client);
+	}
 }
+
+#include "xstats/rankpanel/tf.sp"
 
 /**
  *	Rank panel callback.
@@ -214,6 +231,84 @@ stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int sele
 		 * 3: Back.
 		 * 4. Exit.
 		 */
-		case	3:	RankPanel(client);
+		case 3:	RankPanel(client);
+	}
+}
+
+stock void OnDeathRankPanel(int client)	{
+	switch(StatsPanel[client].Session)	{
+		case true: RankPanel_CurrentSession(client);
+		case false: RankPanel_TotalPage(client, StatsPanel[client].TotalPage);
+	}
+}
+
+stock void RankPanel_TotalPage(int client, int page)	{
+	switch(Global.Game)	{
+		case Game_TF2: RankPanel_Total_TF2(client, page);
+	}
+}
+
+stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client, int selection)	{
+	int page;
+	switch((page = StatsPanel[client].TotalPage))	{
+		case 1:	{
+			/**
+			 * 1: Panel info.
+			 * 2: Total statistics.
+			 * 3: Back.
+			 * 4: Next.
+			 * 5: Exit.
+			 */
+			switch(selection)	{
+				case 1: RankPanel_TotalPage(client, page);
+				case 2: RankPanel_TotalPage(client, page);
+				case 3:	RankPanel(client);
+				case 4: RankPanel_TotalPage(client, page+1);
+				case 5: StatsPanel[client].TotalPage = 0;
+			}
+		}
+		
+		case 2:	{
+			/**
+			 * 1: Panel info.
+			 * 2: Back.
+			 * 3: Next.
+			 * 4: Exit.
+			 */
+			switch(selection)	{
+				case 1: RankPanel_TotalPage(client, page);
+				case 2: RankPanel_TotalPage(client, page-1);
+				case 3:	RankPanel_TotalPage(client, page+1);
+				case 4: StatsPanel[client].TotalPage = 0;
+			}
+		}
+		
+		case 3:	{
+			/**
+			 * 1: Panel info.
+			 * 2: Back.
+			 * 3: Next.
+			 * 4: Exit.
+			 */
+			switch(selection)	{
+				case 1: RankPanel_TotalPage(client, page);
+				case 2: RankPanel_TotalPage(client, page-1);
+				case 3:	RankPanel_TotalPage(client, page+1);
+				case 4: StatsPanel[client].TotalPage = 0;
+			}
+		}
+		
+		case 4:	{
+			/**
+			 * 1: Panel info.
+			 * 2: Back.
+			 * 3: Exit.
+			 */
+			switch(selection)	{
+				case 1: RankPanel_Total_TF2(client, page);
+				case 2:	RankPanel_Total_TF2(client, page-1);
+				case 3: StatsPanel[client].TotalPage = 0;
+			}
+		}
 	}
 }

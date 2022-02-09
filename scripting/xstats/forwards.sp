@@ -83,7 +83,7 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 }
 
 public void OnClientPutInServer(int client)	{
-	if(!Cvars.ServerID.IntValue)
+	if(!Cvars.PluginActive.BoolValue)
 		return;
 	
 	if(!Tklib_IsValidClient(client, _, _, false))
@@ -107,10 +107,6 @@ public void OnClientPutInServer(int client)	{
 	/* Check active players */
 	CheckActivePlayers();
 	
-	/* No bots after this line will be read */
-	if(!Tklib_IsValidClient(client, true, false, false))
-		return;
-	
 	UpdateLastConnectedState(Player[client].SteamID);
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	Player[client].Position = GetClientPosition(Player[client].SteamID);
@@ -133,22 +129,32 @@ public void OnClientPutInServer(int client)	{
 
 Action IntervalPlayTimer(Handle timer, int client)	{	
 	/* Incase the player disconnected or plugin is disabled. */
-	if(!Cvars.ServerID.IntValue || !IsClientConnected(client))	{
+	if(!Cvars.PluginActive.BoolValue || !IsClientConnected(client))	{
 		KillTimer(timer);
 		return Plugin_Handled;
 	}
 	
-	Session[client].Time++;
+	Session[client].PlayTime++;
 	char query[256];
 	Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_IntervalPlayTimer, query, client);
-	XStats_DebugText(false, "Updating playime by adding additional minute for %s", Player[client].Playername);
+	XStats_DebugText(false, "Updating playtime by adding additional minute for %s", Player[client].Playername);
 	return Plugin_Handled;
 }
 
+public void OnClientDisconnect(int client)	{
+	if(!Tklib_IsValidClient(client, true))
+		return;
+	
+	char query[512];
+	Format(query, sizeof(query), "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'",
+	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+	DB.Threaded.Query(DBQuery_Callback, query, _, DBPrio_Low); /* Low priority to lower chances of lag spikes */
+}
+
 public void OnMapStart()	{
-	if(!Cvars.ServerID.IntValue)
+	if(!Cvars.PluginActive.BoolValue)
 		return;
 	
 	/* If database lost connection or plugin was late loaded */
@@ -162,7 +168,7 @@ public void OnMapStart()	{
 }
 
 Action MapLogTimer(Handle timer)	{
-	if(!Cvars.ServerID.IntValue)	{
+	if(!Cvars.PluginActive.BoolValue)	{
 		KillTimer(timer);
 		return Plugin_Handled;
 	}
@@ -213,4 +219,11 @@ void DBQuery_MapLog_2(Database database, DBResultSet results, const char[] error
 
 public void OnEntityCreated(int entity, const char[] classname)	{
 	OnEntityCreated_CounterStrike(entity, classname);
+}
+
+public void OnConfigsExecuted()	{
+	CheckActivePlayers();
+}
+public void OnPluginEnd()	{
+	XStats_DebugText(false, "Ending..");	
 }

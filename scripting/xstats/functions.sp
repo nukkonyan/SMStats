@@ -5,16 +5,14 @@
  */
 stock int GetClientPoints(const char[] auth)	{
 	int points = 0;
-	Database database = SQL_Connect2(Xstats, false);
 	
-	if(database != null)	{
-		DBResultSet results = SQL_QueryEx(database, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
+	if(DB.Direct != null)	{
+		DBResultSet results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		points = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
 		delete results;
 	}
 	
 	XStats_DebugText(false, "GetClientPoints was fired for \"%s\", returning %i", auth, points);
-	delete database;
 	return points;
 }
 
@@ -26,14 +24,13 @@ stock int GetClientPoints(const char[] auth)	{
 stock int GetClientPosition(const char[] auth)	{
 	int position = 0;
 	int points = 0;
-	Database database = SQL_Connect2(Xstats, false);
 	
-	if(database != null)	{
-		DBResultSet results = SQL_QueryEx(database, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
+	if(DB.Direct != null)	{
+		DBResultSet results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		while(results != null && results.FetchRow())	{
 			points = results.FetchInt(0);
 			
-			results = SQL_QueryEx(database, "select count(*) from `%s` where Points >='%i' and ServerID='%i'", Global.playerlist, points, Cvars.ServerID.IntValue);
+			results = SQL_QueryEx(DB.Direct, "select count(*) from `%s` where Points >='%i' and ServerID='%i'", Global.playerlist, points, Cvars.ServerID.IntValue);
 			while(results.FetchRow())
 				position = results.FetchInt(0);
 		}
@@ -42,7 +39,6 @@ stock int GetClientPosition(const char[] auth)	{
 	}
 	
 	XStats_DebugText(false, "GetClientPosition was fired for \"%s\", returning %i", auth, position);
-	delete database;
 	return position;
 }
 
@@ -51,10 +47,9 @@ stock int GetClientPosition(const char[] auth)	{
  */
 stock int GetTablePlayerCount()	{
 	int playercount = 0;
-	Database database = SQL_Connect2(Xstats, false);
 	
-	if(database != null)	{
-		DBResultSet results = SQL_QueryEx(database, "select count(*) from `%s` where ServerID='%i'", Global.playerlist, Cvars.ServerID.IntValue);
+	if(DB.Direct != null)	{
+		DBResultSet results = SQL_QueryEx(DB.Direct, "select count(*) from `%s` where ServerID='%i'", Global.playerlist, Cvars.ServerID.IntValue);
 		while(results != null && results.FetchRow())
 			playercount = results.FetchInt(0);
 		
@@ -62,7 +57,6 @@ stock int GetTablePlayerCount()	{
 	}
 	
 	XStats_DebugText(false, "GetTablePlayerCount was fired, returning %i", playercount);
-	delete database;
 	return playercount;
 }
 
@@ -73,16 +67,14 @@ stock int GetTablePlayerCount()	{
  */
 stock int GetClientPlayTime(const char[] auth)	{
 	int playtime = 0;
-	Database database = SQL_Connect2(Xstats, false);
 	
-	if(database != null)	{
-		DBResultSet results = SQL_QueryEx(database, "select PlayTime from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
+	if(DB.Direct != null)	{
+		DBResultSet results = SQL_QueryEx(DB.Direct, "select PlayTime from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		playtime = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
 		delete results;
 	}
 	
 	XStats_DebugText(false, "GetClientPlayTime was fired for \"%s\", returning %i", auth, playtime);
-	delete database;
 	return playtime;
 }
 
@@ -110,10 +102,13 @@ stock float GetKDR(int kills, int deaths, int assists)	{
 	XStats_DebugText(false, "fdeaths: %.2f", fdeaths);
 	XStats_DebugText(false, "fassists: %.2f", fassists);
 	
-	if(fdeaths == 0.0)
-		fdeaths = 1.0;
-	
-	XStats_DebugText(false, "after fdeaths check: %.2f", fdeaths);
+	switch(fdeaths == 0.0)	{
+		case true:	{
+			fdeaths = 1.0;
+			XStats_DebugText(false, "after fdeaths check: %.2f (Because fdeaths were 0.00)", fdeaths);
+		}
+		case false: XStats_DebugText(false, "after fdeaths check: %.2f", fdeaths);
+	}
 	
 	kdr = fkills / fdeaths;
 	XStats_DebugText(false, "kdr: %.2f", kdr);
@@ -124,7 +119,7 @@ stock float GetKDR(int kills, int deaths, int assists)	{
 	if(kdr == 0.00)
 		kdr = 1.00;
 	
-	XStats_DebugText(false, "GetKDR was fired (%i kills, %i deaths, %i assists), returning %.1f", kills, deaths, assists, kdr);
+	XStats_DebugText(false, "GetKDR was fired (%i kills, %i deaths, %i assists), returning %.2f", kills, deaths, assists, kdr);
 	return kdr;
 }
 
@@ -291,7 +286,11 @@ stock void CheckActivePlayers()	{
  *	Make sure the stats is properly configured.
  */
 stock bool IsValidStats()	{
-	return !(!Cvars.ServerID.IntValue || !Global.RoundActive || !Global.RankActive || Global.WarmupActive && !Cvars.AllowWarmup.BoolValue);
+	return !(!Cvars.PluginActive.BoolValue
+			|| Cvars.ServerID.IntValue < 1
+			|| !Global.RoundActive
+			|| !Global.RankActive
+			|| Global.WarmupActive && !Cvars.AllowWarmup.BoolValue);
 }
 
 /**

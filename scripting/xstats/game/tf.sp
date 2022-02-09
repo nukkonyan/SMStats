@@ -35,6 +35,7 @@ void PrepareDB_TF2()	{
 	len += Format(query[len], sizeof(query)-len, "`TauntKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`CollatKills`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`MidAirKills`							int(32) not null default '0',");
+	len += Format(query[len], sizeof(query)-len, "`Airshots`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Headshots`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Backstabs`							int(32) not null default '0',");
 	len += Format(query[len], sizeof(query)-len, "`Noscopes`							int(32) not null default '0',");
@@ -1023,6 +1024,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		
 	if(IsValidAbuse(client))
 		return;
+	
+	OnDeathRankPanel(client);
 	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
 	if(!Tklib_IsValidClient(victim))
