@@ -236,10 +236,10 @@ stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int sele
 }
 
 stock void OnDeathRankPanel(int client)	{
-	switch(StatsPanel[client].Session)	{
-		case true: RankPanel_CurrentSession(client);
-		case false: RankPanel_TotalPage(client, StatsPanel[client].TotalPage);
-	}
+	if(StatsPanel[client].Session)
+		RankPanel_CurrentSession(client);
+	else if(StatsPanel[client].TotalPage > 0)
+		RankPanel_TotalPage(client, StatsPanel[client].TotalPage);
 }
 
 stock void RankPanel_TotalPage(int client, int page)	{

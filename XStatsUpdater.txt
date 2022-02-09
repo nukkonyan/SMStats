@@ -4,13 +4,13 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01"
+			"Latest"	"0.01a_01f"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Updated the rank panel to show total statistics aswell (TF2 Only atm)"
-		"Notes" "Updated code."
+		"Notes" "Updated database to load upon plugin start instead."
+		"Notes" "Fixed rank panel regarding on kill event."
 	}
 	
 	"Files"
