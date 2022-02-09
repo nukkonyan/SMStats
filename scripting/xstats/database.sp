@@ -22,7 +22,7 @@ void DBConnect(Database database, const char[] error, any data)	{
 }
 
 stock void GetNewDBConnection()	{
-	if(db != null)
+	if(DB.Threaded != null)
 		return; /* no need to gather new connection since we already have one, prevent corruption. */
 	
 	CreateTimer(10.0, RetryDBConnection);

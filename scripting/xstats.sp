@@ -47,6 +47,7 @@ XStatsKillMsg KillMsg[MAXPLAYERS];
 
 public void OnPluginStart()	{
 	//Prepare.
+	PrepareDatabase();
 	PrepareForwards(); /* Forwards */
 	PrepareCvars(); /* Console variables */
 	PrepareGame(); /* Game stats */
