@@ -4,12 +4,13 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01b"
+			"Latest"	"0.01a_01c"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
 		"Notes"	"Development Testing Phase."
-		"Notes" "Fixed additional small problems with rank panel regarding on kill event."
+		"Notes" "Fixed ubercharge translation (TF2)."
+		"Notes" "Updated code."
 	}
 	
 	"Files"

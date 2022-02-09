@@ -37,19 +37,18 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
 		Player[client].Country = "unknown country";
 	
-	Database database = SQL_Connect2(Xstats, false);
 	DBResultSet results = SQL_QueryEx(DB.Direct, "select * from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 	
 	/* Prevent invalid characters within playername when being sent over to the database. */
 	char temp_playername[64];
 	temp_playername = Player[client].Playername;
 	TrimString(temp_playername);
-	database.Escape(temp_playername, temp_playername, sizeof(temp_playername));
+	DB.Direct.Escape(temp_playername, temp_playername, sizeof(temp_playername));
 	
 	switch(results != null && results.FetchRow())	{
 		/* Player was found */
 		case	true:	{
-			results = SQL_QueryEx(database, "update `%s` set Playername = '%s', IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
+			results = SQL_QueryEx(DB.Direct, "update `%s` set Playername = '%s', IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, temp_playername, Player[client].IP, Player[client].SteamID, Cvars.ServerID.IntValue);
 			
 			/* Avoid showing ip due to privacy */
@@ -58,13 +57,13 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 			
 			if(results == null)	{
 				char error[256];
-				SQL_GetError(database, error, sizeof(error));
+				SQL_GetError(DB.Direct, error, sizeof(error));
 				XStats_DebugText(true, "Updating player table into \"%s\" failed! (%s)", Global.playerlist, error);
 			}
 		}
 		/* Player wasn't found, adding.. */
 		case	false:	{
-			results = SQL_QueryEx(database, "insert into `%s` (Playername, SteamID, IPAddress, ServerID) values ('%s', '%s', '%s', '%i')",
+			results = SQL_QueryEx(DB.Direct, "insert into `%s` (Playername, SteamID, IPAddress, ServerID) values ('%s', '%s', '%s', '%i')",
 			Global.playerlist, temp_playername, Player[client].SteamID, Player[client].IP, Cvars.ServerID.IntValue);
 			
 			XStats_DebugText(false, "Inserting into table \"%s\" \nPlayername \"%s\"\nSteamID \"%s\" (ServerID %i)",
@@ -72,13 +71,12 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 			
 			if(results == null)	{
 				char error[256];
-				SQL_GetError(database, error, sizeof(error));
+				SQL_GetError(DB.Direct, error, sizeof(error));
 				XStats_DebugText(true, "Inserting player table into \"%s\" failed! (%s)", Global.playerlist, error);
 			}
 		}
 	}
 	
-	delete database;
 	delete results;
 }
 

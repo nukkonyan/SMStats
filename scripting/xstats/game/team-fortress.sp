@@ -544,33 +544,21 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 float Ubercharged_Timer = 30.0;
 bool Ubercharged[MAXPLAYERS] = {false, ...};
 stock void Player_Invulned(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || TF2_Ubercharged.IntValue < 1)
-		return;
-	
+	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_MEDIC_USERID));
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	if(IsValidAbuse(client))
-		return;
-	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(victim))
+	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim) || Ubercharged[client])
 		return;
 	
-	if(IsFakeClient(victim) && !Cvars.ServerID.IntValue)
+	if(IsValidAbuse(client) || !IsValidStats() || (points = TF2_Ubercharged.IntValue) < 1 || IsFakeClient(victim) && !Cvars.ServerID.IntValue)
 		return;
 	
 	if(!IsSameTeam(victim, client) && TF2_GetPlayerClass(victim) == TFClass_Spy && !TF2_Ubercharged_Spy.BoolValue)
 		return;
 	
-	if(Ubercharged[client])
-		return;
-	
-	int points = TF2_Ubercharged.IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	AddSessionPoints(client, points);
-	CPrintToChat(client, "%s %t", Global.Prefix, "Player Ubercharged", Player[client].Name, Player[client].Points, Player[victim].Name);
+	CPrintToChat(client, "%s %t", Global.Prefix, "Player Ubercharged", Player[client].Name, Player[client].Points, points, Player[victim].Name);
 	
 	char query[256];
 	Format(query, sizeof(query), "update `%s` set Points = Points+%i, Ubercharged = Ubercharged+1 where SteamID='%s' and ServerID='%i'",
@@ -587,13 +575,10 @@ stock void Player_Teleported(Event event, const char[] event_name, bool dontBroa
 	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_BUILDERID));
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim))
+	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim) || Teleported[victim])
 		return;
 	
 	if(IsValidAbuse(client) || !IsValidStats() || IsFakeClient(victim) && !Cvars.ServerID.IntValue || (points = TF2_Teleported.IntValue) < 1)
-		return;
-	
-	if(Teleported[victim])
 		return;
 	
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
@@ -614,25 +599,22 @@ stock void Player_Teleported(Event event, const char[] event_name, bool dontBroa
 }
 
 stock void Player_StealSandvich(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || TF2_SandvichStolen.IntValue < 1)
-		return;
-	
+	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_TARGET));
+	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_OWNER));
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
-	if(IsValidAbuse(client))
+	if(!IsValidStats() || IsValidAbuse(client) || (points = TF2_SandvichStolen.IntValue) < 1)
 		return;
 	
-	int points = TF2_SandvichStolen.IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	AddSessionPoints(client, points);
 	
-	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_OWNER));
 	/* Incase the sandvich owner left */
 	switch(Tklib_IsValidClient(victim))	{
-		case	true:	CPrintToChat(client, "%s %t", Global.Prefix, "Player Steal Sandvich Scenario 1", Player[client].Name, Player[client].Points, points, Player[victim].Name);
-		case	false:	CPrintToChat(client, "%s %t", Global.Prefix, "Player Steal Sandvich Scenario 2", Player[client].Name, Player[client].Points, points);
+		case true: CPrintToChat(client, "%s %t", Global.Prefix, "Player Steal Sandvich Scenario 1", Player[client].Name, Player[client].Points, points, Player[victim].Name);
+		case false: CPrintToChat(client, "%s %t", Global.Prefix, "Player Steal Sandvich Scenario 2", Player[client].Name, Player[client].Points, points);
 	}
 	
 	char query[256];

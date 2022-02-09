@@ -25,6 +25,8 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!(Tklib_IsValidClient(client, true) && IsSamePlayers(client, victim)))
 		return;
 	
+	OnDeathRankPanel(client);
+	
 	char query[256];
 	Session[client].Suicides++;
 	Format(query, sizeof(query), "update `%s` set Suicides = Suicides+1 where SteamID='%s' and ServerID='%i'",
@@ -75,7 +77,7 @@ Action Timer_UploadStuff(Handle timer, int client)	{
  *	since otherwise we get double disconnect messages.
  */
 stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!Cvars.ServerID.IntValue)
+	if(!Cvars.PluginActive.BoolValue)
 		return;
 	
 	if(!Cvars.ConnectMsg.BoolValue)

@@ -537,7 +537,6 @@ stock void CheckPlayersPluginStart()	{
 	CPrintToChatAll("{orange}XStats version {lightgreen}%s {orange}loaded", Version);
 	
 	/* Isolated temporary connection. Deleted shortly after*/
-	Database database = SQL_Connect2(Xstats, false);
 	DBResultSet results;
 	
 	for(int client = 1; client < MaxClients; client++)	{
@@ -550,8 +549,8 @@ stock void CheckPlayersPluginStart()	{
 			if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
 				Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 			
-			if(database != null)	{
-				results = SQL_QueryEx(database, "select Points from `%s` where SteamID = '%s' and ServerID = '%i'",
+			if(DB.Direct != null)	{
+				results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID = '%s' and ServerID = '%i'",
 				Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 				XStats_DebugText(false, "Gathering points directly from database for %s", Player[client].Playername);
 				switch(results != null && results.FetchRow())	{
@@ -565,7 +564,7 @@ stock void CheckPlayersPluginStart()	{
 						TrimString(temp_playername);
 						DB.Direct.Escape(temp_playername, temp_playername, sizeof(temp_playername));
 						
-						results = SQL_QueryEx(database, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
+						results = SQL_QueryEx(DB.Direct, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
 						Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
 						XStats_DebugText(false, "Failed to gather points from %s, inserting new table directly onto database.", Player[client].Playername);
 						if(results != null)
@@ -582,7 +581,6 @@ stock void CheckPlayersPluginStart()	{
 		}
 	}
 	
-	delete database;
 	delete results;
 }
 
