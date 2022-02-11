@@ -29,9 +29,7 @@ XStats is a Multi-Statistics tracking plugin.
 
 ![Screenshot_33](https://user-images.githubusercontent.com/49116354/150644815-8d01748b-0992-4ee7-b980-260111567ace.png)
 
-# Discussions
-### [Achievement Ideas](https://github.com/Teamkiller324/Xstats/discussions/2)
-### [Issues](https://github.com/Teamkiller324/Xstats/discussions/3)
+# Support
 ### [Discord](https://discord.gg/XKKJJ8SAc3)
 
 ## Requirements
