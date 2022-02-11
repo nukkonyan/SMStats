@@ -6,13 +6,13 @@ void PrepareEvents()	{
 	HookEventEx(EVENT_PLAYER_DISCONNECT, Disconnected, EventHookMode_Pre);
 	
 	/* Rounds */
-	HookEventEx(EVENT_ROUND_END,				Rounds);
-	HookEventEx(EVENT_ROUND_START,				Rounds);
-	HookEventEx(EVENT_TEAMPLAY_ROUND_ACTIVE,	Rounds);
-	HookEventEx(EVENT_ARENA_ROUND_START,		Rounds);
-	HookEventEx(EVENT_TEAMPLAY_ROUND_WIN,		Rounds);
-	HookEventEx(EVENT_DOD_ROUND_ACTIVE,			Rounds);
-	HookEventEx(EVENT_DOD_ROUND_WIN,			Rounds);
+	HookEventEx(EVENT_ROUND_END, Rounds);
+	HookEventEx(EVENT_ROUND_START, Rounds);
+	HookEventEx(EVENT_TEAMPLAY_ROUND_ACTIVE, Rounds);
+	HookEventEx(EVENT_ARENA_ROUND_START, Rounds);
+	HookEventEx(EVENT_TEAMPLAY_ROUND_WIN, Rounds);
+	HookEventEx(EVENT_DOD_ROUND_ACTIVE, Rounds);
+	HookEventEx(EVENT_DOD_ROUND_WIN, Rounds);
 }
 
 /* Check if it's a suicide */
@@ -35,7 +35,6 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
 	PrepareOnSuicideForward(client);
 }
 
-
 /**
  *	If player changed team or name,
  *	this is a backup for some games using this event.
@@ -49,10 +48,7 @@ stock void UploadStuff(Event event, const char[] event_name, bool dontBroadcast)
  *	Need this because some games doesn't use "player_changename" event anymore (Could be the fact it's broken perhaps).
  */
 public void OnClientSettingsChanged(int client)	{
-	if(!Cvars.ServerID.IntValue)
-		return;
-	
-	if(!Tklib_IsValidClient(client, false, false, false))
+	if(!Cvars.PluginActive.BoolValue || !Tklib_IsValidClient(client, false, false, false))
 		return;
 	
 	/* Too early to gain info, lets add a delay */
@@ -77,10 +73,7 @@ Action Timer_UploadStuff(Handle timer, int client)	{
  *	since otherwise we get double disconnect messages.
  */
 stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!Cvars.PluginActive.BoolValue)
-		return;
-	
-	if(!Cvars.ConnectMsg.BoolValue)
+	if(!Cvars.PluginActive.BoolValue || !Cvars.ConnectMsg.BoolValue)
 		return;
 	
 	event.BroadcastDisabled = true;	

@@ -1004,10 +1004,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	bool fakedeath = (event.GetInt(EVENT_STR_DEATH_FLAGS) == 32);
 	event.SetBool("fakedeath", fakedeath);
 	if(fakedeath)	{
-		if(Cvars.Debug.BoolValue)	{
-			PrintToServer("//===== Player_Death_TF2 =====//");
-			PrintToServer("Detected fake death, ignoring.");
-		}
+		XStats_DebugText(false, "//===== Player_Death_TF2 =====//");
+		XStats_DebugText(false, "Detected fake death, ignoring.");
 		return;
 	}
 	
@@ -1019,23 +1017,14 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		return;	
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
-	if(!Tklib_IsValidClient(client, true))
+	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
+	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim))
 		return;
-		
-	if(IsValidAbuse(client))
+	
+	if(IsValidAbuse(client) || IsSamePlayers(client, victim) || IsSameTeam(client, victim) || IsFakeClient(victim) && !Cvars.ServerID.IntValue)
 		return;
 	
 	OnDeathRankPanel(client);
-	
-	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(victim))
-		return;
-		
-	if(IsFakeClient(victim) && !Cvars.ServerID.IntValue)
-		return;
-	
-	if(IsSamePlayers(client, victim) || IsSameTeam(client, victim))
-		return;
 	
 	/* Get the values early for lowest delay. */
 	
@@ -1047,12 +1036,6 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	int penetrated = event.GetInt(EVENT_STR_PLAYERPENETRATECOUNT);
 	TFCritType crits = TFCritType(event.GetInt(EVENT_STR_CRIT_TYPE));
 	int points = 0;
-	
-	switch(TF2_GetBuildingType(inflictor))	{
-		case	TFBuilding_Sentrygun:	points = TF2_SentryKill.IntValue;
-		case	TFBuilding_MiniSentry:	points = TF2_MiniSentryKill.IntValue;
-		case	TFBuilding_Invalid:		points = Cvars.Weapon[defindex].IntValue;
-	}
 	
 	/* Kill event stuff */
 	bool headshot = (customkill == 1 || customkill == 51);
@@ -1180,6 +1163,28 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	/* Correct the event's weapon definition index. */
 	event.SetInt(EVENT_STR_WEAPON_DEF_INDEX, defindex);
 	
+	/* Make sure the weapon definition index exists on the array */
+	if(Cvars.Weapon[defindex] == null)	{
+		XStats_DebugText(false, "weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", weapon, defindex);
+		return;
+	}
+	
+	/* Make sure to continue if the points are valid. */
+	switch(TF2_GetBuildingType(inflictor))	{
+		case TFBuilding_Sentrygun:	{
+			if((points = TF2_SentryKill.IntValue) < 1)
+				return;
+		}
+		case TFBuilding_MiniSentry:	{
+			if((points = TF2_MiniSentryKill.IntValue) < 1)
+				return;
+		}
+		default:	{
+			if((points = Cvars.Weapon[defindex].IntValue) < 1)
+				return;
+		}
+	}
+	
 	/* Classic - since you can noscope headshot. */
 	if(defindex == 1098 && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
 		noscope = true;
@@ -1218,12 +1223,6 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	KillMsg[client].TeleFragKill = telefrag;
 	KillMsg[client].CollateralKill = collateral;
 	KillMsg[client].TauntKill = tauntkill;
-	
-	/* Make sure the weapon definition index exists on the array */
-	if(Cvars.Weapon[defindex] == null)	{
-		XStats_DebugText(false, "weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", weapon, defindex);
-		return;
-	}
 	
 	char query[1024];
 	TF2_ClientKillVictim(client, victim);
@@ -1280,7 +1279,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		}
 		case false:	{
 			switch(telefrag)	{
-				case	true:	{
+				case true:	{
 					Session[client].TeleFrags++;
 					points += TF2_TeleFrag.IntValue;
 					AddSessionPoints(client, TF2_TeleFrag.IntValue);
@@ -1290,7 +1289,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 					XStats_DebugText(false, " ");
 					XStats_DebugText(false, "Telefrag");
 				}
-				case	false:	{
+				case false:	{
 					Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, fix_weapon, fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
 					DB.Threaded.Query(DBQuery_Callback, query);

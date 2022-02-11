@@ -559,11 +559,11 @@ stock bool AssistedKill(int assist, int client, int victim)	{
  *
  *	@param	victim	The victims user index.
  *
- *	@return	Returns if the victim is valid.
+ *	@noreturn.
  */
-stock bool VictimDied(int victim)	{
+stock void VictimDied(int victim)	{
 	if(!Tklib_IsValidClient(victim, true))
-		return false;
+		return;
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
@@ -571,24 +571,26 @@ stock bool VictimDied(int victim)	{
 	DB.Threaded.Query(DBQuery_Callback, query);
 	XStats_DebugText(false, "Updating death count for %s", Player[victim].Playername);
 	
-	int death_points;
+	int points;
 	switch(Global.Game)	{
-		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP: death_points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue;
-		default: death_points = Cvars.Death.IntValue;
+		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP:	{
+			if((points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue) < 1)
+				return;
+		}
+		default:	{
+			if((points = Cvars.Death.IntValue) < 1)
+				return;
+		}
 	}
 		
 	int victim_points = GetClientPoints(Player[victim].SteamID);
-	if(death_points > 0)	{
-		RemoveSessionPoints(victim, death_points);
-		CPrintToChat(victim, "%s %t", Global.Prefix, "Death Kill Event", Player[victim].Name, victim_points, death_points);
-		
-		Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, death_points, Player[victim].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Updating points for %s due to dying", Player[victim].Playername);
-	}
+	RemoveSessionPoints(victim, points);
+	CPrintToChat(victim, "%s %t", Global.Prefix, "Death Kill Event", Player[victim].Name, victim_points, points);
 	
-	return true;
+	Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
+	Global.playerlist, points, Player[victim].SteamID, Cvars.ServerID.IntValue);
+	DB.Threaded.Query(DBQuery_Callback, query);
+	XStats_DebugText(false, "Updating points for %s due to dying", Player[victim].Playername);
 }
 
 /* When round starts */
