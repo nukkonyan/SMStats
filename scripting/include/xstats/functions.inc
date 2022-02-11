@@ -1,5 +1,5 @@
-enum	XStats_SessionType	{
-	SessionType_Time,
+enum XStats_SessionType {
+	SessionType_PlayTime,
 	SessionType_Points,
 	SessionType_Kills,
 	SessionType_Deaths,
@@ -99,8 +99,9 @@ enum	XStats_SessionType	{
 	SessionType_HostagesKilled,
 }
 
-enum struct	XStatsSession	{
-	int Time;
+enum struct XStatsSession {
+	/* Core */
+	int PlayTime;
 	int Points;
 	int Kills;
 	int Deaths;
@@ -142,6 +143,8 @@ enum struct	XStatsSession	{
 	int MiniSentryKills;
 	int MiniCritKills;
 	int CritKills;
+	int PointsCaptured;
+	int PointsDefended;
 	int FlagsStolen;
 	int FlagsPickedUp;
 	int FlagsCaptured;
@@ -160,6 +163,7 @@ enum struct	XStatsSession	{
 	int TeleporterEntrancesBuilt;
 	int TeleporterExitsBuilt;
 	int SappersPlaced;
+	int TotalBuildingsDestroyed;
 	int BuildingsDestroyed;
 	int SentryGunsDestroyed;
 	int DispensersDestroyed;
@@ -167,11 +171,16 @@ enum struct	XStatsSession	{
 	int TeleporterEntrancesDestroyed;
 	int TeleporterExitsDestroyed;
 	int SappersDestroyed;
+	int PlayerTeleported;
+	int PlayersTeleported;
+	int StunnedPlayers;
+	int MoonShotStunnedPlayers;
 	int KilledHHH;
 	int KilledMonoculus;
 	int KilledMerasmus;
 	int KilledSkeletonKing;
 	int StunnedMonoculus;
+	int StunnedMerasmus;
 	int MadMilked;
 	int Jarated;
 	int Ignited;
@@ -200,10 +209,9 @@ enum struct	XStatsSession	{
 	int HostagesKilled;
 }
 
-enum struct XStatsKillMsg	{
-	//bool Domination;
-	//bool Revenge;
-	
+enum struct XStatsKillMsg {
+	bool Domination;
+	bool Revenge;
 	bool MidAirKill;
 	bool SmokeKill;
 	bool HeadshotKill;
@@ -212,11 +220,107 @@ enum struct XStatsKillMsg	{
 	bool AirshotKill;
 	bool DeflectKill;
 	bool TeleFragKill;
+	bool TauntKill;
 	bool CollateralKill;
 	bool GrenadeKill;
 	bool BombKill;
 	bool BlindedKill;
 }
+
+enum struct XStatsPlayer {
+	char SteamID[64];
+	char Playername[64];
+	char Name[64];
+	char IP[16];
+	char Country[96];
+	
+	int Points;
+	int Position;
+}
+
+enum struct XStatsPanel {
+	bool Main;
+	bool Session;
+	int TotalPage;
+}
+
+enum struct XStatsGlobal {
+	GameIdentifier Game;
+	char GameTitle[64];
+	
+	bool RoundActive;
+	bool WarmupActive;
+	bool RankActive;
+	
+	char Prefix[96];
+	char logprefix[64];
+	char playerlist[64];
+	char kill_log[64];
+	char item_found[64];
+	char maps_log[64];
+	char achievements[64];
+	char CurrentMap[64];
+	
+	Handle UpdateTimer;
+}
+
+enum struct XStatsCvars {
+	ConVar PluginActive;
+	ConVar Debug;
+	ConVar AllowBots;
+	ConVar AllowWarmup;
+	ConVar PrefixCvar;
+	ConVar Death;
+	ConVar AssistKill;
+	ConVar ServerID;
+	ConVar MinimumPlayers;
+	ConVar DisableAfterWin;
+	ConVar ConnectMsg;
+	ConVar AntiAbuse;
+	ConVar RemoveOldPlayers;
+	ConVar Weapon[40000];
+}
+
+enum struct XStatsConnectSound {
+	ConVar cvar;
+	char path[64];
+}
+
+enum struct XStatsForwards {
+	GlobalForward Prefix;
+	GlobalForward Death;
+	GlobalForward Suicide;	
+	GlobalForward TF2_FlagEvent;
+	
+	PrivateForward GetStats;
+}
+
+enum struct XStatsDatabase {
+	Database Threaded;
+	Database Direct;
+}
+
+/**
+ *	Kill scenario | Used for translations.
+ *	The kill events will be merged together automatically.
+ *	Example: Headshot whilst Mid-Air or Headshot Through Smoke whilst Mid-Air, etc.. (You get it)
+ */
+stock char Kill_Type[][] = {
+	"Kill Event Type 0",	//Mid-Air.
+	"Kill Event Type 1",	//Through Smoke.
+	"Kill Event Type 2",	//Noscope Headshot.
+	"Kill Event Type 3",	//Headshot.
+	"Kill Event Type 4",	//Noscope.
+	"Kill Event Type 5",	//Backstab.
+	"Kill Event Type 6",	//Airshot.
+	"Kill Event Type 7",	//Deflect Kill.
+	"Kill Event Type 8",	//Telefrag.
+	"Kill Event Type 9",	//Taunt Kill.
+	"Kill Event Type 10",	//Collateral.
+	"Kill Event Type 11",	//Grenade Kill.
+	"Kill Event Type 12",	//Bomb Kill.
+	"Kill Event Type 13",	//Blinded Kill.
+};
 
 typeset XStatsSessionCallback
 {
@@ -238,7 +342,7 @@ methodmap XStatsRankPanel < Panel	{
 	
 	public bool SetTitle(const char[] text, any ...)	{
 		char buffer[96];
-		VFormat(buffer, sizeof(buffer), text, 3); /* 1 is the handle, 2 is the caller, 3 is the parameters */
+		VFormat(buffer, sizeof(buffer), text, 3); /* 1 is the panel, 2 is the input, 3 is the parameters */
 		view_as<Panel>(this).SetTitle(buffer);
 	}
 	

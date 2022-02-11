@@ -1,3 +1,6 @@
+#define _tklib_disable_resize
+#include <tklib>
+
 #if defined _xstats_included
 	#error Xstats is already included.
 	#endinput
@@ -7,7 +10,7 @@
 #define Xstats "xstats"
 #define XstatsAchievements "xstats_achievements"
 
-enum	XStats	{
+enum XStats {
 	XStats_Invalid = -1
 }
 
@@ -41,6 +44,15 @@ native int XStats_GetClientPlayTime(const char[] auth);
  *	@noreturn
  */
 native void XStats_GetClientSession(int client, XStats_SessionType type, XStatsSessionCallback callback);
+
+/**
+ *	Clears the session statistis for the player.
+ *
+ *	@param	client	The users index.
+ *
+ *	@noreturn
+ */
+native void XStats_ClearSessions(int client);
 
 /*
  *	Returns the prefix.
@@ -84,13 +96,15 @@ forward void XStats_OnPrefixUpdated(const char[] prefix);
 /**
  *	Called as soon someone kills an opponent.
  *
- *	@param	client	The attackers user index.
- *	@param	victim	The victims user index.
- *	@param	assist	The assisters user index.
+ *	@param	client		The attackers user index.
+ *	@param	victim		The victims user index.
+ *	@param	assist		The assisters user index.
+ *	@param	weapon		The weapon classname.
+ *	@param	defindex	The definition index of the weapon used. (Returns only 0 if not supported by game mod)
  *
  *	@noreturn
  */
-forward void XStats_OnDeathEvent(int client, int victim, int assist);
+forward void XStats_OnDeathEvent(int client, int victim, int assist, const char[] weapon, int defindex);
 
 /**
  *	Called as soon someone suicides. (Ignores bots)
@@ -140,7 +154,16 @@ methodmap XStats __nullable__	{
 	 *	@param	callback	The callback.
 	 */
 	public native void GetSession(int client, XStats_SessionType type, XStatsSessionCallback callback);
-	
+
+	/**
+	 *	Clears the session statistis for the player.
+	 *
+	 *	@param	client	The users index.
+	 *
+	 *	@noreturn
+	 */
+	public native void ClearSessions(int client);
+
 	/*
 	 *	Returns the prefix.
 	 *
@@ -178,7 +201,7 @@ methodmap XStats __nullable__	{
 	}
 }
 
-public SharedPlugin __pl_Xstats = {
+public SharedPlugin __pl_XStats = {
 	name = "Xstats",
 	file = "xstats.smx",
 #if defined REQUIRE_PLUGIN
@@ -189,14 +212,22 @@ public SharedPlugin __pl_Xstats = {
 }
 
 #if !defined REQUIRE_PLUGIN
-public void __pl_Xstats_SetNTVOptional()	{
-	MarkNativeAsOptional("Xstats_GetClientPoints");
-	MarkNativeAsOptional("Xstats.GetPoints");
-	MarkNativeAsOptional("Xstats_GetClientPlayTime");
-	MarkNativeAsOptional("Xstats.GetPlayTime");
-	MarkNativeAsOptional("Xstats_GetClientSession");
-	MarkNativeAsOptional("Xstats.GetSession");
-	MarkNativeAsOptional("xStats_Debug");
-	MarkNativeAsOptional("Xstats.Debug.get");
+public void __pl_XStats_SetNTVOptional()	{
+	MarkNativeAsOptional("XStats_GetClientPoints");
+	MarkNativeAsOptional("XStats.GetPoints");
+	MarkNativeAsOptional("XStats_GetClientPlayTime");
+	MarkNativeAsOptional("XStats.GetPlayTime");
+	MarkNativeAsOptional("XStats_GetClientSession");
+	MarkNativeAsOptional("XStats.GetSession");
+	MarkNativeAsOptional("XStats_Enabled");
+	MarkNativeAsOptional("XStats.Enabled.get");
+	MarkNativeAsOptional("XStats_ClearSessions");
+	MarkNativeAsOptional("XStats.ClearSessions");
+	MarkNativeAsOptional("XStats_Active");
+	MarkNativeAsOptional("XStats.Active.get");
+	MarkNativeAsOptional("XStats_Active");
+	MarkNativeAsOptional("XStats.AllowBots.get");
+	MarkNativeAsOptional("XStats_Debug");
+	MarkNativeAsOptional("XStats.Debug.get");
 }
 #endif
