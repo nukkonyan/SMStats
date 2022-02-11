@@ -148,11 +148,7 @@ public void OnClientDisconnect(int client)	{
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
-	char query[512];
-	Format(query, sizeof(query), "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'",
-	Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query, _, DBPrio_Low); /* Low priority to lower chances of lag spikes */
-	Session[client].DamageDone = 0;
+	UpdateDamage(client);
 }
 
 public void OnMapStart()	{

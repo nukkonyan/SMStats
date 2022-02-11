@@ -4,11 +4,14 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01g"
+			"Latest"	"0.01a_01h"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Added crash message to chat when plugin crashes."
+		"Notes"	"Fixed database issues."
+		"Notes" "Added missing 'MiniCritKills' to the playerlist_tf2.xstats database file."
+		"Notes" "Fixed 'DamageDone' table update able to crash the plugin."
+		"Notes" "Fixed Capture-The-Flag translations. (TF2)"
 	}
 	
 	"Files"

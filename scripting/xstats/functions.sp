@@ -9,6 +9,7 @@ stock int GetClientPoints(const char[] auth)	{
 	if(DB.Direct != null)	{
 		DBResultSet results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		points = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
+		
 		delete results;
 	}
 	
@@ -667,9 +668,9 @@ stock void CheckPlayersPluginStart()	{
 				Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 			
 			if(DB.Direct != null)	{
-				results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID = '%s' and ServerID = '%i'",
+				results = SQL_QueryEx(DB.Direct, "select * from `%s` where SteamID = '%s' and ServerID = '%i'",
 				Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-				XStats_DebugText(false, "Gathering points directly from database for %s", Player[client].Playername);
+				XStats_DebugText(false, "Checking if player %s exists on database", Player[client].Playername);
 				switch(results != null && results.FetchRow())	{
 					/* Player exists */
 					case true: OnClientPutInServer(client);
@@ -683,7 +684,7 @@ stock void CheckPlayersPluginStart()	{
 						
 						results = SQL_QueryEx(DB.Direct, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
 						Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
-						XStats_DebugText(false, "Failed to gather points from %s, inserting new table directly onto database.", Player[client].Playername);
+						XStats_DebugText(false, "Failed to find player %s, inserting new table directly onto database.", Player[client].Playername);
 						if(results != null)
 							OnClientPutInServer(client);
 					}
@@ -1117,4 +1118,22 @@ stock void XStats_SetFailState(const char[] reason, any ...)	{
 	char format[1024];
 	VFormat(format, sizeof(format), reason, 2);
 	SetFailState(format);
+}
+
+/**
+ *	Update the total damage done.
+ */
+stock void UpdateDamage(int client)	{
+	char query[256];
+	Format(query, sizeof(query), "select DamageDone from `%s` where SteamID='%s' and ServerID='%i'", Player[client].SteamID, Cvars.ServerID.IntValue);
+	DB.Threaded.Query(DBQuery_UpdateDamage, query, client, DBPrio_Low);
+}
+
+void DBQuery_UpdateDamage(Database database, DBResultSet results, const char[] error, int client)	{
+	if(results != null)	{
+		char query[256];
+		Format(query, sizeof(query), "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'",
+		Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue);
+		DB.Threaded.Query(DBQuery_Callback, query, _, DBPrio_Low); /* Low priority to lower chances of lag spikes */
+	}
 }

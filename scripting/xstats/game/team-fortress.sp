@@ -221,18 +221,16 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 	if(!IsValidStats() || TF2_GetGameType() != TFGameType_CTF || TF2_IsMvMGameMode())
 		return;
 	
+	int points = 0;
 	int client = event.GetInt(EVENT_STR_PLAYER);
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	if(IsValidAbuse(client))
-		return;
-	
 	int carrier = event.GetInt(EVENT_STR_CARRIER);
 	int eventtype = event.GetInt(EVENT_STR_EVENTTYPE);
 	bool home = event.GetBool(EVENT_STR_HOME);
 	TFTeam team = TFTeam(event.GetInt(EVENT_STR_TEAM));
 	TFFlag flag = TFFlag(eventtype);
+	
+	if(!Tklib_IsValidClient(client, true) || IsValidAbuse(client) || TF2_FlagEvent[eventtype] == null || (points = TF2_FlagEvent[eventtype].IntValue) < 1)
+		return;
 	
 	char teamname[][] = {
 		/* 0 */ "Unassigned",
@@ -249,11 +247,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 	XStats_DebugText(false, "teamname %s", teamname[team]);
 	XStats_DebugText(false, " ");
 	
-	if(TF2_FlagEvent[eventtype] == null || TF2_FlagEvent[eventtype].IntValue < 1)
-		return;
-	
 	char query[1024];
-	int points = TF2_FlagEvent[eventtype].IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
 	/* Translation */
@@ -263,9 +257,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 		"Flag Event Type 2", /* Capturing */
 		"Flag Event Type 3", /* Defending */
 		"Flag Event Type 4" /* Dropping */
-	};
-	
-	char flag_event_type[64];
+	}, flag_event_type[64];
 	switch(flag)	{
 		case TFFlag_PickedUp: Format(flag_event_type, sizeof(flag_event_type), "%t{default}", home ? flag_event[1] : flag_event[0]);
 		case TFFlag_Captured: Format(flag_event_type, sizeof(flag_event_type), "%t{default}", flag_event[2]);
@@ -275,10 +267,10 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 	
 	switch(flag)	{
 		/* Flag was picked up */
-		case	TFFlag_PickedUp:	{
+		case TFFlag_PickedUp:	{
 			switch(home)	{
 				/* Flag was stolen */
-				case	true:	{
+				case true:	{
 					points += TF2_FlagStolen.IntValue;
 					Session[client].FlagsStolen++;
 					Session[client].FlagsPickedUp++;
@@ -291,7 +283,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 					XStats_DebugText(false, "Updating points, flags picked up and stolen flags for %s", Player[client].Playername);
 				}
 				/* Flag was not stolen (phew, that was close *heavy voice*) */
-				case	false:	{
+				case false:	{
 					Session[client].FlagsPickedUp++;
 					AddSessionPoints(client, points);
 					CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 0", Player[client].Name, Player[client].Points, points, flag_event_type);
@@ -304,7 +296,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			}
 		}
 		/* Flag was captured */
-		case	TFFlag_Captured:	{
+		case TFFlag_Captured:	{
 			Session[client].FlagsCaptured++;
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 0", Player[client].Name, Player[client].Points, points, flag_event_type);
@@ -315,7 +307,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			XStats_DebugText(false, "Updating points for %s due to capturing flag", Player[client].Playername);
 		}
 		/* Flag was defended */
-		case	TFFlag_Defended:	{
+		case TFFlag_Defended:	{
 			Session[client].FlagsDefended++;
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 0", Player[client].Name, Player[client].Points, points, flag_event_type);
@@ -326,7 +318,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			XStats_DebugText(false, "Updating points for %s due to defending flag", Player[client].Playername);
 		}
 		/* Flag was dropped */
-		case	TFFlag_Dropped:	{
+		case TFFlag_Dropped:	{
 			Session[client].FlagsDropped++;
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 1", Player[client].Name, Player[client].Points, points, flag_event_type);
@@ -348,15 +340,13 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 	if(!IsValidStats())
 		return;
 	
+	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	if(IsValidAbuse(client))
-		return;
-	
 	TFBuilding building = TF2_GetBuildingType(event.GetInt(EVENT_STR_INDEX));
 	int type = int(building);
+	
+	if(!Tklib_IsValidClient(client, true) || IsValidAbuse(client))
+		return;
 	
 	char building_name[][] = {
 		"Object Type 0", /* Sentrygun */
@@ -369,50 +359,48 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 		"Object Event Type 0", /* Building */
 		"Object Event Type 1", /* Placing */
 		"Object Event Type 2", /* Destroying */
-	};
-	
-	char object_name[64], type_name[64];
+	}, object_name[64], type_name[64];
 	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
 	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[2]);
 	
 	char query[256];
 	switch(building)	{
-		case	TFBuilding_Sentrygun:	{
+		case TFBuilding_Sentrygun:	{
 			Session[client].SentryGunsBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set SentryGunsBuilt = SentryGunsBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_Dispenser:	{
+		case TFBuilding_Dispenser:	{
 			Session[client].DispensersBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set DispensersBuilt = DispensersBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_MiniSentry:	{
+		case TFBuilding_MiniSentry:	{
 			Session[client].MiniSentryGunsBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set MiniSentryGunsBuilt = MiniSentryGunsBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_Teleporter_Entrance:	{
+		case TFBuilding_Teleporter_Entrance:	{
 			Session[client].TeleporterEntrancesBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set TeleporterEntrancesBuilt = TeleporterEntrancesBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_Teleporter_Exit:	{
+		case TFBuilding_Teleporter_Exit:	{
 			Session[client].TeleporterExitsBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set TeleporterExitsBuilt = TeleporterExitsBuilt, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_Sapper:	{
+		case TFBuilding_Sapper:	{
 			Session[client].SappersPlaced++;
 			Format(query, sizeof(query), "update `%s` set SappersPlaced = SappersPlaced, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -422,8 +410,7 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 	
 	/* Ensure the player cannot abuse the points */
 	if(!BuiltObject[client][type])	{
-		if(TF2_BuiltObject[type].IntValue > 0)	{
-			int points = TF2_BuiltObject[type].IntValue;
+		if((points = TF2_BuiltObject[type].IntValue) > 0)	{
 			Player[client].Points = GetClientPoints(Player[client].SteamID);
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Object Event", Player[client].Name, Player[client].Points, points, type_name, object_name);
@@ -447,15 +434,13 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 	if(!IsValidStats())
 		return;
 	
+	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	if(IsValidAbuse(client))
-		return;
-	
 	TFBuilding building = TF2_GetBuildingType(event.GetInt(EVENT_STR_INDEX));
 	int type = int(building);
+	
+	if(!Tklib_IsValidClient(client, true) || IsValidAbuse(client))
+		return;
 	
 	char building_name[][] = {
 		"Object Type 0", /* Sentrygun */
@@ -468,50 +453,48 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 		"Object Event Type 0", /* Building */
 		"Object Event Type 1", /* Placing */
 		"Object Event Type 2", /* Destroying */
-	};
-	
-	char object_name[64], type_name[64];
+	}, object_name[64], type_name[64];
 	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
 	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[2]);
 	
 	char query[512];
 	switch(building)	{
-		case	TFBuilding_Sentrygun:	{
+		case TFBuilding_Sentrygun:	{
 			Session[client].SentryGunsDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set SentryGunsDestroyed = SentryGunsDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_Dispenser:	{
+		case TFBuilding_Dispenser:	{
 			Session[client].DispensersDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set DispensersDestroyed = DispensersDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_MiniSentry:	{
+		case TFBuilding_MiniSentry:	{
 			Session[client].MiniSentryGunsDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_Teleporter_Entrance:	{
+		case TFBuilding_Teleporter_Entrance:	{
 			Session[client].TeleporterEntrancesDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_Teleporter_Exit:	{
+		case TFBuilding_Teleporter_Exit:	{
 			Session[client].TeleporterExitsDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set TeleporterExitsDestroyed = TeleporterExitsDestroyed, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case	TFBuilding_Sapper:	{
+		case TFBuilding_Sapper:	{
 			Session[client].SappersDestroyed++;
 			Format(query, sizeof(query), "update `%s` set SappersDestroyed = SappersDestroyed where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -521,8 +504,7 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 	
 	/* Ensure the player cannot abuse the points */
 	if(!DestroyedObject[client][type])	{
-		if(TF2_DestroyedObject[type].IntValue > 0)	{
-			int points = TF2_DestroyedObject[type].IntValue;
+		if((points = TF2_DestroyedObject[type].IntValue) > 0)	{
 			Player[client].Points = GetClientPoints(Player[client].SteamID);
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Object Event", Player[client].Name, Player[client].Points, points, type_name, object_name);
@@ -531,7 +513,7 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-			
+		
 		DestroyedObject[client][type] = true;
 		DataPack pack = new DataPack();
 		pack.WriteCell(client);

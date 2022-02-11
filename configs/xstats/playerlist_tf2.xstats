@@ -24,6 +24,7 @@ create table if not exists `playerlist_tf2`
 	`SpiesKilled` int(32) not null default '0',
 	`DeflectKills` int(32) not null default '0',
 	`GibKills` int(32) not null default '0',
+	`MiniCritKills` int(32) not null default '0',
 	`CritKills` int(32) not null default '0',
 	`TauntKills` int(32) not null default '0',
 	`CollatKills` int(32) not null default '0',

@@ -1,10 +1,8 @@
 Action RankPanel(int client, int args=-1)	{
-	if(DB.Direct == null)	{
-		if((DB.Direct = SQL_Connect2(Xstats, false)) == null)	{
-			CPrintToChat(client, "%s The database connection is unavailable, please contact the server author.", Global.Prefix);		
-			return Plugin_Handled;
-		}
-		DB.Direct.SetCharset("utf8mb4");
+	if(!DatabaseDirect())	{
+		CPrintToChat(client, "%s The database connection is unavailable, please contact the server author.", Global.Prefix);
+		XStats_DebugText(false, "Player %s tried catching a database connection for rank panel but failed.", Player[client].Playername);
+		return Plugin_Handled;
 	}
 	
 	DBResultSet results = SQL_QueryEx(DB.Direct,
@@ -13,11 +11,13 @@ Action RankPanel(int client, int args=-1)	{
 	
 	if(results == null)	{
 		CPrintToChat(client, "%s You don't seem to be on the database, you may try rejoin or contact the server author.", Global.Prefix);
+		XStats_DebugText(false, "Player %s tried using rank panel but was not able to find the player on the database table.", Player[client].Playername);
 		return Plugin_Handled;
 	}
 	
 	if(!results.FetchRow())	{
 		CPrintToChat(client, "%s Player stats were unable to be fetched from the database, please contact the server author.", Global.Prefix);
+		XStats_DebugText(false, "Player %s tried fetching rows from the database table for the rank panel but failed.", Player[client].Playername);
 		return Plugin_Handled;
 	}
 	
@@ -36,7 +36,6 @@ Action RankPanel(int client, int args=-1)	{
 	float kdr = GetKDR(kills, deaths, assists);
 	
 	delete results;
-	
 	StatsPanel[client].Main = true;
 	
 	XStatsRankPanel panel = new XStatsRankPanel();

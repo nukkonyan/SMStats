@@ -260,7 +260,7 @@
 	//Lost points on intelligence event.
 	"Flag Event 1"
 	{
-		"format"	"{1:s},{2:i},{3:i},{4:s}"
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
 		"en"		"{1} ({2}) Lost {3} points for {4}"
 	}
 	
