@@ -1074,10 +1074,8 @@ stock void XStats_DebugText(bool FailState, const char[] text, any ...)	{
 	
 	LogToFileEx(path, format);
 	
-	if(FailState)//	{
-		SetFailState("%s %s", Global.logprefix, format);
-		//case false: PrintToServer("%s %s", Global.logprefix, format);
-	//}
+	if(FailState)
+		XStats_SetFailState("%s", format);
 }
 
 /**
@@ -1099,4 +1097,24 @@ stock void XStats_UpdateTable(const char[] table, int client, bool increment=tru
 	Format(query, sizeof(query), "alter table %s update '%s' = '%s' %s 1 where SteamID = '%s' and ServerID = '%i'",
 	Global.playerlist, table, table, increment ? "+":"-", Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
+}
+
+/**
+ *	Sends a message to all that XStats has crashed just before crashing the plugin.
+ */
+stock void XStats_SetFailState(const char[] reason, any ...)	{
+	for(int client = 1; client < MaxClients; client++)	{
+		if(Tklib_IsValidClient(client, true))	{
+			switch(Global.Game)	{
+				case Game_CSGO, Game_CSCO, Game_L4D1, Game_L4D2:
+					CPrintToChat(client, "{orange}XStats ({lightgreen}%s{orange}) has {lightred}Crashed.", Version);
+				default:
+					CPrintToChat(client, "{orange}XStats ({lightgreen}%s{orange}) has {red}Crashed.", Version);
+			}
+		}
+	}
+	
+	char format[1024];
+	VFormat(format, sizeof(format), reason, 2);
+	SetFailState(format);
 }

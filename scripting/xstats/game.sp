@@ -39,7 +39,7 @@ void Games_DatabaseConnected()	{
 			
 			DB.Threaded.Query(DBQuery_CreateTables, query, 1);
 		}
-		case false: SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for players statistical tracking.) (Did you install it correctly?.)", Global.logprefix, Global.playerlist);
+		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for players statistical tracking.) (Did you install it correctly?.)", Global.logprefix, Global.playerlist);
 	}
 	
 	query = NULL_STRING;
@@ -59,7 +59,7 @@ void Games_DatabaseConnected()	{
 			
 			DB.Threaded.Query(DBQuery_CreateTables, query, 2);
 		}
-		case false: SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking kills.) (Did you install it correctly?.)", Global.logprefix, Global.kill_log);
+		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking kills.) (Did you install it correctly?.)", Global.logprefix, Global.kill_log);
 	}
 	
 	query = NULL_STRING;
@@ -81,7 +81,7 @@ void Games_DatabaseConnected()	{
 					
 					DB.Threaded.Query(DBQuery_CreateTables, query, 3);
 				}
-				case false: SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking items found, traded, etc.) (Did you install it correctly?.)", Global.logprefix, Global.item_found);
+				case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking items found, traded, etc.) (Did you install it correctly?.)", Global.logprefix, Global.item_found);
 			}
 		}
 	}
@@ -103,7 +103,7 @@ void Games_DatabaseConnected()	{
 			
 			DB.Threaded.Query(DBQuery_CreateTables, query, 4);
 		}
-		case false: SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking maps.) (Did you install it correctly?.)", Global.logprefix, Global.maps_log);
+		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking maps.) (Did you install it correctly?.)", Global.logprefix, Global.maps_log);
 	}
 	
 	query = NULL_STRING;
@@ -123,7 +123,7 @@ void Games_DatabaseConnected()	{
 			
 			DB.Threaded.Query(DBQuery_CreateTables, query, 5);
 		}
-		case false: SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking custom achievements.) (Did you install it correctly?.)", Global.logprefix, Global.achievements);
+		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking custom achievements.) (Did you install it correctly?.)", Global.logprefix, Global.achievements);
 	}
 	
 	delete file;
@@ -275,5 +275,5 @@ void PrepareGame()	{
 	switch(supported)	{
 		case true: PrintToServer("XStats Version %s Detected game: %s", Version, Global.GameTitle);
 		case false: SetFailState("[XStats] Game \"%s\" is unsupported.", Global.GameTitle);
-	}	
+	}
 }
