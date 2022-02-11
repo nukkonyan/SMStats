@@ -2,7 +2,7 @@
 
 ``Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.) At the moment in early development stages.``
 
-# Note: plugin is currently in development phase, errors are to be expected.
+## Note: plugin is currently in development phase, errors are to be expected.
 
 `` You may NOT modify the plugin and distribute on to another place/source``
 
