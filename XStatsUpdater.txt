@@ -4,12 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01e"
+			"Latest"	"0.01a_01f"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Development Testing Phase."
-		"Notes" "Possibly fixed deadringed users counting as 'dead'. (TF2)"
+		"Notes"	"Updated how database tables are loaded."
+		"Notes" "Database tables are now uploaded via /configs/xstats/ directory."
 	}
 	
 	"Files"

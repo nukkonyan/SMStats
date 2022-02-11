@@ -1,0 +1,15 @@
+create table if not exists `item_found_csgo`
+(
+	`ID` int(32) not null auto_increment,
+	`ServerID` int(32) not null default '1',
+	`Time` int(32) not null default '0',
+	`Playername` varchar(64) not null default '',
+	`SteamID` varchar(64) not null default '',
+	`QualityID` int(32) not null default '0',
+	`Quality` varchar(64) not null default '',
+	`MethodID` int(32) not null default '0',
+	`Method` varchar(64) not null default '',
+	`DefinitionIndex` varchar(64) not null default '',
+	`ItemID` int(32) not null default '0.0',
+	primary key (`ID`)
+)
