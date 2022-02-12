@@ -7,7 +7,7 @@
 #pragma tabsize 0
 
 /* XStats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX. */
-#define Version "0.01a_01h"
+#define Version "0.01a_01i"
 
 public Plugin myinfo = {
 	name		= "XStats - Statistical Tracker",

@@ -1125,7 +1125,7 @@ stock void XStats_SetFailState(const char[] reason, any ...)	{
  */
 stock void UpdateDamage(int client)	{
 	char query[256];
-	Format(query, sizeof(query), "select DamageDone from `%s` where SteamID='%s' and ServerID='%i'", Player[client].SteamID, Cvars.ServerID.IntValue);
+	Format(query, sizeof(query), "select DamageDone from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_UpdateDamage, query, client, DBPrio_Low);
 }
 
