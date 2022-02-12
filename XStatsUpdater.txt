@@ -8,7 +8,7 @@
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Fixed 'DamageDone' invalid string parameter error."
+		"Notes"	"Removed update force-check upon start."
 	}
 	
 	"Files"

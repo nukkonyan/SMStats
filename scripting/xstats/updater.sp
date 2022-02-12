@@ -4,10 +4,8 @@
  *	Initialize updater addition.
  */
 void PrepareUpdater()	{
-	if(IsUpdaterLoaded())	{
+	if(IsUpdaterLoaded())
 		Updater_AddPlugin(UpdateUrl);
-		Updater_ForceUpdate();
-	}
 }
 
 public void OnLibraryAdded(const char[] name)	{
