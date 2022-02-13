@@ -17,9 +17,43 @@
 		{
 			"Plugin"	"Path_SM/plugins/xstats.smx"
 			"Plugin"	"Path_SM/translations/xstats.phrases.txt"
+			
+			"Plugin"	"Path_SM/configs/xstats/playerlist_tf2.xstats"
+			"Plugin"	"Path_SM/configs/xstats/playerlist_csgo.xstats"
+			"Plugin"	"Path_SM/configs/xstats/playerlist_css.xstats"
+			
+			"Plugin"	"Path_SM/configs/xstats/kill_log_tf2.xstats"
+			"Plugin"	"Path_SM/configs/xstats/kill_log_csgo.xstats"
+			"Plugin"	"Path_SM/configs/xstats/kill_log_css.xstats"
+			
+			"Plugin"	"Path_SM/configs/xstats/maps_log_tf2.xstats"
+			"Plugin"	"Path_SM/configs/xstats/maps_log_csgo.xstats"
+			"Plugin"	"Path_SM/configs/xstats/maps_log_css.xstats"
+			
+			"Plugin"	"Path_SM/configs/xstats/item_found_tf2.xstats"
+			"Plugin"	"Path_SM/configs/xstats/item_found_csgo.xstats"
+			
+			"Plugin"	"Path_SM/configs/xstats/achievements_tf2.xstats"
 		}
 		
 		"Plugin"	"Path_SM/plugins/xstats.smx"
 		"Plugin"	"Path_SM/translations/xstats.phrases.txt"
+		
+		"Plugin"	"Path_SM/configs/xstats/playerlist_tf2.xstats"
+		"Plugin"	"Path_SM/configs/xstats/playerlist_csgo.xstats"
+		"Plugin"	"Path_SM/configs/xstats/playerlist_css.xstats"
+		
+		"Plugin"	"Path_SM/configs/xstats/kill_log_tf2.xstats"
+		"Plugin"	"Path_SM/configs/xstats/kill_log_csgo.xstats"
+		"Plugin"	"Path_SM/configs/xstats/kill_log_css.xstats"
+		
+		"Plugin"	"Path_SM/configs/xstats/maps_log_tf2.xstats"
+		"Plugin"	"Path_SM/configs/xstats/maps_log_csgo.xstats"
+		"Plugin"	"Path_SM/configs/xstats/maps_log_css.xstats"
+		
+		"Plugin"	"Path_SM/configs/xstats/item_found_tf2.xstats"
+		"Plugin"	"Path_SM/configs/xstats/item_found_csgo.xstats"
+		
+		"Plugin"	"Path_SM/configs/xstats/achievements_tf2.xstats"
 	}
 }
