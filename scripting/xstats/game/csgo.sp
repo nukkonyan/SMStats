@@ -101,21 +101,12 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	*/
 	
 	int client = StrEqual(weapon, "planted_c4") ? m_hLastBombPlanter : GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
-	
-	if(!Tklib_IsValidClient(client, true))
-		return;
-
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(victim))
+	
+	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim))
 		return;
 	
-	if(IsFakeClient(victim) && !Cvars.ServerID.IntValue)
-		return;
-	
-	if(IsSamePlayers(client, victim) || IsSameTeam(client, victim))
-		return;
-	
-	if(IsValidAbuse(client))
+	if(IsValidAbuse(client) || IsSamePlayers(client, victim) || IsSameTeam(client, victim) || IsFakeClient(victim) && !Cvars.AllowBots.BoolValue)
 		return;
 	
 	/* Fix the weapon entity Global.Prefix */

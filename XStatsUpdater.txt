@@ -4,12 +4,11 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01j"
+			"Latest"	"0.01a_01k"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Fixed kill message translations."
-		"Notes" "Changed the course of update check on start to be loaded late than right on the OnPluginStart() call."
+		"Notes"	"Fixed bots being tracked on kill event when they shouldn't in CS:GO."
 	}
 	
 	"Files"
