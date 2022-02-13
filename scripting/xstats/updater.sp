@@ -4,8 +4,10 @@
  *	Initialize updater addition.
  */
 void PrepareUpdater()	{
-	if(IsUpdaterLoaded())
+	if(IsUpdaterLoaded())	{
 		Updater_AddPlugin(UpdateUrl);
+		Updater_ForceUpdate();
+	}
 }
 
 public void OnLibraryAdded(const char[] name)	{
@@ -21,8 +23,13 @@ public void OnLibraryAdded(const char[] name)	{
 }
 
 public void Updater_OnPluginUpdated()	{
-	XStats_DebugText(false, "New update found and installed, Restarting plugin..");
-	ReloadPlugin();
+	XStats_DebugText(false, "New update found and installed, Restarting plugin..");	
+	for(int client = 1; client < MaxClients; client++)	{
+		if(Tklib_IsValidClient(client, true))
+			CPrintToChat(client, "%s %t", Global.Prefix, "Update Found");
+	}
+	
+	Updater_ReloadPlugin();
 }
 
 stock Action Timer_CheckForUpdate(Handle timer)	{	
