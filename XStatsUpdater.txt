@@ -8,7 +8,7 @@
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Removed update force-check upon start."
+		"Notes"	"Added translation regarding xstats finding an update."
 	}
 	
 	"Files"
@@ -17,6 +17,8 @@
 		{
 			"Plugin"	"Path_SM/plugins/xstats.smx"
 			"Plugin"	"Path_SM/translations/xstats.phrases.txt"
+			
+			"Source"	"Path_SM/configs/xstats/
 		}
 		
 		"Plugin"	"Path_SM/plugins/xstats.smx"
