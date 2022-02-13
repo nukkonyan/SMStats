@@ -25,7 +25,7 @@ public void OnLibraryAdded(const char[] name)	{
 		
 		if(Global.UpdateTimer == null)	{
 			XStats_DebugText(false, "Creating 5 minute long automatic update checker.");
-			Global.UpdateTimer = CreateTimer(300.0, Timer_CheckForUpdate, _, TIMER_REPEAT);
+			Global.UpdateTimer = CreateTimer(300.0, Timer_CheckForUpdate, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}
 }
