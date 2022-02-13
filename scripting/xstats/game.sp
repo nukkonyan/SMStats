@@ -123,7 +123,7 @@ void Games_DatabaseConnected()	{
 			
 			DB.Threaded.Query(DBQuery_CreateTables, query, 5);
 		}
-		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking custom achievements.) (Did you install it correctly?.)", Global.logprefix, Global.achievements);
+		case false: XStats_DebugText(false, "%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking custom achievements.) (Did you install it correctly?.)", Global.logprefix, Global.achievements);
 	}
 	
 	delete file;
