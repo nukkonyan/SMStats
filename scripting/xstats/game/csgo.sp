@@ -76,6 +76,9 @@ void PrepareGame_CSGO()	{
 	
 	/* Other Deaths */
 	HookEventEx(EVENT_OTHER_DEATH, Other_Death_CSGO, EventHookMode_Pre);
+	
+	/* Config file */
+	AutoExecConfig(true, "csgo.xstats.plugin");
 }
 
 /* Deaths */
