@@ -752,10 +752,10 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 		{
 			/* Headshot collateral kill */
 			case true:
-				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[9]);
+				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[10]);
 			/* Colllateral kill */
 			case false:
-				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[9]);
+				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[10]);
 		}
 	}
 	/* Airshot kill */
@@ -819,7 +819,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[12], Kill_Type[0]);
 						/* Noscope headshot through smoke whilst blinded */
 						case false:
-							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[12]);
+							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[12]);
 					}
 				}
 				/* Noscope headshot kill through smoke */
@@ -832,7 +832,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[0]);
 						/* Noscope headshot kill through smoke */
 						case false:
-							Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[1]);
+							Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[1]);
 					}
 				}
 			}
@@ -846,7 +846,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
 					/* Noscope headshot kill */
 					case false:
-						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[4]);
+						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
 				}
 
 			}
@@ -872,12 +872,12 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			{
 				switch(KillMsg[client].BlindedKill)
 				{
-					/* Mid air noscope kill while blinded */
+					/* Mid air noscope headshot kill while blinded */
 					case true:
 						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[12], Kill_Type[0]);
-					/* Mid air noscope kill */
+					/* Mid air noscope headshot kill */
 					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[0]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
 				}
 			}
 		}
@@ -1006,7 +1006,6 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			}
 		}
 	}
-	
 	/* Telefrag */
 	else if(KillMsg[client].TeleFragKill)
 	{
@@ -1020,12 +1019,12 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 	/* Grenade Frag */
 	else if(KillMsg[client].GrenadeKill)
 	{
-		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[10]);
+		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[11]);
 	}
 	/* Bomb Kill */
 	else if(KillMsg[client].BombKill)
 	{
-		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[11]);
+		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[12]);
 	}
 	/* Blinded Kill */
 	else if(KillMsg[client].BlindedKill)
@@ -1034,10 +1033,10 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 		{
 			/* Mid air blinded kill */
 			case true:
-				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[12], Kill_Type[0]);
+				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[13], Kill_Type[0]);
 			/* Blinded kill */
 			case false:
-				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[12]);
+				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[13]);
 		}
 	}
 	

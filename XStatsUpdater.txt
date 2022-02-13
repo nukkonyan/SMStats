@@ -4,11 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01i"
+			"Latest"	"0.01a_01j"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Removed update force-check upon start."
+		"Notes"	"Fixed kill message translations."
+		"Notes" "Changed the course of update check on start to be loaded late than right on the OnPluginStart() call."
 	}
 	
 	"Files"

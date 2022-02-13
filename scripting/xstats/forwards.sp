@@ -220,7 +220,7 @@ public void OnEntityCreated(int entity, const char[] classname)	{
 }
 
 public void OnConfigsExecuted()	{
-	CheckActivePlayers();
+	CheckActivePlayers(); /* Check active players */
 }
 public void OnPluginEnd()	{
 	XStats_DebugText(false, "Ending..");	

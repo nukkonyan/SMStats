@@ -4,10 +4,18 @@
  *	Initialize updater addition.
  */
 void PrepareUpdater()	{
-	if(IsUpdaterLoaded())	{
-		Updater_AddPlugin(UpdateUrl);
-		Updater_ForceUpdate();
-	}
+	CreateTimer(5.0, Timer_PrepareUpdater);
+	XStats_DebugText(false, "Initializing 5 second delay for the update check on plugin startup.");
+}
+
+Action Timer_PrepareUpdater(Handle timer)	{
+	if(!IsUpdaterLoaded())
+		return Plugin_Handled;
+	
+	Updater_AddPlugin(UpdateUrl);
+	Updater_ForceUpdate();
+	
+	return Plugin_Handled;
 }
 
 public void OnLibraryAdded(const char[] name)	{

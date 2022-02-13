@@ -181,17 +181,15 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 	if(IsSameTeam(victim, client) || IsSamePlayers(victim, client))
 		return;
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== CS_Flashed =====//");
-		PrintToServer("Client: %i (%N)", client, client);
-		PrintToServer("Victim: %i (%N)", victim, victim);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "//===== CS_Flashed =====//");
+	XStats_DebugText(false, "Client: %i (%N)", client, client);
+	XStats_DebugText(false, "Victim: %i (%N)", victim, victim);
+	XStats_DebugText(false, " ");
 	
 	Session[client].FlashedOpponents++;
 	
 	char query[512];
-	Format(query, sizeof(query), "select `%s` set FlashedOpponents = FlashedOpponents+1 where SteamID='%s' and ServerID='%i'",
+	Format(query, sizeof(query), "update `%s` set FlashedOpponents = FlashedOpponents+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
 }
@@ -205,12 +203,10 @@ stock void Weapon_Fire_CSGO(Event event, const char[] event_name, bool dontBroad
 	char[] weapon = new char[64];
 	event.GetString(EVENT_STR_WEAPON, weapon, 64); /* You can use sizeof() on construction character function */
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== Weapon_Fire_CSGO =====//");
-		PrintToServer("Client: %N", client);
-		PrintToServer("weapon: \%s\"", weapon);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "//===== Weapon_Fire_CSGO =====//");
+	XStats_DebugText(false, "Client: %N", client);
+	XStats_DebugText(false, "weapon: \%s\"", weapon);
+	XStats_DebugText(false, " ");
 	
 	if(StrEqual(weapon, "weapon_incgrenade"))
 		m_hLastFirebombGrenade[client] = CSGO_Grenade_Incendiary;
@@ -278,6 +274,13 @@ stock Action Timer_OnEntityCreated(Handle timer, DataPack pack)	{
 	delete pack;
 	
 	int entity = EntRefToEntIndex(ref);
+	
+	/* If entity goes invalid. */
+	if(!IsValidEntityEx(entity))	{
+		KillTimer(timer);
+		return Plugin_Handled;
+	}
+	
 	int client = Ent(entity).Owner; /*GetEntPropEntEx(entity, Prop_Send, "m_hThrower");*/
 	
 	if(StrEqual(classname, "flashbang_projectile"))
@@ -289,15 +292,14 @@ stock Action Timer_OnEntityCreated(Handle timer, DataPack pack)	{
 	if(StrEqual(classname, "smokegrenade_projectile"))
 		m_hLastSmokeGrenade = client;
 	
-	if(Cvars.Debug.BoolValue)	{
-		PrintToServer("//===== OnEntityCreated_CounterStrike =====//");
-		PrintToServer(" ");
-		PrintToServer("Classname \"%s\"", classname);
-		PrintToServer("Entity index \"%i\"", entity);
-		PrintToServer("Entity reference \"%i\"", ref);
-		PrintToServer("Thrower \"%i\" \"%d\" (%N)", classname, client, client, client);
-		PrintToServer(" ");
-	}
+	XStats_DebugText(false, "//===== OnEntityCreated_CounterStrike =====//");
+	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Classname \"%s\"", classname);
+	XStats_DebugText(false, "Entity index \"%i\"", entity);
+	XStats_DebugText(false, "Entity reference \"%i\"", ref);
+	XStats_DebugText(false, "Thrower \"%i\" \"%d\" (%N)", classname, client, client, client);
+	XStats_DebugText(false, " ");
 	
-	//PrintToServer("OnEntityCreated \nclassname \"%s\" \nentity index %i \nentity reference %i \n", classname, entity, ref);
+	//XStats_DebugText(false, "OnEntityCreated \nclassname \"%s\" \nentity index %i \nentity reference %i \n", classname, entity, ref);
+	return Plugin_Handled;
 }
