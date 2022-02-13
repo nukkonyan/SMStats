@@ -816,10 +816,10 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 					{
 						/* Mid air noscope headshot kill through smoke whilst blinded */
 						case true:
-							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[12], Kill_Type[0]);
+							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
 						/* Noscope headshot through smoke whilst blinded */
 						case false:
-							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[12]);
+							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13]);
 					}
 				}
 				/* Noscope headshot kill through smoke */
@@ -861,7 +861,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Mid air noscope kill through smoke whilst blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[12], Kill_Type[0]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
 					/* Mid air noscope kill through smoke */
 					case false:
 						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[0]);
@@ -874,7 +874,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Mid air noscope headshot kill while blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[12], Kill_Type[0]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[13], Kill_Type[0]);
 					/* Mid air noscope headshot kill */
 					case false:
 						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
@@ -891,7 +891,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Noscope kill through smoke while blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[12]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[13]);
 					/* Noscope kill through smoke */
 					case false:
 						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[1]);
@@ -904,7 +904,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Noscope kill whilst blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[12]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[13]);
 					/* Noscope kill */
 					case false:
 						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[4]);
@@ -925,10 +925,10 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Mid air headshot kill through smoke whilst blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[12], Kill_Type[0]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
 					/* Headshot through smoke whilst blinded */
 					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[12]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13]);
 				}
 			}
 			/* Headshot kill through smoke */
@@ -955,7 +955,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Mid air headshot kill through smoke whilst blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[12], Kill_Type[0]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
 					/* Mid air headshot kill through smoke */
 					case false:
 						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[0]);
@@ -968,7 +968,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Mid air eadshot kill while blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[12], Kill_Type[0]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[13], Kill_Type[0]);
 					/* Mid air headshot kill */
 					case false:
 						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[0]);
@@ -985,7 +985,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Headshot kill through smoke while blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[12]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13]);
 					/* Headshot kill through smoke */
 					case false:
 						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[1]);
@@ -998,7 +998,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				{
 					/* Headshot kill whilst blinded */
 					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[12]);
+						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[13]);
 					/* Headshot kill */
 					case false:
 						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);
@@ -1039,13 +1039,11 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[13]);
 		}
 	}
-	
 	/* Mid air kill */
 	else if(KillMsg[client].MidAirKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
 	}
-	
 	switch(IsValidString(buffer))	{
 		case true: CPrintToChat(client, "%s %t", Global.Prefix, "Special Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name, buffer);
 		case false: CPrintToChat(client, "%s %t", Global.Prefix, "Default Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name);
@@ -1129,7 +1127,7 @@ stock void UpdateDamage(int client)	{
 }
 
 void DBQuery_UpdateDamage(Database database, DBResultSet results, const char[] error, int client)	{
-	if(results != null)	{
+	if(results != null && results.FetchRow())	{
 		char query[256];
 		Format(query, sizeof(query), "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue);
