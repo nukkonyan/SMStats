@@ -14,5 +14,5 @@ create table if not exists `kill_log_csgo`
 	`Noscope` bool not null default '0',
 	`ThruSmoke` bool not null default '0',
 	`BlindedKill` bool not null default '0',
-	primary key (`ID`)");
+	primary key (`ID`)
 )

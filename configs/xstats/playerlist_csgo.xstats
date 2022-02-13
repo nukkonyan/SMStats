@@ -75,5 +75,5 @@ create table if not exists `playerlist_csgo`
 	`Kills_weapon_revolver` int(32) not null default '0',
 	`Kills_weapon_knife` int(32) not null default '0',
 	`Kills_weapon_knife_t` int(32) not null default '0',
-	primary key (`SteamID`)");
+	primary key (`SteamID`)
 )
