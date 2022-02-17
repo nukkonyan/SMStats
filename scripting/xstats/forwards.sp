@@ -37,6 +37,11 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
 		Player[client].Country = "unknown country";
 	
+	if(!DatabaseDirect())	{
+		XStats_DebugText(false, "Player %s was unable to be authorized properly due to database connection unavailable.", Player[client].Playername);
+		return;
+	}
+	
 	DBResultSet results = SQL_QueryEx(DB.Direct, "select * from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 	
 	/* Prevent invalid characters within playername when being sent over to the database. */
