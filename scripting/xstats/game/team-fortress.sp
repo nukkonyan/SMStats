@@ -361,7 +361,7 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 		"Object Event Type 2", /* Destroying */
 	}, object_name[64], type_name[64];
 	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
-	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[2]);
+	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[0]);
 	
 	char query[256];
 	switch(building)	{
