@@ -92,12 +92,13 @@ public void OnClientPutInServer(int client)	{
 	if(!Tklib_IsValidClient(client, _, _, false))
 		return;
 	
-	if(IsFakeClient(client) && Cvars.AllowBots.BoolValue)	{
-		GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
-		CPrintToChatAll("%s BOT %s was added", Global.Prefix, Player[client].Name);
-		if(!StrEqual(Sound[0].path, NULL_STRING))
-			EmitSoundToAll(Sound[0].path);
-		
+	if(IsFakeClient(client))	{
+		if(Cvars.AllowBots.BoolValue)	{
+			GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
+			CPrintToChatAll("%s BOT %s was added", Global.Prefix, Player[client].Name);
+			if(!StrEqual(Sound[0].path, NULL_STRING))
+				EmitSoundToAll(Sound[0].path);
+		}
 		return;
 	}
 	
