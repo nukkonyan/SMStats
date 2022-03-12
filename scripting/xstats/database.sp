@@ -45,7 +45,7 @@ Action Timer_PrepareDatabase(Handle timer)	{
 }
 
 void DBConnect(Database database, const char[] error, any data)	{
-	if(!IsValidDatabase(database))	{
+	if(database == null)	{
 		delete database;
 		XStats_DebugText(true, "Database connection failed! (%s)", error);
 		return;

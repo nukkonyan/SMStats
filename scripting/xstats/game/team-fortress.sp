@@ -275,7 +275,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 					Session[client].FlagsStolen++;
 					Session[client].FlagsPickedUp++;
 					AddSessionPoints(client, points);
-					CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 1", Player[client].Name, Player[client].Points, points, flag_event_type);
+					CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 0", Player[client].Name, Player[client].Points, points, flag_event_type);
 					
 					Format(query, sizeof(query), "update `%s` set Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1, FlagsStolen = FlagsStolen+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue); 
@@ -421,10 +421,10 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 		}
 			
 		BuiltObject[client][type] = true;
-		DataPack pack = new DataPack();
+		DataPack pack;
+		CreateDataTimer(BuiltObject_Timer[type], Timer_Player_BuiltObject, pack);
 		pack.WriteCell(client);
 		pack.WriteCell(type);
-		CreateTimer(BuiltObject_Timer[type], Timer_Player_BuiltObject, pack);
 	}
 }
 
@@ -515,10 +515,11 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 		}
 		
 		DestroyedObject[client][type] = true;
-		DataPack pack = new DataPack();
+		DataPack pack;
+		CreateDataTimer(DestroyedObject_Timer[type], Timer_Player_DestroyedObject, pack);
 		pack.WriteCell(client);
 		pack.WriteCell(type);
-		CreateTimer(DestroyedObject_Timer[type], Timer_Player_DestroyedObject, pack);
+		
 	}
 }
 
@@ -642,8 +643,7 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 	char query[512];
 	int client, points = 0;
 	
-	if(StrEqual(event_name, EVENT_PASS_GET) && (client = event.GetInt(EVENT_STR_OWNER)) > 0 && (points = TF2_PassBall[0].IntValue) > 0)
-	{
+	if(StrEqual(event_name, EVENT_PASS_GET) && (client = event.GetInt(EVENT_STR_OWNER)) > 0 && (points = TF2_PassBall[0].IntValue) > 0)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
@@ -659,8 +659,7 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_SCORE) && (client = event.GetInt(EVENT_STR_SCORER)) > 0 && (points = TF2_PassBall[1].IntValue) > 0)
-	{
+	if(StrEqual(event_name, EVENT_PASS_SCORE) && (client = event.GetInt(EVENT_STR_SCORER)) > 0 && (points = TF2_PassBall[1].IntValue) > 0)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
@@ -676,8 +675,7 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_FREE) && (client = event.GetInt(EVENT_STR_OWNER)) > 0 && (points = TF2_PassBall[2].IntValue) > 0)
-	{
+	if(StrEqual(event_name, EVENT_PASS_FREE) && (client = event.GetInt(EVENT_STR_OWNER)) > 0 && (points = TF2_PassBall[2].IntValue) > 0)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
@@ -693,8 +691,7 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_PASS_CAUGHT) && (client = event.GetInt(EVENT_STR_CATCHER)) > 0 && (points = TF2_PassBall[3].IntValue) > 0)
-	{
+	if(StrEqual(event_name, EVENT_PASS_PASS_CAUGHT) && (client = event.GetInt(EVENT_STR_CATCHER)) > 0 && (points = TF2_PassBall[3].IntValue) > 0)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
@@ -706,8 +703,8 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		AddSessionPoints(client, points);
 		
 		switch(Tklib_IsValidClient(passer, !(IsFakeClient(passer) && !Cvars.ServerID.IntValue)))	{
-			case	true:	CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Scenario 1", Player[client].Name, Player[client].Points, points, Player[passer].Name);
-			case	false:	CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Scenario 2", Player[client].Name, Player[client].Points, points);
+			case true: CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Scenario 1", Player[client].Name, Player[client].Points, points, Player[passer].Name);
+			case false: CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Scenario 2", Player[client].Name, Player[client].Points, points);
 		}
 		
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i, PassBallsCatched = PassBallsCatched+1 where SteamID='%s' and ServerID='%i'",
@@ -715,8 +712,7 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_BALL_STOLEN) && (client = event.GetInt(EVENT_STR_ATTACKER)) > 0 && (points = TF2_PassBall[4].IntValue) > 0)
-	{
+	if(StrEqual(event_name, EVENT_PASS_BALL_STOLEN) && (client = event.GetInt(EVENT_STR_ATTACKER)) > 0 && (points = TF2_PassBall[4].IntValue) > 0)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
@@ -728,8 +724,8 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		AddSessionPoints(client, points);
 		
 		switch(Tklib_IsValidClient(victim, !(IsFakeClient(victim) && !Cvars.ServerID.IntValue)))	{
-			case	true:	CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Steal Ball Scenario 1", Player[client].Name, Player[client].Points, points, Player[victim].Name);
-			case	false:	CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Steal Ball Scenario 2", Player[client].Name, Player[client].Points, points);
+			case true: CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Steal Ball Scenario 1", Player[client].Name, Player[client].Points, points, Player[victim].Name);
+			case false: CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Steal Ball Scenario 2", Player[client].Name, Player[client].Points, points);
 		}
 		
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i, PassBallsStolen = PassBallsStolen+1 where SteamID='%s' and ServerID='%i'",
@@ -737,8 +733,7 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		DB.Threaded.Query(DBQuery_Callback, query);
 	}
 	
-	if(StrEqual(event_name, EVENT_PASS_BALL_BLOCKED) && (client = event.GetInt(EVENT_STR_BLOCKER)) > 0 && TF2_PassBall[5].IntValue > 0)
-	{
+	if(StrEqual(event_name, EVENT_PASS_BALL_BLOCKED) && (client = event.GetInt(EVENT_STR_BLOCKER)) > 0 && TF2_PassBall[5].IntValue > 0)	{
 		if(!Tklib_IsValidClient(client, true))
 			return;
 		
@@ -750,8 +745,8 @@ stock void PassBall(Event event, const char[] event_name, bool dontBroadcast)	{
 		AddSessionPoints(client, points);
 		
 		switch(Tklib_IsValidClient(victim, !(IsFakeClient(victim) && !Cvars.ServerID.IntValue)))	{
-			case	true:	CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Block Ball Scenario 1", Player[client].Name, Player[client].Points, points, Player[victim].Name);
-			case	false:	CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Block Ball Scenario 2", Player[client].Name, Player[client].Points, points);
+			case true: CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Block Ball Scenario 1", Player[client].Name, Player[client].Points, points, Player[victim].Name);
+			case false: CPrintToChat(client, "%s %t", Global.Prefix, "PassBall Block Ball Scenario 2", Player[client].Name, Player[client].Points, points);
 		}
 		
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i, PassBallsBlocked = PassBallBlocked+1 where SteamID='%s' and ServerID='%i'",
@@ -778,28 +773,24 @@ stock void Halloween_Boss_Killed(Event event, const char[] event_name, bool dont
 	int points = TF2_BossKilled[boss].IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
-	if(Cvars.Debug.BoolValue)	{
-		char boss_name[][] = {
-			"Unused / Invalid Boss (id 0)",
-			"Horseless Headless Horsemann.",
-			"Monoculus",
-			"Merasmus",
-		};
-		
-		PrintToServer("//===== Halloween_Boss_Killed =====//");
-		PrintToServer("killer %N", client);
-		PrintToServer("boss id %i", boss);
-		PrintToServer("boss \"%s\"", boss_name[boss]);
-		PrintToServer(" ");
-		PrintToServer("Points %i", points);
-		PrintToServer(" ");
-	}
-	
 	char halloween_type[][] = {
 		"Halloween Boss Type 1", /* Horseless Headless Horsemann. */
 		"Halloween Boss Type 2", /* Monoculus */
 		"Halloween Boss Type 3", /* Merasmus */
+	}, boss_name_debug[][] = {
+		"Unused / Invalid Boss (id 0)",
+		"Horseless Headless Horsemann.",
+		"Monoculus",
+		"Merasmus",
 	}, boss_name[64];
+	
+	XStats_DebugText(false, "//===== Halloween_Boss_Killed =====//");
+	XStats_DebugText(false, "killer %N", client);
+	XStats_DebugText(false, "boss id %i", boss);
+	XStats_DebugText(false, "boss \"%s\"", boss_name_debug[boss]);
+	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Points %i", points);
+	XStats_DebugText(false, " ");
 	
 	Format(boss_name, sizeof(boss_name), "%s{default}", halloween_type[boss]);
 	
@@ -809,21 +800,21 @@ stock void Halloween_Boss_Killed(Event event, const char[] event_name, bool dont
 		CPrintToChat(client, "%s %t", Global.Prefix, "Halloween Kill Event", Player[client].Name, Player[client].Points, points, boss_name);
 		
 		switch(boss)	{
-			case	TFBoss_Killed_HHH:	{
+			case TFBoss_Killed_HHH:	{
 				Session[client].KilledHHH++;
 				
 				Format(query, sizeof(query), "update `%s` set Points = Points+%i, TotalKilledHHH = TotalKilledHHH+1 where SteamID='%s' and ServerID='%i'",
 				Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 				DB.Threaded.Query(DBQuery_Callback, query);
 			}
-			case	TFBoss_Killed_Monoculus:	{
+			case TFBoss_Killed_Monoculus:	{
 				Session[client].KilledMonoculus++;	
 				
 				Format(query, sizeof(query), "update `%s` set Points = Points+%i, TotalKilledMonoculus = TotalKilledMonoculus+1 where SteamID='%s' and ServerID='%i'",
 				Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 				DB.Threaded.Query(DBQuery_Callback, query);
 			}
-			case	TFBoss_Killed_Merasmus:	{
+			case TFBoss_Killed_Merasmus:	{
 				Session[client].KilledMerasmus++;
 				
 				Format(query, sizeof(query), "update `%s` set Points = Points+%i, TotalKilledMerasmus = TotalKilledMerasmus+1 where SteamID='%s' and ServerID='%i'",
@@ -941,11 +932,11 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 	pack.WriteCell(victim);
 	pack.WriteCell(defindex);
 	
-	CreateTimer(0.0, TimerPlayerJarated, pack);
+	RequestFrame(FramePlayerJarated, pack);
 	return Plugin_Continue;
 }
 
-Action TimerPlayerJarated(Handle timer, DataPack pack)	{
+void FramePlayerJarated(DataPack pack)	{
 	pack.Reset();
 	int client = pack.ReadCell();
 	int victim = pack.ReadCell();
@@ -961,7 +952,7 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 		/* Madmilk & Mutated Milk */
 		case 222, 1121:	{
 			if(MadMilked[client])
-				return Plugin_Handled;
+				return;
 			
 			points = TF2_MadMilked.IntValue;
 			Session[client].MadMilked++;
@@ -978,7 +969,7 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 		/* Jarate & The Self-Aware Beauty Mark */
 		case 58, 1105:	{
 			if(Jarated[client])
-				return Plugin_Handled;
+				return;
 			
 			points = TF2_Jarated.IntValue;
 			Session[client].Jarated++;
@@ -1011,11 +1002,10 @@ Action TimerPlayerJarated(Handle timer, DataPack pack)	{
 	}
 	
 	XStats_DebugText(false, "//===== PlayerJarated =====//");
-	XStats_DebugText(false, "Client: %N (index %i)", client, client);
-	XStats_DebugText(false, "Victim: %N (index %i)", victim, victim);
+	XStats_DebugText(false, "Client: %s (index %i)", Player[client].Playername, client);
+	XStats_DebugText(false, "Victim: %s (index %i)", Player[victim].Playername, victim);
 	XStats_DebugText(false, "Defindex: %i", defindex);
 	XStats_DebugText(false, " ");
-	return Plugin_Handled;
 }
 
 float Extinguished_Timer = 10.0;
@@ -1043,8 +1033,8 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 		return Plugin_Handled;
 	
 	XStats_DebugText(false, "//===== PlayerExtinguished =====//");
-	XStats_DebugText(false, "Client: %N (index %i)", client, client);
-	XStats_DebugText(false, "Victim: %N (index %i)", victim, victim);
+	XStats_DebugText(false, "Client: %s (index %i)", Player[client].Playername, client);
+	XStats_DebugText(false, "Victim: %s (index %i)", Player[victim].Playername, victim);
 	XStats_DebugText(false, " ");
 	
 	if(Extinguished[client])
@@ -1053,11 +1043,11 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 	DataPack pack = new DataPack();
 	pack.WriteCell(client);
 	pack.WriteCell(victim);
-	CreateTimer(0.0, TimerPlayerExtinguished, pack);
+	RequestFrame(FramePlayerExtinguished, pack);
 	return Plugin_Continue;
 }
 
-Action TimerPlayerExtinguished(Handle timer, DataPack pack)	{
+void FramePlayerExtinguished(DataPack pack)	{
 	pack.Reset();
 	int client = pack.ReadCell();
 	int victim = pack.ReadCell();
@@ -1067,8 +1057,7 @@ Action TimerPlayerExtinguished(Handle timer, DataPack pack)	{
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	AddSessionPoints(client, points);
 	
-	CPrintToChat(client, "%s %s (%i) earned %i points for Extinguishing %s.",
-	Global.Prefix, Player[client].Name, Player[client].Points, points, Player[victim].Name);
+	CPrintToChat(client, "%s %t", Global.Prefix, "Player Extinguished", Player[client].Name, Player[client].Points, points, Player[victim].Name);
 	
 	char query[512];			
 	Format(query, sizeof(query), "update `%s` set Points = Points+%i, Extinguished = Extinguished+1 where SteamID='%s' and ServerID='%i'",
@@ -1100,8 +1089,8 @@ Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int players
 	
 	Session[client].Ignited++;
 	XStats_DebugText(false, "//===== PlayerIgnited =====//");
-	XStats_DebugText(false, "Client: %N (index %i)", client, client);
-	XStats_DebugText(false, "Victim: %N (index %i)", victim, victim);
+	XStats_DebugText(false, "Client: %s (index %i)", Player[client].Playername, client);
+	XStats_DebugText(false, "Victim: %s (index %i)", Player[client].Playername, victim);
 	XStats_DebugText(false, " ");
 	return Plugin_Continue;
 }
@@ -1109,37 +1098,28 @@ Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int players
 /* Callbacks & Forwards */
 stock Action Timer_Player_BuiltObject(Handle timer, DataPack pack)	{
 	pack.Reset();
-	int client = pack.ReadCell();
-	int type = pack.ReadCell();
-	delete pack; /* Prevent handle leak */
-	
-	BuiltObject[client][type] = false;
+	BuiltObject[pack.ReadCell()][pack.ReadCell()] = false;
 }
 stock Action Timer_Player_DestroyedObject(Handle timer, DataPack pack)	{
 	pack.Reset();
-	int client = pack.ReadCell();
-	int type = pack.ReadCell();
-	delete pack;
-	
-	DestroyedObject[client][type] = false;
+	DestroyedObject[pack.ReadCell()][pack.ReadCell()] = false;
 }
 
-stock Action Timer_Player_Invulned(Handle timer, int client)	{	Ubercharged[client] = false;	}
-stock Action Timer_Player_Teleported(Handle timer, int client)	{	Teleported[client] = false;		}
-stock Action Delay_PlayerJarated(Handle timer, int client)		{	CreateTimer(Jarated_Timer, Timer_PlayerJarated, client);	}
-stock Action Timer_PlayerJarated(Handle timer, int client)		{	Jarated[client] = false;		}
-stock Action Delay_PlayerMadMilked(Handle timer, int client)	{	CreateTimer(MadMilked_Timer, Timer_PlayerMadMilked, client);	}
-stock Action Timer_PlayerMadMilked(Handle timer, int client)	{	MadMilked[client] = false;		}
-stock Action Timer_PlayerExtinguished(Handle timer, int client)	{	Extinguished[client] = false;	}
+stock Action Timer_Player_Invulned(Handle timer, int client)	{ Ubercharged[client] = false; }
+stock Action Timer_Player_Teleported(Handle timer, int client)	{ Teleported[client] = false; }
+stock Action Delay_PlayerJarated(Handle timer, int client)		{ CreateTimer(Jarated_Timer, Timer_PlayerJarated, client); }
+stock Action Timer_PlayerJarated(Handle timer, int client)		{ Jarated[client] = false; }
+stock Action Delay_PlayerMadMilked(Handle timer, int client)	{ CreateTimer(MadMilked_Timer, Timer_PlayerMadMilked, client); }
+stock Action Timer_PlayerMadMilked(Handle timer, int client)	{ MadMilked[client] = false; }
+stock Action Timer_PlayerExtinguished(Handle timer, int client)	{ Extinguished[client] = false; }
 
 stock void ResetAntiAbuseArrays()	{
-	if(!Cvars.ServerID.IntValue)
+	if(!Cvars.PluginActive.BoolValue)
 		return;
 	
-	for(int i = 0; i < MaxClients; i++)	{
-		for(int type = 0; type < 6; type++)	{
-			BuiltObject[i][type] = false;
-		}
+	for(int client = 0; client <= MAXPLAYERS; client++)	{
+		for(int type = 0; type < 6; type++)
+			BuiltObject[client][type] = false;
 	}
 }
 
@@ -1148,7 +1128,7 @@ stock void ResetAntiAbuseArrays()	{
 /*
 Seems to not work in TF2. (Maybe TF2C?)
 stock void WaitingForPlayers(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!Cvars.ServerID.IntValue)
+	if(!Cvars.PluginActive.BoolValue)
 		return;
 	
 	WarmupActive = StrEqual(event_name, EVENT_TEAMPLAY_WAITING_BEGINS);
@@ -1158,8 +1138,8 @@ stock void WaitingForPlayers(Event event, const char[] event_name, bool dontBroa
 */
 
 /* Disabled because these particularily doesn't wanna work properly on TF2 Classic.
-public void TF2_OnWaitingForPlayersStart()	{	WarmupActive = true;	}
-public void TF2_OnWaitingForPlayersEnd()	{	WarmupActive = false;	}
+public void TF2_OnWaitingForPlayersStart()	{ WarmupActive = true; }
+public void TF2_OnWaitingForPlayersEnd()	{ WarmupActive = false; }
 */
 
 /**

@@ -222,7 +222,7 @@
 	"Capture Point Event"
 	{
 		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for capturing point {4}"
+		"en"		"{1} ({2}) Earned {3} points for {4}"
 	}
 	
 	//===================//
