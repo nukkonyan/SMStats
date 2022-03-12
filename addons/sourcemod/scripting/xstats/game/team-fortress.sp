@@ -561,7 +561,7 @@ stock void Player_Teleported(Event event, const char[] event_name, bool dontBroa
 	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim) || Teleported[victim])
 		return;
 	
-	if(IsValidAbuse(client) || !IsValidStats() || IsFakeClient(victim) && !Cvars.ServerID.IntValue || (points = TF2_Teleported.IntValue) < 1)
+	if(IsValidAbuse(client) || !IsValidStats() || IsFakeClient(victim) && !Cvars.ServerID.IntValue || IsSamePlayers(client, victim) || (points = TF2_Teleported.IntValue) < 1)
 		return;
 	
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
