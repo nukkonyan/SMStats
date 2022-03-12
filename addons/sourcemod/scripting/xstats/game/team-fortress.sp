@@ -335,7 +335,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 
 /* Objects | Buildings */
 float BuiltObject_Timer[6] = {240.0, ...};
-bool BuiltObject[MAXPLAYERS][6];
+bool BuiltObject[MAXPLAYERS+1][6];
 stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats())
 		return;
@@ -429,7 +429,7 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 }
 
 float DestroyedObject_Timer[6] = {40.0, ...};
-bool DestroyedObject[MAXPLAYERS][6];
+bool DestroyedObject[MAXPLAYERS+1][6];
 stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats())
 		return;
@@ -525,7 +525,7 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 
 /* Player */
 float Ubercharged_Timer = 30.0;
-bool Ubercharged[MAXPLAYERS] = {false, ...};
+bool Ubercharged[MAXPLAYERS+1] = {false, ...};
 stock void Player_Invulned(Event event, const char[] event_name, bool dontBroadcast)	{
 	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_MEDIC_USERID));
@@ -553,7 +553,7 @@ stock void Player_Invulned(Event event, const char[] event_name, bool dontBroadc
 }
 
 float Teleported_Timer = 15.0;
-bool Teleported[MAXPLAYERS] = {false, ...};
+bool Teleported[MAXPLAYERS+1] = {false, ...};
 stock void Player_Teleported(Event event, const char[] event_name, bool dontBroadcast)	{
 	int points;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_BUILDERID));
@@ -899,8 +899,8 @@ stock void Merasmus_Stunned(Event event, const char[] event_name, bool dontBroad
 /* User Messages */
 float Jarated_Timer = 25.0;
 float MadMilked_Timer = 25.0;
-bool Jarated[MAXPLAYERS] = {false, ...};
-bool MadMilked[MAXPLAYERS] = {false, ...};
+bool Jarated[MAXPLAYERS+1] = {false, ...};
+bool MadMilked[MAXPLAYERS+1] = {false, ...};
 Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{	
 	/* Manually fire a broken event */
 	Event event = CreateEvent("player_jarated", true);
@@ -1009,7 +1009,7 @@ void FramePlayerJarated(DataPack pack)	{
 }
 
 float Extinguished_Timer = 10.0;
-bool Extinguished[MAXPLAYERS] = {false, ...};
+bool Extinguished[MAXPLAYERS+1] = {false, ...};
 Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int playersNum, bool reliable, bool init)	{	
 	/* Because event "player_extinguished" is broken, we can manually force the event to be fired. */
 	Event event = CreateEvent("player_extinguished", true);
