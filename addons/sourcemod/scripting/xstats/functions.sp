@@ -548,7 +548,7 @@ stock bool AssistedKill(int assist, int client, int victim)	{
 		XStats_DebugText(false, "Updating points for %s due to assisting a kill", Player[victim].Playername);
 		
 		Player[assist].Points = GetClientPoints(Player[assist].SteamID);
-		CPrintToChat(client, "%s %t",
+		CPrintToChat(assist, "%s %t",
 		Global.Prefix, "Assist Kill Event", Player[assist].Name, Player[assist].Points, Cvars.AssistKill.IntValue, Player[client].Name, Player[victim].Name);
 	}
 		

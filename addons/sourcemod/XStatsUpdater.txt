@@ -4,11 +4,11 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01p"
+			"Latest"	"0.01a_01q"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Fixed invalid array out of index error."
+		"Notes"	"Fixed assisting message shown to the teammate instead of the assister."
 	}
 	
 	"Files"
