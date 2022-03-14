@@ -61,7 +61,7 @@ Action Timer_UploadStuff(Handle timer, int client)	{
 		return	Plugin_Handled;
 	}
 	
-	GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
+	GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 	GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
 	//PrintToServer("%N team %d", client, GetClientTeam(client));
 	

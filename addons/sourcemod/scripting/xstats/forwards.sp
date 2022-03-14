@@ -31,7 +31,7 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 		return;
 	
 	GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
-	GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
+	GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 	GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
 	Format(Player[client].SteamID, sizeof(Player[].SteamID), auth);
 	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
@@ -94,7 +94,7 @@ public void OnClientPutInServer(int client)	{
 	
 	if(IsFakeClient(client))	{
 		if(Cvars.AllowBots.BoolValue)	{
-			GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
+			GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 			CPrintToChatAll("%s BOT %s was added", Global.Prefix, Player[client].Name);
 			if(!StrEqual(Sound[0].path, NULL_STRING))
 				EmitSoundToAll(Sound[0].path);

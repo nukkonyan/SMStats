@@ -663,7 +663,7 @@ stock void CheckPlayersPluginStart()	{
 			GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
 			GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
 			GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
-			GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
+			GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 			if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
 				Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 			
@@ -695,7 +695,7 @@ stock void CheckPlayersPluginStart()	{
 		/* Bots needs a name too, right? */
 		if(Tklib_IsValidClient(client, false, false, false))	{
 			GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
-			GetClientTeamString(client, Player[client].Name, sizeof(Player[].Name));
+			GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 		}
 	}
 	
