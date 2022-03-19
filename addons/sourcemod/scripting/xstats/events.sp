@@ -1,6 +1,6 @@
 /* Initialize global events */
 void PrepareEvents()	{
-	HookEventEx(EVENT_PLAYER_DEATH, Suicide, EventHookMode_Pre);
+	HookEventEx(EVENT_PLAYER_DEATH, Suicide);
 	HookEventEx(EVENT_PLAYER_TEAM, UploadStuff);
 	HookEventEx(EVENT_PLAYER_CHANGENAME, UploadStuff);
 	HookEventEx(EVENT_PLAYER_DISCONNECT, Disconnected, EventHookMode_Pre);

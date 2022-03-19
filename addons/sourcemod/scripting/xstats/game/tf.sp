@@ -645,7 +645,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim))
 		return;
 	
-	if(IsValidAbuse(client) || IsSamePlayers(client, victim) || IsSameTeam(client, victim) || IsFakeClient(victim) && !Cvars.ServerID.IntValue)
+	if(IsValidAbuse(client) || IsSamePlayers(client, victim) || IsSameTeam(client, victim) || IsFakeClient(victim) && !Cvars.AllowBots.BoolValue)
 		return;
 	
 	OnDeathRankPanel(client);
@@ -666,7 +666,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	event.SetBool("headshot", headshot);
 	bool backstab = (customkill == 2);
 	event.SetBool("backstab", backstab);
-	bool noscope = (customkill == 11);
+	bool noscope = (TF2_GetPlayerClass(client) == TFClass_Sniper && defindex != 56 && defindex != 1005 && defindex != 1092 && !TF2_IsPlayerInCondition(client, TFCond_Zoomed));
 	event.SetBool("noscope", noscope);
 	bool bleedkill = (customkill == 34);
 	event.SetBool("bleedkill", bleedkill);
@@ -754,11 +754,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		defindex = 20;
 	
 	/* Sandman. */
-	if(StrEqual(weapon, "ball", false))	{
+	if(StrEqual(weapon, "ball", false)) {
 		int getindex = 0;
-		switch(TF2_GetPlayerClass(client))	{
-			case	TFClass_Scout:	getindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Melee)).DefinitionIndex;
-			case	TFClass_Pyro:	{
+		switch(TF2_GetPlayerClass(client)) {
+			case TFClass_Scout:	getindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Melee)).DefinitionIndex;
+			case TFClass_Pyro: {
 				getindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex;	//Pyro deflected the ball.
 				deflectkill = true;
 			}
@@ -803,15 +803,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			if((points = TF2_MiniSentryKill.IntValue) < 1)
 				return;
 		}
-		default:	{
+		default: {
 			if((points = Cvars.Weapon[defindex].IntValue) < 1)
 				return;
 		}
 	}
-	
-	/* Classic - since you can noscope headshot. */
-	if(defindex == 1098 && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
-		noscope = true;
 	
 	/* The database query upload ("bat" -> "weapon_bat") */
 	char fix_weapon[96];

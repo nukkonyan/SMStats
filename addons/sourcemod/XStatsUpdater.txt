@@ -4,11 +4,11 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01t"
+			"Latest"	"0.01a_01u"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Fixed player teleporter counting the building owner (TF2)."
+		"Notes"	"Fixed scoped in bodyshots counting as noscope (TF2)."
 	}
 	
 	"Files"
