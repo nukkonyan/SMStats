@@ -666,7 +666,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	event.SetBool("headshot", headshot);
 	bool backstab = (customkill == 2);
 	event.SetBool("backstab", backstab);
-	bool noscope = (TF2_GetPlayerClass(client) == TFClass_Sniper && defindex != 56 && defindex != 1005 && defindex != 1092 && !TF2_IsPlayerInCondition(client, TFCond_Zoomed));
+	bool noscope = ((customkill = 11 || defindex == 1098 ) && !TF2_IsPlayerInCondition(client, TFCond_Zoomed));
 	event.SetBool("noscope", noscope);
 	bool bleedkill = (customkill == 34);
 	event.SetBool("bleedkill", bleedkill);

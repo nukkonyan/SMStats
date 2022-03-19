@@ -4,11 +4,11 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01u"
+			"Latest"	"0.01a_01v"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Fixed scoped in bodyshots counting as noscope (TF2)."
+		"Notes"	"Noscopes are now properly read (lol) (TF2)."
 	}
 	
 	"Files"
