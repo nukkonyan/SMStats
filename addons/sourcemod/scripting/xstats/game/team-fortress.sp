@@ -151,7 +151,7 @@ void PrepareGame_TeamFortress()	{
 }
 
 /* Capture Point */
-stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool dontBroadcast)	{
+stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool dontBroadcast) {
 	if(!IsValidStats() || TF2_PointCaptured.IntValue < 1)
 		return;
 	
@@ -163,7 +163,7 @@ stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool do
 	char captured_point[64];
 	Format(captured_point, sizeof(captured_point), "%t{default}", "Capture Event Type 0");
 	
-	for(int i = 0; i < strlen(cappers); i++)	{
+	for(int i = 0; i < strlen(cappers); i++) {
 		int client = cappers[i];
 		
 		if(Tklib_IsValidClient(client, true) && !IsValidAbuse(client))	{
@@ -178,7 +178,7 @@ stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool do
 	}
 }
 
-stock void Teamplay_Capture_Blocked(Event event, const char[] event_name, bool dontBroadcast)	{
+stock void Teamplay_Capture_Blocked(Event event, const char[] event_name, bool dontBroadcast) {
 	if(!IsValidStats() || TF2_PointBlocked.IntValue < 1)
 		return;
 	
@@ -258,19 +258,19 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 		"Flag Event Type 3", /* Defending */
 		"Flag Event Type 4" /* Dropping */
 	}, flag_event_type[64];
-	switch(flag)	{
+	switch(flag) {
 		case TFFlag_PickedUp: Format(flag_event_type, sizeof(flag_event_type), "%t{default}", home ? flag_event[1] : flag_event[0]);
 		case TFFlag_Captured: Format(flag_event_type, sizeof(flag_event_type), "%t{default}", flag_event[2]);
 		case TFFlag_Defended: Format(flag_event_type, sizeof(flag_event_type), "%t{default}", flag_event[3]);
 		case TFFlag_Dropped: Format(flag_event_type, sizeof(flag_event_type), "%t{default}", flag_event[4]);
 	}
 	
-	switch(flag)	{
+	switch(flag) {
 		/* Flag was picked up */
-		case TFFlag_PickedUp:	{
-			switch(home)	{
+		case TFFlag_PickedUp: {
+			switch(home) {
 				/* Flag was stolen */
-				case true:	{
+				case true: {
 					points += TF2_FlagStolen.IntValue;
 					Session[client].FlagsStolen++;
 					Session[client].FlagsPickedUp++;
@@ -283,7 +283,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 					XStats_DebugText(false, "Updating points, flags picked up and stolen flags for %s", Player[client].Playername);
 				}
 				/* Flag was not stolen (phew, that was close *heavy voice*) */
-				case false:	{
+				case false: {
 					Session[client].FlagsPickedUp++;
 					AddSessionPoints(client, points);
 					CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 0", Player[client].Name, Player[client].Points, points, flag_event_type);
@@ -296,7 +296,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			}
 		}
 		/* Flag was captured */
-		case TFFlag_Captured:	{
+		case TFFlag_Captured: {
 			Session[client].FlagsCaptured++;
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 0", Player[client].Name, Player[client].Points, points, flag_event_type);
@@ -307,7 +307,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			XStats_DebugText(false, "Updating points for %s due to capturing flag", Player[client].Playername);
 		}
 		/* Flag was defended */
-		case TFFlag_Defended:	{
+		case TFFlag_Defended: {
 			Session[client].FlagsDefended++;
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 0", Player[client].Name, Player[client].Points, points, flag_event_type);
@@ -318,7 +318,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 			XStats_DebugText(false, "Updating points for %s due to defending flag", Player[client].Playername);
 		}
 		/* Flag was dropped */
-		case TFFlag_Dropped:	{
+		case TFFlag_Dropped: {
 			Session[client].FlagsDropped++;
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Flag Event 1", Player[client].Name, Player[client].Points, points, flag_event_type);
@@ -365,42 +365,42 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 	
 	char query[256];
 	switch(building)	{
-		case TFBuilding_Sentrygun:	{
+		case TFBuilding_Sentrygun: {
 			Session[client].SentryGunsBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set SentryGunsBuilt = SentryGunsBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_Dispenser:	{
+		case TFBuilding_Dispenser: {
 			Session[client].DispensersBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set DispensersBuilt = DispensersBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_MiniSentry:	{
+		case TFBuilding_MiniSentry: {
 			Session[client].MiniSentryGunsBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set MiniSentryGunsBuilt = MiniSentryGunsBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_Teleporter_Entrance:	{
+		case TFBuilding_Teleporter_Entrance: {
 			Session[client].TeleporterEntrancesBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set TeleporterEntrancesBuilt = TeleporterEntrancesBuilt+1, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_Teleporter_Exit:	{
+		case TFBuilding_Teleporter_Exit: {
 			Session[client].TeleporterExitsBuilt++;
 			Session[client].BuildingsBuilt++;
 			Format(query, sizeof(query), "update `%s` set TeleporterExitsBuilt = TeleporterExitsBuilt, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_Sapper:	{
+		case TFBuilding_Sapper: {
 			Session[client].SappersPlaced++;
 			Format(query, sizeof(query), "update `%s` set SappersPlaced = SappersPlaced, TotalBuildingsBuilt = TotalBuildingsBuilt+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -409,8 +409,8 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 	}
 	
 	/* Ensure the player cannot abuse the points */
-	if(!BuiltObject[client][type])	{
-		if((points = TF2_BuiltObject[type].IntValue) > 0)	{
+	if(!BuiltObject[client][type]) {
+		if((points = TF2_BuiltObject[type].IntValue) > 0) {
 			Player[client].Points = GetClientPoints(Player[client].SteamID);
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Object Event", Player[client].Name, Player[client].Points, points, type_name, object_name);
@@ -621,13 +621,13 @@ stock void Player_Stunned(Event event, const char[] event_name, bool dontBroadca
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
 	char query[512];
-	switch(big_stun)	{
-		case	true:	{
+	switch(big_stun) {
+		case true: {
 			CPrintToChat(client, "%s %t", Global.Prefix, "Player Stun Scenario 1", Player[client].Name, Player[client].Points, client, Player[victim].Name);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, MoonShotStunnedPlayers = MoonShotStunnedPlayers+1 where SteamID='%i' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 		}
-		case	false:	{
+		case false: {
 			CPrintToChat(client, "%s %t", Global.Prefix, "Player Stun Scenario 2", Player[client].Name, Player[client].Points, client, Player[victim].Name);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, StunnedPlayers = StunnedPlayers+1 where SteamID='%i' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
