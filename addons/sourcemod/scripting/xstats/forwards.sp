@@ -26,7 +26,7 @@ stock void PrepareForwards()	{
 		Param_Cell);
 }
 
-public void OnClientAuthorized(int client, const char[] auth)	{
+public void OnClientAuthorized(int client, const char[] auth) {
 	if(!Tklib_IsValidClient(client, true, _, false))
 		return;
 	
@@ -50,9 +50,9 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 	TrimString(temp_playername);
 	DB.Direct.Escape(temp_playername, temp_playername, sizeof(temp_playername));
 	
-	switch(results != null && results.FetchRow())	{
+	switch(results != null && results.FetchRow()) {
 		/* Player was found */
-		case	true:	{
+		case true: {
 			results = SQL_QueryEx(DB.Direct, "update `%s` set Playername = '%s', IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, temp_playername, Player[client].IP, Player[client].SteamID, Cvars.ServerID.IntValue);
 			
@@ -67,14 +67,14 @@ public void OnClientAuthorized(int client, const char[] auth)	{
 			}
 		}
 		/* Player wasn't found, adding.. */
-		case	false:	{
+		case false: {
 			results = SQL_QueryEx(DB.Direct, "insert into `%s` (Playername, SteamID, IPAddress, ServerID) values ('%s', '%s', '%s', '%i')",
 			Global.playerlist, temp_playername, Player[client].SteamID, Player[client].IP, Cvars.ServerID.IntValue);
 			
 			XStats_DebugText(false, "Inserting into table \"%s\" \nPlayername \"%s\"\nSteamID \"%s\" (ServerID %i)",
 			Global.playerlist, temp_playername, Player[client].SteamID, Cvars.ServerID.IntValue);
 			
-			if(results == null)	{
+			if(results == null) {
 				char error[256];
 				SQL_GetError(DB.Direct, error, sizeof(error));
 				XStats_DebugText(true, "Inserting player table into \"%s\" failed! (%s)", Global.playerlist, error);
@@ -141,6 +141,11 @@ Action IntervalPlayTimer(Handle timer, int client)	{
 		return Plugin_Handled;
 	}
 	
+	if(DB.Threaded == null) {
+		XStats_DebugText(false, "Tried updating player ingame total for %s time but database is invalid (Is the database actually connected?), ignoring..", Player[client].Playername);
+		return Plugin_Handled;
+	}
+	
 	Session[client].PlayTime++;
 	char query[256];
 	Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where SteamID='%s' and ServerID='%i'",
@@ -150,14 +155,14 @@ Action IntervalPlayTimer(Handle timer, int client)	{
 	return Plugin_Handled;
 }
 
-public void OnClientDisconnect(int client)	{
+public void OnClientDisconnect(int client) {
 	if(!Tklib_IsValidClient(client, true))
 		return;
 	
 	UpdateDamage(client);
 }
 
-public void OnMapStart()	{
+public void OnMapStart() {
 	if(!Cvars.PluginActive.BoolValue)
 		return;
 	
@@ -171,9 +176,14 @@ public void OnMapStart()	{
 	XStats_DebugText(false, " ");
 }
 
-Action MapLogTimer(Handle timer)	{
-	if(!Cvars.PluginActive.BoolValue)	{
+Action MapLogTimer(Handle timer) {
+	if(!Cvars.PluginActive.BoolValue) {
 		KillTimer(timer);
+		return Plugin_Handled;
+	}
+	
+	if(DB.Threaded == null) {
+		XStats_DebugText(false, "Tried updating map statistics but database is invalid (Is the database actually connected?), ignoring..");
 		return Plugin_Handled;
 	}
 	
@@ -188,12 +198,12 @@ Action MapLogTimer(Handle timer)	{
 	return Plugin_Handled;
 }
 
-void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error, any data)	{		
+void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error, any data) {		
 	char query[512];
 	
-	switch(results != null && results.FetchRow())	{
+	switch(results != null && results.FetchRow()) {
 		/* Map was found, lets update it */
-		case	true:	{
+		case true: {
 			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
 			Global.maps_log, Global.CurrentMap, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_MapLog_2, query);
@@ -201,7 +211,7 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 			XStats_DebugText(false, " ");
 		}
 		/* Map was not found, lets add it */
-		case	false:	{
+		case false: {
 			Format(query, sizeof(query), "insert into `%s` (MapName) values ('%s')", Global.maps_log, Global.CurrentMap);
 			DB.Threaded.Query(DBQuery_MapLog_2, query);
 			XStats_DebugText(false, "Map \"%s\" not found on database, inserting it..", Global.CurrentMap);
@@ -216,18 +226,18 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 	}
 }
 
-void DBQuery_MapLog_2(Database database, DBResultSet results, const char[] error, any data)	{
+void DBQuery_MapLog_2(Database database, DBResultSet results, const char[] error, any data) {
 	if(results == null)
 		XStats_DebugText(true, "Map Log Updater failed! (%s)", error);
 }
 
-public void OnEntityCreated(int entity, const char[] classname)	{
+public void OnEntityCreated(int entity, const char[] classname) {
 	OnEntityCreated_CounterStrike(entity, classname);
 }
 
-public void OnConfigsExecuted()	{
+public void OnConfigsExecuted() {
 	CheckActivePlayers(); /* Check active players */
 }
-public void OnPluginEnd()	{
+public void OnPluginEnd() {
 	XStats_DebugText(false, "Ending..");	
 }

@@ -4,11 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_01w"
+			"Latest"	"0.01a_02a"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Noscopes are now properly read (lol) (TF2)."
+		"Notes"	"Updated forwards.sp code to now debug error text if database is invalid on map logs and player ingame total playtime updater."
+		"Notes" "Updated to give a fatal error with indept description if no xstats entry is found in the /configs/databases.cfg was found."
 	}
 	
 	"Files"
