@@ -63,5 +63,5 @@ public void OnPluginStart()	{
 	CPrintToChatAll("{orange}XStats version {lightgreen}%s {orange}loaded", Version);
 	
 	/* Incase the plugin were launched manually or perhaps started (?)*/
-	//CheckPlayersPluginStart(); //disabled temporarily.
+	CheckPlayersPluginStart();
 }

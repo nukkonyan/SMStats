@@ -654,7 +654,8 @@ stock void RoundEnded()	{
 stock void CheckPlayersPluginStart()	{
 	XStats_DebugText(false, "//===== XStats Debug Log: CheckPlayersPluginStart =====//\n");
 	
-	/* Isolated temporary connection. Deleted shortly after*/
+	/* disabled temporarily.
+	// Isolated temporary connection. Deleted shortly after
 	Database database = SQL_Connect2(Xstats, false);
 	
 	if(database == null) {
@@ -665,6 +666,7 @@ stock void CheckPlayersPluginStart()	{
 	
 	database.SetCharset("utf8mb4");
 	DBResultSet results;
+	*/
 	
 	for(int client = 1; client <= MaxClients; client++) {
 		/* Bots needs a name too, right? */
@@ -684,11 +686,12 @@ stock void CheckPlayersPluginStart()	{
 		if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
 			Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 		
+		/*
 		results = SQL_QueryEx(database, "select * from `%s` where SteamID = '%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		XStats_DebugText(false, "Checking if player %s exists on the playerlist table in the database", Player[client].Playername);
 		switch(results != null && results.RowCount != 0) {
-			/* Player exists */
+			// Player exists
 			case true: {
 				XStats_DebugText(false, "Found player %s in \"%s\" at ServerID %i, initializing forwards OnClientPutInServer..",
 				Player[client].Playername, Global.playerlist, Cvars.ServerID.IntValue);
@@ -698,7 +701,7 @@ stock void CheckPlayersPluginStart()	{
 				OnClientPutInServer(client);
 			}
 			
-			/* Player wasn't found. */
+			// Player wasn't found.
 			case false:	{
 				char temp_playername[64];
 				temp_playername = Player[client].Playername;
@@ -722,10 +725,11 @@ stock void CheckPlayersPluginStart()	{
 			Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
 			XStats_DebugText(false, "Failed to find player %s on weapons table, inserting new query directly onto database.", Player[client].Playername);
 		}
+		*/
 	}
 	
-	delete results;
-	delete database;
+	//delete results;
+	//delete database;
 }
 
 /**
