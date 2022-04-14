@@ -652,8 +652,6 @@ stock void RoundEnded()	{
 }
 
 stock void CheckPlayersPluginStart()	{
-	CPrintToChatAll("{orange}XStats version {lightgreen}%s {orange}loaded", Version);
-	
 	XStats_DebugText(false, "//===== XStats Debug Log: CheckPlayersPluginStart =====//\n");
 	
 	/* Isolated temporary connection. Deleted shortly after*/

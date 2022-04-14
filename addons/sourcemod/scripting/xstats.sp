@@ -60,6 +60,8 @@ public void OnPluginStart()	{
 	//Translation.
 	LoadTranslations("xstats.phrases");
 	
+	CPrintToChatAll("{orange}XStats version {lightgreen}%s {orange}loaded", Version);
+	
 	/* Incase the plugin were launched manually or perhaps started (?)*/
-	CheckPlayersPluginStart();
+	//CheckPlayersPluginStart(); //disabled temporarily.
 }
