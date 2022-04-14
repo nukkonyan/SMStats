@@ -134,6 +134,7 @@ public void OnClientPutInServer(int client)	{
 	UpdateLastConnectedState(Player[client].SteamID);
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	Player[client].Position = GetClientPosition(Player[client].SteamID);
+	Player[client].UserID = GetClientUserId(client);
 	
 	CPrintToChatAll("%s %t", Global.Prefix, "Player Connected", Player[client].Name, Player[client].Position, Player[client].Points, Player[client].Country);
 	XStats_DebugText(false, "%s (Pos #%i, %i points) has connected from %s",

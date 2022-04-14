@@ -4,14 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest"	"0.01a_02b"
+			"Latest"	"0.01a_02c"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/XStats"
-		"Notes"	"Updated multi-class weapons to be separated to classes respectively. (TF2)"
-		"Notes" "Reworked the weapons to be separated to its own table."
-		"Notes" "Fixed updater being 'required' to run XStats when actually isn't really needed but rather optional."
-		"Notes" "Updated code."
+		"Notes"	"Updated the debug info further more."
+		"Notes" "Updated code regarding CS:S and CS:GO to support the new weapon table changes."
 	}
 	
 	"Files"

@@ -84,5 +84,5 @@ create table if not exists `playerlist_tf2`
 	`Extinguished` int(32) not null default '0',
 	`TanksDestroyed` int(32) not null default '0',
 	`SentryBustersKilled` int(32) not null default '0',
-	primary key (`SteamID`)
+	primary key (`ServerID`)
 )

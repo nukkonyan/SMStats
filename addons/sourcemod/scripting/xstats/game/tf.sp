@@ -628,7 +628,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	bool fakedeath = (event.GetInt(EVENT_STR_DEATH_FLAGS) == 32);
 	event.SetBool("fakedeath", fakedeath);
 	if(fakedeath) {
-		XStats_DebugText(false, "//===== Player_Death_TF2 =====//");
+		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
 		XStats_DebugText(false, "Detected fake death, ignoring.");
 		return;
 	}
@@ -637,8 +637,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	event.GetString(EVENT_STR_WEAPON_LOGCLASSNAME, weapon, sizeof(weapon));
 
 	if(StrEqual(weapon, "player")
-	|| StrEqual(weapon, "world"))
+	|| StrEqual(weapon, "world")) {
+		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
+		XStats_DebugText(false, "Detected invalid killer \"%s\", ignoring to prevent issues..\n", weapon);
 		return;	
+	}
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
@@ -816,22 +819,18 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	/* Debug */
 	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
-	XStats_DebugText(false, "client %N (%i)", client, client);
-	XStats_DebugText(false, "victim %N (%i)", victim, client);
-	XStats_DebugText(false, "assist %N (%i)", Tklib_IsValidClient(assist) ? assist : 0, client);
-	XStats_DebugText(false, "inflictor %i", inflictor);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "client %s (index %i)", Player[client].Playername, client);
+	XStats_DebugText(false, "victim %s (index %i)", Player[victim].Playername, victim);
+	XStats_DebugText(false, "assist %s (index %i)", Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist);
+	XStats_DebugText(false, "inflictor %i\n", inflictor);
 	XStats_DebugText(false, "weapon \"%s\"", weapon);
 	XStats_DebugText(false, "defindex %i", defindex);
 	XStats_DebugText(false, "customkill %i", customkill);
 	XStats_DebugText(false, "deathflags %i", deathflags);
-	XStats_DebugText(false, "penetrated %i", penetrated);
-	XStats_DebugText(false, " ");
-	XStats_DebugText(false, "crit type \"%s\"", TF2_GetCritTypeName[crits]);
-	XStats_DebugText(false, " ");
-	XStats_DebugText(false, "Midair %s", Bool[midair]);
-	XStats_DebugText(false, " ");
-	XStats_DebugText(false, "Points %i", points);
+	XStats_DebugText(false, "penetrated %i\n", penetrated);
+	XStats_DebugText(false, "crit type %i [%s]\n", crits, TF2_GetCritTypeName[crits]);
+	XStats_DebugText(false, "Midair %s\n", Bool[midair]);
+	XStats_DebugText(false, "Points %i\n", points);
 	
 	/* Kill msg stuff */
 	KillMsg[client].MidAirKill = midair;

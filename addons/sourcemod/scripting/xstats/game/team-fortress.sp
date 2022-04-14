@@ -239,13 +239,12 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 		/* 3 */ "RED"
 	};
 	
-	XStats_DebugText(false, "//===== Teamplay_Flag_Event =====//");
+	XStats_DebugText(false, "//===== XStats Debug Log: Teamplay_Flag_Event =====//");
 	XStats_DebugText(false, "player %N (%i)", client, client);
 	XStats_DebugText(false, "carrier %N (%i)", carrier, carrier);
 	XStats_DebugText(false, "eventtype %s", TF2_GetFlagTypeName[eventtype]);
 	XStats_DebugText(false, "home %s", Bool[home]);
-	XStats_DebugText(false, "teamname %s", teamname[team]);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "teamname %s\n", teamname[team]);
 	
 	char query[1024];
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
@@ -459,42 +458,42 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 	
 	char query[512];
 	switch(building)	{
-		case TFBuilding_Sentrygun:	{
+		case TFBuilding_Sentrygun: {
 			Session[client].SentryGunsDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set SentryGunsDestroyed = SentryGunsDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_Dispenser:	{
+		case TFBuilding_Dispenser: {
 			Session[client].DispensersDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set DispensersDestroyed = DispensersDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_MiniSentry:	{
+		case TFBuilding_MiniSentry: {
 			Session[client].MiniSentryGunsDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_Teleporter_Entrance:	{
+		case TFBuilding_Teleporter_Entrance: {
 			Session[client].TeleporterEntrancesDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+1, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_Teleporter_Exit:	{
+		case TFBuilding_Teleporter_Exit: {
 			Session[client].TeleporterExitsDestroyed++;
 			Session[client].BuildingsDestroyed++;
 			Format(query, sizeof(query), "update `%s` set TeleporterExitsDestroyed = TeleporterExitsDestroyed, TotalBuildingsDestroyed = TotalBuildingsDestroyed+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
-		case TFBuilding_Sapper:	{
+		case TFBuilding_Sapper: {
 			Session[client].SappersDestroyed++;
 			Format(query, sizeof(query), "update `%s` set SappersDestroyed = SappersDestroyed where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -503,8 +502,8 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	/* Ensure the player cannot abuse the points */
-	if(!DestroyedObject[client][type])	{
-		if((points = TF2_DestroyedObject[type].IntValue) > 0)	{
+	if(!DestroyedObject[client][type]) {
+		if((points = TF2_DestroyedObject[type].IntValue) > 0) {
 			Player[client].Points = GetClientPoints(Player[client].SteamID);
 			AddSessionPoints(client, points);
 			CPrintToChat(client, "%s %t", Global.Prefix, "Object Event", Player[client].Name, Player[client].Points, points, type_name, object_name);
@@ -1001,11 +1000,10 @@ void FramePlayerJarated(DataPack pack)	{
 		}
 	}
 	
-	XStats_DebugText(false, "//===== PlayerJarated =====//");
+	XStats_DebugText(false, "//===== XStats Debug Log: PlayerJarated =====//");
 	XStats_DebugText(false, "Client: %s (index %i)", Player[client].Playername, client);
 	XStats_DebugText(false, "Victim: %s (index %i)", Player[victim].Playername, victim);
-	XStats_DebugText(false, "Defindex: %i", defindex);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Defindex: %i\n", defindex);
 }
 
 float Extinguished_Timer = 10.0;
@@ -1032,10 +1030,9 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 	if(!Tklib_IsValidClient(victim))
 		return Plugin_Handled;
 	
-	XStats_DebugText(false, "//===== PlayerExtinguished =====//");
+	XStats_DebugText(false, "//===== XStats Debug Log: PlayerExtinguished =====//");
 	XStats_DebugText(false, "Client: %s (index %i)", Player[client].Playername, client);
-	XStats_DebugText(false, "Victim: %s (index %i)", Player[victim].Playername, victim);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Victim: %s (index %i)\n", Player[victim].Playername, victim);
 	
 	if(Extinguished[client])
 		return Plugin_Handled;
@@ -1088,10 +1085,9 @@ Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int players
 		return Plugin_Handled;
 	
 	Session[client].Ignited++;
-	XStats_DebugText(false, "//===== PlayerIgnited =====//");
+	XStats_DebugText(false, "//===== XStats Debug Log: PlayerIgnited =====//");
 	XStats_DebugText(false, "Client: %s (index %i)", Player[client].Playername, client);
-	XStats_DebugText(false, "Victim: %s (index %i)", Player[client].Playername, victim);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Victim: %s (index %i)\n", Player[client].Playername, victim);
 	return Plugin_Continue;
 }
 
@@ -1152,9 +1148,11 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 	if(IsValidAbuse(client))
 		return;
 	
+	XStats_DebugText(false, "//===== XStats Debug Log: TF2_ClientKillVictim =====//");
+	
 	TFClassType type = TF2_GetPlayerClass(victim);
 	if(type < TFClass_Scout) {
-		XStats_DebugText(false, "Tried updating class kills for invalid id %i for %s, ignoring..", type, Player[client].Playername);
+		XStats_DebugText(false, "Tried updating class kills for invalid class id %i for %s, ignoring..\n", type, Player[client].Playername);
 		return; /* Make sure it's a valid class. */
 	}
 	
@@ -1189,5 +1187,5 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
 	Global.playerlist, class[type], class[type], Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
-	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]", TF2_GetClassTypeName[type], Player[client].Playername, class[type], type);
+	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]\n", TF2_GetClassTypeName[type], Player[client].Playername, class[type], type);
 }

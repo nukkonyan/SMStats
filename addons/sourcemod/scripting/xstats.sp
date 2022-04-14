@@ -8,14 +8,14 @@
 #pragma tabsize 0
 
 /* XStats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX. */
-#define Version "0.01a_02b"
+#define Version "0.01a_02c"
 
 public Plugin myinfo = {
-	name		= "XStats - Statistical Tracker",
-	author		= "Tk /id/Teamkiller324",
-	description	= "XStats - Track kills, maps, kill events, achievements, etc.",
-	version		= Version,
-	url			= "https://steamcommunity.com/id/Teamkiller324"
+	name = "XStats - Statistical Multi-Tracker",
+	author = _tklib_author,
+	description = "XStats - Track kills, maps, kill events, achievements, etc.",
+	version = Version,
+	url = _tklib_author_url
 }
 
 /* Core */
