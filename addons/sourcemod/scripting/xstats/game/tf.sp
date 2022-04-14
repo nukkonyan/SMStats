@@ -812,10 +812,10 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	/* The database query upload ("bat" -> "weapon_bat") */
 	char fix_weapon[96];
 	if(!telefrag)
-		TF2_FixWeaponClassname(fix_weapon, sizeof(fix_weapon), defindex, weapon);
+		TF2_FixWeaponClassname(client, fix_weapon, sizeof(fix_weapon), defindex, weapon);
 	
 	/* Debug */
-	XStats_DebugText(false, "//===== Player_Death_TF2 =====//");
+	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
 	XStats_DebugText(false, "client %N (%i)", client, client);
 	XStats_DebugText(false, "victim %N (%i)", victim, client);
 	XStats_DebugText(false, "assist %N (%i)", Tklib_IsValidClient(assist) ? assist : 0, client);
@@ -862,7 +862,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			DB.Threaded.Query(DBQuery_Callback, query);
 		}
 	}
-		
+	
 	//Make sure to not query updates on a bot, the database wouldn't be happy about that.
 	VictimDied(victim);
 		
@@ -898,8 +898,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			}
 		}
 		case false:	{
-			switch(telefrag)	{
-				case true:	{
+			switch(telefrag) {
+				case true: {
 					Session[client].TeleFrags++;
 					points += TF2_TeleFrag.IntValue;
 					AddSessionPoints(client, TF2_TeleFrag.IntValue);
@@ -910,8 +910,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 					XStats_DebugText(false, "Telefrag");
 				}
 				case false:	{
-					Format(query, sizeof(query), "update `%s` set Kills_%s = Kills_%s+1 where SteamID='%s' and ServerID='%i'",
-					Global.playerlist, fix_weapon, fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
+					Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'",
+					Global.weapons, fix_weapon, fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
 					DB.Threaded.Query(DBQuery_Callback, query);
 					XStats_DebugText(false, "Updating kill for weapon \"%s\" (Definition index %i) for %s", fix_weapon, defindex, Player[client].Playername);
 				}
@@ -919,7 +919,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		}
 	}
 	
-	if(headshot)	{
+	if(headshot) {
 		Session[client].Headshots++;
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -928,7 +928,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Headshot");
 	}
 		
-	if(backstab)	{
+	if(backstab) {
 		Session[client].Backstabs++;
 		Format(query, sizeof(query), "update `%s` set Backstabs = Backstabs+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -937,7 +937,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Backstab");
 	}
 		
-	if(dominated)	{
+	if(dominated) {
 		Session[client].Dominations++;
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -946,7 +946,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Dominated");
 	}
 		
-	if(revenge)	{
+	if(revenge) {
 		Session[client].Revenges++;
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -955,7 +955,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Revenge");
 	}
 		
-	if(noscope)	{
+	if(noscope) {
 		Session[client].Noscopes++;
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -964,7 +964,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Noscope");
 	}
 		
-	if(tauntkill)	{
+	if(tauntkill) {
 		Session[client].TauntKills++;
 		Format(query, sizeof(query), "update `%s` set TauntKills = TauntKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -973,7 +973,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Tauntkill");
 	}
 	
-	if(deflectkill)	{
+	if(deflectkill) {
 		Session[client].DeflectKills++;
 		Format(query, sizeof(query), "update `%s` set DeflectKills = DeflectKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -982,7 +982,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Deflectkill");
 	}
 	
-	if(gibkill)	{
+	if(gibkill) {
 		Session[client].GibKills++;
 		Format(query, sizeof(query), "update `%s` set GibKills = GibKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -991,7 +991,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Gibkill");
 	}
 	
-	if(airshot)	{
+	if(airshot) {
 		Session[client].Airshots++;
 		Format(query, sizeof(query), "update `%s` set Airshots = Airshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -1000,7 +1000,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Airshot");
 	}
 	
-	if(collateral)	{
+	if(collateral) {
 		Session[client].Collaterals++;
 		Format(query, sizeof(query), "update `%s` set Collaterals = Collaterals+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -1041,7 +1041,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		}
 	}
 	
-	if(points > 0)	{
+	if(points > 0) {
 		AddSessionPoints(client, points);
 		XStats_DebugText(false, " ");
 		XStats_DebugText(false, "Processing kill message..");
@@ -1053,7 +1053,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		PrepareKillMessage(client, victim, points);
 	}
 		
-	if(!IsFakeClient(victim))	{
+	if(!IsFakeClient(victim)) {
 		char log[2048];
 		int len = 0;
 		len += Format(log[len], sizeof(log)-len, "insert into `%s`", Global.kill_log);

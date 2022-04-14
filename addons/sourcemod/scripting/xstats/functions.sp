@@ -3,7 +3,7 @@
  *
  *	@param	auth	The players steam authentication id.
  */
-stock int GetClientPoints(const char[] auth)	{
+stock int GetClientPoints(const char[] auth) {
 	int points = 0;
 	
 	if(DB.Direct != null)	{
@@ -22,7 +22,7 @@ stock int GetClientPoints(const char[] auth)	{
  *
  *	@param	auth	The players steam authentication id.
  */
-stock int GetClientPosition(const char[] auth)	{
+stock int GetClientPosition(const char[] auth) {
 	int position = 0;
 	int points = 0;
 	
@@ -46,10 +46,10 @@ stock int GetClientPosition(const char[] auth)	{
 /**
  *	Returns the total player count in a database table.
  */
-stock int GetTablePlayerCount()	{
+stock int GetTablePlayerCount() {
 	int playercount = 0;
 	
-	if(DB.Direct != null)	{
+	if(DB.Direct != null) {
 		DBResultSet results = SQL_QueryEx(DB.Direct, "select count(*) from `%s` where ServerID='%i'", Global.playerlist, Cvars.ServerID.IntValue);
 		while(results != null && results.FetchRow())
 			playercount = results.FetchInt(0);
@@ -66,10 +66,10 @@ stock int GetTablePlayerCount()	{
  *
  *	@param	auth	The players steam authentication id.
  */
-stock int GetClientPlayTime(const char[] auth)	{
+stock int GetClientPlayTime(const char[] auth) {
 	int playtime = 0;
 	
-	if(DB.Direct != null)	{
+	if(DB.Direct != null) {
 		DBResultSet results = SQL_QueryEx(DB.Direct, "select PlayTime from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		playtime = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
 		delete results;
@@ -84,7 +84,7 @@ stock int GetClientPlayTime(const char[] auth)	{
  *
  *	@param	client	The users index.
  */
-stock void ClearSessions(int client)	{
+stock void ClearSessions(int client) {
 	/* Core */
 	Session[client].PlayTime = 0;
 	Session[client].Points = 0;
@@ -201,7 +201,7 @@ stock void ClearSessions(int client)	{
  *	@param	deaths	The death count to check.
  *	@param	assists	The assist count to check.
  */
-stock float GetKDR(int kills, int deaths, int assists)	{
+stock float GetKDR(int kills, int deaths, int assists) {
 	float kdr = 1.00;
 	float fkills = float(kills);
 	float fdeaths = float(deaths);
@@ -209,7 +209,7 @@ stock float GetKDR(int kills, int deaths, int assists)	{
 	
 	fkills = fkills + (fassists / 2.0);
 	
-	XStats_DebugText(false, "//===== GetKDR =====//");
+	XStats_DebugText(false, "//===== XStats debug Log: GetKDR =====//");
 	XStats_DebugText(false, "kills: %i", kills);
 	XStats_DebugText(false, "deaths: %i", deaths);
 	XStats_DebugText(false, "assists: %i", assists);
@@ -218,8 +218,8 @@ stock float GetKDR(int kills, int deaths, int assists)	{
 	XStats_DebugText(false, "fdeaths: %.2f", fdeaths);
 	XStats_DebugText(false, "fassists: %.2f", fassists);
 	
-	switch(fdeaths == 0.0)	{
-		case true:	{
+	switch(fdeaths == 0.0) {
+		case true: {
 			fdeaths = 1.0;
 			XStats_DebugText(false, "after fdeaths check: %.2f (Because fdeaths were 0.00)", fdeaths);
 		}
@@ -303,7 +303,7 @@ stock void DBQuery_RemoveOldPlayers_1(Database database, DBResultSet results, co
 		XStats_DebugText(true, "Deleting old players failed! (%s)", error);
 	
 	int count = 0;
-	while(results.FetchRow())	{
+	while(results.FetchRow()) {
 		count++;
 		
 		char auth[64];
@@ -377,18 +377,18 @@ stock void CheckActivePlayers()	{
 	int players = GetClientCountEx(!Cvars.ServerID.IntValue);
 	//PrintToServer("Players: [%i/%i]", players, needed);
 	
-	switch(Global.RankActive)	{
-		case	true:	{
-			if(needed > players)	{
+	switch(Global.RankActive) {
+		case true: {
+			if(needed > players) {
 				Global.RankActive = false;
 				
 				CPrintToChatAll("%s %t", Global.Prefix, "Not Enough Players", players, needed);
 				XStats_DebugText(false, "Not enough players [%i/%i], disabling..", players, needed);
 			}
 		}
-		case	false:	{
-			if(needed <= players)	{
-				if(Global.RoundActive)	{
+		case false: {
+			if(needed <= players) {
+				if(Global.RoundActive) {
 					Global.RankActive = true;
 					CPrintToChatAll("%s %t", Global.Prefix, "Enough Players", players, needed);
 					XStats_DebugText(false, "Enough players [%i/%i], enabling..", players, needed);
@@ -401,7 +401,7 @@ stock void CheckActivePlayers()	{
 /**
  *	Make sure the stats is properly configured.
  */
-stock bool IsValidStats()	{
+stock bool IsValidStats() {
 	return !(!Cvars.PluginActive.BoolValue
 			|| Cvars.ServerID.IntValue < 1
 			|| !Global.RoundActive
@@ -414,17 +414,17 @@ stock bool IsValidStats()	{
  *
  *	@param	client	The users index to read. (0 disables reading the client)
  */
-stock bool IsValidAbuse(int client=0)	{
+stock bool IsValidAbuse(int client=0) {
 	bool abuse = false;
 	
-	if(Cvars.AntiAbuse.BoolValue)	{
+	if(Cvars.AntiAbuse.BoolValue) {
 		ConVar cvar = FindConVar("sv_cheats");
 		if(cvar != null && cvar.BoolValue)
 			abuse = true;
 		
 		delete cvar;
 		
-		if(client > 0)	{
+		if(client > 0) {
 			if(IsClientNoclipping(client))
 				abuse = true;
 		}
@@ -439,7 +439,7 @@ stock bool IsValidAbuse(int client=0)	{
  *
  *	@param	client	The users index.
  */
-stock bool CS_IsClientInsideSmoke(int client)	{
+stock bool CS_IsClientInsideSmoke(int client) {
 	Entity entity = Entity_Empty;
 	while((entity = Entity.FindByClassname(entity, "env_particlesmokegrenade")) != Entity_Invalid)	{
 		if(entity.GetDistance(client) <= 3.0)
@@ -456,7 +456,7 @@ stock bool CS_IsClientInsideSmoke(int client)	{
  *
  *	@noreturn
  */
-stock void PreparePrefixUpdatedForward()	{
+stock void PreparePrefixUpdatedForward() {
 	XStats_DebugText(false, "Preparing prefix forward..");
 	Call_StartForward(Forward.Prefix);
 	Call_PushString(Global.Prefix);
@@ -474,7 +474,7 @@ stock void PreparePrefixUpdatedForward()	{
  *
  *	@noreturn
  */
-stock void PrepareOnDeathForward(int client, int victim, int assist, const char[] weapon, int defindex)	{
+stock void PrepareOnDeathForward(int client, int victim, int assist, const char[] weapon, int defindex) {
 	XStats_DebugText(false, "Preparing OnDeathEvent forward..");
 	Call_StartForward(Forward.Death);
 	Call_PushCell(client);
@@ -492,7 +492,7 @@ stock void PrepareOnDeathForward(int client, int victim, int assist, const char[
  *
  *	@noreturn
  */
-stock void PrepareOnSuicideForward(int client)	{
+stock void PrepareOnSuicideForward(int client) {
 	XStats_DebugText(false, "Preparing OnSuicideEvent forward..");
 	Call_StartForward(Forward.Suicide);
 	Call_PushCell(client);
@@ -509,7 +509,7 @@ stock void PrepareOnSuicideForward(int client)	{
  *
  *	@noreturn
  */
-stock void PrepareTF2FlagEventForward(int client, int carrier, TFFlag flag, bool home)	{
+stock void PrepareTF2FlagEventForward(int client, int carrier, TFFlag flag, bool home) {
 	XStats_DebugText(false, "Preparing TF2_OnFlagEvent forward..");
 	Call_StartForward(Forward.TF2_FlagEvent);
 	Call_PushCell(client);
@@ -530,7 +530,7 @@ stock void PrepareTF2FlagEventForward(int client, int carrier, TFFlag flag, bool
  *
  *	@return	Returns if the assister is valid.
  */
-stock bool AssistedKill(int assist, int client, int victim)	{
+stock bool AssistedKill(int assist, int client, int victim) {
 	if(!Tklib_IsValidClient(assist, true))
 		return false;
 	
@@ -541,7 +541,7 @@ stock bool AssistedKill(int assist, int client, int victim)	{
 	DB.Threaded.Query(DBQuery_Callback, query);
 	XStats_DebugText(false, "Updating assist count for %s", Player[assist].Playername);
 	
-	if(Cvars.AssistKill.IntValue > 0)	{
+	if(Cvars.AssistKill.IntValue > 0) {
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Cvars.AssistKill.IntValue, Player[assist].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
@@ -562,7 +562,7 @@ stock bool AssistedKill(int assist, int client, int victim)	{
  *
  *	@noreturn.
  */
-stock void VictimDied(int victim)	{
+stock void VictimDied(int victim) {
 	if(!Tklib_IsValidClient(victim, true))
 		return;
 	
@@ -573,12 +573,12 @@ stock void VictimDied(int victim)	{
 	XStats_DebugText(false, "Updating death count for %s", Player[victim].Playername);
 	
 	int points;
-	switch(Global.Game)	{
-		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP:	{
+	switch(Global.Game) {
+		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP: {
 			if((points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue) < 1)
 				return;
 		}
-		default:	{
+		default: {
 			if((points = Cvars.Death.IntValue) < 1)
 				return;
 		}
@@ -595,20 +595,20 @@ stock void VictimDied(int victim)	{
 }
 
 /* When round starts */
-stock void RoundStarted()	{
+stock void RoundStarted() {
 	Global.RoundActive = true;
 	
-	switch(Global.Game)	{
+	switch(Global.Game) {
 		case Game_CSGO, Game_CSCO: Global.WarmupActive = CS_IsWarmupRound();
 		case Game_TF2, Game_TF2C, Game_TF2B, Game_TF2V, Game_TF2OP: Global.WarmupActive = TF2_IsWaitingForPlayers();
 	}
 	
-	switch(Global.WarmupActive)	{
+	switch(Global.WarmupActive) {
 		case true: XStats_DebugText(false, "Warmup Round Started");
 		case false: XStats_DebugText(false, "Round Started");
 	}
 	
-	if(Global.RoundActive && Global.WarmupActive)	{
+	if(Global.RoundActive && Global.WarmupActive) {
 		CPrintToChatAll("%s %t", Global.Prefix, "Round Start Warmup");
 		return;
 	}
@@ -616,8 +616,8 @@ stock void RoundStarted()	{
 	int needed = Cvars.MinimumPlayers.IntValue;
 	int players = GetClientCountEx(!Cvars.ServerID.IntValue);
 	
-	if(Cvars.DisableAfterWin.BoolValue)	{
-		if(needed <= players)	{
+	if(Cvars.DisableAfterWin.BoolValue) {
+		if(needed <= players) {
 			Global.RankActive = true;
 			CPrintToChatAll("%s %t", Global.Prefix, "Round Start");
 		}
@@ -654,52 +654,80 @@ stock void RoundEnded()	{
 stock void CheckPlayersPluginStart()	{
 	CPrintToChatAll("{orange}XStats version {lightgreen}%s {orange}loaded", Version);
 	
+	XStats_DebugText(false, "//===== XStats Debug Log: CheckPlayersPluginStart =====//\n");
+	
 	/* Isolated temporary connection. Deleted shortly after*/
+	Database database = SQL_Connect2(Xstats, false);
+	
+	if(database == null) {
+		XStats_DebugText(false, "Failed connecting an isolated direct database connection.");
+		delete database;
+		return;
+	}
+	
+	database.SetCharset("utf8mb4");
 	DBResultSet results;
 	
-	for(int client = 1; client < MaxClients; client++)	{
-		/* Only gather the steamid from the players */
-		if(Tklib_IsValidClient(client, true, false, false))	{
-			GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
-			GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
+	for(int client = 1; client <= MaxClients; client++) {
+		/* Bots needs a name too, right? */
+		if(Tklib_IsValidClient(client, false, false, false)) {
 			GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
 			GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
-			if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
-				Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
+		}
+		
+		/* Only gather the steamid from the players */
+		if(!Tklib_IsValidClient(client, true, false, false))
+			continue;
+		
+		GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
+		GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
+		GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
+		GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
+		if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
+			Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
+		
+		results = SQL_QueryEx(database, "select * from `%s` where SteamID = '%s' and ServerID='%i'",
+		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Checking if player %s exists on the playerlist table in the database", Player[client].Playername);
+		switch(results != null && results.RowCount != 0) {
+			/* Player exists */
+			case true: {
+				XStats_DebugText(false, "Found player %s in \"%s\" at ServerID %i, initializing forwards OnClientPutInServer..",
+				Player[client].Playername, Global.playerlist, Cvars.ServerID.IntValue);
+				XStats_DebugText(false, "Points: %i\nPositioned: %i\n",
+				(Player[client].Points = GetClientPoints(Player[client].SteamID)), (Player[client].Position = GetClientPosition(Player[client].SteamID)));
+				
+				OnClientPutInServer(client);
+			}
 			
-			if(DB.Direct != null)	{
-				results = SQL_QueryEx(DB.Direct, "select * from `%s` where SteamID = '%s' and ServerID = '%i'",
-				Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-				XStats_DebugText(false, "Checking if player %s exists on database", Player[client].Playername);
-				switch(results != null && results.FetchRow())	{
-					/* Player exists */
-					case true: OnClientPutInServer(client);
-					
-					/* Player wasn't found. */
-					case false:	{
-						char temp_playername[64];
-						temp_playername = Player[client].Playername;
-						TrimString(temp_playername);
-						DB.Direct.Escape(temp_playername, temp_playername, sizeof(temp_playername));
-						
-						results = SQL_QueryEx(DB.Direct, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
-						Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
-						XStats_DebugText(false, "Failed to find player %s, inserting new table directly onto database.", Player[client].Playername);
-						if(results != null)
-							OnClientPutInServer(client);
-					}
-				}
+			/* Player wasn't found. */
+			case false:	{
+				char temp_playername[64];
+				temp_playername = Player[client].Playername;
+				TrimString(temp_playername);
+				database.Escape(temp_playername, temp_playername, sizeof(temp_playername));
+				
+				results = SQL_QueryEx(database, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
+				Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
+				XStats_DebugText(false, "Failed to find player %s on playerlist table, inserting new query directly onto database.", Player[client].Playername);
+				if(results != null)
+					OnClientPutInServer(client);
 			}
 		}
 		
-		/* Bots needs a name too, right? */
-		if(Tklib_IsValidClient(client, false, false, false))	{
-			GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
-			GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
+		// weapons table.
+		results = SQL_QueryEx(database, "select * from `%s` where SteamID = '%s'",
+		Global.weapons, Player[client].SteamID);
+		XStats_DebugText(false, "Checking if player %s exists on weapons table in the database", Player[client].Playername);
+		if(results == null || results != null && results.RowCount == 0)	{
+			results = SQL_QueryEx(DB.Direct, "insert into `%s` (SteamID, ServerID) values ('%s', '%i')",
+			Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
+			XStats_DebugText(false, "Failed to find player %s on weapons table, inserting new query directly onto database.", Player[client].Playername);
 		}
 	}
 	
 	delete results;
+	delete database;
 }
 
 /**

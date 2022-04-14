@@ -31,7 +31,7 @@ stock bool DatabaseDirect()	{
 	return false;
 }
 
-Action Timer_PrepareDatabase(Handle timer)	{
+Action Timer_PrepareDatabase(Handle timer) {
 	if(DB.Threaded == null) /* If it's not null, we don't need to gather new connection since we already have one, prevent corruption. */
 		Database.Connect(DBConnect, Xstats);
 	
@@ -48,7 +48,7 @@ Action Timer_PrepareDatabase(Handle timer)	{
 }
 
 void DBConnect(Database database, const char[] error, any data)	{
-	if(database == null)	{
+	if(database == null) {
 		delete database;
 		XStats_DebugText(true, "Database connection failed! (%s)", error);
 		return;

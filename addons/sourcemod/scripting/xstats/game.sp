@@ -1,21 +1,21 @@
 /**
  *	Game Events.
  */
-#include	"xstats/game/team-fortress.sp"
-#include	"xstats/game/counter-strike.sp"
+#include "xstats/game/team-fortress.sp"
+#include "xstats/game/counter-strike.sp"
 
 /**
  *	Initialize the includes.
  */
-//#include	"xstats/game/dod.sp"
-#include	"xstats/game/tf.sp"
-#include	"xstats/game/csgo.sp"
-#include	"xstats/game/cstrike.sp"
+//#include "xstats/game/dod.sp"
+#include "xstats/game/tf.sp"
+#include "xstats/game/csgo.sp"
+#include "xstats/game/cstrike.sp"
 
 /**
  *	Initializes callback includes.
  */
-#include	"xstats/game/callbacks.sp"
+#include "xstats/game/callbacks.sp"
 
 /**
  *	Initialize the database.
@@ -109,7 +109,7 @@ void Games_DatabaseConnected()	{
 	query = NULL_STRING;
 	len = 0;
 	
-	BuildPath(Path_SM, path, sizeof(path), "configs/xstats/%s.xstats", Global.achievements);
+	BuildPath(Path_SM, path, sizeof(path), "configs/xstats/%s.xstats", Global.weapons);
 	switch((file = OpenFile(path, "r")) != null)	{
 		case true:	{
 			while(!file.EndOfFile() && file.ReadLine(table, sizeof(table)))	{
@@ -122,6 +122,26 @@ void Games_DatabaseConnected()	{
 			}
 			
 			DB.Threaded.Query(DBQuery_CreateTables, query, 5);
+		}
+		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking weapon kills.) (Did you install it correctly?.)", Global.logprefix, Global.weapons);
+	}
+	
+	query = NULL_STRING;
+	len = 0;
+	
+	BuildPath(Path_SM, path, sizeof(path), "configs/xstats/%s.xstats", Global.achievements);
+	switch((file = OpenFile(path, "r")) != null)	{
+		case true:	{
+			while(!file.EndOfFile() && file.ReadLine(table, sizeof(table)))	{
+				ReplaceString(table, sizeof(table), "\n", "");
+				ReplaceString(table, sizeof(table), "\r", "");
+				ReplaceString(table, sizeof(table), "\t", "");
+				
+				len += Format(query[len], sizeof(query)-len, table);
+				//PrintToServer("[%i] %s", len, table);
+			}
+			
+			DB.Threaded.Query(DBQuery_CreateTables, query, 6);
 		}
 		case false: XStats_DebugText(false, "%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking custom achievements.) (Did you install it correctly?.)", Global.logprefix, Global.achievements);
 	}
@@ -136,7 +156,8 @@ void DBQuery_CreateTables(Database database, DBResultSet results, const char[] e
 		case 2: table_name = Global.kill_log;
 		case 3: table_name = Global.item_found;
 		case 4: table_name = Global.maps_log;
-		case 5: table_name = Global.achievements;
+		case 5: table_name = Global.weapons;
+		case 6: table_name = Global.achievements;
 	}
 	
 	switch(results == null)	{
@@ -163,6 +184,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_dods";
 			Global.kill_log = "kill_log_dods";
 			Global.maps_log = "maps_log_dods";
+			Global.weapons = "weapons_dods";
 			Global.achievements = "achievements_dods";
 			//PrepareGame_DODS();
 		}
@@ -172,6 +194,7 @@ void PrepareGame()	{
 			Global.kill_log = "kill_log_tf2";
 			Global.item_found = "item_found_tf2";
 			Global.maps_log = "maps_log_tf2";
+			Global.weapons = "weapons_tf2";
 			Global.achievements = "achievements_tf2";
 			supported = true;
 			
@@ -183,6 +206,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_tf2classic";
 			Global.kill_log = "kill_log_tf2classic";
 			Global.maps_log = "maps_log_tf2classic";
+			Global.weapons = "weapons_tf2classic";
 			Global.achievements = "achievements_tf2classic";
 		}
 		case Game_TF2Vintage:	{
@@ -190,6 +214,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_tf2vintage";
 			Global.kill_log = "kill_log_tf2vintage";
 			Global.maps_log = "maps_log_tf2vintage";
+			Global.weapons = "weapons_tf2vintage";
 			Global.achievements = "achievements_tf2vintage";
 		}
 		case Game_TF2OpenFortress:	{
@@ -197,6 +222,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_tf2op";
 			Global.kill_log = "kill_log_tf2op";
 			Global.maps_log = "maps_log_tf2op";
+			Global.weapons = "weapons_tf2op";
 			Global.achievements = "achievements_tf2op";
 		}
 		case Game_CSS:	{
@@ -204,6 +230,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_css";
 			Global.kill_log = "kill_log_css";
 			Global.maps_log = "maps_log_css";
+			Global.weapons = "weapons_css";
 			Global.achievements = "achievements_css";
 			supported = true;
 			
@@ -215,6 +242,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_promod";
 			Global.kill_log = "kill_log_cspromod";
 			Global.maps_log = "maps_log_cspromod";
+			Global.weapons = "weapons_cspromod";
 			Global.achievements = "achievements_cspromod";
 			
 			PrepareGame_CounterStrike();
@@ -226,6 +254,7 @@ void PrepareGame()	{
 			Global.kill_log = "kill_log_csgo";
 			Global.item_found = "item_found_csgo";
 			Global.maps_log = "maps_log_csgo";
+			Global.weapons = "weapons_csgo";
 			Global.achievements = "achievements_csgo";
 			supported = true;
 			
@@ -237,6 +266,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_csco";
 			Global.kill_log = "kill_log_csco";
 			Global.maps_log = "maps_log_csco";
+			Global.weapons = "weapons_csco";
 			Global.achievements = "achievements_csco";
 			
 			PrepareGame_CounterStrike();
@@ -247,6 +277,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_l4d1";
 			Global.kill_log = "kill_log_l4d1";
 			Global.maps_log = "maps_log_l4d1";
+			Global.weapons = "weapons_l4d1";
 			Global.achievements = "achievements_l4d1";
 		}
 		case Game_L4D2:	{
@@ -254,6 +285,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_l4d2";
 			Global.kill_log = "kill_log_l4d2";
 			Global.maps_log = "maps_log_l4d2";
+			Global.weapons = "weapons_l4d2";
 			Global.achievements = "achievements_l4d2";
 		}
 		case Game_Contagion:	{
@@ -261,6 +293,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_contagion";
 			Global.kill_log = "kill_log_contagion";
 			Global.maps_log = "maps_log_contagion";
+			Global.weapons = "weapons_contagion";
 			Global.achievements = "achievements_contagion";
 		}
 		case Game_HL2DM:	{
@@ -268,6 +301,7 @@ void PrepareGame()	{
 			Global.playerlist = "playerlist_hl2dm";
 			Global.kill_log = "kill_log_hl2dm";
 			Global.maps_log = "maps_log_hl2dm";
+			Global.weapons = "weapons_hl2dm";
 			Global.achievements = "achievements_contagion";
 		}
 	}

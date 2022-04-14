@@ -1,13 +1,14 @@
 #include <multicolors>
 #include <xstats>
-#include <updater>
 #include <geoip>
+#undef REQUIRE_PLUGIN
+#include <updater>
 #pragma semicolon 1
 #pragma newdecls required
 #pragma tabsize 0
 
 /* XStats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX. */
-#define Version "0.01a_02a"
+#define Version "0.01a_02b"
 
 public Plugin myinfo = {
 	name		= "XStats - Statistical Tracker",

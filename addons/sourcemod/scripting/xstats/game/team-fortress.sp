@@ -1153,24 +1153,26 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 		return;
 	
 	TFClassType type = TF2_GetPlayerClass(victim);
-	if(type < TFClass_Scout)
+	if(type < TFClass_Scout) {
+		XStats_DebugText(false, "Tried updating class kills for invalid id %i for %s, ignoring..", type, Player[client].Playername);
 		return; /* Make sure it's a valid class. */
+	}
 	
 	char class[][] = {
 		"Error like actually",
 		"ScoutsKilled",
-		"SoldiersKilled",
-		"PyrosKilled",
-		"DemosKilled",
-		"HeaviesKilled",
-		"EngiesKilled",
-		"MedicsKilled",
 		"SnipersKilled",
+		"SoldiersKilled",
+		"DemosKilled",
+		"MedicsKilled",
+		"HeaviesKilled",
+		"PyrosKilled",
 		"SpiesKilled",
+		"EngiesKilled",
 		"CiviliansKilled"
 	};
 	
-	switch(type)	{
+	switch(type) {
 		case TFClass_Scout: Session[client].ScoutsKilled++;
 		case TFClass_Soldier: Session[client].SoldiersKilled++;
 		case TFClass_Pyro: Session[client].PyrosKilled++;
@@ -1187,5 +1189,5 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
 	Global.playerlist, class[type], class[type], Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
-	XStats_DebugText(false, "Updating class for %s (\"%s\")", Player[client].Playername, class[type]);
+	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]", TF2_GetClassTypeName[type], Player[client].Playername, class[type], type);
 }
