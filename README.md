@@ -46,4 +46,4 @@ Team Fortress 2.
 ```
 
 ## Info
-At the moment there is no web panel yet but if you're interested in helping out on that part, hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)
+Webpanel is in the works, being developed by [https://steamcommunity.com/id/Teamkiller324]Teamkiller324 and [https://steamcommunity.com/profiles/76561198156703435]Antonio
