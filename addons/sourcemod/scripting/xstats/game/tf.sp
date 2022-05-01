@@ -609,14 +609,14 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	char query[512];
 	int len = 0;
 	len += Format(query[len], sizeof(query)-len, "insert into `%s`", Global.item_found);
-	len += Format(query[len], sizeof(query)-len, "(ServerID, Playername, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)");
+	len += Format(query[len], sizeof(query)-len, "(ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)");
 	len += Format(query[len], sizeof(query)-len, "values");
-	len += Format(query[len], sizeof(query)-len, "('%i', '%s', '%s', '%i', '%s', '%i', '%s', '%i', '%f')",
+	len += Format(query[len], sizeof(query)-len, "('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f')",
 	Cvars.ServerID.IntValue, Player[client].Playername, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, wear);
 	DB.Threaded.Query(DBQuery_Callback, query);
 	
-	XStats_DebugText(false, "Inserting (ServerID, Playername, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear) with values ('%i', '%s', '%s', '%i', '%s', '%i', '%s', '%i', '%f') onto %s",
-	Cvars.ServerID.IntValue, Player[client].Playername, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, wear, Global.item_found);
+	XStats_DebugText(false, "Inserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear) with values ('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f') onto %s",
+	Cvars.ServerID.IntValue, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, wear, Global.item_found);
 }
 
 /* Deaths */
