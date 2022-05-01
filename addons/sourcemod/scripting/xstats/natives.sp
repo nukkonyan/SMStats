@@ -112,16 +112,26 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 		case SessionType_GrenadeKills: stats = Session[client].GrenadeKills;
 		
 		/* TF2 */
-		case SessionType_ScoutsKilled: stats = Session[client].ScoutsKilled;
-		case SessionType_SoldiersKilled: stats = Session[client].SoldiersKilled;
-		case SessionType_PyrosKilled: stats = Session[client].PyrosKilled;
-		case SessionType_DemosKilled: stats = Session[client].DemosKilled;
-		case SessionType_HeaviesKilled: stats = Session[client].HeaviesKilled;
-		case SessionType_EngiesKilled: stats = Session[client].EngiesKilled;
-		case SessionType_MedicsKilled: stats = Session[client].MedicsKilled;
-		case SessionType_SnipersKilled: stats = Session[client].SnipersKilled;
-		case SessionType_SpiesKilled: stats = Session[client].SpiesKilled;
-		case SessionType_CiviliansKilled: stats = Session[client].CiviliansKilled; /* TF2 Classic */
+		case SessionType_ScoutKills: stats = Session[client].ScoutKills;
+		case SessionType_SoldierKills: stats = Session[client].SoldierKills;
+		case SessionType_PyroKills: stats = Session[client].PyroKills;
+		case SessionType_DemoKills: stats = Session[client].DemoKills;
+		case SessionType_HeavyKills: stats = Session[client].HeavyKills;
+		case SessionType_EngieKills: stats = Session[client].EngieKills;
+		case SessionType_MedicKills: stats = Session[client].MedicKills;
+		case SessionType_SniperKills: stats = Session[client].SniperKills;
+		case SessionType_SpyKills: stats = Session[client].SpyKills;
+		case SessionType_CivilianKills: stats = Session[client].CivilianKills; /* TF2 Classic */
+		case SessionType_ScoutDeaths: stats = Session[client].ScoutDeaths;
+		case SessionType_SoldierDeaths: stats = Session[client].SoldierDeaths;
+		case SessionType_PyroDeaths: stats = Session[client].PyroDeaths;
+		case SessionType_DemoDeaths: stats = Session[client].DemoDeaths;
+		case SessionType_HeavyDeaths: stats = Session[client].HeavyDeaths;
+		case SessionType_EngieDeaths: stats = Session[client].EngieDeaths;
+		case SessionType_MedicDeaths: stats = Session[client].MedicDeaths;
+		case SessionType_SniperDeaths: stats = Session[client].SniperDeaths;
+		case SessionType_SpyDeaths: stats = Session[client].SpyDeaths;
+		case SessionType_CivilianDeaths: stats = Session[client].CivilianDeaths; /* TF2 Classic */
 		case SessionType_Airshots: stats = Session[client].Airshots;
 		case SessionType_Backstabs: stats = Session[client].Backstabs;
 		case SessionType_TauntKills: stats = Session[client].TauntKills;

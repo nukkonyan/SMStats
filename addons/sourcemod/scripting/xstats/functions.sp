@@ -105,16 +105,26 @@ stock void ClearSessions(int client) {
 	Session[client].GrenadeKills = 0;
 	
 	/* TF2 */
-	Session[client].ScoutsKilled = 0;
-	Session[client].SoldiersKilled = 0;
-	Session[client].PyrosKilled = 0;
-	Session[client].DemosKilled = 0;
-	Session[client].HeaviesKilled = 0;
-	Session[client].EngiesKilled = 0;
-	Session[client].MedicsKilled = 0;
-	Session[client].SnipersKilled = 0;
-	Session[client].SpiesKilled = 0;
-	Session[client].CiviliansKilled = 0; /* TF2 Classic */
+	Session[client].ScoutKills = 0;
+	Session[client].SoldierKills = 0;
+	Session[client].PyroKills = 0;
+	Session[client].DemoKills = 0;
+	Session[client].HeavyKills = 0;
+	Session[client].EngieKills = 0;
+	Session[client].MedicKills = 0;
+	Session[client].SniperKills = 0;
+	Session[client].SpyKills = 0;
+	Session[client].CivilianKills = 0; /* TF2 Classic */
+	Session[client].ScoutDeaths = 0;
+	Session[client].SoldierDeaths = 0;
+	Session[client].PyroDeaths = 0;
+	Session[client].DemoDeaths = 0;
+	Session[client].HeavyDeaths = 0;
+	Session[client].EngieDeaths = 0;
+	Session[client].MedicDeaths = 0;
+	Session[client].SniperDeaths = 0;
+	Session[client].SpyDeaths = 0;
+	Session[client].CivilianDeaths = 0; /* TF2 Classic */
 	Session[client].Backstabs = 0;
 	Session[client].TauntKills = 0;
 	Session[client].GibKills = 0;
@@ -207,14 +217,14 @@ stock float GetKDR(int kills, int deaths, int assists) {
 	float fdeaths = float(deaths);
 	float fassists = float(assists);
 	
-	fkills = fkills + (fassists / 2.0);
+	fkills += (fassists / 2.0);
 	
-	XStats_DebugText(false, "//===== XStats debug Log: GetKDR =====//");
+	XStats_DebugText(false, "\n//===== XStats debug Log: GetKDR =====//");
 	XStats_DebugText(false, "kills: %i", kills);
 	XStats_DebugText(false, "deaths: %i", deaths);
 	XStats_DebugText(false, "assists: %i", assists);
 	XStats_DebugText(false, "fkills: %.2f", float(kills));
-	XStats_DebugText(false, "fkills = fkills + (fassists / 2.0): %.2f", fkills);
+	XStats_DebugText(false, "fkills += (fassists / 2.0): %.2f", fkills);
 	XStats_DebugText(false, "fdeaths: %.2f", fdeaths);
 	XStats_DebugText(false, "fassists: %.2f", fassists);
 	
@@ -227,10 +237,9 @@ stock float GetKDR(int kills, int deaths, int assists) {
 	}
 	
 	kdr = fkills / fdeaths;
-	XStats_DebugText(false, "kdr: %.2f", kdr);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "kdr: %.2f\n", kdr);
 	
-	kdr = kdr / 100.0; /* Fix the KDR To be correct. 120.0 -> 1.20 */
+	kdr /= 100.0; /* Fix the KDR To be correct. 120.0 -> 1.20 */
 	
 	if(kdr == 0.00)
 		kdr = 1.00;

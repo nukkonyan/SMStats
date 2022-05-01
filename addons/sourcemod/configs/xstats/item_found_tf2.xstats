@@ -3,7 +3,6 @@ create table if not exists `item_found_tf2`
 	`ID` int(32) not null auto_increment,
 	`ServerID` int(32) not null default '1',
 	`Time` int(32) not null default '0',
-	`Playername` varchar(64) not null default '',
 	`SteamID` varchar(64) not null default '',
 	`QualityID` int(32) not null default '0',
 	`Quality` varchar(64) not null default '',

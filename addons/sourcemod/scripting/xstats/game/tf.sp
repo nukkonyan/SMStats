@@ -1056,13 +1056,13 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		char log[2048];
 		int len = 0;
 		len += Format(log[len], sizeof(log)-len, "insert into `%s`", Global.kill_log);
-		len += Format(log[len], sizeof(log)-len, "(ServerID, Time, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, Midair, CritType)");
+		len += Format(log[len], sizeof(log)-len, "(ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType)");
 		len += Format(log[len], sizeof(log)-len, "values");
-		len += Format(log[len], sizeof(log)-len, "('%i', '%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
-		Cvars.ServerID.IntValue, GetTime(), Player[client].Playername, Player[client].SteamID, Player[victim].Playername, Player[victim].SteamID, Player[assist].Playername, Player[assist].SteamID, fix_weapon, headshot, noscope, midair, crits);
+		len += Format(log[len], sizeof(log)-len, "('%i', '%i', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i', '%i')",
+		Cvars.ServerID.IntValue, GetTime(), Player[client].SteamID, Player[victim].SteamID, Player[assist].SteamID, fix_weapon, headshot, backstab, noscope, midair, crits);
 		DB.Threaded.Query(DBQuery_Kill_Log, log);
 		
-		XStats_DebugText(false, "Inserting (ServerID, Time, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, Midair, CritType) values ('%i', '%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i') into %s",
-		Cvars.ServerID.IntValue, GetTime(), Player[client].Playername, Player[client].SteamID, Player[victim].Playername, Player[victim].SteamID, Player[assist].Playername, Player[assist].SteamID, fix_weapon, headshot, noscope, midair, crits, Global.kill_log);
+		XStats_DebugText(false, "Inserting (ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType) values ('%i', '%i', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i', '%i') into %s",
+		Cvars.ServerID.IntValue, GetTime(), Player[client].SteamID, Player[victim].SteamID, Player[assist].SteamID, fix_weapon, headshot, backstab, noscope, midair, crits, Global.kill_log);
 	}
 }

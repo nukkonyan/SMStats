@@ -43,22 +43,15 @@ public void OnClientAuthorized(int client, const char[] auth) {
 	}
 	
 	DBResultSet results = SQL_QueryEx(DB.Direct, "select * from `%s` where SteamID='%s'", Global.playerlist, auth);
-	
-	/* Prevent invalid characters within playername when being sent over to the database. */
-	char temp_playername[64];
-	temp_playername = Player[client].Playername;
-	TrimString(temp_playername);
-	DB.Direct.Escape(temp_playername, temp_playername, sizeof(temp_playername));
-	
 	switch(results != null && results.RowCount != 0) {
 		/* Player was found */
 		case true: {
-			results = SQL_QueryEx(DB.Direct, "update `%s` set Playername = '%s', IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
-			Global.playerlist, temp_playername, Player[client].IP, Player[client].SteamID, Cvars.ServerID.IntValue);
+			results = SQL_QueryEx(DB.Direct, "update `%s` set IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
+			Global.playerlist, Player[client].IP, Player[client].SteamID, Cvars.ServerID.IntValue);
 			
 			/* Avoid showing ip due to privacy */
-			XStats_DebugText(false, "Updating table \"%s\" \nPlayername \"%s\" in SteamID \"%s\" (ServerID %i)",
-			Global.playerlist, temp_playername, Player[client].SteamID, Cvars.ServerID.IntValue);
+			XStats_DebugText(false, "Updating table \"%s\"\nSteamID \"%s\" (ServerID %i)",
+			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			
 			if(results == null)	{
 				char error[256];
@@ -68,11 +61,11 @@ public void OnClientAuthorized(int client, const char[] auth) {
 		}
 		/* Player wasn't found, adding.. */
 		case false: {
-			results = SQL_QueryEx(DB.Direct, "insert into `%s` (Playername, SteamID, IPAddress, ServerID) values ('%s', '%s', '%s', '%i')",
-			Global.playerlist, temp_playername, Player[client].SteamID, Player[client].IP, Cvars.ServerID.IntValue);
+			results = SQL_QueryEx(DB.Direct, "insert into `%s` (SteamID, IPAddress, ServerID) values ('%s', '%s', '%i')",
+			Global.playerlist, Player[client].SteamID, Player[client].IP, Cvars.ServerID.IntValue);
 			
-			XStats_DebugText(false, "Inserting into table \"%s\" \nPlayername \"%s\"\nSteamID \"%s\" (ServerID %i)",
-			Global.playerlist, temp_playername, Player[client].SteamID, Cvars.ServerID.IntValue);
+			XStats_DebugText(false, "Inserting into table \"%s\" \nSteamID \"%s\" (ServerID %i)",
+			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			
 			if(results == null) {
 				char error[256];

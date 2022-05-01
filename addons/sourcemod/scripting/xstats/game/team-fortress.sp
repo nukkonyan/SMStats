@@ -1152,40 +1152,73 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 	
 	TFClassType type = TF2_GetPlayerClass(victim);
 	if(type < TFClass_Scout) {
-		XStats_DebugText(false, "Tried updating class kills for invalid class id %i for %s, ignoring..\n", type, Player[client].Playername);
+		XStats_DebugText(false, "Tried updating for invalid class id %i from %s, ignoring..\n", type, Player[victim].Playername);
 		return; /* Make sure it's a valid class. */
 	}
 	
-	char class[][] = {
+	char class_kills[][] = {
 		"Error like actually",
-		"ScoutsKilled",
-		"SnipersKilled",
-		"SoldiersKilled",
-		"DemosKilled",
-		"MedicsKilled",
-		"HeaviesKilled",
-		"PyrosKilled",
-		"SpiesKilled",
-		"EngiesKilled",
-		"CiviliansKilled"
+		"ScoutKills",
+		"SniperKills",
+		"SoldierKills",
+		"DemoKills",
+		"MedicKills",
+		"HeavyKills",
+		"PyroKills",
+		"SpyKills",
+		"EngieKills",
+		"CivilianKills"
+	}, class_deaths[][] = {
+		"Definitely an error",
+		"ScoutDeaths",
+		"SniperDeaths",
+		"SoldierDeaths",
+		"DemoDeaths",
+		"MedicDeaths",
+		"HeavyDeaths",
+		"PyroDeaths",
+		"SpyDeaths",
+		"EngieDeaths",
+		"CivilianDeaths"
 	};
 	
 	switch(type) {
-		case TFClass_Scout: Session[client].ScoutsKilled++;
-		case TFClass_Soldier: Session[client].SoldiersKilled++;
-		case TFClass_Pyro: Session[client].PyrosKilled++;
-		case TFClass_DemoMan: Session[client].DemosKilled++;
-		case TFClass_Heavy: Session[client].HeaviesKilled++;
-		case TFClass_Engineer: Session[client].EngiesKilled++;
-		case TFClass_Medic: Session[client].MedicsKilled++;
-		case TFClass_Sniper: Session[client].SnipersKilled++;
-		case TFClass_Spy: Session[client].SpiesKilled++;
-		case TFClass_Civilian: Session[client].CiviliansKilled++; /* TF2 Classic */
+		case TFClass_Scout: Session[client].ScoutKills++;
+		case TFClass_Soldier: Session[client].SoldierKills++;
+		case TFClass_Pyro: Session[client].PyroKills++;
+		case TFClass_DemoMan: Session[client].DemoKills++;
+		case TFClass_Heavy: Session[client].HeavyKills++;
+		case TFClass_Engineer: Session[client].EngieKills++;
+		case TFClass_Medic: Session[client].MedicKills++;
+		case TFClass_Sniper: Session[client].SniperKills++;
+		case TFClass_Spy: Session[client].SpyKills++;
+		case TFClass_Civilian: Session[client].CivilianKills++; /* TF2 Classic */
 	}
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
-	Global.playerlist, class[type], class[type], Player[client].SteamID, Cvars.ServerID.IntValue);
+	Global.playerlist, class_kills[type], class_kills[type], Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
-	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]\n", TF2_GetClassTypeName[type], Player[client].Playername, class[type], type);
+	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]\n", TF2_GetClassTypeName[type], Player[client].Playername, class_kills[type], type);
+	
+	if(IsFakeClient(victim)) // Continue only if it's not a bot.
+		return;
+	
+	switch(type) {
+		case TFClass_Scout: Session[victim].ScoutDeaths++;
+		case TFClass_Soldier: Session[victim].SoldierDeaths++;
+		case TFClass_Pyro:  Session[victim].PyroDeaths++;
+		case TFClass_DemoMan: Session[victim].DemoDeaths++;
+		case TFClass_Heavy: Session[victim].HeavyDeaths++;
+		case TFClass_Engineer: Session[victim].EngieDeaths++;
+		case TFClass_Medic: Session[victim].MedicDeaths++;
+		case TFClass_Sniper: Session[victim].SniperDeaths++;
+		case TFClass_Spy: Session[victim].SpyDeaths++;
+		case TFClass_Civilian: Session[victim].CivilianDeaths++; /* TF2 Classic */
+	}
+	
+	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
+	Global.playerlist, class_deaths[type], class_deaths[type], Player[victim].SteamID, Cvars.ServerID.IntValue);
+	DB.Threaded.Query(DBQuery_Callback, query);
+	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]\n", TF2_GetClassTypeName[type], Player[victim].Playername, class_deaths[type], type);
 }
