@@ -1,12 +1,12 @@
-Action RankPanel(int client, int args=-1)	{
-	if(!DatabaseDirect())	{
+Action RankPanel(int client, int args=-1) {
+	if(!DatabaseDirect()) {
 		CPrintToChat(client, "%s The database connection is unavailable, please contact the server author.", Global.Prefix);
 		XStats_DebugText(false, "Player %s tried catching a database connection for rank panel but failed.", Player[client].Playername);
 		return Plugin_Handled;
 	}
 	
 	DBResultSet results = SQL_QueryEx(DB.Direct,
-	"select Playername, Points, PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
+	"select Points, PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	
 	if(results == null)	{
@@ -21,28 +21,25 @@ Action RankPanel(int client, int args=-1)	{
 		return Plugin_Handled;
 	}
 	
-	char playername[64];
-	results.FetchString(0, playername, sizeof(playername));
-	
 	Player[client].Position = GetClientPosition(Player[client].SteamID);
 	int players = GetTablePlayerCount();
-	int points = results.FetchInt(1);
-	int playtime = results.FetchInt(2);
-	int kills = results.FetchInt(3);
-	int assists = results.FetchInt(4);
-	int deaths = results.FetchInt(5);
-	int suicides = results.FetchInt(6);
-	int damagedone = results.FetchInt(7);
+	int points = results.FetchInt(0);
+	int playtime = results.FetchInt(1);
+	int kills = results.FetchInt(2);
+	int assists = results.FetchInt(3);
+	int deaths = results.FetchInt(4);
+	int suicides = results.FetchInt(5);
+	int damagedone = results.FetchInt(6);
 	float kdr = GetKDR(kills, deaths, assists);
 	
 	delete results;
 	StatsPanel[client].Main = true;
 	
-	XStatsRankPanel panel = new XStatsRankPanel();
+	PanelEx panel = new PanelEx();
 	panel.DrawItem("XStats Panel");
-	panel.DrawText("Playername: %s", playername);
-	panel.DrawText("Position #%i out of %i players", Player[client].Position, players);
-	panel.DrawText(" ");
+	panel.DrawText("Playername: %s", Player[client].Playername);
+	panel.DrawText("Positioned #%i out of %i players", Player[client].Position, players);
+	panel.DrawSpace();
 	panel.DrawItem("Current Session");
 	panel.DrawText("%i Points", Session[client].Points);
 	panel.DrawText("%i Minutes played", Session[client].PlayTime);
@@ -52,7 +49,7 @@ Action RankPanel(int client, int args=-1)	{
 	panel.DrawText("%i Suicides", Session[client].Suicides);
 	panel.DrawText("%i Damage dealt", Session[client].DamageDone);
 	panel.DrawText("KDR: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
-	panel.DrawText(" ");
+	panel.DrawSpace();
 	panel.DrawItem("Total Statistics");
 	panel.DrawText("%i Points", points);
 	panel.DrawText("%i Total minutes played", playtime);
@@ -62,12 +59,11 @@ Action RankPanel(int client, int args=-1)	{
 	panel.DrawText("%i Suicides", suicides);
 	panel.DrawText("%i Damage dealt", damagedone);
 	panel.DrawText("KDR: %.2f", kdr);
-	panel.DrawText(" ");
+	panel.DrawSpace();
 	panel.DrawItem("Exit");
 	panel.Send(client, RankPanelCallback, MENU_TIME_FOREVER);
-	delete panel;
 	
-	if(args != -1)	{
+	if(args != -1) {
 		CPrintToChat(client, "%s %s is positioned #%i out of %i players with %.2f KDR and %i total minutes in playtime",
 		Global.Prefix, Player[client].Name, Player[client].Position, players, kdr, playtime);
 	}
@@ -78,7 +74,7 @@ Action RankPanel(int client, int args=-1)	{
 /**
  *	Rank panel callback.
  */
-stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selection)	{
+stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selection) {
 	switch(selection)	{
 		/**
 		 * 1: Panel info.
@@ -109,7 +105,7 @@ stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selec
 
 /* Current Session */
 stock void RankPanel_CurrentSession(int client)	{
-	XStatsRankPanel panel = new XStatsRankPanel();
+	PanelEx panel = new PanelEx();
 	panel.DrawItem("XStats Panel: Current Session");
 	
 	/* Insert the generic ones first */
@@ -122,10 +118,10 @@ stock void RankPanel_CurrentSession(int client)	{
 	panel.DrawText("%i Mid-air kills", Session[client].MidAirKills);
 	panel.DrawText("%i Damage dealt", Session[client].DamageDone);
 	panel.DrawText("KDR: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
-	panel.DrawText(" ");
+	panel.DrawSpace();
 	
 	switch(Global.Game)	{
-		case Game_TF2, Game_TF2V:	{
+		case Game_TF2, Game_TF2V: {
 			panel.DrawItem("TF Stats");
 			panel.DrawText("%i Dominations", Session[client].Dominations);
 			panel.DrawText("%i Revenges", Session[client].Revenges);
@@ -205,24 +201,23 @@ stock void RankPanel_CurrentSession(int client)	{
 		}
 	}
 	
-	panel.DrawText(" ");
+	panel.DrawSpace();
 	panel.DrawItem("Back");
 	panel.DrawItem("Exit");
 	panel.Send(client, RankPanelCallback2, MENU_TIME_FOREVER);
-	delete panel;
 	
 	StatsPanel[client].Session = true;
 }
 
 /* Total Statistics */
-stock void RankPanel_TotalStatistics(int client)	{
-	if(DB.Threaded == null)	{
+stock void RankPanel_TotalStatistics(int client) {
+	if(DB.Threaded == null) {
 		CPrintToChat(client, "%s The threaded database connection is unavailable, please contact the server author.", Global.Prefix);
 		return;
 	}
 	
 	switch(Global.Game)	{
-		case Game_TF2:	TotalStatistics_TF2(client);
+		case Game_TF2: TotalStatistics_TF2(client);
 	}
 }
 
@@ -231,8 +226,8 @@ stock void RankPanel_TotalStatistics(int client)	{
 /**
  *	Rank panel callback.
  */
-stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int selection)	{
-	switch(selection)	{
+stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int selection) {
+	switch(selection) {
 		/**
 		 * 1: Session.
 		 * 2: Stats.
@@ -244,7 +239,7 @@ stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int sele
 	}
 }
 
-stock void OnDeathRankPanel(int client)	{
+stock void OnDeathRankPanel(int client) {
 	if(StatsPanel[client].Main)
 		RankPanel(client);
 	else if(StatsPanel[client].Session)
@@ -253,15 +248,15 @@ stock void OnDeathRankPanel(int client)	{
 		RankPanel_TotalPage(client, StatsPanel[client].TotalPage);
 }
 
-stock void RankPanel_TotalPage(int client, int page)	{
-	switch(Global.Game)	{
+stock void RankPanel_TotalPage(int client, int page) {
+	switch(Global.Game) {
 		case Game_TF2: RankPanel_Total_TF2(client, page);
 	}
 }
 
-stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client, int selection)	{
+stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client, int selection) {
 	int page;
-	switch((page = StatsPanel[client].TotalPage))	{
+	switch((page = StatsPanel[client].TotalPage)) {
 		case 1:	{
 			/**
 			 * 1: Panel info.
@@ -270,7 +265,7 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 			 * 4: Next.
 			 * 5: Exit.
 			 */
-			switch(selection)	{
+			switch(selection) {
 				case 1: RankPanel_TotalPage(client, page);
 				case 2: RankPanel_TotalPage(client, page);
 				case 3:	RankPanel(client);
@@ -290,7 +285,7 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 			 * 3: Next.
 			 * 4: Exit.
 			 */
-			switch(selection)	{
+			switch(selection) {
 				case 1: RankPanel_TotalPage(client, page);
 				case 2: RankPanel_TotalPage(client, page-1);
 				case 3:	RankPanel_TotalPage(client, page+1);
@@ -309,7 +304,7 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 			 * 3: Next.
 			 * 4: Exit.
 			 */
-			switch(selection)	{
+			switch(selection) {
 				case 1: RankPanel_TotalPage(client, page);
 				case 2: RankPanel_TotalPage(client, page-1);
 				case 3:	RankPanel_TotalPage(client, page+1);
@@ -327,7 +322,7 @@ stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client
 			 * 2: Back.
 			 * 3: Exit.
 			 */
-			switch(selection)	{
+			switch(selection) {
 				case 1: RankPanel_Total_TF2(client, page);
 				case 2:	RankPanel_Total_TF2(client, page-1);
 				case 3: {

@@ -6,7 +6,7 @@
 stock int GetClientPoints(const char[] auth) {
 	int points = 0;
 	
-	if(DB.Direct != null)	{
+	if(DB.Direct != null) {
 		DBResultSet results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		points = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
 		
@@ -26,9 +26,9 @@ stock int GetClientPosition(const char[] auth) {
 	int position = 0;
 	int points = 0;
 	
-	if(DB.Direct != null)	{
+	if(DB.Direct != null) {
 		DBResultSet results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
-		while(results != null && results.FetchRow())	{
+		while(results != null && results.FetchRow()) {
 			points = results.FetchInt(0);
 			
 			results = SQL_QueryEx(DB.Direct, "select count(*) from `%s` where Points >='%i' and ServerID='%i'", Global.playerlist, points, Cvars.ServerID.IntValue);
@@ -376,7 +376,7 @@ stock void DBQuery_DB(Database database, DBResultSet results, const char[] error
 /**
  *	Callback for the panel.
  */
-stock int PanelCallback(Menu menu, MenuAction action, int client, int selection)	{}
+stock int PanelCallback(Menu menu, MenuAction action, int client, int selection) {}
 
 /**
  *	Check active players.

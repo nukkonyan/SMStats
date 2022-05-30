@@ -111,8 +111,7 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 
 stock void Rounds(Event event, const char[] event_name, bool dontBroadcast)	{
 	XStats_DebugText(false, "//===== Rounds =====//");
-	XStats_DebugText(false, "\"%s\" Was fired", event_name);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "\"%s\" Was fired\n", event_name);
 	
 	DataPack pack = new DataPack();
 	pack.WriteString(event_name);

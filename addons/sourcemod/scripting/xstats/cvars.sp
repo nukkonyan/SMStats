@@ -10,6 +10,7 @@ void PrepareCvars()	{
 	Cvars.ConnectMsg		= CreateConVar("xstats_connectmsg",		"1", "XStats - Should connect messages be enabled?", _, true, _, true, 1.0);
 	Cvars.RemoveOldPlayers	= CreateConVar("xstats_removeoldplayers", "0", "XStats - Number of days of days to keep players in the database. (Since last connection). 0 Disables check.");
 	Cvars.AntiAbuse			= CreateConVar("xstats_antiabuse",		"1", "XStats - Should abusing players be avoided to make sure the event was legit? (Noclipping, sv_cheats, etc)", _, true, _, true, 1.0);
+	Cvars.Update			= CreateConVar("xstats_update",			"1", "XStats - If updater is detected running and this value is enabled, auto-update is active.", _, true, _, true, 1.0);
 	
 	Cvars.PrefixCvar = CreateConVar("xstats_prefix", "{green}XStats", "XStats - Prefix to be used ingame texts.");
 	Cvars.PrefixCvar.AddChangeHook(PrefixCallback);

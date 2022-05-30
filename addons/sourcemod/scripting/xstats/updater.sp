@@ -3,14 +3,19 @@
 /**
  *	Initialize updater addition.
  */
-void PrepareUpdater()	{
+void PrepareUpdater() {
+	if(!IsUpdaterAvailable())
+		return;
+	
 	CreateTimer(5.0, Timer_PrepareUpdater);
 	XStats_DebugText(false, "Initializing 5 second delay for the update check on plugin startup.");
 }
 
 Action Timer_PrepareUpdater(Handle timer)	{
-	if(!IsUpdaterLoaded())
+	if(!IsUpdaterAvailable()) {
+		KillTimerEx(timer);
 		return Plugin_Handled;
+	}
 	
 	Updater_AddPlugin(UpdateUrl);
 	Updater_ForceUpdate();
@@ -19,7 +24,7 @@ Action Timer_PrepareUpdater(Handle timer)	{
 }
 
 public void OnLibraryAdded(const char[] name)	{
-	if(StrEqual(name, "updater"))	{
+	if(StrEqual(name, "updater")) {
 		XStats_DebugText(false, "Updater plugin was detected, adding plugin to update list..");
 		Updater_AddPlugin(UpdateUrl);
 		
@@ -42,14 +47,13 @@ public void Updater_OnPluginUpdated()	{
 
 stock Action Timer_CheckForUpdate(Handle timer)	{	
 	XStats_DebugText(false, "Checking for new update..");
-	XStats_DebugText(false, "Current version: %s", Version);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "Current version: %s\n", Version);
 	Updater_ForceUpdate();
 }
 
 /**
  *	Returns if the updater is loaded.
  */
-stock bool IsUpdaterLoaded()	{
-	return view_as<bool>(GetFeatureStatus(FeatureType_Native, "Updater_AddPlugin") == FeatureStatus_Available);
+stock bool IsUpdaterAvailable()	{
+	return view_as<bool>(GetFeatureStatus(FeatureType_Native, "Updater_AddPlugin") == FeatureStatus_Available && Cvars.Update.BoolValue);
 }

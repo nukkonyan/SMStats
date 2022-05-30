@@ -1,7 +1,6 @@
 #include <multicolors>
 #include <xstats>
 #include <geoip>
-#undef REQUIRE_PLUGIN
 #include <updater>
 #pragma semicolon 1
 #pragma newdecls required

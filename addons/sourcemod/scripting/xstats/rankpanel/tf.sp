@@ -155,7 +155,7 @@ stock void DBQuery_TotalStatistics_TF2(Database database, DBResultSet results, c
 }
 
 void RankPanel_Total_TF2(int client, int page)	{
-	XStatsRankPanel panel = new XStatsRankPanel();
+	PanelEx panel = new PanelEx();
 	panel.DrawItem("XStats Panel: Total Statistics (Page %i)", page);
 	
 	switch(page)	{
@@ -169,7 +169,7 @@ void RankPanel_Total_TF2(int client, int page)	{
 			panel.DrawText("%i Mid-air kills", TotalStats[client].MidAirKills);
 			panel.DrawText("%i Damage dealt", TotalStats[client].DamageDone+Session[client].DamageDone); /* We combine these two as one, since otherwise we'd have lags big time */
 			panel.DrawText("KDR: %.2f", GetKDR(TotalStats[client].Kills, TotalStats[client].Deaths, TotalStats[client].Assists));
-			panel.DrawText(" ");
+			panel.DrawSpace();
 			panel.DrawItem("TF Stats");
 			panel.DrawText("%i Dominations", TotalStats[client].Dominations);
 			panel.DrawText("%i Revenges", TotalStats[client].Revenges);
@@ -184,13 +184,13 @@ void RankPanel_Total_TF2(int client, int page)	{
 			panel.DrawText("%i Telefrags", TotalStats[client].TeleFrags);
 			panel.DrawText("%i Buildings built", TotalStats[client].BuildingsBuilt);
 			panel.DrawText("%i Buildings destroyed", TotalStats[client].BuildingsDestroyed);
-			panel.DrawText(" ");
+			panel.DrawSpace();
 			panel.DrawItem("Back");
 			panel.DrawItem("Next");
 		}
 		
 		case 2:	{
-			panel.DrawText(" ");
+			panel.DrawSpace();
 			panel.DrawText("%i Mini-Sentryguns built", TotalStats[client].MiniSentryGunsBuilt);
 			panel.DrawText("%i Sentryguns built", TotalStats[client].SentryGunsBuilt);
 			panel.DrawText("%i Dispensers built", TotalStats[client].DispensersBuilt);
@@ -209,13 +209,13 @@ void RankPanel_Total_TF2(int client, int page)	{
 			panel.DrawText("%i Extinguished", TotalStats[client].Extinguished);
 			panel.DrawText("%i Points captured", TotalStats[client].PointsCaptured);
 			panel.DrawText("%i Points defended", TotalStats[client].PointsDefended);
-			panel.DrawText(" ");
+			panel.DrawSpace();
 			panel.DrawItem("Back");
 			panel.DrawItem("Next");
 		}
 		
 		case 3:	{
-			panel.DrawText(" ");
+			panel.DrawSpace();
 			panel.DrawText("%i Flags picked up", TotalStats[client].FlagsPickedUp);
 			panel.DrawText("%i Flags captured", TotalStats[client].FlagsCaptured);
 			panel.DrawText("%i Flags stolen", TotalStats[client].FlagsStolen);
@@ -233,26 +233,25 @@ void RankPanel_Total_TF2(int client, int page)	{
 			panel.DrawText("%i Killed Horseless headless horsemann", TotalStats[client].KilledHHH);
 			panel.DrawText("%i Tanks destroyed", TotalStats[client].TanksDestroyed);
 			panel.DrawText("%i Sentrybusters destroyed", TotalStats[client].SentryBustersKilled);
-			panel.DrawText(" ");	
+			panel.DrawSpace();	
 			panel.DrawItem("Back");
 			panel.DrawItem("Next");
 		}
 		
 		case 4:	{
-			panel.DrawText(" ");
+			panel.DrawSpace();
 			panel.DrawText("%i Passballs gotten", TotalStats[client].PassBallsGotten);
 			panel.DrawText("%i Passballs scored", TotalStats[client].PassBallsScored);
 			panel.DrawText("%i Passballs dropped", TotalStats[client].PassBallsDropped);
 			panel.DrawText("%i Passballs catched", TotalStats[client].PassBallsCatched);
 			panel.DrawText("%i Passballs stolen", TotalStats[client].PassBallsStolen);
 			panel.DrawText("%i Passballs blocked", TotalStats[client].PassBallsBlocked);
-			panel.DrawText(" ");	
+			panel.DrawSpace();	
 			panel.DrawItem("Back");
 		}
 	}
 	
 	panel.DrawItem("Exit");
 	panel.Send(client, Panel_TotalStatisticsCallback, MENU_TIME_FOREVER);
-	delete panel;
 	StatsPanel[client].TotalPage = page;
 }
