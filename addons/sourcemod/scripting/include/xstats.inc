@@ -1,4 +1,5 @@
 #define _tklib_disable_resize
+#define _tklib_definitions
 #include <tklib>
 
 #if defined _xstats_included
@@ -10,9 +11,7 @@
 #define Xstats "xstats"
 #define XstatsAchievements "xstats_achievements"
 
-enum XStats {
-	XStats_Invalid = -1
-}
+enum XStats {XStats_Invalid = -1}
 
 #include <xstats/functions>
 
@@ -127,7 +126,7 @@ forward void XStats_OnSuicideEvent(int client);
  */
 forward void XStats_TF2_OnFlagEvent(int client, int carrier, TFFlag flag, bool home);
 
-methodmap XStats __nullable__	{
+methodmap XStats __nullable__ {
 	/**
 	 *	Returns the amount of points a user has.
 	 *
@@ -175,28 +174,28 @@ methodmap XStats __nullable__	{
 	/**
 	 *	Returns if XStats is enabled.
 	 */
-	property bool Enabled	{
+	property bool Enabled {
 		public native get();
 	}
 	
 	/**
 	 *	Returns if XStats is active.
 	 */
-	property bool Active	{
+	property bool Active {
 		public native get();
 	}
 	
 	/**
 	 *	Returns if the bots are allowed.
 	 */
-	property bool AllowBots	{
+	property bool AllowBots {
 		public native get();
 	}
 	
 	/**
 	 *	Return if debug is active.
 	 */
-	property bool Debug	{
+	property bool Debug {
 		public native get();
 	}
 }
@@ -212,7 +211,7 @@ public SharedPlugin __pl_XStats = {
 }
 
 #if !defined REQUIRE_PLUGIN
-public void __pl_XStats_SetNTVOptional()	{
+public void __pl_XStats_SetNTVOptional() {
 	MarkNativeAsOptional("XStats_GetClientPoints");
 	MarkNativeAsOptional("XStats.GetPoints");
 	MarkNativeAsOptional("XStats_GetClientPlayTime");

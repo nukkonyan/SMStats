@@ -17,30 +17,40 @@ enum XStats_SessionType {
 	SessionType_GrenadeKills,
 	
 	/* TF2 */
-	SessionType_ScoutsKilled,
-	SessionType_SoldiersKilled,
-	SessionType_PyrosKilled,
-	SessionType_DemosKilled,
-	SessionType_HeaviesKilled,
-	SessionType_EngiesKilled,
-	SessionType_MedicsKilled,
-	SessionType_SnipersKilled,
-	SessionType_SpiesKilled,
-	SessionType_CiviliansKilled, /* TF2 Classic */
+	SessionType_ScoutKills,
+	SessionType_SoldierKills,
+	SessionType_PyroKills,
+	SessionType_DemoKills,
+	SessionType_HeavyKills,
+	SessionType_EngieKills,
+	SessionType_MedicKills,
+	SessionType_SniperKills,
+	SessionType_SpyKills,
+	SessionType_CivilianKills, /* TF2 Classic */
+	SessionType_ScoutDeaths,
+	SessionType_SoldierDeaths,
+	SessionType_PyroDeaths,
+	SessionType_DemoDeaths,
+	SessionType_HeavyDeaths,
+	SessionType_EngieDeaths,
+	SessionType_MedicDeaths,
+	SessionType_SniperDeaths,
+	SessionType_SpyDeaths,
+	SessionType_CivilianDeaths, /* TF2 Classic */
 	SessionType_Airshots,
 	SessionType_Backstabs,
-	SessionType_TauntKills,
-	SessionType_GibKills,
-	SessionType_DeflectKills,
+	SessionType_Tauntkills,
+	SessionType_Gibs,
+	SessionType_Deflects,
 	SessionType_Ubercharged,
 	SessionType_SandvichesStolen,
 	SessionType_Coated,
 	SessionType_Extinguished,
-	SessionType_TeleFrags,
-	SessionType_SentryKills,
-	SessionType_MiniSentryKills,
-	SessionType_MiniCritKills,
-	SessionType_CritKills,
+	SessionType_Telefrags,
+	SessionType_Sentrykills,
+	SessionType_MiniSentrykills,
+	SessionType_MiniCritkills,
+	SessionType_Critkills,
 	SessionType_FlagsStolen,
 	SessionType_FlagsPickedUp,
 	SessionType_FlagsCaptured,
@@ -120,42 +130,58 @@ enum struct XStatsSession {
 	int GrenadeKills;
 	
 	/* TF2 */
-	int ScoutsKilled;
-	int SoldiersKilled;
-	int PyrosKilled;
-	int DemosKilled;
-	int HeaviesKilled;
-	int EngiesKilled;
-	int MedicsKilled;
-	int SnipersKilled;
-	int SpiesKilled;
-	int CiviliansKilled; /* TF2 Classic */
+	int ScoutKills;
+	int SoldierKills;
+	int PyroKills;
+	int DemoKills;
+	int HeavyKills;
+	int EngieKills;
+	int MedicKills;
+	int SniperKills;
+	int SpyKills;
+	int CivilianKills; /* TF2 Classic */
+	
+	int ScoutDeaths;
+	int SoldierDeaths;
+	int PyroDeaths;
+	int DemoDeaths;
+	int HeavyDeaths;
+	int EngieDeaths;
+	int MedicDeaths;
+	int SniperDeaths;
+	int SpyDeaths;
+	int CivilianDeaths; /* TF2 Classic */
+	
 	int Backstabs;
-	int TauntKills;
-	int GibKills;
-	int DeflectKills;
+	int Tauntkills;
+	int Gibs;
+	int Deflects;
 	int Ubercharged;
 	int SandvichesStolen;
 	int Coated;
 	int Extinguished;
-	int TeleFrags;
-	int SentryKills;
-	int MiniSentryKills;
-	int MiniCritKills;
-	int CritKills;
+	int Telefrags;
+	int Sentrykills;
+	int MiniSentrykills;
+	int MiniCritkills;
+	int Critkills;
+	
 	int PointsCaptured;
 	int PointsDefended;
+	
 	int FlagsStolen;
 	int FlagsPickedUp;
 	int FlagsCaptured;
 	int FlagsDefended;
 	int FlagsDropped;
+	
 	int PassBallsGotten;
 	int PassBallsScored;
 	int PassBallsDropped;
 	int PassBallsCatched;
 	int PassBallsStolen;
 	int PassBallsBlocked;
+	
 	int BuildingsBuilt;
 	int SentryGunsBuilt;
 	int DispensersBuilt;
@@ -171,16 +197,21 @@ enum struct XStatsSession {
 	int TeleporterEntrancesDestroyed;
 	int TeleporterExitsDestroyed;
 	int SappersDestroyed;
+	
 	int PlayerTeleported;
 	int PlayersTeleported;
+	
 	int StunnedPlayers;
 	int MoonShotStunnedPlayers;
+	
 	int KilledHHH;
 	int KilledMonoculus;
 	int KilledMerasmus;
 	int KilledSkeletonKing;
+	
 	int StunnedMonoculus;
 	int StunnedMerasmus;
+	
 	int MadMilked;
 	int Jarated;
 	int Ignited;
@@ -233,6 +264,8 @@ enum struct XStatsPlayer {
 	char Name[64];
 	char IP[16];
 	char Country[96];
+	int UserID;
+	int AccountID;
 	
 	int Points;
 	int Position;
@@ -258,6 +291,7 @@ enum struct XStatsGlobal {
 	char kill_log[64];
 	char item_found[64];
 	char maps_log[64];
+	char weapons[64];
 	char achievements[64];
 	char CurrentMap[64];
 	
@@ -277,6 +311,7 @@ enum struct XStatsCvars {
 	ConVar DisableAfterWin;
 	ConVar ConnectMsg;
 	ConVar AntiAbuse;
+	ConVar Update;
 	ConVar RemoveOldPlayers;
 	ConVar Weapon[40000];
 }
@@ -322,43 +357,7 @@ stock char Kill_Type[][] = {
 	"Kill Event Type 13",	//Blinded Kill.
 };
 
-typeset XStatsSessionCallback
-{
+typeset XStatsSessionCallback {
 	function void (XStats_SessionType type, int client, int count);
 	function void (XStats_SessionType type, int client);
-}
-
-/**
- *	Simplify the panel additions.
- */
-enum	XStatsRankPanel	{
-	XStatsRankPanel_Invalid = -1
-}
-
-methodmap XStatsRankPanel < Panel	{
-	public XStatsRankPanel(Handle hStyle=null)	{
-		return view_as<XStatsRankPanel>(new Panel(hStyle));
-	}
-	
-	public bool SetTitle(const char[] text, any ...)	{
-		char buffer[96];
-		VFormat(buffer, sizeof(buffer), text, 3); /* 1 is the panel, 2 is the input, 3 is the parameters */
-		view_as<Panel>(this).SetTitle(buffer);
-	}
-	
-	public bool DrawText(const char[] text, any ...)	{
-		char buffer[96];
-		VFormat(buffer, sizeof(buffer), text, 3);
-		return view_as<Panel>(this).DrawText(buffer);
-	}
-	
-	public int DrawItem(const char[] text, any ...)	{
-		char buffer[96];
-		VFormat(buffer, sizeof(buffer), text, 3);
-		return view_as<Panel>(this).DrawItem(buffer);
-	}
-	
-	public void Send(int client, MenuHandler handler, int time)	{
-		view_as<Panel>(this).Send(client, handler, time);
-	}
 }
