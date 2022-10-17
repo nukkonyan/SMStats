@@ -13,59 +13,59 @@ ConVar TF2_Collat;
  */
 void PrepareGame_TF2() {
 	//Weapon cvars
-	Cvars.Weapon[0]	= CreateConVar("xstats_points_weapon_bat",					"10",	"Xstats: TF2 - Points given when killing with Bat.", _, true);
-	Cvars.Weapon[1]	= CreateConVar("xstats_points_weapon_bottle",				"10",	"Xstats: TF2 - Points given when killing with Bottle.", _, true);
-	Cvars.Weapon[2]	= CreateConVar("xstats_points_weapon_fireaxe",				"10",	"Xstats: TF2 - Points given when killing with Fire Axe.", _, true);
-	Cvars.Weapon[3]	= CreateConVar("xstats_points_weapon_kukri",				"10",	"Xstats: TF2 - Points given when killing with Kukri.", _, true);
-	Cvars.Weapon[4]	= CreateConVar("xstats_points_weapon_knife",				"10",	"Xstats: TF2 - Points given when killing with Knife.", _, true);
-	Cvars.Weapon[5]	= CreateConVar("xstats_points_weapon_fists",				"10",	"Xstats: TF2 - Points given when killing with Fists", _, true);
-	Cvars.Weapon[6]	= CreateConVar("xstats_points_weapon_shovel",				"10",	"Xstats: TF2 - Points given when killing with Shovel.", _, true);
-	Cvars.Weapon[7]	= CreateConVar("xstats_points_weapon_wrench",				"10",	"Xstats: TF2 - Points given when killing with Wrench.", _, true);
-	Cvars.Weapon[8]	= CreateConVar("xstats_points_weapon_bonesaw",				"10",	"Xstats: TF2 - Points given when killing with Bonesaw.", _, true);
-	Cvars.Weapon[9]	= CreateConVar("xstats_points_weapon_shotgun",				"10",	"Xstats: TF2 - Points given when killing with Shotgun.", _, true);
+	Cvars.Weapon[0]	= CreateConVar("xstats_points_weapon_bat",						"10", "XStats: TF2 - Points given when killing with Bat.", _, true);
+	Cvars.Weapon[1]	= CreateConVar("xstats_points_weapon_bottle",					"10", "XStats: TF2 - Points given when killing with Bottle.", _, true);
+	Cvars.Weapon[2]	= CreateConVar("xstats_points_weapon_fireaxe",					"10", "XStats: TF2 - Points given when killing with Fire Axe.", _, true);
+	Cvars.Weapon[3]	= CreateConVar("xstats_points_weapon_kukri",					"10", "XStats: TF2 - Points given when killing with Kukri.", _, true);
+	Cvars.Weapon[4]	= CreateConVar("xstats_points_weapon_knife",					"10", "XStats: TF2 - Points given when killing with Knife.", _, true);
+	Cvars.Weapon[5]	= CreateConVar("xstats_points_weapon_fists",					"10", "XStats: TF2 - Points given when killing with Fists", _, true);
+	Cvars.Weapon[6]	= CreateConVar("xstats_points_weapon_shovel",					"10", "XStats: TF2 - Points given when killing with Shovel.", _, true);
+	Cvars.Weapon[7]	= CreateConVar("xstats_points_weapon_wrench",					"10", "XStats: TF2 - Points given when killing with Wrench.", _, true);
+	Cvars.Weapon[8]	= CreateConVar("xstats_points_weapon_bonesaw",					"10", "XStats: TF2 - Points given when killing with Bonesaw.", _, true);
+	Cvars.Weapon[9]	= CreateConVar("xstats_points_weapon_shotgun",					"10", "XStats: TF2 - Points given when killing with Shotgun.", _, true);
 	Cvars.Weapon[10] = Cvars.Weapon[9];	//Same Shotgun, different TFClass type.
 	Cvars.Weapon[11] = Cvars.Weapon[9];	//Same Shotgun, different TFClass type.
 	Cvars.Weapon[12] = Cvars.Weapon[9];	//Same Shotgun, different TFClass type.
-	Cvars.Weapon[13] = CreateConVar("xstats_points_weapon_scattergun",				"10",	"Xstats: TF2 - Points given when killing with Scattergun.", _, true);
-	Cvars.Weapon[14] = CreateConVar("xstats_points_weapon_sniperrifle",				"10",	"Xstats: TF2 - Points given when killing with Sniper Rifle.", _, true);
-	Cvars.Weapon[15] = CreateConVar("xstats_points_weapon_minigun",					"10",	"Xstats: TF2 - Points given when killing with Minigun.", _, true);
-	Cvars.Weapon[16] = CreateConVar("xstats_points_weapon_smg",						"10",	"Xstats: TF2 - Points given when killing with SMG.", _, true);
-	Cvars.Weapon[17] = CreateConVar("xstats_points_weapon_syringegun",				"10",	"Xstats: TF2 - Points given when killing with Syringe Gun.", _, true);
-	Cvars.Weapon[18] = CreateConVar("xstats_points_weapon_rocketlauncher",			"10",	"Xstats: TF2 - Points given when killing with Rocket Launcher.", _, true);
-	Cvars.Weapon[19] = CreateConVar("xstats_points_weapon_grenadelauncher",			"10",	"Xstats: TF2 - Points given when killing with Grenade Launcher.", _, true);
-	Cvars.Weapon[20] = CreateConVar("xstats_points_weapon_stickybomblauncher",		"10",	"Xstats: TF2 - Points given when killing with StickyBomb Launcher", _, true);
-	Cvars.Weapon[21] = CreateConVar("xstats_points_weapon_flamethrower",			"10",	"Xstats: TF2 - Points given when killing with Flamethrower.", _, true);
-	Cvars.Weapon[22] = CreateConVar("xstats_points_weapon_pistol",					"10",	"Xstats: TF2 - Points given when killing with Pistol.", _, true);
+	Cvars.Weapon[13] = CreateConVar("xstats_points_weapon_scattergun",				"10", "XStats: TF2 - Points given when killing with Scattergun.", _, true);
+	Cvars.Weapon[14] = CreateConVar("xstats_points_weapon_sniperrifle",				"10", "XStats: TF2 - Points given when killing with Sniper Rifle.", _, true);
+	Cvars.Weapon[15] = CreateConVar("xstats_points_weapon_minigun",					"10", "XStats: TF2 - Points given when killing with Minigun.", _, true);
+	Cvars.Weapon[16] = CreateConVar("xstats_points_weapon_smg",						"10", "XStats: TF2 - Points given when killing with SMG.", _, true);
+	Cvars.Weapon[17] = CreateConVar("xstats_points_weapon_syringegun",				"10", "XStats: TF2 - Points given when killing with Syringe Gun.", _, true);
+	Cvars.Weapon[18] = CreateConVar("xstats_points_weapon_rocketlauncher",			"10", "XStats: TF2 - Points given when killing with Rocket Launcher.", _, true);
+	Cvars.Weapon[19] = CreateConVar("xstats_points_weapon_grenadelauncher",			"10", "XStats: TF2 - Points given when killing with Grenade Launcher.", _, true);
+	Cvars.Weapon[20] = CreateConVar("xstats_points_weapon_stickybomblauncher",		"10", "XStats: TF2 - Points given when killing with StickyBomb Launcher", _, true);
+	Cvars.Weapon[21] = CreateConVar("xstats_points_weapon_flamethrower",			"10", "XStats: TF2 - Points given when killing with Flamethrower.", _, true);
+	Cvars.Weapon[22] = CreateConVar("xstats_points_weapon_pistol",					"10", "XStats: TF2 - Points given when killing with Pistol.", _, true);
 	Cvars.Weapon[23] = Cvars.Weapon[22];	//Same Pistol, different TFClass type.
-	Cvars.Weapon[24] = CreateConVar("xstats_points_weapon_revolver",				"10",	"Xstats: TF2 - Points given when killing with Revolver.", _, true);
-	Cvars.Weapon[36] = CreateConVar("xstats_points_weapon_blutsauger",				"10",	"Xstats: TF2 - Points given when killing with Blutsauger.", _, true);
-	Cvars.Weapon[37] = CreateConVar("xstats_points_weapon_ubersaw",					"10",	"Xstats: TF2 - Points given when killing with Ubersaw.", _, true);
-	Cvars.Weapon[38] = CreateConVar("xstats_points_weapon_axtinguisher",			"10",	"Xstats: TF2 - Points given when killing with Axtinguisher.", _, true);
-	Cvars.Weapon[39] = CreateConVar("xstats_points_weapon_flaregun",				"10",	"Xstats: TF2 - Points given when killing with Flaregun.", _, true);
-	Cvars.Weapon[40] = CreateConVar("xstats_points_weapon_backburner",				"10",	"Xstats: TF2 - Points given when killing with Backburner.", _, true);
-	Cvars.Weapon[41] = CreateConVar("xstats_points_weapon_natascha",				"10",	"Xstats: TF2 - Points given when killing with Natascha.", _, true);
-	Cvars.Weapon[43] = CreateConVar("xstats_points_weapon_killerglovesofboxing",	"10",	"Xstats: TF2 - Points given when killing with Killer Gloves Of Boxing", _, true);
-	Cvars.Weapon[44] = CreateConVar("xstats_points_weapon_sandman",					"10",	"Xstats: TF2 - Points given when killing with Sandman.", _, true);
-	Cvars.Weapon[45] = CreateConVar("xstats_points_weapon_forceanature",			"10",	"Xstats: TF2 - Points given when killing with Force-A-Nature", _, true);
-	Cvars.Weapon[56] = CreateConVar("xstats_points_weapon_huntsman",				"10",	"Xstats: TF2 - Points given when killing with Huntsman.", _, true);
-	Cvars.Weapon[61] = CreateConVar("xstats_points_weapon_ambassador",				"10",	"Xstats: TF2 - Points given when killing with Ambassador.", _, true);
-	Cvars.Weapon[127] = CreateConVar("xstats_points_weapon_directhit",				"10",	"Xstats: TF2 - Points given when killing with Direct-Hit.", _, true);
-	Cvars.Weapon[128] = CreateConVar("xstats_points_weapon_equalizer",				"10",	"Xstats: TF2 - Points given when killing with Equalizer.", _, true);
-	Cvars.Weapon[130] = CreateConVar("xstats_points_weapon_scottishresistance",		"10",	"Xstats: TF2 - Points given when killing with Scottish Resistance.", _, true);
-	Cvars.Weapon[131] = CreateConVar("xstats_points_weapon_chargentarge",			"10",	"Xstats: TF2 - Points given when killing with Charge n' Targe", _, true);
-	Cvars.Weapon[132] = CreateConVar("xstats_points_weapon_eyelander",				"10",	"Xstats: TF2 - Points given when killing with Eyelander.", _, true);
-	Cvars.Weapon[140] = CreateConVar("xstats_points_weapon_wrangler",				"10",	"Xstats: TF2 - Points given when killing with Wrangler.", _, true);
-	Cvars.Weapon[141] = CreateConVar("xstats_points_weapon_frontierjustice",		"10",	"Xstats: TF2 - Points given when killing with Frontier Justice.", _, true);
-	Cvars.Weapon[142] = CreateConVar("xstats_points_weapon_gunslinger",				"10",	"Xstats: TF2 - Points given when killing with gunslinger.", _, true);
-	Cvars.Weapon[153] = CreateConVar("xstats_points_weapon_homewrecker",			"10",	"Xstats: TF2 - Points given when killing with homewrecker.", _, true);
-	Cvars.Weapon[154] = CreateConVar("xstats_points_weapon_paintrain",				"10",	"Xstats: TF2 - Points given when killing with pain train.", _, true);
-	Cvars.Weapon[155] = CreateConVar("xstats_points_weapon_southernhospitality",	"10",	"Xstats: TF2 - Points given when killing with southern hospitality.", _, true);
-	Cvars.Weapon[160] = CreateConVar("xstats_points_weapon_lugermorph",				"10",	"Xstats: TF2 - Points given when killing with lugermorph", _, true);
-	Cvars.Weapon[161] = CreateConVar("xstats_points_weapon_bigkill",				"10",	"Xstats: TF2 - Points given when killing with big kill.", _, true);
-	Cvars.Weapon[169] = CreateConVar("xstats_points_weapon_wrench",					"10",	"Xstats: TF2 - Points given when killing with wrench.", _, true);
-	Cvars.Weapon[171] = CreateConVar("xstats_points_weapon_tribalmansshiv",			"10",	"Xstats: TF2 - Points given when killing with tribalman's shiv.", _, true);
-	Cvars.Weapon[172] = CreateConVar("xstats_points_weapon_scotsmansskullcutter",	"10",	"Xstats: TF2 - Points given when killing with scotsman's skullcutter.", _, true);
-	Cvars.Weapon[173] = CreateConVar("xstats_points_weapon_vitasaw",				"10",	"Xstats: TF2 - Points given when killing with vita saw.", _, true);
+	Cvars.Weapon[24] = CreateConVar("xstats_points_weapon_revolver",				"10", "XStats: TF2 - Points given when killing with Revolver.", _, true);
+	Cvars.Weapon[36] = CreateConVar("xstats_points_weapon_blutsauger",				"10", "XStats: TF2 - Points given when killing with Blutsauger.", _, true);
+	Cvars.Weapon[37] = CreateConVar("xstats_points_weapon_ubersaw",					"10", "XStats: TF2 - Points given when killing with Ubersaw.", _, true);
+	Cvars.Weapon[38] = CreateConVar("xstats_points_weapon_axtinguisher",			"10", "XStats: TF2 - Points given when killing with Axtinguisher.", _, true);
+	Cvars.Weapon[39] = CreateConVar("xstats_points_weapon_flaregun",				"10", "XStats: TF2 - Points given when killing with Flaregun.", _, true);
+	Cvars.Weapon[40] = CreateConVar("xstats_points_weapon_backburner",				"10", "XStats: TF2 - Points given when killing with Backburner.", _, true);
+	Cvars.Weapon[41] = CreateConVar("xstats_points_weapon_natascha",				"10", "XStats: TF2 - Points given when killing with Natascha.", _, true);
+	Cvars.Weapon[43] = CreateConVar("xstats_points_weapon_killerglovesofboxing",	"10", "XStats: TF2 - Points given when killing with Killer Gloves Of Boxing", _, true);
+	Cvars.Weapon[44] = CreateConVar("xstats_points_weapon_sandman",					"10", "XStats: TF2 - Points given when killing with Sandman.", _, true);
+	Cvars.Weapon[45] = CreateConVar("xstats_points_weapon_forceanature",			"10", "XStats: TF2 - Points given when killing with Force-A-Nature", _, true);
+	Cvars.Weapon[56] = CreateConVar("xstats_points_weapon_huntsman",				"10", "XStats: TF2 - Points given when killing with Huntsman.", _, true);
+	Cvars.Weapon[61] = CreateConVar("xstats_points_weapon_ambassador",				"10", "XStats: TF2 - Points given when killing with Ambassador.", _, true);
+	Cvars.Weapon[127] = CreateConVar("xstats_points_weapon_directhit",				"10", "XStats: TF2 - Points given when killing with Direct-Hit.", _, true);
+	Cvars.Weapon[128] = CreateConVar("xstats_points_weapon_equalizer",				"10", "XStats: TF2 - Points given when killing with Equalizer.", _, true);
+	Cvars.Weapon[130] = CreateConVar("xstats_points_weapon_scottishresistance",		"10", "XStats: TF2 - Points given when killing with Scottish Resistance.", _, true);
+	Cvars.Weapon[131] = CreateConVar("xstats_points_weapon_chargentarge",			"10", "XStats: TF2 - Points given when killing with Charge n' Targe", _, true);
+	Cvars.Weapon[132] = CreateConVar("xstats_points_weapon_eyelander",				"10", "XStats: TF2 - Points given when killing with Eyelander.", _, true);
+	Cvars.Weapon[140] = CreateConVar("xstats_points_weapon_wrangler",				"10", "XStats: TF2 - Points given when killing with Wrangler.", _, true);
+	Cvars.Weapon[141] = CreateConVar("xstats_points_weapon_frontierjustice",		"10", "XStats: TF2 - Points given when killing with Frontier Justice.", _, true);
+	Cvars.Weapon[142] = CreateConVar("xstats_points_weapon_gunslinger",				"10", "XStats: TF2 - Points given when killing with gunslinger.", _, true);
+	Cvars.Weapon[153] = CreateConVar("xstats_points_weapon_homewrecker",			"10", "XStats: TF2 - Points given when killing with homewrecker.", _, true);
+	Cvars.Weapon[154] = CreateConVar("xstats_points_weapon_paintrain",				"10", "XStats: TF2 - Points given when killing with pain train.", _, true);
+	Cvars.Weapon[155] = CreateConVar("xstats_points_weapon_southernhospitality",	"10", "XStats: TF2 - Points given when killing with southern hospitality.", _, true);
+	Cvars.Weapon[160] = CreateConVar("xstats_points_weapon_lugermorph",				"10", "XStats: TF2 - Points given when killing with lugermorph", _, true);
+	Cvars.Weapon[161] = CreateConVar("xstats_points_weapon_bigkill",				"10", "XStats: TF2 - Points given when killing with big kill.", _, true);
+	Cvars.Weapon[169] = CreateConVar("xstats_points_weapon_wrench",					"10", "XStats: TF2 - Points given when killing with wrench.", _, true);
+	Cvars.Weapon[171] = CreateConVar("xstats_points_weapon_tribalmansshiv",			"10", "XStats: TF2 - Points given when killing with tribalman's shiv.", _, true);
+	Cvars.Weapon[172] = CreateConVar("xstats_points_weapon_scotsmansskullcutter",	"10", "XStats: TF2 - Points given when killing with scotsman's skullcutter.", _, true);
+	Cvars.Weapon[173] = CreateConVar("xstats_points_weapon_vitasaw",				"10", "XStats: TF2 - Points given when killing with vita saw.", _, true);
 	Cvars.Weapon[190] = Cvars.Weapon[0];	//Same as default Bat, used for strange, renamed & skinned versions.
 	Cvars.Weapon[191] = Cvars.Weapon[1];	//Same as default Bottle, used for strange, renamed & skinned versions.
 	Cvars.Weapon[192] = Cvars.Weapon[2];	//Same as default Fire Axe, used for strange, renamed & skinned versions.
@@ -87,86 +87,86 @@ void PrepareGame_TF2() {
 	Cvars.Weapon[208] = Cvars.Weapon[21];	//Same as default Flamethrower, used for australium, strange, renamed & skinned versions.
 	Cvars.Weapon[209] = Cvars.Weapon[22];	//Same as default Pistol, used for strange, renamed & skinned versions.
 	Cvars.Weapon[210] = Cvars.Weapon[24];	//Same as default Revolver, used for strange, renamed & skinned versions.
-	Cvars.Weapon[214] = CreateConVar("xstats_points_weapon_powerjack",				"10",	"Xstats: TF2 - Points given when killing with Power Jack.", _, true);
-	Cvars.Weapon[215] = CreateConVar("xstats_points_weapon_degreaser",				"10",	"Xstats: TF2 - Points given when killing with Degreaser.", _, true);
-	Cvars.Weapon[220] = CreateConVar("xstats_points_weapon_shortstop",				"10",	"Xstats: TF2 - Points given when killing with Shortstop", _, true);
-	Cvars.Weapon[221] = CreateConVar("xstats_points_weapon_holymackerel",			"10",	"Xstats: TF2 - Points given when killing with Holy Mackerel.", _, true);
-	Cvars.Weapon[224] = CreateConVar("xstats_points_weapon_letranger",				"10",	"Xstats: TF2 - Points given when killing with L'etranger.", _, true);
-	Cvars.Weapon[225] = CreateConVar("xstats_points_weapon_eternalreward",			"10",	"Xstats: TF2 - Points given when killing with Eternal Reward.", _, true);
-	Cvars.Weapon[228] = CreateConVar("xstats_points_weapon_blackbox",				"10",	"Xstats: TF2 - Points given when killing with Black Box.", _, true);
-	Cvars.Weapon[230] = CreateConVar("xstats_points_weapon_sydneysleeper",			"10",	"Xstats: TF2 - Points given when killing with Sydney Sleeper.", _, true);
-	Cvars.Weapon[232] = CreateConVar("xstats_points_weapon_bushwacka",				"10",	"Xstats: TF2 - Points given when killing with Bushwacka.", _, true);
+	Cvars.Weapon[214] = CreateConVar("xstats_points_weapon_powerjack",				"10", "XStats: TF2 - Points given when killing with Power Jack.", _, true);
+	Cvars.Weapon[215] = CreateConVar("xstats_points_weapon_degreaser",				"10", "XStats: TF2 - Points given when killing with Degreaser.", _, true);
+	Cvars.Weapon[220] = CreateConVar("xstats_points_weapon_shortstop",				"10", "XStats: TF2 - Points given when killing with Shortstop", _, true);
+	Cvars.Weapon[221] = CreateConVar("xstats_points_weapon_holymackerel",			"10", "XStats: TF2 - Points given when killing with Holy Mackerel.", _, true);
+	Cvars.Weapon[224] = CreateConVar("xstats_points_weapon_letranger",				"10", "XStats: TF2 - Points given when killing with L'etranger.", _, true);
+	Cvars.Weapon[225] = CreateConVar("xstats_points_weapon_eternalreward",			"10", "XStats: TF2 - Points given when killing with Eternal Reward.", _, true);
+	Cvars.Weapon[228] = CreateConVar("xstats_points_weapon_blackbox",				"10", "XStats: TF2 - Points given when killing with Black Box.", _, true);
+	Cvars.Weapon[230] = CreateConVar("xstats_points_weapon_sydneysleeper",			"10", "XStats: TF2 - Points given when killing with Sydney Sleeper.", _, true);
+	Cvars.Weapon[232] = CreateConVar("xstats_points_weapon_bushwacka",				"10", "XStats: TF2 - Points given when killing with Bushwacka.", _, true);
 	Cvars.Weapon[237] = Cvars.Weapon[18];	//Rocket Jumper.
-	Cvars.Weapon[239] = CreateConVar("xstats_points_weapon_goru",					"10",	"Xstats: TF2 - Points given when killing with Gloves of Running Urgently.", _, true);
-	Cvars.Weapon[264] = CreateConVar("xstats_points_weapon_fryingpan",				"10",	"Xstats: TF2 - Points given when killing with Frying Pan.", _, true);
+	Cvars.Weapon[239] = CreateConVar("xstats_points_weapon_goru",					"10", "XStats: TF2 - Points given when killing with Gloves of Running Urgently.", _, true);
+	Cvars.Weapon[264] = CreateConVar("xstats_points_weapon_fryingpan",				"10", "XStats: TF2 - Points given when killing with Frying Pan.", _, true);
 	Cvars.Weapon[265] = Cvars.Weapon[20];	//Sticky Jumper.
-	Cvars.Weapon[266] = CreateConVar("xstats_points_weapon_hhhh",					"10",	"Xstats: TF2 - Points given when killing with Horseless Headless Horsemann's Headtaker", _, true);
+	Cvars.Weapon[266] = CreateConVar("xstats_points_weapon_hhhh",					"10", "XStats: TF2 - Points given when killing with Horseless Headless Horsemann's Headtaker", _, true);
 	Cvars.Weapon[294] = Cvars.Weapon[160];	//Same Lugermorph, different TFClass type.
-	Cvars.Weapon[298] = CreateConVar("xstats_points_weapon_ironcurtain",			"10",	"Xstats: TF2 - Points given when killing with Iron Curtain.", _, true);
-	Cvars.Weapon[304] = CreateConVar("xstats_points_weapon_amputator",				"10",	"Xstats: TF2 - Points given when killing with Amputator.", _, true);
-	Cvars.Weapon[305] = CreateConVar("xstats_points_weapon_crusaderscrossbow",		"10",	"Xstats: TF2 - Points given when killing with Crusader's Crossbow.", _, true);
-	Cvars.Weapon[307] = CreateConVar("xstats_points_weapon_ullapoolcaber",			"10",	"Xstats: TF2 - Points given when killing with Ullapool Caber.", _, true);
-	Cvars.Weapon[308] = CreateConVar("xstats_points_weapon_lochnload",				"10",	"Xstats: TF2 - Points given when killing with Loch-n-Load.", _, true);
-	Cvars.Weapon[310] = CreateConVar("xstats_points_weapon_warriorsspirit",			"10",	"Xstats: TF2 - Points given when killing with Warrior's Spirit.", _, true);
-	Cvars.Weapon[312] = CreateConVar("xstats_points_weapon_brassbeast",				"10",	"Xstats: TF2 - Points given when killing with Brass Beast.", _, true);
-	Cvars.Weapon[317] = CreateConVar("xstats_points_weapon_candycane",				"10",	"Xstats: TF2 - Points given when killing with Candy Cane.", _, true);
-	Cvars.Weapon[325] = CreateConVar("xstats_points_weapon_bostonbasher",			"10",	"Xstats: TF2 - Points given when killing with Boston Basher.", _, true);
-	Cvars.Weapon[326] = CreateConVar("xstats_points_weapon_backscratcher",			"10",	"Xstats: TF2 - Points given when killing with Back Scratcher.", _, true);
-	Cvars.Weapon[327] = CreateConVar("xstats_points_weapon_claidheamhmor",			"10",	"Xstats: TF2 - Points given when killing with Claidheamh Mór.", _, true);
-	Cvars.Weapon[329] = CreateConVar("xstats_points_weapon_jag",					"10",	"Xstats: TF2 - Points given when killing with Jag.", _, true);
-	Cvars.Weapon[331] = CreateConVar("xstats_points_weapon_fistsofsteel",			"10",	"Xstats: TF2 - Points given when killing with Fists Of Steel.", _, true);
-	Cvars.Weapon[348] = CreateConVar("xstats_points_weapon_sharpenedvolcanofragment","10","Xstats: TF2 - Points given when killing with Sharpened Volcano Fragment.", _, true);
-	Cvars.Weapon[349] = CreateConVar("xstats_points_weapon_sunonastick",			"10",	"Xstats: TF2 - Points given when killing with Sun-On-A-Stick.", _, true);
-	Cvars.Weapon[351] = CreateConVar("xstats_points_weapon_detonator",				"10",	"Xstats: TF2 - Points given when killing with Detonator.", _, true);
-	Cvars.Weapon[355] = CreateConVar("xstats_points_weapon_fanowar",				"10",	"Xstats: TF2 - Points given when killing with Fan O' War.", _, true);
-	Cvars.Weapon[356] = CreateConVar("xstats_points_weapon_conniverskunai",			"10",	"Xstats: TF2 - Points given when killing with Conniver's Kunai.", _, true);
-	Cvars.Weapon[357] = CreateConVar("xstats_points_weapon_halfzatoichi",			"10",	"Xstats: TF2 - Points given when killing with Half-Zatoichi.", _, true);
-	Cvars.Weapon[401] = CreateConVar("xstats_points_weapon_shahanshah",				"10",	"Xstats: TF2 - Points given when killing with Shahanshah.", _, true);
-	Cvars.Weapon[402] = CreateConVar("xstats_points_weapon_bazaarbargain",			"10",	"Xstats: TF2 - Points given when killing with Bazaar Bargain.", _, true);
-	Cvars.Weapon[404] = CreateConVar("xstats_points_weapon_persainpersuader",		"10",	"Xstats: TF2 - Points given when killing with Persain Pursuader.", _, true);
-	Cvars.Weapon[406] = CreateConVar("xstats_points_weapon_splendidscreen",			"10",	"Xstats: TF2 - Points given when killing with Splendid Screen.", _, true);
-	Cvars.Weapon[412] = CreateConVar("xstats_points_weapon_overdose",				"10",	"Xstats: TF2 - Points given when killing with Overdose.", _, true);
-	Cvars.Weapon[413] = CreateConVar("xstats_points_weapon_solemnvow",				"10",	"Xstats: TF2 - Points given when killing with Solmen Wov.", _, true);
-	Cvars.Weapon[414] = CreateConVar("xstats_points_weapon_libertylauncher",		"10",	"Xstats: TF2 - Points given when killing with Liberty Launcher.", _, true);
-	Cvars.Weapon[415] = CreateConVar("xstats_points_weapon_reserveshooter",			"10",	"Xstats: TF2 - Points given when killing with Reserve Shooter.", _, true);
-	Cvars.Weapon[416] = CreateConVar("xstats_points_weapon_marketgardener",			"10",	"Xstats: TF2 - Points given when killing with Market Gardener.", _, true);
-	Cvars.Weapon[423] = CreateConVar("xstats_points_weapon_saxxy",					"10",	"Xstats: TF2 - Points given when killing with Saxxy.", _, true);
-	Cvars.Weapon[424] = CreateConVar("xstats_points_weapon_tomislav",				"10",	"Xstats: TF2 - Points given when killing with Tomislav.", _, true);
-	Cvars.Weapon[425] = CreateConVar("xstats_points_weapon_familybusiness",			"10",	"Xstats: TF2 - Points given when killing with Family Business.", _, true);
-	Cvars.Weapon[426] = CreateConVar("xstats_points_weapon_evictionnotice",			"10",	"Xstats: TF2 - Points given when killing with Eviction Notice.", _, true);
-	Cvars.Weapon[441] = CreateConVar("xstats_points_weapon_cowmangler5000",			"10",	"Xstats: TF2 - Points given when killing with Cow Mangler 5000", _, true);
-	Cvars.Weapon[442] = CreateConVar("xstats_points_weapon_righteousbison",			"10",	"Xstats: TF2 - Points given when killing with Righteous Bison.", _, true);
-	Cvars.Weapon[444] = CreateConVar("xstats_points_weapon_mantreads",				"10",	"Xstats: TF2 - Points given when killing with Mantreads.", _, true);
-	Cvars.Weapon[447] = CreateConVar("xstats_points_weapon_disciplinaryaction",		"10",	"Xstats: TF2 - Points given when killing with Disciplinary Action.", _, true);
-	Cvars.Weapon[448] = CreateConVar("xstats_points_weapon_sodapopper",				"10",	"Xstats: TF2 - Points given when killing with Soda Popper.", _, true);
-	Cvars.Weapon[449] = CreateConVar("xstats_points_weapon_winger",					"10",	"Xstats: TF2 - Points given when killing with Winger.", _, true);
-	Cvars.Weapon[450] = CreateConVar("xstats_points_weapon_atomizer",				"10",	"Xstats: TF2 - Points given when killing with Atomizer.", _, true);
-	Cvars.Weapon[452] = CreateConVar("xstats_points_weapon_threeruneblade",			"10",	"Xstats: TF2 - Points given when killing with Three Rune Blade.", _, true);
-	Cvars.Weapon[457] = CreateConVar("xstats_points_weapon_postalpummeler",			"10",	"Xstats: TF2 - Points given when killing with Postal Pummeler.", _, true);
-	Cvars.Weapon[460] = CreateConVar("xstats_points_weapon_enforcer",				"10",	"Xstats: TF2 - Points given when killing with Enforcer.", _, true);
-	Cvars.Weapon[461] = CreateConVar("xstats_points_weapon_bigearner",				"10",	"Xstats: TF2 - Points given when killing with Big Earner.", _, true);
-	Cvars.Weapon[466] = CreateConVar("xstats_points_weapon_maul",					"10",	"Xstats: TF2 - Points given when killing with Maul.", _, true);
-	Cvars.Weapon[474] = CreateConVar("xstats_points_weapon_conscentiousobjector",	"10",	"Xstats: TF2 - Points given when killing with Conscentious Objector.", _, true);
-	Cvars.Weapon[482] = CreateConVar("xstats_points_weapon_nessiesnineiron",		"10",	"Xstats: TF2 - Points given when killing with Nessie's Nine-Iron.", _, true);
-	Cvars.Weapon[513] = CreateConVar("xstats_points_weapon_original",				"10",	"Xstats: TF2 - Points given when killing with Original.", _, true);
-	Cvars.Weapon[525] = CreateConVar("xstats_points_weapon_diamondback",			"10",	"Xstats: TF2 - Points given when killing with Diamondback.", _, true);
-	Cvars.Weapon[526] = CreateConVar("xstats_points_weapon_machina",				"10",	"Xstats: TF2 - Points given when killing with Machina.", _, true);
-	Cvars.Weapon[527] = CreateConVar("xstats_points_weapon_widowmaker",				"10",	"Xstats: TF2 - Points given when killing with Widowmaker.", _, true);
-	Cvars.Weapon[528] = CreateConVar("xstats_points_weapon_shortcircuit",			"10",	"Xstats: TF2 - Points given when killing with Short Circuit.", _, true);
-	Cvars.Weapon[572] = CreateConVar("xstats_points_weapon_unarmedcombat",			"10",	"Xstats: TF2 - Points given when killing with Unarmed Combat.", _, true);
-	Cvars.Weapon[574] = CreateConVar("xstats_points_weapon_wangaprick",				"10",	"Xstats: TF2 - Points given when killing with Wanga Prick.", _, true);
-	Cvars.Weapon[587] = CreateConVar("xstats_points_weapon_apocofists",				"10",	"Xstats: TF2 - Points given when killing with Apoco Fists.", _, true);
-	Cvars.Weapon[588] = CreateConVar("xstats_points_weapon_pomson6000",				"10",	"Xstats: TF2 - Points given when killing with Pomson 6000.", _, true);
-	Cvars.Weapon[589] = CreateConVar("xstats_points_weapon_eurekaeffect",			"10",	"Xstats: TF2 - Points given when killing with Eureka Effect.", _, true);
-	Cvars.Weapon[593] = CreateConVar("xstats_points_weapon_thirddegree",			"10",	"Xstats: TF2 - Points given when killing with Third Degree", _, true);
-	Cvars.Weapon[594] = CreateConVar("xstats_points_weapon_phlogistinator",			"10",	"Xstats: TF2 - Points given when killing with Phlogistinator.", _, true);
-	Cvars.Weapon[595] = CreateConVar("xstats_points_weapon_manmelter",				"10",	"Xstats: TF2 - Points given when killing with Man Melter.", _, true);
-	Cvars.Weapon[609] = CreateConVar("xstats_points_weapon_scottishhandshake",		"10",	"Xstats: TF2 - Points given when killing with Scottish Handshake.", _, true);
-	Cvars.Weapon[638] = CreateConVar("xstats_points_weapon_sharpdresser",			"10",	"Xstats: TF2 - Points given when killing with Sharp Dresser.", _, true);
-	Cvars.Weapon[648] = CreateConVar("xstats_points_weapon_wrapassassin",			"10",	"Xstats: TF2 - Points given when killing with Wrap Assassin.", _, true);
-	Cvars.Weapon[649] = CreateConVar("xstats_points_weapon_spycicle",				"10",	"Xstats: TF2 - Points given when killing with Spycicle.", _, true);
+	Cvars.Weapon[298] = CreateConVar("xstats_points_weapon_ironcurtain",			"10", "XStats: TF2 - Points given when killing with Iron Curtain.", _, true);
+	Cvars.Weapon[304] = CreateConVar("xstats_points_weapon_amputator",				"10", "XStats: TF2 - Points given when killing with Amputator.", _, true);
+	Cvars.Weapon[305] = CreateConVar("xstats_points_weapon_crusaderscrossbow",		"10", "XStats: TF2 - Points given when killing with Crusader's Crossbow.", _, true);
+	Cvars.Weapon[307] = CreateConVar("xstats_points_weapon_ullapoolcaber",			"10", "XStats: TF2 - Points given when killing with Ullapool Caber.", _, true);
+	Cvars.Weapon[308] = CreateConVar("xstats_points_weapon_lochnload",				"10", "XStats: TF2 - Points given when killing with Loch-n-Load.", _, true);
+	Cvars.Weapon[310] = CreateConVar("xstats_points_weapon_warriorsspirit",			"10", "XStats: TF2 - Points given when killing with Warrior's Spirit.", _, true);
+	Cvars.Weapon[312] = CreateConVar("xstats_points_weapon_brassbeast",				"10", "XStats: TF2 - Points given when killing with Brass Beast.", _, true);
+	Cvars.Weapon[317] = CreateConVar("xstats_points_weapon_candycane",				"10", "XStats: TF2 - Points given when killing with Candy Cane.", _, true);
+	Cvars.Weapon[325] = CreateConVar("xstats_points_weapon_bostonbasher",			"10", "XStats: TF2 - Points given when killing with Boston Basher.", _, true);
+	Cvars.Weapon[326] = CreateConVar("xstats_points_weapon_backscratcher",			"10", "XStats: TF2 - Points given when killing with Back Scratcher.", _, true);
+	Cvars.Weapon[327] = CreateConVar("xstats_points_weapon_claidheamhmor",			"10", "XStats: TF2 - Points given when killing with Claidheamh Mór.", _, true);
+	Cvars.Weapon[329] = CreateConVar("xstats_points_weapon_jag",					"10", "XStats: TF2 - Points given when killing with Jag.", _, true);
+	Cvars.Weapon[331] = CreateConVar("xstats_points_weapon_fistsofsteel",			"10", "XStats: TF2 - Points given when killing with Fists Of Steel.", _, true);
+	Cvars.Weapon[348] = CreateConVar("xstats_points_weapon_sharpenedvolcanofragment", "10", "XStats: TF2 - Points given when killing with Sharpened Volcano Fragment.", _, true);
+	Cvars.Weapon[349] = CreateConVar("xstats_points_weapon_sunonastick",			"10", "XStats: TF2 - Points given when killing with Sun-On-A-Stick.", _, true);
+	Cvars.Weapon[351] = CreateConVar("xstats_points_weapon_detonator",				"10", "XStats: TF2 - Points given when killing with Detonator.", _, true);
+	Cvars.Weapon[355] = CreateConVar("xstats_points_weapon_fanowar",				"10", "XStats: TF2 - Points given when killing with Fan O' War.", _, true);
+	Cvars.Weapon[356] = CreateConVar("xstats_points_weapon_conniverskunai",			"10", "XStats: TF2 - Points given when killing with Conniver's Kunai.", _, true);
+	Cvars.Weapon[357] = CreateConVar("xstats_points_weapon_halfzatoichi",			"10", "XStats: TF2 - Points given when killing with Half-Zatoichi.", _, true);
+	Cvars.Weapon[401] = CreateConVar("xstats_points_weapon_shahanshah",				"10", "XStats: TF2 - Points given when killing with Shahanshah.", _, true);
+	Cvars.Weapon[402] = CreateConVar("xstats_points_weapon_bazaarbargain",			"10", "XStats: TF2 - Points given when killing with Bazaar Bargain.", _, true);
+	Cvars.Weapon[404] = CreateConVar("xstats_points_weapon_persainpersuader",		"10", "XStats: TF2 - Points given when killing with Persain Pursuader.", _, true);
+	Cvars.Weapon[406] = CreateConVar("xstats_points_weapon_splendidscreen",			"10", "XStats: TF2 - Points given when killing with Splendid Screen.", _, true);
+	Cvars.Weapon[412] = CreateConVar("xstats_points_weapon_overdose",				"10", "XStats: TF2 - Points given when killing with Overdose.", _, true);
+	Cvars.Weapon[413] = CreateConVar("xstats_points_weapon_solemnvow",				"10", "XStats: TF2 - Points given when killing with Solmen Wov.", _, true);
+	Cvars.Weapon[414] = CreateConVar("xstats_points_weapon_libertylauncher",		"10", "XStats: TF2 - Points given when killing with Liberty Launcher.", _, true);
+	Cvars.Weapon[415] = CreateConVar("xstats_points_weapon_reserveshooter",			"10", "XStats: TF2 - Points given when killing with Reserve Shooter.", _, true);
+	Cvars.Weapon[416] = CreateConVar("xstats_points_weapon_marketgardener",			"10", "XStats: TF2 - Points given when killing with Market Gardener.", _, true);
+	Cvars.Weapon[423] = CreateConVar("xstats_points_weapon_saxxy",					"10", "XStats: TF2 - Points given when killing with Saxxy.", _, true);
+	Cvars.Weapon[424] = CreateConVar("xstats_points_weapon_tomislav",				"10", "XStats: TF2 - Points given when killing with Tomislav.", _, true);
+	Cvars.Weapon[425] = CreateConVar("xstats_points_weapon_familybusiness",			"10", "XStats: TF2 - Points given when killing with Family Business.", _, true);
+	Cvars.Weapon[426] = CreateConVar("xstats_points_weapon_evictionnotice",			"10", "XStats: TF2 - Points given when killing with Eviction Notice.", _, true);
+	Cvars.Weapon[441] = CreateConVar("xstats_points_weapon_cowmangler5000",			"10", "XStats: TF2 - Points given when killing with Cow Mangler 5000", _, true);
+	Cvars.Weapon[442] = CreateConVar("xstats_points_weapon_righteousbison",			"10", "XStats: TF2 - Points given when killing with Righteous Bison.", _, true);
+	Cvars.Weapon[444] = CreateConVar("xstats_points_weapon_mantreads",				"10", "XStats: TF2 - Points given when killing with Mantreads.", _, true);
+	Cvars.Weapon[447] = CreateConVar("xstats_points_weapon_disciplinaryaction",		"10", "XStats: TF2 - Points given when killing with Disciplinary Action.", _, true);
+	Cvars.Weapon[448] = CreateConVar("xstats_points_weapon_sodapopper",				"10", "XStats: TF2 - Points given when killing with Soda Popper.", _, true);
+	Cvars.Weapon[449] = CreateConVar("xstats_points_weapon_winger",					"10", "XStats: TF2 - Points given when killing with Winger.", _, true);
+	Cvars.Weapon[450] = CreateConVar("xstats_points_weapon_atomizer",				"10", "XStats: TF2 - Points given when killing with Atomizer.", _, true);
+	Cvars.Weapon[452] = CreateConVar("xstats_points_weapon_threeruneblade",			"10", "XStats: TF2 - Points given when killing with Three Rune Blade.", _, true);
+	Cvars.Weapon[457] = CreateConVar("xstats_points_weapon_postalpummeler",			"10", "XStats: TF2 - Points given when killing with Postal Pummeler.", _, true);
+	Cvars.Weapon[460] = CreateConVar("xstats_points_weapon_enforcer",				"10", "XStats: TF2 - Points given when killing with Enforcer.", _, true);
+	Cvars.Weapon[461] = CreateConVar("xstats_points_weapon_bigearner",				"10", "XStats: TF2 - Points given when killing with Big Earner.", _, true);
+	Cvars.Weapon[466] = CreateConVar("xstats_points_weapon_maul",					"10", "XStats: TF2 - Points given when killing with Maul.", _, true);
+	Cvars.Weapon[474] = CreateConVar("xstats_points_weapon_conscentiousobjector",	"10", "XStats: TF2 - Points given when killing with Conscentious Objector.", _, true);
+	Cvars.Weapon[482] = CreateConVar("xstats_points_weapon_nessiesnineiron",		"10", "XStats: TF2 - Points given when killing with Nessie's Nine-Iron.", _, true);
+	Cvars.Weapon[513] = CreateConVar("xstats_points_weapon_original",				"10", "XStats: TF2 - Points given when killing with Original.", _, true);
+	Cvars.Weapon[525] = CreateConVar("xstats_points_weapon_diamondback",			"10", "XStats: TF2 - Points given when killing with Diamondback.", _, true);
+	Cvars.Weapon[526] = CreateConVar("xstats_points_weapon_machina",				"10", "XStats: TF2 - Points given when killing with Machina.", _, true);
+	Cvars.Weapon[527] = CreateConVar("xstats_points_weapon_widowmaker",				"10", "XStats: TF2 - Points given when killing with Widowmaker.", _, true);
+	Cvars.Weapon[528] = CreateConVar("xstats_points_weapon_shortcircuit",			"10", "XStats: TF2 - Points given when killing with Short Circuit.", _, true);
+	Cvars.Weapon[572] = CreateConVar("xstats_points_weapon_unarmedcombat",			"10", "XStats: TF2 - Points given when killing with Unarmed Combat.", _, true);
+	Cvars.Weapon[574] = CreateConVar("xstats_points_weapon_wangaprick",				"10", "XStats: TF2 - Points given when killing with Wanga Prick.", _, true);
+	Cvars.Weapon[587] = CreateConVar("xstats_points_weapon_apocofists",				"10", "XStats: TF2 - Points given when killing with Apoco Fists.", _, true);
+	Cvars.Weapon[588] = CreateConVar("xstats_points_weapon_pomson6000",				"10", "XStats: TF2 - Points given when killing with Pomson 6000.", _, true);
+	Cvars.Weapon[589] = CreateConVar("xstats_points_weapon_eurekaeffect",			"10", "XStats: TF2 - Points given when killing with Eureka Effect.", _, true);
+	Cvars.Weapon[593] = CreateConVar("xstats_points_weapon_thirddegree",			"10", "XStats: TF2 - Points given when killing with Third Degree", _, true);
+	Cvars.Weapon[594] = CreateConVar("xstats_points_weapon_phlogistinator",			"10", "XStats: TF2 - Points given when killing with Phlogistinator.", _, true);
+	Cvars.Weapon[595] = CreateConVar("xstats_points_weapon_manmelter",				"10", "XStats: TF2 - Points given when killing with Man Melter.", _, true);
+	Cvars.Weapon[609] = CreateConVar("xstats_points_weapon_scottishhandshake",		"10", "XStats: TF2 - Points given when killing with Scottish Handshake.", _, true);
+	Cvars.Weapon[638] = CreateConVar("xstats_points_weapon_sharpdresser",			"10", "XStats: TF2 - Points given when killing with Sharp Dresser.", _, true);
+	Cvars.Weapon[648] = CreateConVar("xstats_points_weapon_wrapassassin",			"10", "XStats: TF2 - Points given when killing with Wrap Assassin.", _, true);
+	Cvars.Weapon[649] = CreateConVar("xstats_points_weapon_spycicle",				"10", "XStats: TF2 - Points given when killing with Spycicle.", _, true);
 	Cvars.Weapon[654] = Cvars.Weapon[15];	//Festive Minigun.
-	Cvars.Weapon[656] = CreateConVar("xstats_points_weapon_holidaypunch",			"10",	"Xstats: TF2 - Points given when killing with Holiday Punch.", _, true);
+	Cvars.Weapon[656] = CreateConVar("xstats_points_weapon_holidaypunch",			"10", "XStats: TF2 - Points given when killing with Holiday Punch.", _, true);
 	Cvars.Weapon[658] = Cvars.Weapon[18];	//Festive Rocket Launcher.
 	Cvars.Weapon[659] = Cvars.Weapon[21];	//Festive Flamethrower.
 	Cvars.Weapon[660] = Cvars.Weapon[0];	//Festive Bat.
@@ -175,15 +175,15 @@ void PrepareGame_TF2() {
 	Cvars.Weapon[664] = Cvars.Weapon[14];	//Festive Sniper Rifle.
 	Cvars.Weapon[665] = Cvars.Weapon[4];	//Festive Knife.
 	Cvars.Weapon[669] = Cvars.Weapon[13];	//Festive Scattergun.
-	Cvars.Weapon[727] = CreateConVar("xstats_points_weapon_blackrose",				"10",	"Xstats: TF2 - Points given when killing with Blackrose.", _, true);
-	Cvars.Weapon[739] = CreateConVar("xstats_points_weapon_lollichop",				"10",	"Xstats: TF2 - Points given when killing with Lollichop.", _, true);
-	Cvars.Weapon[740] = CreateConVar("xstats_points_weapon_scorchshot",				"10",	"Xstats: TF2 - Points given when killing with Scorch Shot.", _, true);
-	Cvars.Weapon[741] = CreateConVar("xstats_points_weapon_rainblower",				"10",	"Xstats: TF2 - Points given when killing with Rainblower.", _, true);
-	Cvars.Weapon[751] = CreateConVar("xstats_points_weapon_cleanerscarbine",		"10",	"Xstats: TF2 - Points given when killing with Cleaner's Carbine.", _, true);
-	Cvars.Weapon[752] = CreateConVar("xstats_points_weapon_hitmansheatmaker",		"10",	"Xstats: TF2 - Points given when killing with Hitman's Heatmaker.", _, true);
-	Cvars.Weapon[772] = CreateConVar("xstats_points_weapon_babyfacesblaster",		"10",	"Xstats: TF2 - Points given when killing with Baby Face's Blaster.", _, true);
-	Cvars.Weapon[773] = CreateConVar("xstats_points_weapon_prettyboyspocketpistol",	"10",	"Xstats: TF2 - Points given when killing with Pretty Boy's Pocket Pistol.", _, true);
-	Cvars.Weapon[775] = CreateConVar("xstats_points_weapon_escapeplan",				"10",	"Xstats: TF2 - Points given when killing with Escape Plan.", _, true);
+	Cvars.Weapon[727] = CreateConVar("xstats_points_weapon_blackrose",				"10", "XStats: TF2 - Points given when killing with Blackrose.", _, true);
+	Cvars.Weapon[739] = CreateConVar("xstats_points_weapon_lollichop",				"10", "XStats: TF2 - Points given when killing with Lollichop.", _, true);
+	Cvars.Weapon[740] = CreateConVar("xstats_points_weapon_scorchshot",				"10", "XStats: TF2 - Points given when killing with Scorch Shot.", _, true);
+	Cvars.Weapon[741] = CreateConVar("xstats_points_weapon_rainblower",				"10", "XStats: TF2 - Points given when killing with Rainblower.", _, true);
+	Cvars.Weapon[751] = CreateConVar("xstats_points_weapon_cleanerscarbine",		"10", "XStats: TF2 - Points given when killing with Cleaner's Carbine.", _, true);
+	Cvars.Weapon[752] = CreateConVar("xstats_points_weapon_hitmansheatmaker",		"10", "XStats: TF2 - Points given when killing with Hitman's Heatmaker.", _, true);
+	Cvars.Weapon[772] = CreateConVar("xstats_points_weapon_babyfacesblaster",		"10", "XStats: TF2 - Points given when killing with Baby Face's Blaster.", _, true);
+	Cvars.Weapon[773] = CreateConVar("xstats_points_weapon_prettyboyspocketpistol",	"10", "XStats: TF2 - Points given when killing with Pretty Boy's Pocket Pistol.", _, true);
+	Cvars.Weapon[775] = CreateConVar("xstats_points_weapon_escapeplan",				"10", "XStats: TF2 - Points given when killing with Escape Plan.", _, true);
 	Cvars.Weapon[792] = Cvars.Weapon[14];	//Default Sniper Rifle.			Silver Botkiller Mk. I.
 	Cvars.Weapon[793] = Cvars.Weapon[15];	//Default Minigun.				Silver Botkiller Mk. I.
 	Cvars.Weapon[795] = Cvars.Weapon[7];	//Default Wrench.				Silver Botkiller Mk. I.
@@ -198,15 +198,15 @@ void PrepareGame_TF2() {
 	Cvars.Weapon[807] = Cvars.Weapon[21];	//Default Flamethrower.			Gold Botkiller Mk. I.
 	Cvars.Weapon[808] = Cvars.Weapon[13];	//Default Scattergun.			Gold Botkiller Mk. I.
 	Cvars.Weapon[809] = Cvars.Weapon[18];	//Default Rocket Launcher.		Gold Botkiller Mk. I.
-	Cvars.Weapon[811] = CreateConVar("xstats_points_weapon_huolongheater",		"10",	"Xstats: TF2 - Points given when killing with Huo-Long Heater.", _, true);
-	Cvars.Weapon[812] = CreateConVar("xstats_points_weapon_flyingguillotine",	"10",	"Xstats: TF2 - Points given when killing with Flying Guillotine", _, true);
-	Cvars.Weapon[813] = CreateConVar("xstats_points_weapon_neonannihilator",	"10",	"Xstats: TF2 - Points given when killing with Neon Annihilator.", _, true);
+	Cvars.Weapon[811] = CreateConVar("xstats_points_weapon_huolongheater",		"10", "XStats: TF2 - Points given when killing with Huo-Long Heater.", _, true);
+	Cvars.Weapon[812] = CreateConVar("xstats_points_weapon_flyingguillotine",	"10", "XStats: TF2 - Points given when killing with Flying Guillotine", _, true);
+	Cvars.Weapon[813] = CreateConVar("xstats_points_weapon_neonannihilator",	"10", "XStats: TF2 - Points given when killing with Neon Annihilator.", _, true);
 	Cvars.Weapon[832] = Cvars.Weapon[811];	//Genuine Huo-Long Heater.
 	Cvars.Weapon[833] = Cvars.Weapon[812];	//Genuine Flying Guillotine.
 	Cvars.Weapon[834] = Cvars.Weapon[813];	//Genuine Neon Annihilator.
 	Cvars.Weapon[850] = Cvars.Weapon[15];	//Deflector (MvM Minigun used by Giant Deflector Heavies.)
-	Cvars.Weapon[851] = CreateConVar("xstats_points_weapon_awperhand",			"10",	"Xstats: TF2 - Points given when killing with AWPer Hand.", _, true);
-	Cvars.Weapon[880] = CreateConVar("xstats_points_weapon_freedomstaff",		"10",	"Xstats: TF2 - Points given when killing with Freedom Staff.", _, true);
+	Cvars.Weapon[851] = CreateConVar("xstats_points_weapon_awperhand",			"10", "XStats: TF2 - Points given when killing with AWPer Hand.", _, true);
+	Cvars.Weapon[880] = CreateConVar("xstats_points_weapon_freedomstaff",		"10", "XStats: TF2 - Points given when killing with Freedom Staff.", _, true);
 	Cvars.Weapon[881] = Cvars.Weapon[14];	//Default Sniper Rifle.			Rust Botkiller Mk. I.
 	Cvars.Weapon[882] = Cvars.Weapon[15];	//Default Minigun.				Rust Botkiller Mk. I.
 	Cvars.Weapon[884] = Cvars.Weapon[7];	//Default Wrench.				Rust Botkiller Mk. I.
@@ -235,8 +235,8 @@ void PrepareGame_TF2() {
 	Cvars.Weapon[914] = Cvars.Weapon[21];	//Default Flamethrower.			Diamond Botkiller Mk. I.
 	Cvars.Weapon[915] = Cvars.Weapon[13];	//Default Scattergun.			Diamond Botkiller Mk. I.
 	Cvars.Weapon[916] = Cvars.Weapon[18];	//Default Rocket Launcher.		Diamond Botkiller Mk. I.
-	Cvars.Weapon[939] = CreateConVar("xstats_points_weapon_batouttahell",	"10",	"Xstats: TF2 - Points given when killing with Bat Outta Hell.", _, true);
-	Cvars.Weapon[954] = CreateConVar("xstats_points_weapon_memorymaker",	"10",	"Xstats: TF2 - Points given when killing with Memory Maker.", _, true);
+	Cvars.Weapon[939] = CreateConVar("xstats_points_weapon_batouttahell",	"10", "XStats: TF2 - Points given when killing with Bat Outta Hell.", _, true);
+	Cvars.Weapon[954] = CreateConVar("xstats_points_weapon_memorymaker",	"10", "XStats: TF2 - Points given when killing with Memory Maker.", _, true);
 	Cvars.Weapon[957] = Cvars.Weapon[14];	//Default Sniper Rifle.			Silver Botkiller Mk. II.
 	Cvars.Weapon[958] = Cvars.Weapon[15];	//Default Minigun.				Silver Botkiller Mk. II.
 	Cvars.Weapon[960] = Cvars.Weapon[7];	//Default Wrench.				Silver Botkiller Mk. II.
@@ -251,8 +251,8 @@ void PrepareGame_TF2() {
 	Cvars.Weapon[972] = Cvars.Weapon[21];	//Default Flamethrower.			Gold Botkiller Mk. II.
 	Cvars.Weapon[973] = Cvars.Weapon[13];	//Default Scattergun.			Gold Botkiller Mk. II.
 	Cvars.Weapon[974] = Cvars.Weapon[18];	//Default Rocket Launcher.		Gold Botkiller Mk. II.
-	Cvars.Weapon[996] = CreateConVar("xstats_points_weapon_loosecannon",	"10",	"Xstats: TF2 - Points given when killing with Loose Cannon.", _, true);
-	Cvars.Weapon[997] = CreateConVar("xstats_points_weapon_rescueranger",	"10",	"Xstats: TF2 - Points given when killing with Rescue Ranger.", _, true);
+	Cvars.Weapon[996] = CreateConVar("xstats_points_weapon_loosecannon",	"10", "XStats: TF2 - Points given when killing with Loose Cannon.", _, true);
+	Cvars.Weapon[997] = CreateConVar("xstats_points_weapon_rescueranger",	"10", "XStats: TF2 - Points given when killing with Rescue Ranger.", _, true);
 	Cvars.Weapon[999] = Cvars.Weapon[221];	//Festive Holy Mackerel.
 	Cvars.Weapon[1000] = Cvars.Weapon[38];	//Festive Axtinguisher.
 	Cvars.Weapon[1003] = Cvars.Weapon[37];	//Festive Ubersaw.
@@ -260,7 +260,7 @@ void PrepareGame_TF2() {
 	Cvars.Weapon[1005] = Cvars.Weapon[56];	//Festive Huntsman.
 	Cvars.Weapon[1006] = Cvars.Weapon[61];	//Festive Ambassador.
 	Cvars.Weapon[1007] = Cvars.Weapon[19];	//Festive Grenade Launcher.
-	Cvars.Weapon[1013] = CreateConVar("xstats_points_weapon_hamshank",	"10",	"Xstats: TF2 - Points given when killing with Ham Shank.", _, true);
+	Cvars.Weapon[1013] = CreateConVar("xstats_points_weapon_hamshank",	"10", "XStats: TF2 - Points given when killing with Ham Shank.", _, true);
 	Cvars.Weapon[1071] = Cvars.Weapon[264];//Golden Frying Pan.
 	Cvars.Weapon[1078] = Cvars.Weapon[45];	//Festive Force-A-Nature.
 	Cvars.Weapon[1079] = Cvars.Weapon[305];//Festive Crusader's Crossbow.
@@ -268,25 +268,25 @@ void PrepareGame_TF2() {
 	Cvars.Weapon[1082] = Cvars.Weapon[132];//Festive Eyelander.
 	Cvars.Weapon[1084] = Cvars.Weapon[239];//Festive Gloves of Running Urgently.
 	Cvars.Weapon[1085] = Cvars.Weapon[228];//Festive Black Box.
-	Cvars.Weapon[1092] = CreateConVar("xstats_points_weapon_fortifiedcompound",		"10",	"Xstats: TF2 - Points given when killing with Fortified Compound.", _, true);
-	Cvars.Weapon[1098] = CreateConVar("xstats_points_weapon_classic",				"10",	"Xstats: TF2 - Points given when killing with Classic.", _, true);
-	Cvars.Weapon[1099] = CreateConVar("xstats_points_weapon_tideturner",			"10",	"Xstats: TF2 - Points given when killing with Tide Turner.", _, true);
-	Cvars.Weapon[1100] = CreateConVar("xstats_points_weapon_breadbite",				"10",	"Xstats: TF2 - Points given when killing with Bread Bite.", _, true);
-	Cvars.Weapon[1103] = CreateConVar("xstats_points_weapon_backscatter",			"10",	"Xstats: TF2 - Points given when killing with Back Scatter.", _, true);
-	Cvars.Weapon[1104] = CreateConVar("xstats_points_weapon_airstrike",				"10",	"Xstats: TF2 - Points given when killing with Air Strike.", _, true);
-	Cvars.Weapon[1123] = CreateConVar("xstats_points_weapon_necrosmasher",			"10",	"Xstats: TF2 - Points given when killing with Necro Smasher.", _, true);
-	Cvars.Weapon[1127] = CreateConVar("xstats_points_weapon_crossingguard",			"10",	"Xstats: TF2 - Points given when killing with Crossing Guard.", _, true);
+	Cvars.Weapon[1092] = CreateConVar("xstats_points_weapon_fortifiedcompound",		"10", "XStats: TF2 - Points given when killing with Fortified Compound.", _, true);
+	Cvars.Weapon[1098] = CreateConVar("xstats_points_weapon_classic",				"10", "XStats: TF2 - Points given when killing with Classic.", _, true);
+	Cvars.Weapon[1099] = CreateConVar("xstats_points_weapon_tideturner",			"10", "XStats: TF2 - Points given when killing with Tide Turner.", _, true);
+	Cvars.Weapon[1100] = CreateConVar("xstats_points_weapon_breadbite",				"10", "XStats: TF2 - Points given when killing with Bread Bite.", _, true);
+	Cvars.Weapon[1103] = CreateConVar("xstats_points_weapon_backscatter",			"10", "XStats: TF2 - Points given when killing with Back Scatter.", _, true);
+	Cvars.Weapon[1104] = CreateConVar("xstats_points_weapon_airstrike",				"10", "XStats: TF2 - Points given when killing with Air Strike.", _, true);
+	Cvars.Weapon[1123] = CreateConVar("xstats_points_weapon_necrosmasher",			"10", "XStats: TF2 - Points given when killing with Necro Smasher.", _, true);
+	Cvars.Weapon[1127] = CreateConVar("xstats_points_weapon_crossingguard",			"10", "XStats: TF2 - Points given when killing with Crossing Guard.", _, true);
 	Cvars.Weapon[1141] = Cvars.Weapon[9];	//Festive Shotgun.
 	Cvars.Weapon[1142] = Cvars.Weapon[24];	//Festive Revolver.
 	Cvars.Weapon[1144] = Cvars.Weapon[131];//Festive Chargin' Targe.
 	Cvars.Weapon[1146] = Cvars.Weapon[40];	//Festive Backburner.
 	Cvars.Weapon[1149] = Cvars.Weapon[16];	//Festive SMG.
-	Cvars.Weapon[1150] = CreateConVar("xstats_points_weapon_quickebomblauncher",	"10",	"Xstats: TF2 - Points given when killing with Quickiebomb Launcher.", _, true);
-	Cvars.Weapon[1151] = CreateConVar("xstats_points_weapon_ironbomber",			"10",	"Xstats: TF2 - Points given when killing with Iron Bomber.", _, true);
-	Cvars.Weapon[1153] = CreateConVar("xstats_points_weapon_panicattack",			"10",	"Xstats: TF2 - Points given when killing with Panic Attack.", _, true);
-	Cvars.Weapon[1178] = CreateConVar("xstats_points_weapon_dragonsfury",			"10",	"Xstats: TF2 - Points given when killing with Dragon's Fury.", _, true);
-	Cvars.Weapon[1179] = CreateConVar("xstats_points_weapon_thermalthruster",		"10",	"Xstats: TF2 - Points given when killing with Thermal Thruster.", _, true);
-	Cvars.Weapon[1181] = CreateConVar("xstats_points_weapon_hothand",				"10",	"Xstats: TF2 - Points given when killing with Hot Hand.", _, true);
+	Cvars.Weapon[1150] = CreateConVar("xstats_points_weapon_quickebomblauncher",	"10", "XStats: TF2 - Points given when killing with Quickiebomb Launcher.", _, true);
+	Cvars.Weapon[1151] = CreateConVar("xstats_points_weapon_ironbomber",			"10", "XStats: TF2 - Points given when killing with Iron Bomber.", _, true);
+	Cvars.Weapon[1153] = CreateConVar("xstats_points_weapon_panicattack",			"10", "XStats: TF2 - Points given when killing with Panic Attack.", _, true);
+	Cvars.Weapon[1178] = CreateConVar("xstats_points_weapon_dragonsfury",			"10", "XStats: TF2 - Points given when killing with Dragon's Fury.", _, true);
+	Cvars.Weapon[1179] = CreateConVar("xstats_points_weapon_thermalthruster",		"10", "XStats: TF2 - Points given when killing with Thermal Thruster.", _, true);
+	Cvars.Weapon[1181] = CreateConVar("xstats_points_weapon_hothand",				"10", "XStats: TF2 - Points given when killing with Hot Hand.", _, true);
 	Cvars.Weapon[1184] = Cvars.Weapon[239];	//Gloves of Running Urgently. (Used by MvM Robots.)
 	Cvars.Weapon[15000]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Night Owl.
 	Cvars.Weapon[15001]	= Cvars.Weapon[16];	//Skinned SMG.					Woodsy Widowmaker.
@@ -440,20 +440,20 @@ void PrepareGame_TF2() {
 	Cvars.Weapon[19015]	= Cvars.Weapon[14];	//TF2Items Give Weapon: Beta Sniper Rifle 1.
 	Cvars.Weapon[19016]	= Cvars.Weapon[18];	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 2.
 	Cvars.Weapon[19017]	= Cvars.Weapon[18];	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 3.
-	Cvars.Weapon[30474]	= CreateConVar("xstats_points_weapon_nostromonapalmer","10",	"Xstats: TF2 - Points given when killing with Nostromo Napalmer.", _, true);
-	Cvars.Weapon[30665]	= CreateConVar("xstats_points_weapon_shootingstar",		"10",	"Xstats: TF2 - Points given when killing with Shooting star.", _, true);
-	Cvars.Weapon[30666]	= CreateConVar("xstats_points_weapon_capper",			"10",	"Xstats: TF2 - Points given when killing with C.A.P.P.E.R.", _, true);
-	Cvars.Weapon[30667]	= CreateConVar("xstats_points_weapon_batsaber",			"10",	"Xstats: TF2 - Points given when killing with Batsaber.", _, true);
-	Cvars.Weapon[30668]	= CreateConVar("xstats_points_weapon_gigarcounter",		"10",	"Xstats: TF2 - Points given when killing with Gigar Counter.", _, true);
-	Cvars.Weapon[30758]	= CreateConVar("xstats_points_weapon_prinnymachete",	"10",	"Xstats: TF2 - Points given when killing with Prinny Machete.", _, true);	
+	Cvars.Weapon[30474]	= CreateConVar("xstats_points_weapon_nostromonapalmer", "10", "XStats: TF2 - Points given when killing with Nostromo Napalmer.", _, true);
+	Cvars.Weapon[30665]	= CreateConVar("xstats_points_weapon_shootingstar",		"10", "XStats: TF2 - Points given when killing with Shooting star.", _, true);
+	Cvars.Weapon[30666]	= CreateConVar("xstats_points_weapon_capper",			"10", "XStats: TF2 - Points given when killing with C.A.P.P.E.R.", _, true);
+	Cvars.Weapon[30667]	= CreateConVar("xstats_points_weapon_batsaber",			"10", "XStats: TF2 - Points given when killing with Batsaber.", _, true);
+	Cvars.Weapon[30668]	= CreateConVar("xstats_points_weapon_gigarcounter",		"10", "XStats: TF2 - Points given when killing with Gigar Counter.", _, true);
+	Cvars.Weapon[30758]	= CreateConVar("xstats_points_weapon_prinnymachete",	"10", "XStats: TF2 - Points given when killing with Prinny Machete.", _, true);	
 	
 	/* Other */
-	TF2_Collat = CreateConVar("xstats_points_collateralkill",	"2",	"Xstats: TF2 - Extra points given when pulling a collateral kill.", _, true);
+	TF2_Collat = CreateConVar("xstats_points_collateralkill",	"2", "XStats: TF2 - Extra points given when pulling a collateral kill.", _, true);
 	
 	/* MvM - Arrayed to make it way easier to handle due to long event names */
-	TF2_MvM[0] = CreateConVar("xstats_points_mvm_destroytank",		"5",	"Xstats: TF2 - Points given to red team when tank is destroyed.", _, true);
-	TF2_MvM[1] = CreateConVar("xstats_points_mvm_killsentrybuster",	"5",	"Xstats: TF2 - Points given when killing Sentry Buster.", _, true);
-	TF2_MvM[2] = CreateConVar("xstats_points_mvm_resetbomb",		"5",	"Xstats: TF2 - Points given when bomb is reset.", _, true);
+	TF2_MvM[0] = CreateConVar("xstats_points_mvm_destroytank",		"5", "XStats: TF2 - Points given to red team when tank is destroyed.", _, true);
+	TF2_MvM[1] = CreateConVar("xstats_points_mvm_killsentrybuster",	"5", "XStats: TF2 - Points given when killing Sentry Buster.", _, true);
+	TF2_MvM[2] = CreateConVar("xstats_points_mvm_resetbomb",		"5", "XStats: TF2 - Points given when bomb is reset.", _, true);
 	
 	/* Events */
 	
@@ -474,13 +474,12 @@ void PrepareGame_TF2() {
 
 /* MvM */
 stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[0].IntValue < 1)
-		return;
+	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[0].IntValue < 1) return;
 	
 	int points = TF2_MvM[0].IntValue;
 	int count = 0;
 	
-	for(int client = 1; client < MaxClients; client++)	{
+	TargetLoop(client) {
 		if(Tklib_IsValidClient(client, true) && !IsValidAbuse(client) && TF2_GetClientTeam(client) == TFTeam_Red)	{
 			count++;
 			
@@ -493,9 +492,7 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 		}
 	}
 	
-	if(count < 1)
-		return; /* Nothing happens after this if count is below 1 */
-	
+	if(count < 1) return; /* Nothing happens after this if count is below 1 */
 	CPrintToChatAll("%s %t", Global.Prefix, "MVM Team Destroyed Tank", TF2_GetTeamStringName[2], points);
 }
 
@@ -503,29 +500,19 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 	doesn't offer a killer userid/entity index
 	but the sentry buster entity itself only. */
 stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[1].IntValue < 1)
-		return;
-	
+	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[1].IntValue < 1) return;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
-	if(!Tklib_IsValidClient(client, true))
-		return;
-		
-	if(IsValidAbuse(client))
-		return;
-	
+	if(!Tklib_IsValidClient(client, true)) return;
+	if(IsValidAbuse(client)) return;
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(client))
-		return;
-	
-	if(!(IsFakeClient(victim) && TF2_GetClientTeam(victim) == TFTeam_Blue))
-		return; /* Make sure it's a TFBot and is on blue team. */
+	if(!Tklib_IsValidClient(client)) return;
+	if(!(IsFakeClient(victim) && TF2_GetClientTeam(victim) == TFTeam_Blue)) return; /* Make sure it's a TFBot and is on blue team. */
 	
 	char sentry_buster[64];
-	GetClientNameEx(victim, sentry_buster, sizeof(sentry_buster));
+	Format(sentry_buster, sizeof(sentry_buster), "%N", victim);
 	
 	int defindex = Ent(TF2_GetPlayerWeaponSlot(victim, TFSlot_Melee)).DefinitionIndex;
-	if(!(StrContains(sentry_buster, "Sentry Buster") != -1 && defindex == 307))
-		return; /* Make sure the TFBot has the correct name and Ullapool Caber. */
+	if(!(StrContainsEx(sentry_buster, "Sentry Buster") && defindex == 307)) return; /* Make sure the TFBot has the correct name and Ullapool Caber. */
 	
 	int points = TF2_MvM[1].IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
@@ -541,15 +528,10 @@ stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool do
 }
 
 stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[2].IntValue < 1)
-		return;
-	
+	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[2].IntValue < 1) return;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_PLAYER));
-	if(!Tklib_IsValidClient(client, true))
-		return;
-		
-	if(IsValidAbuse(client))
-		return;
+	if(!Tklib_IsValidClient(client, true)) return;
+	if(IsValidAbuse(client)) return;
 	
 	int points = TF2_MvM[2].IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
@@ -566,20 +548,15 @@ stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool d
 
 /* Item found */
 stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!Cvars.ServerID.IntValue)
-		return;
-
-	if(event.GetBool("isfake"))	//Item is fake
-		return; //This event bool doesn't exist in the game in general but you can force this event and use this.
+	if(!Cvars.ServerID.IntValue) return;
+	if(event.GetBool("isfake"))	return; //Item is fake, this event bool doesn't exist in the game in general but you can force this event and use this.
 	
-	int client = event.GetInt(EVENT_STR_PLAYER);
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	int quality = event.GetInt(EVENT_STR_QUALITY);
-	int method = event.GetInt(EVENT_STR_METHOD);
-	int defindex = event.GetInt(EVENT_STR_ITEMDEF);
+	int client = event.GetInt(EVENT_STR_PLAYER)
+	, quality = event.GetInt(EVENT_STR_QUALITY)
+	, method = event.GetInt(EVENT_STR_METHOD)
+	, defindex = event.GetInt(EVENT_STR_ITEMDEF);
 	float wear = event.GetFloat(EVENT_STR_WEAR);
+	if(!Tklib_IsValidClient(client, true)) return;
 	
 	char method_name[][] = {
 		"Achieved",
@@ -603,7 +580,7 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 		"Strange",
 		"Unusual",
 		"Haunted",
-		"Colletor's"
+		"Collector's"
 	};
 	
 	char query[512];
@@ -621,110 +598,109 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 
 /* Deaths */
 stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats() || TF2_IsMvMGameMode())
-		return;
+	if(!IsValidStats() || TF2_IsMvMGameMode()) return;
 	
 	//It's a fake death.
-	bool fakedeath = (event.GetInt(EVENT_STR_DEATH_FLAGS) == 32);
-	event.SetBool("fakedeath", fakedeath);
-	if(fakedeath) {
+	if(event.GetInt(EVENT_STR_DEATH_FLAGS) & TF_DEATHFLAG_DEADRINGER) {
+		event.SetBool("fakedeath", true);
 		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
 		XStats_DebugText(false, "Detected fake death, ignoring.");
 		return;
 	}
 	
-	char weapon[96];
-	event.GetString(EVENT_STR_WEAPON_LOGCLASSNAME, weapon, sizeof(weapon));
-
-	if(StrEqual(weapon, "player")
-	|| StrEqual(weapon, "world")) {
-		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
-		XStats_DebugText(false, "Detected invalid killer \"%s\", ignoring to prevent issues..\n", weapon);
-		return;	
-	}
-	
-	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
-	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim))
-		return;
-	
-	if(IsValidAbuse(client) || IsSamePlayers(client, victim) || IsSameTeam(client, victim) || IsFakeClient(victim) && !Cvars.AllowBots.BoolValue)
-		return;
-	
-	OnDeathRankPanel(client);
 	
 	/* Get the values early for lowest delay. */
 	
-	int assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER));
-	int inflictor = event.GetInt(EVENT_STR_INFLICTOR_ENTINDEX);
-	int defindex = event.GetInt(EVENT_STR_WEAPON_DEF_INDEX);
-	int customkill = event.GetInt(EVENT_STR_CUSTOMKILL);
-	int deathflags = event.GetInt(EVENT_STR_DEATH_FLAGS);
-	int penetrated = event.GetInt(EVENT_STR_PLAYERPENETRATECOUNT);
-	TFCritType crits = TFCritType(event.GetInt(EVENT_STR_CRIT_TYPE));
-	int points = 0;
+	char weapon[96];
+	event.GetString(EVENT_STR_WEAPON_LOGCLASSNAME, weapon, sizeof(weapon));
+	
+	if(StrEqual(weapon, "player") || StrEqual(weapon, "world")) {
+	//if(customkill & TF_CUSTOM_SUICIDE) { TF_CUSTOM_SUICIDE is broken, applied on any kill event :|
+		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
+		XStats_DebugText(false, "Detected invalid killer (suicide), ignoring to prevent issues..\n");
+		return;	
+	}
+	
+	int points = 0
+	, client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER))
+	, victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID))
+	, assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER))
+	, inflictor = event.GetInt(EVENT_STR_INFLICTOR_ENTINDEX)
+	, defindex = event.GetInt(EVENT_STR_WEAPON_DEF_INDEX)
+	, customkill = event.GetInt(EVENT_STR_CUSTOMKILL)
+	, deathflags = event.GetInt(EVENT_STR_DEATH_FLAGS)
+	, penetrated = event.GetInt(EVENT_STR_PENETRATED)
+	, crits = event.GetInt(EVENT_STR_CRIT_TYPE);
+	
+	if(!Tklib_IsValidClient(client, true) || !Tklib_IsValidClient(victim)) return;
+	if(IsValidAbuse(client) || IsSamePlayers(client, victim) || IsSameTeam(client, victim) || IsFakeClient(victim) && !Cvars.AllowBots.BoolValue) return;
 	
 	/* Kill event stuff */
-	bool headshot = (customkill == 1 || customkill == 51);
-	event.SetBool("headshot", headshot);
-	bool backstab = (customkill == 2);
-	event.SetBool("backstab", backstab);
-	bool noscope = ((customkill == 11 || defindex == 1098) && !TF2_IsPlayerInCondition(client, TFCond_Zoomed));
-	event.SetBool("noscope", noscope);
-	bool bleedkill = (customkill == 34);
-	event.SetBool("bleedkill", bleedkill);
-	
-	bool dominated = (deathflags == 1);
-	bool dominated_assister = (deathflags == 2);
-	bool revenge = (deathflags == 4);
-	bool revenge_assister = (deathflags == 8);
-	bool gibkill = (deathflags == 128 || deathflags == 129);
-	bool collateral = (penetrated > 0);
-	
-	/*	Backup death flags checks incase example attacker
-		and assister gets domination or revenge at the same time. */
-	if(deathflags & 1)	{
-		dominated = true;
-		XStats_DebugText(false, "Killer dominated");
-	}
-	event.SetBool("dominated", dominated);
-	if(deathflags & 2)	{
-		dominated_assister = true;
-		XStats_DebugText(false, "Assister dominated");
-	}
-	event.SetBool("dominated_assister", dominated_assister);
-	if(deathflags & 4)	{
-		revenge = true;
-		XStats_DebugText(false, "Killer revenged");
-	}
-	event.SetBool("revenge", revenge);
-	if(deathflags & 8)	{
-		revenge_assister = true;
-		XStats_DebugText(false, "Assister revenged");
-	}
-	event.SetBool("revenge_assister", revenge);
-	if(deathflags & 128 || deathflags & 129)	{
-		gibkill = true;
-		XStats_DebugText(false, "Gibkill");
-	}
-	event.SetBool("gibkill", gibkill);
-	
-	bool deflectkill = ((StrContains(weapon, "deflect", false) != -1)
-	|| StrContains(weapon, "reflect") != -1);
-	event.SetBool("deflectkill", deflectkill);
-	bool tauntkill = ((StrContains(weapon, "taunt", false) != -1)
+	bool headshot = (customkill == TF_CUSTOM_HEADSHOT || customkill == TF_CUSTOM_HEADSHOT_DECAPITATION)
+	, backstab = (customkill == TF_CUSTOM_BACKSTAB)
+	, noscope = ((customkill == 11 || defindex == 1098) && !TF2_IsPlayerInCondition(client, TFCond_Zoomed))
+	, bleedkill = (customkill == TF_CUSTOM_BLEEDING)
+	, dominated = false
+	, dominated_assister = false
+	, revenge = false
+	, revenge_assister = false
+	, gibkill = false
+	, collateral = (penetrated > 0)
+	, deflectkill = (StrContainsEx(weapon, "deflect", false) || StrContainsEx(weapon, "reflect"))
+	, tauntkill = (StrContainsEx(weapon, "taunt", false)
 	/* Rainblower tauntkill */
 	|| (StrEqual(weapon, "armageddon", false))
 	/* Thermal thruster taunt kill */
 	|| (StrEqual(weapon, "gas_blast", false))
 	/* Spy knife taunt kill */
-	|| customkill == 13);
+	|| customkill == 13)
+	, telefrag = StrEqual(weapon, "telefrag")
+	, midair = IsClientMidAir(client)
+	, airshot = (GetClientFlags(victim) == 258);
+	
+	OnDeathRankPanel(client);
+	
+	/*	Backup death flags checks incase example attacker
+		and assister gets domination or revenge at the same time. */
+	if(deathflags & TF_DEATHFLAG_KILLERDOMINATION) {
+		dominated = true;
+		XStats_DebugText(false, "Killer dominated");
+	}
+	if(deathflags & TF_DEATHFLAG_ASSISTERDOMINATION) {
+		dominated_assister = true;
+		XStats_DebugText(false, "Assister dominated");
+	}
+	if(deathflags & TF_DEATHFLAG_KILLERREVENGE) {
+		revenge = true;
+		XStats_DebugText(false, "Killer revenged");
+	}
+	if(deathflags & TF_DEATHFLAG_ASSISTERREVENGE) {
+		revenge_assister = true;
+		XStats_DebugText(false, "Assister revenged");
+	}
+	if(deathflags & TF_DEATHFLAG_GIBBED/* || deathflags & TF_DEATHFLAG_PURGATORY*/) {
+		gibkill = true;
+		XStats_DebugText(false, "Gibkill");
+	}
+	//if(customkill & TF_CUSTOM_TELEFRAG) telefrag = true;
+	if(customkill & TF_CUSTOM_PENETRATE_MY_TEAM) XStats_DebugText(false, "Penetrated through teammate.");
+	if(customkill & TF_CUSTOM_PENETRATE_HEADSHOT) XStats_DebugText(false, "Penetrated headshot.");
+	if(customkill & TF_CUSTOM_PENETRATE_ALL_PLAYERS) XStats_DebugText(false, "Penetrated through all players.");
+	
+	
+	event.SetBool("dominated", dominated);
+	event.SetBool("dominated_assister", dominated_assister);
+	event.SetBool("revenge", revenge);
+	event.SetBool("revenge_assister", revenge);
+	event.SetBool("gibkill", gibkill);
+	event.SetBool("headshot", headshot);
+	event.SetBool("backstab", backstab);
+	event.SetBool("noscope", noscope);
+	event.SetBool("bleedkill", bleedkill);
+	event.SetBool("deflectkill", deflectkill);
 	event.SetBool("tauntkill", tauntkill);
-	bool telefrag = StrEqual(weapon, "telefrag");
 	event.SetBool("telefrag", telefrag);
-	bool midair = IsClientMidAir(client);
 	event.SetBool("midair", midair);
-	bool airshot = (GetClientFlags(victim) == 258);
 	event.SetBool("airshot", airshot);
 		
 	// The 'weapon_def_index' on the player_death is same as if you're gathering the killers
@@ -735,8 +711,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	// PrintToServer("weaponid: %d", event.GetInt("weaponid"));
 	
-	if(bleedkill)
-		defindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Melee)).DefinitionIndex;	//Only part of melee weapons.
+	if(bleedkill) defindex = Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Melee)).DefinitionIndex; //Only part of melee weapons.
 	
 	// Lets fix these since when you swap weapons just before the kill on some weapons,
 	// it'll pick definition index out of that weapon instead of the actual weapon that were used.
@@ -749,12 +724,10 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	/* Grenade Launcher. */
-	if(StrEqual(weapon, "tf_projectile_pipe", false))
-		defindex = 19;
+	if(StrEqual(weapon, "tf_projectile_pipe", false)) defindex = 19;
 	
 	/* StickyBomb Launcher. */
-	if(StrEqual(weapon, "tf_projectile_pipe_remote", false))
-		defindex = 20;
+	if(StrEqual(weapon, "tf_projectile_pipe_remote", false)) defindex = 20;
 	
 	/* Sandman. */
 	if(StrEqual(weapon, "ball", false)) {
@@ -771,21 +744,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		defindex = getindex != -1 ? getindex : 44;
 	}
 	
-	/* Scottish Resistance. */
-	if(StrEqual(weapon, "sticky_resistance", false))
-		defindex = 130;
 	
-	/* Loch-N-Load. */
-	if(StrEqual(weapon, "loch_n_load", false))
-		defindex = 308;
-	
-	/* QuickieBomb Launcher. */
-	if(StrEqual(weapon, "quickiebomb_launcher", false))
-		defindex = 1150;
-	
-	/* Iron Bomber. */
-	if(StrEqual(weapon, "iron_bomber", false))
-		defindex = 1151;
+	if(StrEqual(weapon, "sticky_resistance", false)) defindex = 130; /* Scottish Resistance. */
+	if(StrEqual(weapon, "loch_n_load", false)) defindex = 308; /* Loch-N-Load. */
+	if(StrEqual(weapon, "quickiebomb_launcher", false)) defindex = 1150; /* QuickieBomb Launcher. */
+	if(StrEqual(weapon, "iron_bomber", false)) defindex = 1151; /* Iron Bomber. */
 	
 	/* Correct the event's weapon definition index. */
 	event.SetInt(EVENT_STR_WEAPON_DEF_INDEX, defindex);
@@ -798,24 +761,14 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	/* Make sure to continue if the points are valid. */
 	switch(TF2_GetBuildingType(inflictor))	{
-		case TFBuilding_Sentrygun:	{
-			if((points = TF2_SentryKill.IntValue) < 1)
-				return;
-		}
-		case TFBuilding_MiniSentry:	{
-			if((points = TF2_MiniSentryKill.IntValue) < 1)
-				return;
-		}
-		default: {
-			if((points = Cvars.Weapon[defindex].IntValue) < 1)
-				return;
-		}
+		case TFBuilding_Sentrygun: if((points = TF2_SentryKill.IntValue) < 1) return;
+		case TFBuilding_MiniSentry:	if((points = TF2_MiniSentryKill.IntValue) < 1) return;
+		default: if((points = Cvars.Weapon[defindex].IntValue) < 1) return;
 	}
 	
 	/* The database query upload ("bat" -> "weapon_bat") */
 	char fix_weapon[96];
-	if(!telefrag)
-		TF2_FixWeaponClassname(client, fix_weapon, sizeof(fix_weapon), defindex, weapon);
+	if(!telefrag) TF2_FixWeaponClassname(client, fix_weapon, sizeof(fix_weapon), defindex, weapon);
 	
 	/* Debug */
 	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
@@ -848,7 +801,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
 	
 	//There was an assist.
-	if(AssistedKill(assist, client, victim))	{
+	if(AssistedKill(assist, client, victim)) {
 		if(dominated_assister)	{
 			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
@@ -872,41 +825,35 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		
 	//If the inflictor entity is a building.
 	switch(TF2_IsEntityBuilding(inflictor))	{
-		case true:	{
-			switch(TF2_GetBuildingType(inflictor))	{
-				case TFBuilding_Dispenser:	{
-					XStats_DebugText(false, " ");
-					XStats_DebugText(false, "Building: Dispenser (?!)");
-				}
+		case true: {
+			switch(TF2_GetBuildingType(inflictor)) {
+				case TFBuilding_Dispenser: XStats_DebugText(false, "\nBuilding: Dispenser (?!)");
 				case TFBuilding_Sentrygun:	{
-					Session[client].MiniSentryKills++;
+					Session[client].MiniSentrykills++;
 					Format(query, sizeof(query), "update `%s` set SentryKills = SentryKills+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 					DB.Threaded.Query(DBQuery_Callback, query);
-					XStats_DebugText(false, " ");
-					XStats_DebugText(false, "Building: Sentry");
+					XStats_DebugText(false, "Building: Sentry\n");
 				}
 				case TFBuilding_MiniSentry:	{
-					Session[client].SentryKills++;
+					Session[client].Sentrykills++;
 					Format(query, sizeof(query), "update `%s` set MiniSentryKills = MiniSentryKills+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 					DB.Threaded.Query(DBQuery_Callback, query);
-					XStats_DebugText(false, " ");
-					XStats_DebugText(false, "Building: Mini-Sentry");
+					XStats_DebugText(false, "Building: Mini-Sentry\n");
 				}
 			}
 		}
 		case false:	{
 			switch(telefrag) {
 				case true: {
-					Session[client].TeleFrags++;
+					Session[client].Telefrags++;
 					points += TF2_TeleFrag.IntValue;
 					AddSessionPoints(client, TF2_TeleFrag.IntValue);
-					Format(query, sizeof(query), "update `%s` set TeleFrags = TeleFrags+1 where SteamID='%s' and ServerID='%i'",
+					Format(query, sizeof(query), "update `%s` set Telefrags = Telefrags+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 					DB.Threaded.Query(DBQuery_Callback, query);
-					XStats_DebugText(false, " ");
-					XStats_DebugText(false, "Telefrag");
+					XStats_DebugText(false, "Telefrag\n");
 				}
 				case false:	{
 					Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'",
@@ -923,8 +870,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Headshot");
+		XStats_DebugText(false, "Headshot\n");
 	}
 		
 	if(backstab) {
@@ -932,8 +878,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Backstabs = Backstabs+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Backstab");
+		XStats_DebugText(false, "Backstab\n");
 	}
 		
 	if(dominated) {
@@ -941,8 +886,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Dominated");
+		XStats_DebugText(false, "Dominated\n");
 	}
 		
 	if(revenge) {
@@ -950,8 +894,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Revenge");
+		XStats_DebugText(false, "Revenge\n");
 	}
 		
 	if(noscope) {
@@ -959,35 +902,31 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Noscope");
+		XStats_DebugText(false, "Noscope\n");
 	}
 		
 	if(tauntkill) {
-		Session[client].TauntKills++;
+		Session[client].Tauntkills++;
 		Format(query, sizeof(query), "update `%s` set TauntKills = TauntKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Tauntkill");
+		XStats_DebugText(false, "Tauntkill\n");
 	}
 	
 	if(deflectkill) {
-		Session[client].DeflectKills++;
-		Format(query, sizeof(query), "update `%s` set DeflectKills = DeflectKills+1 where SteamID='%s' and ServerID='%i'",
+		Session[client].Deflects++;
+		Format(query, sizeof(query), "update `%s` set Deflects = Deflects+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Deflectkill");
+		XStats_DebugText(false, "Deflectkill\n");
 	}
 	
 	if(gibkill) {
-		Session[client].GibKills++;
-		Format(query, sizeof(query), "update `%s` set GibKills = GibKills+1 where SteamID='%s' and ServerID='%i'",
+		Session[client].Gibs++;
+		Format(query, sizeof(query), "update `%s` set Gibs = Gibs+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Gibkill");
+		XStats_DebugText(false, "Gibkill\n");
 	}
 	
 	if(airshot) {
@@ -995,8 +934,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set Airshots = Airshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Airshot");
+		XStats_DebugText(false, "Airshot\n");
 	}
 	
 	if(collateral) {
@@ -1005,11 +943,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
 		
-		if(TF2_Collat.IntValue > 0)
-			points += TF2_Collat.IntValue;
-		
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Collateral");
+		if(TF2_Collat.IntValue > 0) points += TF2_Collat.IntValue;
+		XStats_DebugText(false, "Collateral\n");
 	}
 	
 	if(midair) {
@@ -1017,33 +952,29 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Format(query, sizeof(query), "update `%s` set MidAirKills = MidAirKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "MidAir Kill");
+		XStats_DebugText(false, "MidAir Kill\n");
 	}
 		
-	switch(crits) {
+	switch(view_as<TFCritType>(crits)) {
 		case TFCritType_Minicrit: {
-			Session[client].MiniCritKills++;
+			Session[client].MiniCritkills++;
 			Format(query, sizeof(query), "update `%s` set MiniCritKills = MiniCritKills+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
-			XStats_DebugText(false, " ");
-			XStats_DebugText(false, "Mini-Crit");
+			XStats_DebugText(false, "Mini-Crit\n");
 		}
 		case TFCritType_Crit: {
-			Session[client].CritKills++;
+			Session[client].Critkills++;
 			Format(query, sizeof(query), "update `%s` set CritKills = CritKills+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 			DB.Threaded.Query(DBQuery_Callback, query);
-			XStats_DebugText(false, " ");
-			XStats_DebugText(false, "Crit");
+			XStats_DebugText(false, "Crit\n");
 		}
 	}
 	
 	if(points > 0) {
 		AddSessionPoints(client, points);
-		XStats_DebugText(false, " ");
-		XStats_DebugText(false, "Processing kill message..");
+		XStats_DebugText(false, "Processing kill message..\n");
 		
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);

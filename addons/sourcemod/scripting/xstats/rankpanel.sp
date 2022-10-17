@@ -30,7 +30,7 @@ Action RankPanel(int client, int args=-1) {
 	int deaths = results.FetchInt(4);
 	int suicides = results.FetchInt(5);
 	int damagedone = results.FetchInt(6);
-	float kdr = GetKDR(kills, deaths, assists);
+	float kdr = GetRatio(kills, deaths);
 	
 	delete results;
 	StatsPanel[client].Main = true;
@@ -48,7 +48,7 @@ Action RankPanel(int client, int args=-1) {
 	panel.DrawText("%i Deaths", Session[client].Deaths);
 	panel.DrawText("%i Suicides", Session[client].Suicides);
 	panel.DrawText("%i Damage dealt", Session[client].DamageDone);
-	panel.DrawText("KDR: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
+	panel.DrawText("KDR: %.2f", GetRatio(Session[client].Kills, Session[client].Deaths));
 	panel.DrawSpace();
 	panel.DrawItem("Total Statistics");
 	panel.DrawText("%i Points", points);
@@ -117,7 +117,7 @@ stock void RankPanel_CurrentSession(int client)	{
 	panel.DrawText("%i Suicides", Session[client].Suicides);
 	panel.DrawText("%i Mid-air kills", Session[client].MidAirKills);
 	panel.DrawText("%i Damage dealt", Session[client].DamageDone);
-	panel.DrawText("KDR: %.2f", GetKDR(Session[client].Kills, Session[client].Deaths, Session[client].Assists));
+	panel.DrawText("KDR: %.2f", GetRatio(Session[client].Kills, Session[client].Deaths));
 	panel.DrawSpace();
 	
 	switch(Global.Game)	{
@@ -129,15 +129,15 @@ stock void RankPanel_CurrentSession(int client)	{
 			panel.DrawText("%i Noscopes", Session[client].Noscopes);
 			panel.DrawText("%i Backstabs", Session[client].Backstabs);
 			panel.DrawText("%i Airshots", Session[client].Airshots);
-			panel.DrawText("%i Deflect Kills", Session[client].DeflectKills);
-			panel.DrawText("%i Gib Killls", Session[client].GibKills);
-			panel.DrawText("%i Crit Kills", Session[client].CritKills);
-			panel.DrawText("%i Taunt Kills", Session[client].TauntKills);
-			panel.DrawText("%i Tele Frags", Session[client].TeleFrags);
-			panel.DrawText("%i Buildings Built", Session[client].BuildingsBuilt);
-			panel.DrawText("%i Buildings Destroyed", Session[client].BuildingsDestroyed);
-			panel.DrawText("%i Sappers Placed", Session[client].SappersPlaced);
-			panel.DrawText("%i Sappers Destroyed", Session[client].SappersDestroyed);
+			panel.DrawText("%i Deflects", Session[client].Deflects);
+			panel.DrawText("%i Gibs", Session[client].Gibs);
+			panel.DrawText("%i Critkills", Session[client].Critkills);
+			panel.DrawText("%i Tauntkills", Session[client].Tauntkills);
+			panel.DrawText("%i Tele Frags", Session[client].Telefrags);
+			panel.DrawText("%i Buildings built", Session[client].BuildingsBuilt);
+			panel.DrawText("%i Buildings destroyed", Session[client].BuildingsDestroyed);
+			panel.DrawText("%i Sappers placed", Session[client].SappersPlaced);
+			panel.DrawText("%i Sappers destroyed", Session[client].SappersDestroyed);
 			panel.DrawText("%i Coated with milk", Session[client].MadMilked);
 			panel.DrawText("%i Coated with jar", Session[client].Jarated);
 			panel.DrawText("%i Extinguished", Session[client].Extinguished);
@@ -156,15 +156,15 @@ stock void RankPanel_CurrentSession(int client)	{
 			panel.DrawText("%i Noscopes", Session[client].Noscopes);
 			panel.DrawText("%i Backstabs", Session[client].Backstabs);
 			panel.DrawText("%i Airshots", Session[client].Airshots);
-			panel.DrawText("%i Deflect Kills", Session[client].DeflectKills);
-			panel.DrawText("%i Gib Killls", Session[client].GibKills);
-			panel.DrawText("%i Crit Kills", Session[client].CritKills);
-			panel.DrawText("%i Taunt Kills", Session[client].TauntKills);
-			panel.DrawText("%i Tele Frags", Session[client].TeleFrags);
-			panel.DrawText("%i Buildings Built", Session[client].BuildingsBuilt);
-			panel.DrawText("%i Buildings Destroyed", Session[client].BuildingsDestroyed);
-			panel.DrawText("%i Sappers Placed", Session[client].SappersPlaced);
-			panel.DrawText("%i Sappers Destroyed", Session[client].SappersDestroyed);
+			panel.DrawText("%i Deflects", Session[client].Deflects);
+			panel.DrawText("%i Gibs", Session[client].Gibs);
+			panel.DrawText("%i Critkills", Session[client].Critkills);
+			panel.DrawText("%i Tauntkills", Session[client].Tauntkills);
+			panel.DrawText("%i Telefrags", Session[client].Telefrags);
+			panel.DrawText("%i Buildings built", Session[client].BuildingsBuilt);
+			panel.DrawText("%i Buildings destroyed", Session[client].BuildingsDestroyed);
+			panel.DrawText("%i Sappers placed", Session[client].SappersPlaced);
+			panel.DrawText("%i Sappers destroyed", Session[client].SappersDestroyed);
 			panel.DrawText("%i Extinguished", Session[client].Extinguished);
 			panel.DrawText("%i Ignited", Session[client].Ignited);
 		}
@@ -176,15 +176,15 @@ stock void RankPanel_CurrentSession(int client)	{
 			panel.DrawText("%i Noscopes", Session[client].Noscopes);
 			panel.DrawText("%i Backstabs", Session[client].Backstabs);
 			panel.DrawText("%i Airshots", Session[client].Airshots);
-			panel.DrawText("%i Deflect Kills", Session[client].DeflectKills);
-			panel.DrawText("%i Gib Killls", Session[client].GibKills);
-			panel.DrawText("%i Crit Kills", Session[client].CritKills);
-			panel.DrawText("%i Taunt Kills", Session[client].TauntKills);
-			panel.DrawText("%i Tele Frags", Session[client].TeleFrags);
-			panel.DrawText("%i Buildings Built", Session[client].BuildingsBuilt);
-			panel.DrawText("%i Buildings Destroyed", Session[client].BuildingsDestroyed);
-			panel.DrawText("%i Sappers Placed", Session[client].SappersPlaced);
-			panel.DrawText("%i Sappers Destroyed", Session[client].SappersDestroyed);
+			panel.DrawText("%i Deflects", Session[client].Deflects);
+			panel.DrawText("%i Gibs", Session[client].Gibs);
+			panel.DrawText("%i Critkills", Session[client].Critkills);
+			panel.DrawText("%i Tauntkills", Session[client].Tauntkills);
+			panel.DrawText("%i Telefrags", Session[client].Telefrags);
+			panel.DrawText("%i Buildings built", Session[client].BuildingsBuilt);
+			panel.DrawText("%i Buildings destroyed", Session[client].BuildingsDestroyed);
+			panel.DrawText("%i Sappers placed", Session[client].SappersPlaced);
+			panel.DrawText("%i Sappers destroyed", Session[client].SappersDestroyed);
 			panel.DrawText("%i Extinguished", Session[client].Extinguished);
 			panel.DrawText("%i Ignited", Session[client].Ignited);
 		}

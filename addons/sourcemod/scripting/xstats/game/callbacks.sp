@@ -24,8 +24,8 @@ int TF2_FixWeaponClassname(int client, char[] weapon, int maxlen, int weapon_def
 		case 8: why = "weapon_bonesaw";					//The Bonesaw.
 		case 9: why = "weapon_shotgun_engineer";		//The Shotgun, Class: Engineer.
 		case 10: why = "weapon_shotgun_soldier";		//The Shotgun, Class: Soldier.
-		case 11: why = "weapon_shotgun_pyro";			//The Shotgun, Class: Pyro.
-		case 12: why = "weapon_shotgun_heavy";			//The Shotgun, Class: Heavy.
+		case 11: why = "weapon_shotgun_hwg";			//The Shotgun, Class: Heavy.
+		case 12: why = "weapon_shotgun_pyro";			//The Shotgun, Class: Pyro.
 		case 13: why = "weapon_scattergun";				//The Scattergun.
 		case 14: why = "weapon_sniperrifle";			//The Sniper Rifle.
 		case 15: why = "weapon_minigun";				//The Minigun.

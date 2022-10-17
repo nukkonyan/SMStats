@@ -1,5 +1,5 @@
 /* Initialize global events */
-void PrepareEvents()	{
+void PrepareEvents() {
 	HookEventEx(EVENT_PLAYER_DEATH, Suicide);
 	HookEventEx(EVENT_PLAYER_TEAM, UploadStuff);
 	HookEventEx(EVENT_PLAYER_CHANGENAME, UploadStuff);
@@ -17,13 +17,11 @@ void PrepareEvents()	{
 
 /* Check if it's a suicide */
 stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats())
-		return;
+	if(!IsValidStats()) return;
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!(Tklib_IsValidClient(client, true) && IsSamePlayers(client, victim)))
-		return;
+	if(!(Tklib_IsValidClient(client, true) && IsSamePlayers(client, victim))) return;
 	
 	OnDeathRankPanel(client);
 	
@@ -39,17 +37,14 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
  *	If player changed team or name,
  *	this is a backup for some games using this event.
  */
-stock void UploadStuff(Event event, const char[] event_name, bool dontBroadcast)	{
-	OnClientSettingsChanged(GetClientOfUserId(event.GetInt(EVENT_STR_USERID)));
-}
+stock void UploadStuff(Event event, const char[] event_name, bool dontBroadcast) { OnClientSettingsChanged(GetClientOfUserId(event.GetInt(EVENT_STR_USERID))); }
 
 /**
  *	Acquire the playername and teamcoloured name.
  *	Need this because some games doesn't use "player_changename" event anymore (Could be the fact it's broken perhaps).
  */
 public void OnClientSettingsChanged(int client)	{
-	if(!Cvars.PluginActive.BoolValue || !Tklib_IsValidClient(client, false, false, false))
-		return;
+	if(!Cvars.PluginActive.BoolValue || !Tklib_IsValidClient(client, false, false, false)) return;
 	
 	/* Too early to gain info, lets add a delay */
 	CreateTimer(0.2, Timer_UploadStuff, client);
@@ -58,14 +53,14 @@ public void OnClientSettingsChanged(int client)	{
 Action Timer_UploadStuff(Handle timer, int client)	{
 	if(!Tklib_IsValidClient(client, false, false, false))	{
 		KillTimer(timer);
-		return	Plugin_Handled;
+		return Plugin_Handled;
 	}
 	
 	GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 	GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
 	//PrintToServer("%N team %d", client, GetClientTeam(client));
 	
-	return	Plugin_Handled;
+	return Plugin_Handled;
 }
 
 /**
@@ -82,21 +77,15 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 	CheckActivePlayers();
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(client))
-		return;
+	if(!Tklib_IsValidClient(client)) return;
 	
 	char reason[96];
 	event.GetString(EVENT_STR_REASON, reason, sizeof(reason));
-	if(IsFakeClient(client) && Cvars.ServerID.IntValue)
-		CPrintToChatAll("%s BOT %s was removed {grey}(%s)", Global.Prefix, Player[client].Name, reason);
+	if(IsFakeClient(client) && Cvars.AllowBots.BoolValue) CPrintToChatAll("%s BOT %s was removed {grey}(%s)", Global.Prefix, Player[client].Name, reason);
+	if(!Tklib_IsValidClient(client, true)) return;
+	for(int i = 1; i < MaxClients; i++) PlayerDamaged[i][client] = 0;
 	
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
-	for(int i = 1; i < MaxClients; i++)
-		PlayerDamaged[i][client] = 0;
-	
-	if(Cvars.ConnectMsg.BoolValue)	{
+	if(Cvars.ConnectMsg.BoolValue) {
 		Player[client].Points = GetClientPoints(Player[client].SteamID);
 		Player[client].Position = GetClientPosition(Player[client].SteamID);
 		CPrintToChatAll("%s %t", Global.Prefix, "Player Disconnected", Player[client].Name, Player[client].Position, Player[client].Points, Player[client].Country, reason);

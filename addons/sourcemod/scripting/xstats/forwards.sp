@@ -1,5 +1,5 @@
 /* Prepare forwards */
-stock void PrepareForwards()	{
+stock void PrepareForwards() {
 	Forward.Prefix = new GlobalForward("XStats_OnPrefixUpdated",
 		ET_Event,
 		Param_String);
@@ -27,16 +27,12 @@ stock void PrepareForwards()	{
 }
 
 public void OnClientAuthorized(int client, const char[] auth) {
-	if(!Tklib_IsValidClient(client, true, _, false))
-		return;
-	
+	if(!Tklib_IsValidClient(client, true, _, false)) return;
 	GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
 	GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 	GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
 	Format(Player[client].SteamID, sizeof(Player[].SteamID), auth);
-	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
-		Player[client].Country = "unknown country";
-	
+	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Player[client].Country = "unknown country";
 	if(!DatabaseDirect()) {
 		XStats_DebugText(false, "Player %s was unable to be authorized properly due to database connection unavailable.", Player[client].Playername);
 		return;
@@ -95,19 +91,14 @@ public void OnClientAuthorized(int client, const char[] auth) {
 	delete results;
 }
 
-public void OnClientPutInServer(int client)	{
-	if(!Cvars.PluginActive.BoolValue)
-		return;
-	
-	if(!Tklib_IsValidClient(client, _, _, false))
-		return;
-	
-	if(IsFakeClient(client))	{
-		if(Cvars.AllowBots.BoolValue)	{
+public void OnClientPutInServer(int client) {
+	if(!Cvars.PluginActive.BoolValue) return;
+	if(!Tklib_IsValidClient(client, _, _, false)) return;
+	if(IsFakeClient(client)) {
+		if(Cvars.AllowBots.BoolValue) {
 			GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 			CPrintToChatAll("%s BOT %s was added", Global.Prefix, Player[client].Name);
-			if(!StrEqual(Sound[0].path, ""))
-				EmitSoundToAll(Sound[0].path);
+			if(!StrEqual(Sound[0].path, "")) EmitSoundToAll(Sound[0].path);
 		}
 		return;
 	}
@@ -117,9 +108,7 @@ public void OnClientPutInServer(int client)	{
 	
 	/* Experimental Assister */
 	SDKHook(client, SDKHook_OnTakeDamage, Assister_OnTakeDamage);
-	
-	for(int i = 1; i < MaxClients; i++)
-		PlayerDamaged[i][client] = 0;
+	//TargetLoop(i) PlayerDamaged[i][client] = 0;
 	
 	/* Check active players */
 	CheckActivePlayers();
@@ -128,21 +117,19 @@ public void OnClientPutInServer(int client)	{
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	Player[client].Position = GetClientPosition(Player[client].SteamID);
 	Player[client].UserID = GetClientUserId(client);
+	Player[client].AccountID = GetSteamAccountID(client);
 	
 	CPrintToChatAll("%s %t", Global.Prefix, "Player Connected", Player[client].Name, Player[client].Position, Player[client].Points, Player[client].Country);
 	XStats_DebugText(false, "%s (Pos #%i, %i points) has connected from %s",
 	Player[client].Playername, Player[client].Position, Player[client].Points, Player[client].Country);
 	
-	if(Player[client].Position <= 10 && !StrEqual(Sound[0].path, ""))
-		EmitSoundToAll(Sound[0].path);
-	else if(!StrEqual(Sound[1].path, ""))
-		EmitSoundToAll(Sound[1].path);
+	if(Player[client].Position <= 10 && !StrEqual(Sound[0].path, "")) EmitSoundToAll(Sound[0].path);
+	else if(!StrEqual(Sound[1].path, "")) EmitSoundToAll(Sound[1].path);
 	
 	CreateTimer(60.0, IntervalPlayTimer, client, TIMER_FLAG_NO_MAPCHANGE|TIMER_REPEAT);
 	
 	/* Safety callback if the steamid weren't acquired. (for some reason) */
-	if(StrEqual(Player[client].SteamID, ""))
-		GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
+	if(StrEqual(Player[client].SteamID, "")) GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
 }
 
 Action IntervalPlayTimer(Handle timer, int client) {
@@ -169,15 +156,12 @@ Action IntervalPlayTimer(Handle timer, int client) {
 }
 
 public void OnClientDisconnect(int client) {
-	if(!Tklib_IsValidClient(client, true))
-		return;
-	
+	if(!Tklib_IsValidClient(client, true)) return;
 	UpdateDamage(client);
 }
 
 public void OnMapStart() {
-	if(!Cvars.PluginActive.BoolValue)
-		return;
+	if(!Cvars.PluginActive.BoolValue) return;
 	
 	/* If database lost connection or plugin was late loaded */
 	PrepareDatabase(); /* Database */
@@ -235,17 +219,9 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 }
 
 void DBQuery_MapLog_2(Database database, DBResultSet results, const char[] error, any data) {
-	if(results == null)
-		XStats_DebugText(true, "Map Log Updater failed! (%s)", error);
+	if(results == null) XStats_DebugText(true, "Map Log Updater failed! (%s)", error);
 }
 
-public void OnEntityCreated(int entity, const char[] classname) {
-	OnEntityCreated_CounterStrike(entity, classname);
-}
-
-public void OnConfigsExecuted() {
-	CheckActivePlayers(); /* Check active players */
-}
-public void OnPluginEnd() {
-	XStats_DebugText(false, "Ending..");	
-}
+public void OnEntityCreated(int entity, const char[] classname) { OnEntityCreated_CounterStrike(entity, classname); }
+public void OnConfigsExecuted() { CheckActivePlayers(); } /* Check active players */
+public void OnPluginEnd() { XStats_DebugText(false, "Ending.."); }

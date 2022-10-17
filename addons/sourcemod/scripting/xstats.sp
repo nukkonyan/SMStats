@@ -8,14 +8,7 @@
 
 /* XStats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX. */
 #define Version "0.01a_02c"
-
-public Plugin myinfo = {
-	name = "XStats - Statistical Multi-Tracker",
-	author = _tklib_author,
-	description = "XStats - Track kills, maps, kill events, achievements, etc.",
-	version = Version,
-	url = _tklib_author_url
-}
+SetPluginInfo("XStats - Statistical Multi-Tracker", _tklib_author, "XStats - Track kills, maps, kill events, achievements, etc.", Version, _tklib_author_url)
 
 /* Core */
 XStatsDatabase DB;
@@ -25,11 +18,11 @@ XStatsGlobal Global;
 XStatsConnectSound Sound[2];
 
 /* Session */
-XStatsPlayer Player[MAXPLAYERS+1];
-XStatsPanel StatsPanel[MAXPLAYERS+1];
-XStatsSession Session[MAXPLAYERS+1];
-XStatsSession TotalStats[MAXPLAYERS+1];
-XStatsKillMsg KillMsg[MAXPLAYERS+1];
+XStatsPlayer Player[MAXCLIENTS];
+XStatsPanel StatsPanel[MAXCLIENTS];
+XStatsSession Session[MAXCLIENTS];
+XStatsSession TotalStats[MAXCLIENTS];
+XStatsKillMsg KillMsg[MAXCLIENTS];
 
 /* Includes. */
 #include "xstats/cvars.sp" /* Console variables */
@@ -46,6 +39,8 @@ XStatsKillMsg KillMsg[MAXPLAYERS+1];
 //#include	"xstats/achievements.sp" /* Achievements */
 
 public void OnPluginStart()	{
+	InvCallback = new StringMap();
+	
 	//Prepare.
 	PrepareDatabase(true);
 	PrepareForwards(); /* Forwards */

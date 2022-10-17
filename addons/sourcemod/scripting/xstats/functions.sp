@@ -1,3 +1,46 @@
+StringMap InvCallback = null;
+
+stock bool HasStored(int client, char[] str, any ...)
+{
+	char chocolate[128];
+	VFormat(chocolate, sizeof(chocolate), str, 3);
+	Format(chocolate, sizeof(chocolate), "%i_%s", Player[client].AccountID, chocolate);
+	
+	char value[8];
+	InvCallback.GetString(chocolate, value, sizeof(value));
+	
+	return IsValidString(value) ? StringToBool(value) : false;
+}
+
+stock int GetStored(int client, char[] str, any ...)
+{
+	char milk[128];
+	VFormat(milk, sizeof(milk), str, 3);
+	Format(milk, sizeof(milk), "%i_%s", Player[client].AccountID, chocolate);
+	
+	char value[8];
+	InvCallback.GetString(chocolate, value, sizeof(value));
+	
+	return IsValidString(value) ? StringToInt(value) : -1;
+}
+
+stock bool SetStored(int client, char[] str, any value, any ...)
+{
+	char cookies[128], temp[8];
+	VFormat(cookies, sizeof(cookies), str, 4);
+	Format(cookies, sizeof(cookies), "%i_%s", Player[client].AccountID, cookies);
+	Format(temp, sizeof(temp), "%i", value);
+	
+	bool rtrn = false;
+	
+	switch(value) {
+		case true: rtrn = InvCallback.SetString(cookies, temp);
+		case false: rtrn = InvCallback.Remove(cookies);
+	}
+	
+	return rtrn;
+}
+
 /**
  *	Returns the amount of points a player has.
  *
@@ -126,18 +169,18 @@ stock void ClearSessions(int client) {
 	Session[client].SpyDeaths = 0;
 	Session[client].CivilianDeaths = 0; /* TF2 Classic */
 	Session[client].Backstabs = 0;
-	Session[client].TauntKills = 0;
-	Session[client].GibKills = 0;
-	Session[client].DeflectKills = 0;
+	Session[client].Tauntkills = 0;
+	Session[client].Gibs = 0;
+	Session[client].Deflects = 0;
 	Session[client].Ubercharged = 0;
 	Session[client].SandvichesStolen = 0;
 	Session[client].Coated = 0;
 	Session[client].Extinguished = 0;
-	Session[client].TeleFrags = 0;
-	Session[client].SentryKills = 0;
-	Session[client].MiniSentryKills = 0;
-	Session[client].MiniCritKills = 0;
-	Session[client].CritKills = 0;
+	Session[client].Telefrags = 0;
+	Session[client].Sentrykills = 0;
+	Session[client].MiniSentrykills = 0;
+	Session[client].MiniCritkills = 0;
+	Session[client].Critkills = 0;
 	Session[client].PointsCaptured = 0;
 	Session[client].PointsDefended = 0;
 	Session[client].FlagsStolen = 0;
@@ -205,69 +248,57 @@ stock void ClearSessions(int client) {
 }
 
 /**
- *	Returns the KDR (Kill-Death-Ratio)
+ *	Returns the Ratio. This desperately needs to be completely recoded with working 1.00 ratio.
  *
- *	@param	kills	The kill count to check.
- *	@param	deaths	The death count to check.
- *	@param	assists	The assist count to check.
+ *	@param	count1	The first count to check.
+ *	@param	count2	The second count to check.
  */
-stock float GetKDR(int kills, int deaths, int assists) {
-	float kdr = 1.00;
-	float fkills = float(kills);
-	float fdeaths = float(deaths);
-	float fassists = float(assists);
+stock float GetRatio(int count1, int count2) {
+	float ratio = 1.00;
+	float fcount1 = float(count1);
+	float fcount2 = float(count2);
+	//float fassists = float(assists);
 	
-	fkills += (fassists / 2.0);
+	//fkills += (fassists / 2.0);
 	
-	XStats_DebugText(false, "\n//===== XStats debug Log: GetKDR =====//");
-	XStats_DebugText(false, "kills: %i", kills);
-	XStats_DebugText(false, "deaths: %i", deaths);
-	XStats_DebugText(false, "assists: %i", assists);
-	XStats_DebugText(false, "fkills: %.2f", float(kills));
-	XStats_DebugText(false, "fkills += (fassists / 2.0): %.2f", fkills);
-	XStats_DebugText(false, "fdeaths: %.2f", fdeaths);
-	XStats_DebugText(false, "fassists: %.2f", fassists);
+	XStats_DebugText(false, "\n//===== XStats debug Log: GetRatio =====//");
+	XStats_DebugText(false, "count1: %i", count1);
+	XStats_DebugText(false, "count2: %i", count2);
+	//XStats_DebugText(false, "assists: %i", assists);
+	XStats_DebugText(false, "fcount1: %.2f", fcount1);
+	//XStats_DebugText(false, "fkills += (fassists / 2.0): %.2f", fkills);
+	XStats_DebugText(false, "fcount2: %.2f", fcount2);
+	//XStats_DebugText(false, "fassists: %.2f", fassists);
 	
-	switch(fdeaths == 0.0) {
+	switch(fcount2 == 0.0) {
 		case true: {
-			fdeaths = 1.0;
-			XStats_DebugText(false, "after fdeaths check: %.2f (Because fdeaths were 0.00)", fdeaths);
+			fcount2 = 1.0;
+			XStats_DebugText(false, "after fcount2 check: %.2f (Because fcount2 were 0.00)", fcount2);
 		}
-		case false: XStats_DebugText(false, "after fdeaths check: %.2f", fdeaths);
+		case false: XStats_DebugText(false, "after fcount2 check: %.2f", fcount2);
 	}
 	
-	kdr = fkills / fdeaths;
-	XStats_DebugText(false, "kdr: %.2f\n", kdr);
+	ratio = fcount1 / fcount2;
+	XStats_DebugText(false, "Ratio: %.2f\n", ratio);
 	
-	kdr /= 100.0; /* Fix the KDR To be correct. 120.0 -> 1.20 */
+	ratio /= 100.0; /* Fix the KDR To be correct. 120.0 -> 1.20 */
 	
-	if(kdr == 0.00)
-		kdr = 1.00;
+	if(ratio == 0.00) ratio = 1.00;
 	
-	XStats_DebugText(false, "GetKDR was fired (%i kills, %i deaths, %i assists), returning %.2f", kills, deaths, assists, kdr);
-	return kdr;
+	XStats_DebugText(false, "GetRatio was fired (count1 %i, count2 %i), returning %.2f", count1, count2, ratio);
+	return ratio;
 }
 
-/**
- *	Add session points. Just to make it easier :)
- */
-stock void AddSessionPoints(int client, int value)	{
-	Session[client].Points += value;
-}
-
-/**
- *	Remove session points. Just to make it easier :)
- */
-stock void RemoveSessionPoints(int client, int value)	{
-	Session[client].Points -= value;
-}
+/*	Add and remove session points. Just to make it easier :) */
+stock void AddSessionPoints(int client, int value) { Session[client].Points += value; }
+stock void RemoveSessionPoints(int client, int value) { Session[client].Points -= value; }
 
 /**
  *	Update players last connected time state.
  *
  *	@param	auth	The players steam authentication id.
  */
-stock void UpdateLastConnectedState(const char[] auth)	{
+stock void UpdateLastConnectedState(const char[] auth) {
 	char error[256];
 	Database database = SQL_Connect(Xstats, false, error, sizeof(error));
 	if(database == null)	{
@@ -275,7 +306,7 @@ stock void UpdateLastConnectedState(const char[] auth)	{
 		return;
 	}
 	
-	char query[512];
+	char query[256];
 	Format(query, sizeof(query), "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, GetTime(), auth, Cvars.ServerID.IntValue);
 	database.Query(DBQuery_Callback, query);
@@ -290,7 +321,7 @@ stock void UpdateLastConnectedState(const char[] auth)	{
  *
  *	@param	days	If the player has not been in this many days, the player gets removed.
  */
-stock void RemoveOldConnectedPlayers(int days = 30)	{
+stock void RemoveOldConnectedPlayers(int days = 30) {
 	int time = GetTime() - (days * 86400);
 	char query[512];
 	Format(query, sizeof(query), "select SteamID from `%s` where LastConnected < '%i' and ServerID='%i'",
@@ -308,21 +339,19 @@ stock void DBQuery_RemoveOldPlayers_1(Database database, DBResultSet results, co
 	int days = pack.ReadCell();
 	delete pack;
 	
-	if(results == null)
-		XStats_DebugText(true, "Deleting old players failed! (%s)", error);
+	if(results == null) XStats_DebugText(true, "Deleting old players failed! (%s)", error);
 	
 	int count = 0;
 	while(results.FetchRow()) {
 		count++;
-		
 		char auth[64];
 		results.FetchString(0, auth, sizeof(auth));
 		XStats_DebugText(false, "[%i] Deleted %s from database after %i days of no activity", count, auth, days);
 	}
 	
 	/* Avoid spamming this in the while loop */
-	if(count > 0)	{
-		char query[512];
+	if(count > 0) {
+		char query[150];
 		Format(query, sizeof(query), "delete from `%s` where LastLastConnectedServerID='%i'",
 		Global.playerlist, time, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_RemoveOldPlayers_2, query);
@@ -410,13 +439,7 @@ stock void CheckActivePlayers()	{
 /**
  *	Make sure the stats is properly configured.
  */
-stock bool IsValidStats() {
-	return !(!Cvars.PluginActive.BoolValue
-			|| Cvars.ServerID.IntValue < 1
-			|| !Global.RoundActive
-			|| !Global.RankActive
-			|| Global.WarmupActive && !Cvars.AllowWarmup.BoolValue);
-}
+stock bool IsValidStats() { return !(!Cvars.PluginActive.BoolValue || Cvars.ServerID.IntValue < 1 || !Global.RoundActive || !Global.RankActive || Global.WarmupActive && !Cvars.AllowWarmup.BoolValue); }
 
 /**
  *	Make sure the event wasn't abused.
@@ -427,16 +450,10 @@ stock bool IsValidAbuse(int client=0) {
 	bool abuse = false;
 	
 	if(Cvars.AntiAbuse.BoolValue) {
-		ConVar cvar = FindConVar("sv_cheats");
-		if(cvar != null && cvar.BoolValue)
-			abuse = true;
-		
+		ConVar cvar = null;
+		if((cvar = FindConVar("sv_cheats")) != null && cvar.BoolValue) abuse = true;
 		delete cvar;
-		
-		if(client > 0) {
-			if(IsClientNoclipping(client))
-				abuse = true;
-		}
+		if(client > 0) { if(IsClientNoclipping(client)) abuse = true; }
 	}
 	
 	return	abuse;
@@ -449,12 +466,8 @@ stock bool IsValidAbuse(int client=0) {
  *	@param	client	The users index.
  */
 stock bool CS_IsClientInsideSmoke(int client) {
-	Entity entity = Entity_Empty;
-	while((entity = Entity.FindByClassname(entity, "env_particlesmokegrenade")) != Entity_Invalid)	{
-		if(entity.GetDistance(client) <= 3.0)
-			return true;
-	}
-	
+	int ent = 0;
+	while((ent = FindEntityByClassname(ent, "env_particlesmokegrenade")) != -1)	{ if(GetEntityDistance(ent, client) <= 3.0) return true; }
 	return false;
 }
 
@@ -543,7 +556,7 @@ stock bool AssistedKill(int assist, int client, int victim) {
 	if(!Tklib_IsValidClient(assist, true))
 		return false;
 	
-	char query[512];
+	char query[256];
 	Session[assist].Assists++;
 	Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
@@ -560,7 +573,7 @@ stock bool AssistedKill(int assist, int client, int victim) {
 		CPrintToChat(assist, "%s %t",
 		Global.Prefix, "Assist Kill Event", Player[assist].Name, Player[assist].Points, Cvars.AssistKill.IntValue, Player[client].Name, Player[victim].Name);
 	}
-		
+	
 	return true;
 }
 
@@ -572,8 +585,7 @@ stock bool AssistedKill(int assist, int client, int victim) {
  *	@noreturn.
  */
 stock void VictimDied(int victim) {
-	if(!Tklib_IsValidClient(victim, true))
-		return;
+	if(!Tklib_IsValidClient(victim, true)) return;
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
@@ -584,13 +596,11 @@ stock void VictimDied(int victim) {
 	int points;
 	switch(Global.Game) {
 		case Game_TF2, Game_TF2C, Game_TF2V, Game_TF2B, Game_TF2OP: {
-			if((points = TF2_DeathClass[TF2_GetPlayerClass(victim)].IntValue) < 1)
-				return;
+			TFClassType class = TF2_GetPlayerClass(victim);
+			if(class < TFClass_Scout) return;
+			if((points = TF2_DeathClass[class].IntValue) < 1) return;
 		}
-		default: {
-			if((points = Cvars.Death.IntValue) < 1)
-				return;
-		}
+		default: if((points = Cvars.Death.IntValue) < 1) return;
 	}
 		
 	int victim_points = GetClientPoints(Player[victim].SteamID);
@@ -654,8 +664,7 @@ stock void RoundEnded()	{
 		}
 	}
 	
-	if(Cvars.RemoveOldPlayers.IntValue >= 1)
-		RemoveOldConnectedPlayers(Cvars.RemoveOldPlayers.IntValue);
+	if(Cvars.RemoveOldPlayers.IntValue >= 1) RemoveOldConnectedPlayers(Cvars.RemoveOldPlayers.IntValue);
 	
 	ResetAssister();
 }
@@ -677,7 +686,7 @@ stock void CheckPlayersPluginStart()	{
 	DBResultSet results;
 	*/
 	
-	for(int client = 1; client <= MaxClients; client++) {
+	TargetLoop(client) {
 		/* Bots needs a name too, right? */
 		if(Tklib_IsValidClient(client, false, false, false)) {
 			GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
@@ -685,15 +694,13 @@ stock void CheckPlayersPluginStart()	{
 		}
 		
 		/* Only gather the steamid from the players */
-		if(!Tklib_IsValidClient(client, true, false, false))
-			continue;
+		if(!Tklib_IsValidClient(client, true, false, false)) continue;
 		
 		GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
 		GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
 		GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
 		GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
-		if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country)))
-			Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
+		if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 		
 		/*
 		results = SQL_QueryEx(database, "select * from `%s` where SteamID = '%s' and ServerID='%i'",
@@ -751,7 +758,7 @@ stock void CheckPlayersPluginStart()	{
 stock void PrepareKillMessage(int client, int victim, int points)	{
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
-	char buffer[256];
+	char buffer[128];
 	
 	/* Lë ol' messy code but has to be it. */
 	
@@ -764,11 +771,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			switch(KillMsg[client].HeadshotKill)
 			{
 				/* Headshot airshot deflect kill */
-				case true:
-					Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[6], Kill_Type[7]);
+				case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[6], Kill_Type[7]);
 				/* Airshot deflect kill */
-				case false:
-					Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[6], Kill_Type[7]);
+				case false: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[6], Kill_Type[7]);
 			}
 		}
 		else
@@ -776,11 +781,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			switch(KillMsg[client].HeadshotKill)
 			{
 				/* Headshot deflect kill */
-				case true:
-					Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[7]);
+				case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[7]);
 				/* Deflect kill */
-				case false:
-					Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[7]);
+				case false: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[7]);
 			}
 		}
 	}
@@ -790,11 +793,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 		switch(KillMsg[client].HeadshotKill)
 		{
 			/* Headshot collateral kill */
-			case true:
-				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[10]);
+			case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[10]);
 			/* Colllateral kill */
-			case false:
-				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[10]);
+			case false: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[10]);
 		}
 	}
 	/* Airshot kill */
@@ -806,11 +807,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			switch(KillMsg[client].HeadshotKill)
 			{
 				/* Mid air airshot headshot kill */
-				case true:
-					Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[6], Kill_Type[0]);
+				case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[6], Kill_Type[0]);
 				/* Mid air airshot kill */
-				case false:
-					Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[6], Kill_Type[0]);
+				case false: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[6], Kill_Type[0]);
 			}
 		}
 		/* Airshot kill */
@@ -819,11 +818,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 			switch(KillMsg[client].HeadshotKill)
 			{
 				/* Airshot headshot kill */
-				case true:
-					Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3], Kill_Type[6]);
+				case true: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3], Kill_Type[6]);
 				/* Airshot kill */
-				case false:
-					Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[6]);
+				case false: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[6]);
 			}
 		}
 	}
@@ -833,10 +830,8 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 		switch(KillMsg[client].MidAirKill)
 		{
 			/* Mid air backstab kill */
-			case true:
-				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[5], Kill_Type[0]);
-			case false:
-				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[5]);
+			case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[5], Kill_Type[0]);
+			case false: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[5]);
 		}
 	}
 	/* Noscope kill */
@@ -854,11 +849,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 					switch(KillMsg[client].MidAirKill)
 					{
 						/* Mid air noscope headshot kill through smoke whilst blinded */
-						case true:
-							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
+						case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
 						/* Noscope headshot through smoke whilst blinded */
-						case false:
-							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13]);
+						case false: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13]);
 					}
 				}
 				/* Noscope headshot kill through smoke */
@@ -867,11 +860,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 					switch(KillMsg[client].MidAirKill)
 					{
 						/* Mid air noscope headshot kill through smoke */
-						case true:
-							Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[0]);
+						case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[0]);
 						/* Noscope headshot kill through smoke */
-						case false:
-							Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[1]);
+						case false: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[1]);
 					}
 				}
 			}
@@ -881,11 +872,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].MidAirKill)
 				{
 					/* Mid air noscope headshot */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
 					/* Noscope headshot kill */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
+					case false: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[2]);
 				}
 
 			}
@@ -899,11 +888,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].BlindedKill)
 				{
 					/* Mid air noscope kill through smoke whilst blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
 					/* Mid air noscope kill through smoke */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[0]);
+					case false: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[0]);
 				}
 			}
 			/* Mid air headshot kill */
@@ -912,11 +899,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].BlindedKill)
 				{
 					/* Mid air noscope headshot kill while blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[13], Kill_Type[0]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[13], Kill_Type[0]);
 					/* Mid air noscope headshot kill */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
+					case false: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
 				}
 			}
 		}
@@ -929,11 +914,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].BlindedKill)
 				{
 					/* Noscope kill through smoke while blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[13]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[13]);
 					/* Noscope kill through smoke */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[1]);
+					case false: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[1]);
 				}
 			}
 			/* Noscope kill */
@@ -942,11 +925,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].BlindedKill)
 				{
 					/* Noscope kill whilst blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[13]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[13]);
 					/* Noscope kill */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[4]);
+					case false: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[4]);
 				}
 			}
 		}
@@ -963,11 +944,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].MidAirKill)
 				{
 					/* Mid air headshot kill through smoke whilst blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
 					/* Headshot through smoke whilst blinded */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13]);
+					case false: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13]);
 				}
 			}
 			/* Headshot kill through smoke */
@@ -976,11 +955,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].MidAirKill)
 				{
 					/* Mid air headshot kill through smoke */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[0]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[0]);
 					/* Headshot kill through smoke */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[1]);
+					case false: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[1]);
 				}
 			}
 		}
@@ -993,11 +970,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].BlindedKill)
 				{
 					/* Mid air headshot kill through smoke whilst blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
 					/* Mid air headshot kill through smoke */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[0]);
+					case false: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[0]);
 				}
 			}
 			/* Mid air headshot kill */
@@ -1006,11 +981,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].BlindedKill)
 				{
 					/* Mid air eadshot kill while blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[13], Kill_Type[0]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[13], Kill_Type[0]);
 					/* Mid air headshot kill */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[0]);
+					case false: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[0]);
 				}
 			}
 		}
@@ -1023,11 +996,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].BlindedKill)
 				{
 					/* Headshot kill through smoke while blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13]);
 					/* Headshot kill through smoke */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[1]);
+					case false: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[1]);
 				}
 			}
 			/* Headshot kill */
@@ -1036,11 +1007,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 				switch(KillMsg[client].BlindedKill)
 				{
 					/* Headshot kill whilst blinded */
-					case true:
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[13]);
+					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[13]);
 					/* Headshot kill */
-					case false:
-						Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);
+					case false: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3]);
 				}
 			}
 		}
@@ -1071,11 +1040,9 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 		switch(KillMsg[client].MidAirKill)
 		{
 			/* Mid air blinded kill */
-			case true:
-				Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[13], Kill_Type[0]);
+			case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[13], Kill_Type[0]);
 			/* Blinded kill */
-			case false:
-				Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[13]);
+			case false: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[13]);
 		}
 	}
 	/* Mid air kill */
@@ -1083,7 +1050,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
 	}
-	switch(IsValidString(buffer))	{
+	switch(IsValidString(buffer)) {
 		case true: CPrintToChat(client, "%s %t", Global.Prefix, "Special Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name, buffer);
 		case false: CPrintToChat(client, "%s %t", Global.Prefix, "Default Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name);
 	}
@@ -1098,21 +1065,18 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
  *	@noreturn
  */
 stock void XStats_DebugText(bool FailState, const char[] text, any ...)	{
-	if(!Cvars.Debug.BoolValue)
-		return;
+	if(!Cvars.Debug.BoolValue) return;
 	
 	char format[8192];
 	VFormat(format, sizeof(format), text, 3);
 	
 	char path[64];
 	BuildPath(Path_SM, path, sizeof(path), "logs/xstats_debug.log.txt");
-	if(!FileExists(path))
-		delete OpenFile(path, "a+");
+	if(!FileExists(path)) delete OpenFile(path, "a+");
 	
 	LogToFileEx(path, format);
 	
-	if(FailState)
-		XStats_SetFailState("%s", format);
+	if(FailState) XStats_SetFailState("%s", format);
 }
 
 /**
@@ -1126,48 +1090,41 @@ stock void XStats_DebugText(bool FailState, const char[] text, any ...)	{
  *
  *	@noreturn
  */
-stock void XStats_UpdateTable(const char[] table, int client, bool increment=true)	{
-	if(!Tklib_IsValidClient(client, true))
-		return; /* Make sure to safely proceed. */
+stock void XStats_UpdateTable(const char[] table, int client, bool increment=true) {
+	if(!Tklib_IsValidClient(client, true)) return; /* Make sure to safely proceed. */
 	
-	char query[8192];
+	char query[512], Increment[][] = {"-","+"};
 	Format(query, sizeof(query), "alter table %s update '%s' = '%s' %s 1 where SteamID = '%s' and ServerID = '%i'",
-	Global.playerlist, table, table, increment ? "+":"-", Player[client].SteamID, Cvars.ServerID.IntValue);
+	Global.playerlist, table, table, Increment[increment], Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
 }
 
-/**
- *	Sends a message to all that XStats has crashed just before crashing the plugin.
- */
-stock void XStats_SetFailState(const char[] reason, any ...)	{
-	for(int client = 1; client < MaxClients; client++)	{
-		if(Tklib_IsValidClient(client, true))	{
-			switch(Global.Game)	{
-				case Game_CSGO, Game_CSCO, Game_L4D1, Game_L4D2:
-					CPrintToChat(client, "{orange}XStats ({lightgreen}%s{orange}) has {lightred}Crashed.", Version);
-				default:
-					CPrintToChat(client, "{orange}XStats ({lightgreen}%s{orange}) has {red}Crashed.", Version);
-			}
+/* Sends a message to all that XStats has crashed just before crashing the plugin. */
+stock void XStats_SetFailState(const char[] reason, any ...) {
+	TargetLoop(client) {
+		if(!Tklib_IsValidClient(client, true)) continue;
+		
+		switch(Global.Game)	{
+			case Game_CSGO, Game_CSCO, Game_L4D1, Game_L4D2: CPrintToChat(client, "{orange}XStats ({lightgreen}%s{orange}) has {lightred}Crashed.", Version);
+			default: CPrintToChat(client, "{orange}XStats ({lightgreen}%s{orange}) has {red}Crashed.", Version);
 		}
 	}
 	
-	char format[1024];
+	char format[256];
 	VFormat(format, sizeof(format), reason, 2);
 	SetFailState(format);
 }
 
-/**
- *	Update the total damage done.
- */
+/* Update the total damage done. */
 stock void UpdateDamage(int client)	{
-	char query[256];
+	char query[192];
 	Format(query, sizeof(query), "select DamageDone from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_UpdateDamage, query, client, DBPrio_Low);
 }
 
-void DBQuery_UpdateDamage(Database database, DBResultSet results, const char[] error, int client)	{
-	if(results != null && results.FetchRow())	{
-		char query[256];
+void DBQuery_UpdateDamage(Database database, DBResultSet results, const char[] error, int client) {
+	if(results != null && results.FetchRow()) {
+		char query[192];
 		Format(query, sizeof(query), "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue);
 		DB.Threaded.Query(DBQuery_Callback, query, _, DBPrio_Low); /* Low priority to lower chances of lag spikes */
