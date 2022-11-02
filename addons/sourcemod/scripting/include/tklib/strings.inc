@@ -27,9 +27,7 @@ stock bool StrContainsEx(const char[] str, const char[] substr, bool caseSensiti
  *
  *	@return				Number of cells written.
  */
-stock int strcopyEx(char[] dest, int destLen, const char[] source, any...) {
-	return VFormat(dest, destLen, source, 4);
-}
+stock int strcopyEx(char[] dest, int destLen, const char[] source, any...) { return VFormat(dest, destLen, source, 4); }
 
 /**
  *	Turns a string into a boolean.
@@ -39,9 +37,7 @@ stock int strcopyEx(char[] dest, int destLen, const char[] source, any...) {
  *
  *	@return	Boolean conversion of string or false on failure.
  */
-stock bool StringToBool(const char[] str, int nBase=10) {
-	return view_as<bool>(StringToInt(str, nBase));
-}
+stock bool StringToBool(const char[] str, int nBase=10) { return view_as<bool>(StringToInt(str, nBase)); }
 
 /**
  *	Returns if the string is valid and not NULL.
@@ -50,9 +46,7 @@ stock bool StringToBool(const char[] str, int nBase=10) {
  *
  *	@return	If the string is empty, this returns false.
  */
-stock bool IsValidString(const char[] str) {
-	return (!StrEqual(str, "") && StrLen(str) > 0);
-}
+stock bool IsValidString(const char[] str) { return (!StrEqual(str, "") && StrLen(str) > 0); }
 
 /**
  *	Retrieves the string value via integer.
@@ -64,8 +58,7 @@ stock bool IsValidString(const char[] str) {
  *	@error	If the handle is invalid, this returns false.
  */
 stock bool GetTrieStringInt(Handle map, int key, char[] value, int max_size, int &size=0) {
-	if(!map)
-		return false;
+	if(!map) return false;
 	
 	char[] val = new char[64];
 	Format(val, 64, "%i", key);
@@ -82,8 +75,7 @@ stock bool GetTrieStringInt(Handle map, int key, char[] value, int max_size, int
  *	@error	If the handle is invalid, this returns -1.
  */
 stock int GetTrieStringIntEx(Handle map, int key, int &size=0) {
-	if(!map)
-		return -1;
+	if(!map) return -1;
 	
 	char[] buffer = new char[96];
 	char[] val = new char[64];
@@ -106,8 +98,7 @@ stock int GetTrieStringIntEx(Handle map, int key, int &size=0) {
  *	@error	If the handle is invalid, this returns false.
  */
 stock bool SetTrieStringInt(Handle map, int key, int value, bool replace=true) {
-	if(!map)
-		return false;
+	if(!map) return false;
 	
 	char[] fmt = new char[64];
 	char[] val = new char[64];
@@ -123,9 +114,8 @@ stock bool SetTrieStringInt(Handle map, int key, int value, bool replace=true) {
  *	@param	value	The integer to check.
  */
 stock bool StrContainsInt(const char[] str, int value) {
-	char fmt[96];
-	Format(fmt, sizeof(fmt), "%i", value);
-	
+	char fmt[24];
+	IntToString(value, fmt, sizeof(fmt));
 	return view_as<bool>(StrContains(str, fmt, false) != -1);
 }
 
@@ -140,8 +130,7 @@ stock bool StrContainsInt(const char[] str, int value) {
  *	@error	If the entity is invalid, this returns false.
  */
 stock bool StrEqualEntity(int entity, const char[] clsname) {
-	if(!IsValidEntityEx(entity))
-		return false;
+	if(!IsValidEntityEx(entity)) return false;
 	
 	char temp[64];
 	return view_as<bool>(GetEntPropStringEx(entity, Prop_Data, "m_iClassname", temp, sizeof(temp)) && StrEqual(temp, clsname));
@@ -158,8 +147,7 @@ stock bool StrEqualEntity(int entity, const char[] clsname) {
  *	@error	If the entity is invalid, this returns false.
  */
 stock bool StrContainsEntity(int entity, const char[] clsname) {
-	if(!IsValidEntityEx(entity))
-		return false;
+	if(!IsValidEntityEx(entity)) return false;
 	
 	char temp[64];
 	return view_as<bool>(GetEntPropStringEx(entity, Prop_Data, "m_iClassname", temp, sizeof(temp) && StrContains(temp, clsname, false) != -1));
@@ -173,9 +161,7 @@ stock bool StrContainsEntity(int entity, const char[] clsname) {
  *
  *	@return			Any conversion of string, or 0 on failure.
  */
-stock any StringToAny(const char[] str, int nBase=10) {
-	return view_as<any>(StringToInt(str, nBase));
-}
+stock any StringToAny(const char[] str, int nBase=10) { return view_as<any>(StringToInt(str, nBase)); }
 
 /**
  *	Returns if the string contains a number.
@@ -183,27 +169,11 @@ stock any StringToAny(const char[] str, int nBase=10) {
  *	@param	str	The string to check.
  */
 stock bool StrHasNumbers(const char[] str) {
-	return (StrContainsEx(str, "1", false)
-	|| StrContainsEx(str, "2", false)
-	|| StrContainsEx(str, "3", false)
-	|| StrContainsEx(str, "4", false)
-	|| StrContainsEx(str, "5", false)
-	|| StrContainsEx(str, "6", false)
-	|| StrContainsEx(str, "7", false)
-	|| StrContainsEx(str, "8", false)
-	|| StrContainsEx(str, "9", false)
-	|| StrContainsEx(str, "0", false));
-}
-
-/**
- *	Returns if the string is empty.
- *
- *	@param	str	The string to check.
- *
- *	@return	If the string is empty, this returns true. Else false.
- */
-stock bool StrEmpty(const char[] str) {
-	return StrEqual(str, "");
+	return (StrContainsEx(str, "1", false) || StrContainsEx(str, "2", false)
+	|| StrContainsEx(str, "3", false) || StrContainsEx(str, "4", false)
+	|| StrContainsEx(str, "5", false) || StrContainsEx(str, "6", false)
+	|| StrContainsEx(str, "7", false) || StrContainsEx(str, "8", false)
+	|| StrContainsEx(str, "9", false) || StrContainsEx(str, "0", false));
 }
 
 /**
@@ -214,9 +184,7 @@ stock bool StrEmpty(const char[] str) {
  *
  *	@return	Returns the string length.
  */
-stock int StrLen(const char[] str) {
-	return strlen(str)+1;
-}
+stock int StrLen(const char[] str) { return strlen(str)+1; }
 
 /**
  * Converts an integer to a string.
@@ -227,8 +195,24 @@ stock int StrLen(const char[] str) {
  *
  *	@return              Number of cells written to buffer.
  */
-stock int BoolToString(bool num, char[] str, int maxlength) {
-	return IntToString(view_as<int>(num), str, maxlength);
+stock int BoolToString(bool num, char[] str, int maxlength) { return IntToString(view_as<int>(num), str, maxlength); }
+
+/**
+ *	Converts the string into lowercase
+ *	Certain alphabetic characters such as Üü Åå Ää Öö aren't supported ...
+ *	as SourceMod will be confused about em'.
+ *
+ *	@param	str		The string to convert.
+ *	@param	subStr	The string to store.
+ *	@param	len		The length of the string.
+ *
+ *	@return void
+ */
+stock void StrToLower(const char[] str, char[] subStr, int len) {
+	len--;
+	int i = 0;
+	while(str[i] != '\0' && i < len) { subStr[i] = CharToLower(str[i++]); }
+	subStr[i] = '\0';
 }
 
 #endif

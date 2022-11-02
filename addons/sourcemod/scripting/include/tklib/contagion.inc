@@ -51,9 +51,7 @@ enum CETeam {
  *
  *	@error	If the user is invalid, this returns CETeam_Unassigned.
  */
-stock CETeam CE_GetClientTeam(int client) {
-	return Tklib_IsValidClient(client) ? view_as<CETeam>(GetClientTeam(client)):CETeam_Unassigned;
-}
+stock CETeam CE_GetClientTeam(int client) { return Tklib_IsValidClient(client) ? view_as<CETeam>(GetClientTeam(client)):CETeam_Unassigned; }
 
 /**
  *	Changes the users current team.

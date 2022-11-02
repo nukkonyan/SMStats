@@ -1,7 +1,5 @@
 methodmap MenuEx < Menu {
-	public MenuEx(MenuHandler handler) {
-		return view_as<MenuEx>(new Menu(handler));
-	}
+	public MenuEx(MenuHandler handler) { return view_as<MenuEx>(new Menu(handler)); }
 	
 	/*
 	 *	Displays a menu to a user.
@@ -11,10 +9,7 @@ methodmap MenuEx < Menu {
 	 *
 	 *	@return	True on success, false on failure.
 	 */
-	public bool Display(int client, int time = MENU_TIME_FOREVER) {
-		if(!Tklib_IsValidClient(client, true)) return false;
-		return view_as<Menu>(this).Display(client, time);
-	}
+	public bool Display(int client, int time = MENU_TIME_FOREVER) { return view_as<Menu>(this).Display(client, time); }
 
 	/*
 	 *	Displays a menu to a user, starting from the given item.
@@ -25,14 +20,12 @@ methodmap MenuEx < Menu {
 	 *
 	 *	@return	True on success, false on failure.
 	 */
-	public bool DisplayAt(int client, int first_item, int time = MENU_TIME_FOREVER) {
-		if(!Tklib_IsValidClient(client, true)) return false;
-		return view_as<Menu>(this).DisplayAt(client, first_item, time);
-	}
+	public bool DisplayAt(int client, int first_item, int time = MENU_TIME_FOREVER) { return view_as<Menu>(this).DisplayAt(client, first_item, time); }
 	
 	public void SetTitle(const char[] fmt, any ...) {
-		char format[96];
-		VFormat(format, sizeof(format), fmt, 3);
+		int maxlen = strlen(fmt)+65;
+		char[] format = new char[maxlen];
+		VFormat(format, maxlen, fmt, 3);
 		view_as<Menu>(this).SetTitle(format);
 	}
 	
@@ -41,68 +34,75 @@ methodmap MenuEx < Menu {
 	public bool AddItem(const char[] info, const char[] display, int style = ITEMDRAW_DEFAULT) { return view_as<Menu>(this).AddItem(info, display, style); }
 	
 	public bool AddItemEx(const char[] info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
-		char format[96];
-		VFormat(format, sizeof(format), display, 5);
+		int maxlen = strlen(display)+65;
+		char[] format = new char[maxlen];
+		VFormat(format, maxlen, display, 5);
 		return view_as<Menu>(this).AddItem(info, format, style);
 	}
 	
 	public bool AddItemInt(int info, const char[] display, int style = ITEMDRAW_DEFAULT) {
-		char format[96];
-		Format(format, sizeof(format), "%i", info);
-		return view_as<Menu>(this).AddItem(format, display, style);
+		char dummy[8];
+		IntToString(info, dummy, sizeof(dummy));
+		return view_as<Menu>(this).AddItem(dummy, display, style);
 	}
 	
 	public bool AddItemIntEx(int info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
-		char format1[96], format2[96];
-		Format(format1, sizeof(format1), "%i", info);
-		VFormat(format2, sizeof(format2), display, 5);
-		return view_as<Menu>(this).AddItem(format1, format2, style);
+		char dummy[8];
+		IntToString(info, dummy, sizeof(dummy));
+		int maxlen = strlen(display)+65;
+		char[] format = new char[maxlen];
+		VFormat(format, maxlen, display, 5);
+		return view_as<Menu>(this).AddItem(dummy, format, style);
 	}
 	
 	public bool AddItemAny(any info, const char[] display, int style = ITEMDRAW_DEFAULT) {
-		char format[96];
-		Format(format, sizeof(format), "%i", info);
-		return view_as<Menu>(this).AddItem(format, display, style);
+		char dummy[16];
+		IntToString(info, dummy, sizeof(dummy));
+		return view_as<Menu>(this).AddItem(dummy, display, style);
 	}
 	
 	public bool AddItemAnyEx(any info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
-		char format1[96], format2[96];
-		Format(format1, sizeof(format1), "%i", info);
-		VFormat(format2, sizeof(format2), display, 5);
-		return view_as<Menu>(this).AddItem(format1, format2, style);
+		char dummy[16];
+		IntToString(info, dummy, sizeof(dummy));
+		int maxlen = strlen(display)+65;
+		char[] format = new char[maxlen];
+		VFormat(dummy, maxlen, display, 5);
+		return view_as<Menu>(this).AddItem(dummy, format, style);
 	}
 	
 	public bool AddItemFloat(float info, const char[] display, int style = ITEMDRAW_DEFAULT) {
-		char format[256];
-		Format(format, sizeof(format), "%f", info);
-		return view_as<Menu>(this).AddItem(format, display, style);
+		char dummy[16];
+		FloatToString(info, dummy, sizeof(dummy));
+		return view_as<Menu>(this).AddItem(dummy, display, style);
 	}
 	
 	public bool AddItemFloatEx(float info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
-		char format1[96], format2[96];
-		Format(format1, sizeof(format1), "%f", info);
-		VFormat(format2, sizeof(format2), display, 5);
-		return view_as<Menu>(this).AddItem(format1, format2, style);
+		char dummy[16];
+		FloatToString(info, dummy, sizeof(dummy));
+		int maxlen = strlen(display)+65;
+		char[] format = new char[maxlen];
+		VFormat(format, maxlen, display, 5);
+		return view_as<Menu>(this).AddItem(dummy, format, style);
 	}
 	
 	public bool VoteMenuAll(int time, int flags = 0) { return VoteMenuToAll(view_as<Menu>(this), time, flags); }
 	
 	public int GetItemIndex(int position, int &style=0, char[] dispBuf="", int dispBufLen=0) {
-		char buffer[96];
-		view_as<Menu>(this).GetItem(position, buffer, sizeof(buffer), style, dispBuf, dispBufLen);
-		return StringToInt(buffer);
+		char dummy[16];
+		view_as<Menu>(this).GetItem(position, dummy, sizeof(dummy), style, dispBuf, dispBufLen);
+		return StringToInt(dummy);
 	}
 	
 	public float GetItemFloat(int position, int &style=0, char[] dispBuf="", int dispBufLen=0) {
-		char buffer[96];
-		view_as<Menu>(this).GetItem(position, buffer, sizeof(buffer), style, dispBuf, dispBufLen);
-		return StringToFloat(buffer);
+		char dummy[16];
+		view_as<Menu>(this).GetItem(position, dummy, sizeof(dummy), style, dispBuf, dispBufLen);
+		return StringToFloat(dummy);
 	}
 	
 	public any GetItemAny(int position, int &style=0, char[] dispBuf="", int dispBufLen=0) {
-		char buffer[96];
-		view_as<Menu>(this).GetItem(position, buffer, sizeof(buffer), style, dispBuf, dispBufLen);
-		return StringToAny(buffer);
+		char dummy[16];
+		view_as<Menu>(this).GetItem(position, dummy, sizeof(dummy), style, dispBuf, dispBufLen);
+		return StringToAny(dummy);
 	}
 	
 	/**
@@ -113,9 +113,9 @@ methodmap MenuEx < Menu {
 	 *	@param	caseSensitive	If true, search is case sensitive.
 	 */
 	public bool ItemStrContains(int position, const char[] substr, bool caseSensitive=false) {
-		char buffer[512];
-		view_as<Menu>(this).GetItem(position, buffer, sizeof(buffer));
-		return (StrContains(buffer, substr, caseSensitive) > 0);
+		char dummy[128];
+		view_as<Menu>(this).GetItem(position, dummy, sizeof(dummy));
+		return (StrContains(dummy, substr, caseSensitive) > 0);
 	}
 }
 
@@ -134,9 +134,10 @@ methodmap PanelEx < Panel {
 	 *	@param	...		Additional parameters.
 	 */
 	public bool SetTitle(const char[] text, any ...) {
-		char buffer[96];
-		VFormat(buffer, sizeof(buffer), text, 3); /* 1 is the panel, 2 is the input, 3 is the parameters */
-		view_as<Panel>(this).SetTitle(buffer);
+		int maxlen = strlen(text)+65;
+		char[] dummy = new char[maxlen];
+		VFormat(dummy, maxlen, text, 3); /* 1 is the panel, 2 is the input, 3 is the parameters */
+		view_as<Panel>(this).SetTitle(dummy);
 	}
 	
 	/*
@@ -151,9 +152,10 @@ methodmap PanelEx < Panel {
 	 *	@return			A slot position, or 0 if item was a rawline or could not be drawn.
 	 */
 	public int DrawItem(const char[] text, any ...) {
-		char buffer[96];
-		VFormat(buffer, sizeof(buffer), text, 3);
-		return view_as<Panel>(this).DrawItem(buffer);
+		int maxlen = strlen(text)+65;
+		char[] dummy = new char[maxlen];
+		VFormat(dummy, maxlen, text, 3);
+		return view_as<Panel>(this).DrawItem(dummy);
 	}
 	
 	/*
@@ -169,9 +171,10 @@ methodmap PanelEx < Panel {
 	 *	@return			A slot position, or 0 if item was a rawline or could not be drawn.
 	 */
 	public int DrawItemEx(const char[] text, int style=ITEMDRAW_DEFAULT, any ...) {
-		char buffer[96];
-		VFormat(buffer, sizeof(buffer), text, 4);
-		return view_as<Panel>(this).DrawItem(buffer, style);
+		int maxlen = strlen(text)+65;
+		char[] dummy = new char[maxlen];
+		VFormat(dummy, maxlen, text, 4);
+		return view_as<Panel>(this).DrawItem(dummy, style);
 	}
 	
 	/*
@@ -183,9 +186,10 @@ methodmap PanelEx < Panel {
 	 *	@return			True on success, false if raw lines are not supported.
 	 */
 	public bool DrawText(const char[] text, any ...) {
-		char buffer[96];
-		VFormat(buffer, sizeof(buffer), text, 3);
-		return view_as<Panel>(this).DrawText(buffer);
+		int maxlen = strlen(text)+65;
+		char[] dummy = new char[maxlen];
+		VFormat(dummy, maxlen, text, 3);
+		return view_as<Panel>(this).DrawText(dummy);
 	}
 	
 	/*
@@ -193,9 +197,7 @@ methodmap PanelEx < Panel {
 	 *
 	 *	@return			True on success, false if raw lines are not supported.
 	 */
-	public bool DrawSpace() {
-		return view_as<Panel>(this).DrawText(" ");
-	}
+	public bool DrawSpace() { return view_as<Panel>(this).DrawText(" "); }
 	
 	/*
 	 *	Returns whether or not the given drawing flags are supported by the menu style.
@@ -204,7 +206,7 @@ methodmap PanelEx < Panel {
 	 *
 	 *	@return		True if item is drawable, false otherwise.
 	 */
-	public bool CanDrawFlags(int style) {return view_as<Panel>(this).CanDrawFlags(style);}
+	public bool CanDrawFlags(int style) { return view_as<Panel>(this).CanDrawFlags(style); }
 	
 	/*
 	 *	Sets the selectable key map of a panel. This is not supported by
@@ -216,7 +218,7 @@ methodmap PanelEx < Panel {
 	 *
 	 *	@return			True if supported, false otherwise.
 	 */
-	public bool SetKeys(int keys) {return view_as<Panel>(this).SetKeys(keys); }
+	public bool SetKeys(int keys) { return view_as<Panel>(this).SetKeys(keys); }
 	
 	/*
 	 *	Sends a panel to a client.	Unlike full menus, the handler
@@ -249,9 +251,7 @@ methodmap PanelEx < Panel {
 	 *	Valve menus: Currently -1 (no meaning).
 	 */
 	property int TextRemaining {
-		public get() {
-			return view_as<Panel>(this).TextRemaining;
-		}
+		public get() { return view_as<Panel>(this).TextRemaining; }
 	}
 	
 	/*
@@ -259,21 +259,15 @@ methodmap PanelEx < Panel {
 	 *	used to traverse backwards.
 	 */
 	property int CurrentKey {
-		public get() {
-			return view_as<Panel>(this).CurrentKey;
-		}
-		public set(int key) {
-			view_as<Panel>(this).CurrentKey = key;
-		}
+		public get() { return view_as<Panel>(this).CurrentKey; }
+		public set(int key) { view_as<Panel>(this).CurrentKey = key; }
 	}
 	
 	/*
 	 *	Returns the panel's style. Style handles are global and cannot be closed.
 	 */
 	property Handle Style {
-		public get() {
-			return view_as<Panel>(this).Style;
-		}
+		public get() { return view_as<Panel>(this).Style; }
 	}
 }
 
@@ -306,8 +300,7 @@ stock ConVar CreateConVarBool(const char[] name, bool defaultValue, const char[]
  *	@error	If the ConVar is invalid, this returns false.
  */
 stock bool AddConVarFlags(ConVar cvar, int flags)	{
-	if(cvar == null)
-		return	false;
+	if(cvar == null) return	false;
 	
 	cvar.Flags |= flags;
 	return true;
@@ -342,8 +335,7 @@ stock bool AddConVarFlagsEx(const char[] convar, int flags)	{
  *	@error	If the ConVar is invalid, this returns false.
  */
 stock bool RemoveConVarFlags(ConVar cvar, int flags)	{
-	if(cvar == null)
-		return	false;
+	if(cvar == null) return false;
 	
 	int flag = cvar.Flags;
 	flag &= ~flags;
@@ -380,6 +372,4 @@ stock bool RemoveConVarFlagsEx(const char[] convar, int flags)	{
  *
  *	@return	If handle is valid, this returns true. Returns false otherwise.
  */
-stock bool IsValidAddress(Address address) {
-	return view_as<bool>(address != Address_Null);
-}
+stock bool IsValidAddress(Address address) { return view_as<bool>(address != Address_Null); }

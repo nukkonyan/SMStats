@@ -13,6 +13,7 @@ CS_GetWeaponTypeName[][] = {"Knife","Pistol","SMG","Rifle","Shotgun","Sniper","M
 
 //CS Slots
 enum CSSlot {
+	CSSlot_Invalid = -1,
 	CSSlot_Primary = 0,
 	CSSlot_Secondary = 1,
 	CSSlot_Knife = 2,
@@ -40,34 +41,36 @@ enum CSWeaponType {
 enum {
 	CSS_Weapon_Deagle =	1,
 	CSS_Weapon_Glock = 2,
-	CSS_Weapon_Ak47 = 3,
-	CSS_Weapon_Aug = 4,
-	CSS_Weapon_AWP = 5,
-	CSS_Weapon_Famas = 6,
-	CSS_Weapon_G3SG1 = 7,
-	CSS_Weapon_Galil = 8,
-	CSS_Weapon_M249 = 9,
-	CSS_Weapon_M4A1 = 10,
-	CSS_Weapon_Mac10 = 11,
-	CSS_Weapon_P90 = 12,
-	CSS_Weapon_MP5 = 13,
-	CSS_Weapon_MP5Navy = 13,
-	CSS_Weapon_UMP45 =	14,
-	CSS_Weapon_XM1014 =	15,
-	CSS_Weapon_M3 =	16,
-	CSS_Weapon_USP = 17,
-	CSS_Weapon_P228 = 18,
-	CSS_Weapon_SG550 = 19,
-	CSS_Weapon_Scar20 = 19,
-	CSS_Weapon_SG552 = 20,
-	CSS_Weapon_Krieg = 20,
-	CSS_Weapon_SSG08 = 21,
-	CSS_Weapon_Scout = 21,
-	CSS_Weapon_Knife = 22,
-	CSS_Grenade_Flashbang = 23,
-	CSS_Grenade_HEGrenade = 24,
-	CSS_Grenade_SmokeGrenade = 25,
-	CSS_Weapon_C4 =	26
+	CSS_Weapon_FiveSeven = 3,
+	CSS_Weapon_Ak47 = 4,
+	CSS_Weapon_Aug = 5,
+	CSS_Weapon_AWP = 6,
+	CSS_Weapon_Famas = 7,
+	CSS_Weapon_G3SG1 = 8,
+	CSS_Weapon_Galil = 9,
+	CSS_Weapon_M249 = 10,
+	CSS_Weapon_M4A1 = 11,
+	CSS_Weapon_Mac10 = 12,
+	CSS_Weapon_P90 = 13,
+	CSS_Weapon_MP5 = 14,
+	CSS_Weapon_MP5Navy = 15,
+	CSS_Weapon_UMP45 =	16,
+	CSS_Weapon_XM1014 =	17,
+	CSS_Weapon_M3 =	18,
+	CSS_Weapon_USP = 19,
+	CSS_Weapon_P228 = 20,
+	CSS_Weapon_SG550 = 21,
+	CSS_Weapon_Scar20 = 22,
+	CSS_Weapon_SG552 = 23,
+	CSS_Weapon_Krieg = 24,
+	CSS_Weapon_SSG08 = 25,
+	CSS_Weapon_Scout = 26,
+	CSS_Weapon_Knife = 27,
+	CSS_Grenade_Flashbang = 28,
+	CSS_Grenade_HEGrenade = 29,
+	CSS_Grenade_SmokeGrenade = 30,
+	CSS_Weapon_C4 =	31,
+	CSS_Item_Defuser = 32
 }
 
 //I made this because TFTeam enum exists and cs doesn't have it :)
@@ -101,7 +104,7 @@ enum Bombsite {
  *
  *	@error	If the client is invalid, this returns CSTeam_Unassigned.
  */
-stock CSTeam CS_GetClientTeam(int client) { return IsClientConnected(client) ? CSTeam(GetClientTeam(client)):CSTeam_Unassigned; }
+stock CSTeam CS_GetClientTeam(int client) { return Tklib_IsValidClient(client) ? CSTeam(GetClientTeam(client)):CSTeam_Unassigned; }
 
 /**
  *	Changes a users current team.
@@ -317,12 +320,7 @@ stock bool CS_ClientHasDefuserKit(int client) { return GetEntPropBool(client, Pr
  
  *	@error	If the user or users active weapon is invalid, this returns false.
  */
-stock bool CS_GetPlayerWeaponSlotName(int client, CSSlot slot, char[] output, int maxlen) {
-	if(!(Tklib_IsValidClient(client, false, true) && IsValidEntityEx(CS_GetPlayerWeaponSlot(client, slot))))
-		return false;
-	
-	return GetEdictClassname(CS_GetPlayerWeaponSlot(client, slot), output, sizeof(maxlen));
-}
+stock bool CS_GetPlayerWeaponSlotName(int client, CSSlot slot, char[] output, int maxlen) { return (Tklib_IsValidClient(client, false, true) && IsValidEntityEx(CS_GetPlayerWeaponSlot(client, slot))) ? GetEdictClassname(CS_GetPlayerWeaponSlot(client, slot), output, sizeof(maxlen)) : false; }
 
 /**
  *	Give the user a weapon and delete their slot & set primary and secondary ammo
@@ -357,9 +355,7 @@ stock bool CS_GiveClientWeaponEx2(int client, const char[] weapon, CSSlot slot, 
 stock bool CS_DropPlayerWeaponSlot(int client, CSSlot slot)	{
 	if(Tklib_IsValidClient(client, false, true))	{
 		int weapon = -1;
-		if(IsValidEntityEx((weapon = CS_GetPlayerWeaponSlot(client, slot))))
-			CS_DropWeapon(client, weapon, true, true);
-		
+		if(IsValidEntityEx((weapon = CS_GetPlayerWeaponSlot(client, slot)))) CS_DropWeapon(client, weapon, true, true);
 		return true;
 	}
 	
@@ -475,99 +471,59 @@ stock bool CS_IsWeaponInBurstMode(int weapon) { return GetEntPropBool(weapon, Pr
  */
 stock void CS_GetWeaponName(const char[] weapon, char[] output, int maxlen)	{
 	//Rifles
-	if(StrEqual(weapon,	"weapon_ak47"))	//They talk about my 1taps, aiming is so easy
-		strcopy(output, maxlen, "Ak-47");
-	if(StrEqual(weapon,	"weapon_m4a1_silencer"))
-		strcopy(output, maxlen, "M4A1 Silenced");
-	if(StrEqual(weapon,	"weapon_galilar"))
-		strcopy(output, maxlen, "Galil Automatic Rifle");
-	if(StrEqual(weapon,	"weapon_famas"))
-		strcopy(output, maxlen, "Famas");
-	if(StrEqual(weapon,	"weapon_sg556"))
-		strcopy(output, maxlen, "Krieg SG556");
-	if(StrEqual(weapon,	"weapon_sg552"))
-		strcopy(output, maxlen, "Krieg SG552");
-	if(StrEqual(weapon,	"weapon_aug"))
-		strcopy(output, maxlen, "AUG");
+	if(StrEqual(weapon,	"weapon_ak47")) strcopy(output, maxlen, "Ak-47"); //They talk about my 1taps, aiming is so easy
+	if(StrEqual(weapon,	"weapon_m4a1_silencer")) strcopy(output, maxlen, "M4A1 Silenced");
+	if(StrEqual(weapon,	"weapon_galilar")) strcopy(output, maxlen, "Galil Automatic Rifle");
+	if(StrEqual(weapon,	"weapon_famas")) strcopy(output, maxlen, "Famas");
+	if(StrEqual(weapon,	"weapon_sg556")) strcopy(output, maxlen, "Krieg SG556");
+	if(StrEqual(weapon,	"weapon_sg552")) strcopy(output, maxlen, "Krieg SG552");
+	if(StrEqual(weapon,	"weapon_aug")) strcopy(output, maxlen, "AUG");
 	
 	//Sub-Machine-Guns
-	if(StrEqual(weapon,	"weapon_mp5sd"))
-		strcopy(output, maxlen, "MP5 Silenced");
-	if(StrEqual(weapon,	"weapon_mp5navy"))
-		strcopy(output, maxlen, "MP5 Navy");
-	if(StrEqual(weapon,	"weapon_mac10"))
-		strcopy(output, maxlen, "MAC-10");
-	if(StrEqual(weapon,	"weapon_p90"))	//Suka rush b fast no stop
-		strcopy(output, maxlen, "P90");
+	if(StrEqual(weapon,	"weapon_mp5sd")) strcopy(output, maxlen, "MP5 Silenced");
+	if(StrEqual(weapon,	"weapon_mp5navy")) strcopy(output, maxlen, "MP5 Navy");
+	if(StrEqual(weapon,	"weapon_mac10")) strcopy(output, maxlen, "MAC-10");
+	if(StrEqual(weapon,	"weapon_p90")) strcopy(output, maxlen, "P90"); //Suka rush b fast no stop
 	
 	//Shotguns
-	if(StrEqual(weapon,	"weapon_m3"))
-		strcopy(output, maxlen, "M3");
-	if(StrEqual(weapon,	"weapon_xm1014"))
-		strcopy(output, maxlen, "XM1014");
-	if(StrEqual(weapon,	"weapon_sawedoff"))
-		strcopy(output, maxlen, "Sawed-Off");
-	if(StrEqual(weapon,	"weapon_mag7"))
-		strcopy(output, maxlen, "Mag-7");
+	if(StrEqual(weapon,	"weapon_m3")) strcopy(output, maxlen, "M3");
+	if(StrEqual(weapon,	"weapon_xm1014")) strcopy(output, maxlen, "XM1014");
+	if(StrEqual(weapon,	"weapon_sawedoff")) strcopy(output, maxlen, "Sawed-Off");
+	if(StrEqual(weapon,	"weapon_mag7")) strcopy(output, maxlen, "Mag-7");
 	
 	//Pistols
-	if(StrEqual(weapon,	"weapon_deagle"))	//Aka Pocket AWP
-		strcopy(output, maxlen, "Desert Eagle");
-	if(StrEqual(weapon,	"weapon_p250"))
-		strcopy(output, maxlen, "P250");
-	if(StrEqual(weapon,	"weapon_p228"))
-		strcopy(output, maxlen, "P228");
-	if(StrEqual(weapon,	"weapon_cz75a"))	//Used to be known as pocket-ak47 in 2016-2018
-		strcopy(output, maxlen, "CZ75-Auto");
-	if(StrEqual(weapon,	"weapon_glock"))	//Glawks (Reference to GoDaZeD if you remember him)
-		strcopy(output, maxlen, "Glock");
-	if(StrEqual(weapon,	"weapon_hkp2000"))
-		strcopy(output, maxlen, "P2000");
-	if(StrEqual(weapon,	"weapon_usp_silencer"))
-		strcopy(output, maxlen, "USP Silenced");
-	if(StrEqual(weapon,	"weapon_usp"))
-		strcopy(output, maxlen, "USP");
-	if(StrEqual(weapon,	"weapon_tec9"))	//Rush b fast no stop
-		strcopy(output, maxlen, "Tec-9");
+	if(StrEqual(weapon,	"weapon_deagle")) strcopy(output, maxlen, "Desert Eagle"); //Aka Pocket AWP
+	if(StrEqual(weapon,	"weapon_p250")) strcopy(output, maxlen, "P250");
+	if(StrEqual(weapon,	"weapon_p228")) strcopy(output, maxlen, "P228");
+	if(StrEqual(weapon,	"weapon_cz75a")) strcopy(output, maxlen, "CZ75-Auto"); //Used to be known as pocket-ak47 in 2016-2018
+	if(StrEqual(weapon,	"weapon_glock")) strcopy(output, maxlen, "Glock"); //Glawks (Reference to GoDaZeD if you remember him)
+	if(StrEqual(weapon,	"weapon_hkp2000")) strcopy(output, maxlen, "P2000");
+	if(StrEqual(weapon,	"weapon_usp_silencer")) strcopy(output, maxlen, "USP Silenced");
+	if(StrEqual(weapon,	"weapon_usp")) strcopy(output, maxlen, "USP");
+	if(StrEqual(weapon,	"weapon_tec9"))	strcopy(output, maxlen, "Tec-9"); //Rush b fast no stop
 	
 	//Snipers
-	if(StrEqual(weapon,	"weapon_awp"))
-		strcopy(output, maxlen, "AWP");
-	if(StrEqual(weapon,	"weapon_ssg08"))	//Oldschool jumping scout ftw
-		strcopy(output, maxlen, "SSG08 Scout");
-	if(StrEqual(weapon,	"weapon_scout"))
-		strcopy(output, maxlen, "Scout");
-	if(StrEqual(weapon,	"weapon_g3sg1"))
-		strcopy(output, maxlen, "G3SG1");
-	if(StrEqual(weapon,	"weapon_scar20"))
-		strcopy(output, maxlen, "SCAR-20");
+	if(StrEqual(weapon,	"weapon_awp")) strcopy(output, maxlen, "AWP");
+	if(StrEqual(weapon,	"weapon_ssg08")) strcopy(output, maxlen, "SSG08 Scout"); //Oldschool jumping scout ftw
+	if(StrEqual(weapon,	"weapon_scout")) strcopy(output, maxlen, "Scout");
+	if(StrEqual(weapon,	"weapon_g3sg1")) strcopy(output, maxlen, "G3SG1");
+	if(StrEqual(weapon,	"weapon_scar20")) strcopy(output, maxlen, "SCAR-20");
 	
 	//Machine Guns
-	if(StrEqual(weapon,	"weapon_m249"))
-		strcopy(output, maxlen, "M249");
-	if(StrEqual(weapon,	"weapon_negev"))	//Laser beam
-		strcopy(output, maxlen, "Negev");
+	if(StrEqual(weapon,	"weapon_m249")) strcopy(output, maxlen, "M249");
+	if(StrEqual(weapon,	"weapon_negev")) strcopy(output, maxlen, "Negev"); //Laser beam
 	
 	//Grenades
-	if(StrEqual(weapon,	"weapon_hegrenade"))
-		strcopy(output, maxlen, "High-Explosive Grenade");
-	if(StrEqual(weapon,	"weapon_flashgrenade"))
-		strcopy(output, maxlen, "Flashbang Grenade");
-	if(StrEqual(weapon,	"weapon_smokegrenade"))
-		strcopy(output, maxlen,	"Smoke Grenade");
-	if(StrEqual(weapon,	"weapon_tacgrenade"))
-		strcopy(output, maxlen, "Tactical Grenade");
-	if(StrEqual(weapon,	"weapon_incgrenade"))
-		strcopy(output, maxlen, "Incendiary Grenade");
-	if(StrEqual(weapon,	"weapon_molotov"))
-		strcopy(output, maxlen, "Molotov Grenade");
+	if(StrEqual(weapon,	"weapon_hegrenade")) strcopy(output, maxlen, "High-Explosive Grenade");
+	if(StrEqual(weapon,	"weapon_flashgrenade")) strcopy(output, maxlen, "Flashbang Grenade");
+	if(StrEqual(weapon,	"weapon_smokegrenade")) strcopy(output, maxlen,	"Smoke Grenade");
+	if(StrEqual(weapon,	"weapon_tacgrenade")) strcopy(output, maxlen, "Tactical Grenade");
+	if(StrEqual(weapon,	"weapon_incgrenade")) strcopy(output, maxlen, "Incendiary Grenade");
+	if(StrEqual(weapon,	"weapon_molotov")) strcopy(output, maxlen, "Molotov Grenade");
 	
 	//Other
-	if(StrEqual(weapon,	"weapon_zeus"))	//Ingame called X27 but model calls itself X21, volvo pls fix
-		strcopy(output, maxlen, "Zeus-X21");
-	
-	if(StrEqual(weapon,	"weapon_m4a1"))
-		strcopy(output, maxlen, (GetEngineVersion() == Engine_CSS || GetEngineVersion() == Engine_SourceSDK2007) ? "M4A1":"M4A4");
+	if(StrEqual(weapon,	"weapon_zeus")) strcopy(output, maxlen, "Zeus-X21"); //Ingame called X27 but model calls itself X21, volvo pls fix
+	if(StrEqual(weapon,	"weapon_m4a1")) strcopy(output, maxlen, (GetEngineVersion() == Engine_CSS || GetEngineVersion() == Engine_SourceSDK2007) ? "M4A1":"M4A4");
 }
 
 /**
@@ -613,9 +569,7 @@ stock bool CS_GetTeamName(CSTeam team, char[] buffer, int maxlen) {
  */
 stock int CS_GetBombsiteCount()	{
 	int site = -1, count = 0;
-	while((site = FindEntityByClassname(site, "func_bomb_target")) != -1)
-		count++;
-	
+	while((site = FindEntityByClassname(site, "func_bomb_target")) != -1) count++;
 	return count;
 }
 
@@ -626,13 +580,11 @@ stock int CS_GetBombsiteCount()	{
  *
  *	@error	If the entity is invalid, this returns Bombsite_Invalid.
  */
-stock Bombsite CS_GetBombsite(int entity)	{
-	if(!IsValidEntityEx(entity))
-		return	Bombsite_Invalid;
+stock Bombsite CS_GetBombsite(int entity) {
+	if(!IsValidEntityEx(entity)) return Bombsite_Invalid;
 	
 	int index = view_as<int>(FindEntity("cs_player_manager"));
-	if(!FindEntity("cs_player_manager"))
-		return Bombsite_Invalid;
+	if(!FindEntity("cs_player_manager")) return Bombsite_Invalid;
 	
 	float Site_A[3], Site_B[3];
 	GetEntPropVector(index, Prop_Send, "m_bombsiteCenterA", Site_A);
@@ -645,10 +597,8 @@ stock Bombsite CS_GetBombsite(int entity)	{
 		GetEntPropVector(site, Prop_Send, "m_vecMins", VecMin);
 		GetEntPropVector(site, Prop_Send, "m_vecMax", VecMax);
 		
-		if(VecMin[0] <= Site_A[0] <= VecMax[0] && VecMin[1] <= Site_A[1] <= VecMax[1] && VecMin[2] <= Site_A[2] <= VecMax[2])
-			return BombsiteA;
-		else if(VecMin[0] <= Site_B[0] <= VecMax[0] && VecMin[1] <= Site_B[1] <= VecMax[1] && VecMin[2] <= Site_B[2] <= VecMax[2])
-			return BombsiteB;
+		if(VecMin[0] <= Site_A[0] <= VecMax[0] && VecMin[1] <= Site_A[1] <= VecMax[1] && VecMin[2] <= Site_A[2] <= VecMax[2]) return BombsiteA;
+		else if(VecMin[0] <= Site_B[0] <= VecMax[0] && VecMin[1] <= Site_B[1] <= VecMax[1] && VecMin[2] <= Site_B[2] <= VecMax[2]) return BombsiteB;
 	}
 	
 	return BombsiteC;
@@ -707,6 +657,48 @@ stock CSTeam CS_GetRandomTeam() { return view_as<CSTeam>(GetRandomInt(2, 3)); }
 stock bool CS_IsWeaponZoomedIn(any weapon) { return GetEntPropBool(weapon, Prop_Send, "m_weaponMode"); }
 
 /**
+ *	Returns the classname by its definition index.
+ *
+ *	@param	defindex	The weapon definition index.
+ *	@param	name		The weapon's name.
+ *	@param	maxlen		The maximum length of the name.
+ *
+ *	@noreturn
+ */
+stock void CSS_GetItemClassnameDefindex(int defindex, char[] name, int maxlen) {
+	switch(defindex) {
+		case CSS_Weapon_Ak47: strcopy(name, maxlen, "weapon_ak47");
+		case CSS_Weapon_M4A1: strcopy(name, maxlen, "weapon_m4a1");
+		case CSS_Weapon_Galil: strcopy(name, maxlen, "weapon_galilar");
+		case CSS_Weapon_Famas: strcopy(name, maxlen, "weapon_famas");
+		case CSS_Weapon_SG552: strcopy(name, maxlen, "weapon_sg552");
+		case CSS_Weapon_Aug: strcopy(name, maxlen, "weapon_aug");
+		case CSS_Weapon_Scout: strcopy(name, maxlen, "weapon_ssg08");
+		case CSS_Weapon_AWP: strcopy(name, maxlen, "weapon_awp");
+		case CSS_Weapon_SG550: strcopy(name, maxlen, "weapon_scar20");
+		case CSS_Weapon_G3SG1: strcopy(name, maxlen, "weapon_g3sg1");
+		case CSS_Weapon_M3: strcopy(name, maxlen, "weapon_m3");
+		case CSS_Weapon_XM1014: strcopy(name, maxlen, "weapon_xm1014");
+		case CSS_Weapon_M249: strcopy(name, maxlen, "weapon_m249");
+		case CSS_Weapon_C4: strcopy(name, maxlen, "weapon_c4");
+		case CSS_Item_DefuserKit: strcopy(name, maxlen, "item_defuser");
+		case CSS_Grenade_HEGrenade: strcopy(name, maxlen, "weapon_hegrenade");
+		case CSS_Grenade_Flashbang: strcopy(name, maxlen, "weapon_flashbang");
+		case CSS_Grenade_SmokeGrenade: strcopy(name, maxlen, "weapon_smokegrenade");
+		case CSS_Weapon_Glock: strcopy(name, maxlen, "weapon_glock");
+		case CSS_Weapon_USP: strcopy(name, maxlen, "weapon_usp_silencer");
+		case CSS_Weapon_P228: strcopy(name, maxlen, "weapon_p228");
+		case CSS_Weapon_Deagle: strcopy(name, maxlen, "weapon_deagle");
+		case CSS_Weapon_FiveSeven: strcopy(name, maxlen, "weapon_fiveseven");
+		case CSS_Weapon_P90: strcopy(name, maxlen, "weapon_p90");
+		case CSS_Weapon_UMP45: strcopy(name, maxlen, "weapon_ump45");
+		case CSS_Weapon_MP5: strcopy(name, maxlen, "weapon_mp5navy");
+		case CSS_Weapon_Mac10: strcopy(name, maxlen, "weapon_mac10");
+		case CSGO_Knife: strcopy(name, maxlen, "weapon_knife");
+	}
+}
+
+/**
  *	Returns the weapon definition index by its entity name.
  *
  *	@param	weapon	The weapon entity name.
@@ -714,81 +706,31 @@ stock bool CS_IsWeaponZoomedIn(any weapon) { return GetEntPropBool(weapon, Prop_
  *	@returns	CSS_* enum (integer). 0 if invalid entity.
  */
 stock int CSS_GetWeaponDefindex(const char[] weapon) {
-	if(StrEqual(weapon, "weapon_ak47", false))
-		return	CSS_Weapon_Ak47;
-	
-	if(StrEqual(weapon, "weapon_m4a1", false))
-		return	CSS_Weapon_M4A1;
-	
-	if(StrEqual(weapon, "weapon_galil", false))
-		return	CSS_Weapon_Galil;
-	
-	if(StrEqual(weapon, "weapon_famas", false))
-		return	CSS_Weapon_Famas;
-	
-	if(StrEqual(weapon, "weapon_sg552", false))
-		return	CSS_Weapon_SG552;
-	
-	if(StrEqual(weapon, "weapon_aug", false))
-		return	CSS_Weapon_Aug;
-	
-	if(StrEqual(weapon, "weapon_scout", false))
-		return	CSS_Weapon_SSG08;
-	
-	if(StrEqual(weapon, "weapon_awp", false))
-		return	CSS_Weapon_AWP;
-	
-	if(StrEqual(weapon, "weapon_sg550", false))
-		return	CSS_Weapon_SG550;
-	
-	if(StrEqual(weapon, "weapon_g3sg1", false))
-		return	CSS_Weapon_G3SG1;
-	
-	if(StrEqual(weapon, "weapon_m3", false))
-		return	CSS_Weapon_M3;
-	
-	if(StrEqual(weapon, "weapon_xm1014", false))
-		return	CSS_Weapon_XM1014;
-	
-	if(StrEqual(weapon, "weapon_m249", false))
-		return	CSS_Weapon_M249;
-	
-	if(StrEqual(weapon, "weapon_c4", false))
-		return	CSS_Weapon_C4;
-	
-	if(StrEqual(weapon, "weapon_hegrenade", false))
-		return	CSS_Grenade_HEGrenade;
-	
-	if(StrEqual(weapon, "weapon_flashbang", false))
-		return	CSS_Grenade_Flashbang;
-	
-	if(StrEqual(weapon, "weapon_smokegrenade", false))
-		return	CSS_Grenade_SmokeGrenade;
-	
-	if(StrEqual(weapon, "weapon_glock", false))
-		return	CSS_Weapon_Glock;
-	
-	if(StrEqual(weapon, "weapon_usp", false))
-		return	CSS_Weapon_USP;
-	
-	if(StrEqual(weapon, "weapon_p228", false))
-		return	CSS_Weapon_P228;
-	
-	if(StrEqual(weapon, "weapon_deagle", false))
-		return	CSS_Weapon_Deagle;
-	
-	if(StrEqual(weapon, "weapon_p90", false))
-		return	CSS_Weapon_P90;
-	
-	if(StrEqual(weapon, "weapon_ump45", false))
-		return	CSS_Weapon_UMP45;
-	
-	if(StrEqual(weapon, "weapon_mp5navy", false))
-		return	CSS_Weapon_MP5;
-	
-	if(StrEqual(weapon, "weapon_knife", false))
-		return	CSS_Weapon_Knife;
-	
+	if(StrEqual(weapon, "weapon_ak47", false)) return CSS_Weapon_Ak47;
+	if(StrEqual(weapon, "weapon_m4a1", false)) return CSS_Weapon_M4A1;
+	if(StrEqual(weapon, "weapon_galil", false)) return CSS_Weapon_Galil;
+	if(StrEqual(weapon, "weapon_famas", false)) return CSS_Weapon_Famas;
+	if(StrEqual(weapon, "weapon_sg552", false)) return CSS_Weapon_SG552;
+	if(StrEqual(weapon, "weapon_aug", false)) return CSS_Weapon_Aug;
+	if(StrEqual(weapon, "weapon_scout", false)) return CSS_Weapon_SSG08;
+	if(StrEqual(weapon, "weapon_awp", false)) return CSS_Weapon_AWP;
+	if(StrEqual(weapon, "weapon_sg550", false)) return CSS_Weapon_SG550;
+	if(StrEqual(weapon, "weapon_g3sg1", false)) return CSS_Weapon_G3SG1;
+	if(StrEqual(weapon, "weapon_m3", false)) return CSS_Weapon_M3;
+	if(StrEqual(weapon, "weapon_xm1014", false)) return CSS_Weapon_XM1014;
+	if(StrEqual(weapon, "weapon_m249", false)) return CSS_Weapon_M249;
+	if(StrEqual(weapon, "weapon_c4", false)) return CSS_Weapon_C4;
+	if(StrEqual(weapon, "weapon_hegrenade", false)) return CSS_Grenade_HEGrenade;
+	if(StrEqual(weapon, "weapon_flashbang", false)) return CSS_Grenade_Flashbang;
+	if(StrEqual(weapon, "weapon_smokegrenade", false)) return CSS_Grenade_SmokeGrenade;
+	if(StrEqual(weapon, "weapon_glock", false)) return CSS_Weapon_Glock;
+	if(StrEqual(weapon, "weapon_usp", false)) return CSS_Weapon_USP;
+	if(StrEqual(weapon, "weapon_p228", false)) return CSS_Weapon_P228;
+	if(StrEqual(weapon, "weapon_deagle", false)) return CSS_Weapon_Deagle;
+	if(StrEqual(weapon, "weapon_p90", false)) return CSS_Weapon_P90;
+	if(StrEqual(weapon, "weapon_ump45", false)) return CSS_Weapon_UMP45;
+	if(StrEqual(weapon, "weapon_mp5navy", false)) return CSS_Weapon_MP5;
+	if(StrEqual(weapon, "weapon_knife", false)) return CSS_Weapon_Knife;
 	return 0;
 }
 
@@ -815,126 +757,47 @@ stock int CS_GetPriceFromWeapon(const char[] weapon) {
 		case Engine_CSGO: {
 			switch(StrEqual(folder, "csgo")) {
 				/* CS:GO */
-				case	true:	{
-					if(StrEqual(weapon, "weapon_ak47", false))
-						price = 2700;
-					
-					if(StrEqual(weapon, "weapon_m4a1", false))
-						price = 3100;
-					
-					if(StrEqual(weapon, "weapon_m4a1_silencer", false))
-						price = 2900;
-					
-					if(StrEqual(weapon, "weapon_galilar", false))
-						price = 1800;
-					
-					if(StrEqual(weapon, "weapon_famas", false))
-						price = 2050;
-					
-					if(StrEqual(weapon, "weapon_sg556", false))
-						price = 3000;
-					
-					if(StrEqual(weapon, "weapon_aug", false))
-						price = 3300;
-					
-					if(StrEqual(weapon, "weapon_ssg08", false))
-						price = 1700;
-					
-					if(StrEqual(weapon, "weapon_awp", false))
-						price = 4750;
-					
-					if(StrEqual(weapon, "weapon_scar20", false))
-						price = 5000;
-					
-					if(StrEqual(weapon, "weapon_g3sg1", false))
-						price = 5000;
-					
-					if(StrEqual(weapon, "weapon_nova", false))
-						price = 1050;
-					
-					if(StrEqual(weapon, "weapon_sawedoff", false))
-						price = 1100;
-					
-					if(StrEqual(weapon, "weapon_mag7", false))
-						price = 1300;
-					
-					if(StrEqual(weapon, "weapon_xm1014", false))
-						price = 2000;
-					
-					if(StrEqual(weapon, "weapon_m249", false))
-						price = 5200;
-					
-					if(StrEqual(weapon, "weapon_negev", false))
-						price = 1700;
-					
-					if(StrEqual(weapon, "weapon_taser", false))
-						price = 200;
-					
-					if(StrEqual(weapon, "weapon_hegrenade", false))
-						price = 300;
-					
-					if(StrEqual(weapon, "weapon_flashbang", false))
-						price = 200;
-					
-					if(StrEqual(weapon, "weapon_decoy", false))
-						price = 50;
-					
-					if(StrEqual(weapon, "weapon_smokegrenade", false))
-						price = 300;
-					
-					if(StrEqual(weapon, "weapon_incgrenade", false))
-						price = 600;
-					
-					if(StrEqual(weapon, "weapon_molotov", false))
-						price = 600;
-					
-					if(StrEqual(weapon, "weapon_glock", false))
-						price = 200;
-					
-					if(StrEqual(weapon, "weapon_usp_silencer", false))
-						price = 200;
-					
-					if(StrEqual(weapon, "weapon_hkp2000", false))
-						price = 200;
-					
-					if(StrEqual(weapon, "weapon_p250", false))
-						price = 300;
-					
-					if(StrEqual(weapon, "weapon_deagle", false))
-						price = 700;
-					
-					if(StrEqual(weapon, "weapon_tec9", false))
-						price = 500;
-					
-					if(StrEqual(weapon, "weapon_revolver", false))
-						price = 700;
-					
-					if(StrEqual(weapon, "weapon_fiveseven", false))
-						price = 500;
-					
-					if(StrEqual(weapon, "weapon_elites", false))
-						price = 300;
-					
-					if(StrEqual(weapon, "weapon_p90", false))
-						price = 2350;
-					
-					if(StrEqual(weapon, "weapon_ump45", false))
-						price = 1200;
-					
-					if(StrEqual(weapon, "weapon_mp7", false))
-						price = 1500;
-					
-					if(StrEqual(weapon, "weapon_mp9", false))
-						price = 1250;
-					
-					if(StrEqual(weapon, "weapon_mp5sd", false))
-						price = 2700;
-					
-					if(StrEqual(weapon, "weapon_bison", false))
-						price = 1400;
-					
-					if(StrEqual(weapon, "weapon_shield", false))
-						price = 1100;
+				case true:	{
+					if(StrEqual(weapon, "weapon_ak47", false)) price = 2700;
+					if(StrEqual(weapon, "weapon_m4a1", false)) price = 3100;
+					if(StrEqual(weapon, "weapon_m4a1_silencer", false)) price = 2900;
+					if(StrEqual(weapon, "weapon_galilar", false)) price = 1800;
+					if(StrEqual(weapon, "weapon_famas", false)) price = 2050;
+					if(StrEqual(weapon, "weapon_sg556", false)) price = 3000;
+					if(StrEqual(weapon, "weapon_aug", false)) price = 3300;
+					if(StrEqual(weapon, "weapon_ssg08", false)) price = 1700;
+					if(StrEqual(weapon, "weapon_awp", false)) price = 4750;
+					if(StrEqual(weapon, "weapon_scar20", false)) price = 5000;
+					if(StrEqual(weapon, "weapon_g3sg1", false)) price = 5000;
+					if(StrEqual(weapon, "weapon_nova", false)) price = 1050;
+					if(StrEqual(weapon, "weapon_sawedoff", false)) price = 1100;
+					if(StrEqual(weapon, "weapon_mag7", false)) price = 1300;
+					if(StrEqual(weapon, "weapon_xm1014", false)) price = 2000;
+					if(StrEqual(weapon, "weapon_m249", false)) price = 5200;
+					if(StrEqual(weapon, "weapon_negev", false)) price = 1700;
+					if(StrEqual(weapon, "weapon_taser", false)) price = 200;
+					if(StrEqual(weapon, "weapon_hegrenade", false)) price = 300;
+					if(StrEqual(weapon, "weapon_flashbang", false)) price = 200;
+					if(StrEqual(weapon, "weapon_decoy", false)) price = 50;
+					if(StrEqual(weapon, "weapon_smokegrenade", false)) price = 300;
+					if(StrEqual(weapon, "weapon_incgrenade", false)) price = 600;
+					if(StrEqual(weapon, "weapon_molotov", false)) price = 600;
+					if(StrEqual(weapon, "weapon_glock", false)) price = 200;
+					if(StrEqual(weapon, "weapon_usp_silencer", false)) price = 200;
+					if(StrEqual(weapon, "weapon_hkp2000", false)) price = 200;
+					if(StrEqual(weapon, "weapon_p250", false)) price = 300;
+					if(StrEqual(weapon, "weapon_deagle", false)) price = 700;
+					if(StrEqual(weapon, "weapon_tec9", false)) price = 500;
+					if(StrEqual(weapon, "weapon_revolver", false)) price = 700;
+					if(StrEqual(weapon, "weapon_fiveseven", false)) price = 500;
+					if(StrEqual(weapon, "weapon_elites", false)) price = 300;
+					if(StrEqual(weapon, "weapon_p90", false)) price = 2350;
+					if(StrEqual(weapon, "weapon_ump45", false)) price = 1200;
+					if(StrEqual(weapon, "weapon_mp7", false)) price = 1500;
+					if(StrEqual(weapon, "weapon_mp9", false)) price = 1250;
+					if(StrEqual(weapon, "weapon_mp5sd", false)) price = 2700;
+					if(StrEqual(weapon, "weapon_bizon", false)) price = 1400;
+					if(StrEqual(weapon, "weapon_shield", false)) price = 1100;
 				}
 				/* CS:CO */
 				case false: {
@@ -950,6 +813,79 @@ stock int CS_GetPriceFromWeapon(const char[] weapon) {
 	}
 	
 	return price;
+}
+
+/**
+ *	Returns the ammo count of the weapon entity name.
+ *	Price varies from different CS Versions.
+ *	Useful when using CS_OnBuyCommand.
+ *
+ *	@param	weapon	The weapon entity name to read.
+ *
+ *	@return	Returns the price of the specified weapon ("weapon_"-type). 0 if not found.
+ */
+stock int CS_GetAmmoCountFromWeapon(const char[] weapon) {
+	int ammo = 0;
+	
+	/* Incase GameIdentifier wasn't included */
+	char folder[32];
+	GetGameFolderName(folder, sizeof(folder));
+	
+	switch(GetEngineVersion()) {
+		case Engine_CSS: {
+			/* To be added */
+		}
+		case Engine_CSGO: {
+			switch(StrEqual(folder, "csgo")) {
+				/* CS:GO */
+				case true:	{
+					if(StrEqual(weapon, "weapon_ak47", false)) ammo = 30;
+					if(StrEqual(weapon, "weapon_m4a1", false)) ammo = 30;
+					if(StrEqual(weapon, "weapon_m4a1_silencer", false)) ammo = 20;
+					if(StrEqual(weapon, "weapon_galilar", false)) ammo = 35;
+					if(StrEqual(weapon, "weapon_famas", false)) ammo = 25;
+					if(StrEqual(weapon, "weapon_sg556", false)) ammo = 30;
+					if(StrEqual(weapon, "weapon_aug", false)) ammo = 30;
+					if(StrEqual(weapon, "weapon_ssg08", false)) ammo = 10;
+					if(StrEqual(weapon, "weapon_awp", false)) ammo = 10;
+					if(StrEqual(weapon, "weapon_scar20", false)) ammo = 20;
+					if(StrEqual(weapon, "weapon_g3sg1", false)) ammo = 20;
+					if(StrEqual(weapon, "weapon_nova", false)) ammo = 8;
+					if(StrEqual(weapon, "weapon_sawedoff", false)) ammo = 7;
+					if(StrEqual(weapon, "weapon_mag7", false)) ammo = 5;
+					if(StrEqual(weapon, "weapon_xm1014", false)) ammo = 10;
+					if(StrEqual(weapon, "weapon_m249", false)) ammo = 100;
+					if(StrEqual(weapon, "weapon_negev", false)) ammo = 100;
+					if(StrEqual(weapon, "weapon_glock", false)) ammo = 20;
+					if(StrEqual(weapon, "weapon_usp_silencer", false)) ammo = 12;
+					if(StrEqual(weapon, "weapon_hkp2000", false)) ammo = 13;
+					if(StrEqual(weapon, "weapon_p250", false)) ammo = 13;
+					if(StrEqual(weapon, "weapon_deagle", false)) ammo = 7;
+					if(StrEqual(weapon, "weapon_tec9", false)) ammo = 18;
+					if(StrEqual(weapon, "weapon_revolver", false)) ammo = 8;
+					if(StrEqual(weapon, "weapon_fiveseven", false)) ammo = 20;
+					if(StrEqual(weapon, "weapon_elites", false)) ammo = 30;
+					if(StrEqual(weapon, "weapon_p90", false)) ammo = 50;
+					if(StrEqual(weapon, "weapon_ump45", false)) ammo = 25;
+					if(StrEqual(weapon, "weapon_mp7", false)) ammo = 30;
+					if(StrEqual(weapon, "weapon_mp9", false)) ammo = 30;
+					if(StrEqual(weapon, "weapon_mp5sd", false)) ammo = 30;
+					if(StrEqual(weapon, "weapon_bizon", false)) ammo = 64;
+				}
+				/* CS:CO */
+				case false: {
+					/* To be added */
+				}
+			}
+		}
+		case Engine_SourceSDK2007: {
+			if(StrEqual(folder, "cspromod")) {
+				
+			}
+		}
+	}
+	
+	return ammo;
 }
 
 #endif

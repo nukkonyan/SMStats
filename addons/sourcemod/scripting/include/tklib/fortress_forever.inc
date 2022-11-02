@@ -12,7 +12,7 @@ enum FFTeam	{
 }
 
 enum FFClass {
-	//Will be filled.
+	//Will be filled. (someday, hopefully)
 }
 
 stock char
@@ -26,9 +26,7 @@ FF_GetTeamStringNameEx[][] = {"{grey}Unassigned{default}","{grey}Spectators{defa
  *
  *	@error	If the user is invalid, this returns FFTeam_Unassigned.
  */
-stock FFTeam FF_GetClientTeam(int client) {
-	return Tklib_IsValidClient(client) ? view_as<FFTeam>(GetClientTeam(client)):FFTeam_Unassigned;
-}
+stock FFTeam FF_GetClientTeam(int client) { return Tklib_IsValidClient(client) ? view_as<FFTeam>(GetClientTeam(client)):FFTeam_Unassigned; }
 
 /**
  *	Changes the users current team.
@@ -52,8 +50,6 @@ stock bool FF_ChangeClientTeam(int client, FFTeam team)	{
  *
  *	@return	Returns a FFTeam team.
  */
-stock FFTeam FF_GetRandomTeam()	{
-	return view_as<FFTeam>(GetRandomInt(2, 3));
-}
+stock FFTeam FF_GetRandomTeam()	{ return view_as<FFTeam>(GetRandomInt(2, 3)); }
 
 #endif

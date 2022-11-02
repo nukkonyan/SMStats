@@ -173,7 +173,7 @@ stock bool SetClientHealth(int client, int value) { return SetEntPropEx(client, 
  *	@param	client	The users index.
  *	@param	value	Amount index.
  *
- *	@error	If the user is invalid, this returns false.
+ *	@error	If the user is invalid or game mod not supported, this returns false.
  */
 stock bool SetClientMaxHealth(int client, int value) { return SetEntPropEx(client, Prop_Send, "m_iMaxHealth", value); }
 
@@ -198,9 +198,7 @@ stock int GetClientMaxHealth(int client) { return GetEntPropEx(GetPlayerResource
  *	@error	If the user is invalid, this returns false.
  */
 stock bool SetClientHealthEx(int client, int health, int maxhealth)	{
-	if(!Tklib_IsValidClient(client, _, true))
-		return false;
-	
+	if(!Tklib_IsValidClient(client, _, true)) return false;
 	SetClientMaxHealth(client, maxhealth);
 	SetClientHealth(client, health);
 	return true;
@@ -295,11 +293,8 @@ stock int GetClientObserverTarget(int client) { return GetEntPropEntEx(client, P
  *	@error	If the user is invalid, this returns false.
  */
 stock bool SetClientObserverMode(int client, ObsMode mode, bool update=false) {
-	if(mode < ObsMode_None || mode >= ObsMode_Roaming)
-		return false;
-	
-	if(!Tklib_IsValidClient(client))
-		return false;
+	if(mode < ObsMode_None || mode >= ObsMode_Roaming) return false;
+	if(!Tklib_IsValidClient(client)) return false;
 	
 	if(mode > ObsMode_Fixed && GetClientTeam(client) > 1) {
 		ConVar mp_forcecamera = FindConVar("mp_forcecamera");
@@ -311,13 +306,11 @@ stock bool SetClientObserverMode(int client, ObsMode mode, bool update=false) {
 			}
 		}
 		
-		delete mp_forcecamera;
+		delete mp_forcecamera; //Free up memory, prevent handle leak.
 	}
 	
 	ObsMode current = GetClientObserverMode(client);
-	if(current > ObsMode_DeathCam)
-		SetClientLastObserverMode(client, current);
-	
+	if(current > ObsMode_DeathCam) SetClientLastObserverMode(client, current);
 	bool rtrn = SetEntPropEx(client, Prop_Send, "m_iObserverMode", mode);
 	
 	switch(mode) {
@@ -434,10 +427,8 @@ stock bool GetClientBuddhaMode(int client) { return GetEntPropBool(client, Prop_
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool SetClientCollision(int client, bool collision)	{
-	if(!Tklib_IsValidClient(client))
-		return false;
-	
+stock bool SetClientCollision(int client, bool collision) {
+	if(!Tklib_IsValidClient(client)) return false;
 	SetEntData(client, FindSendPropInfo("CBaseEntity", "m_CollisionGroup"), collision ? 2 : 5, 4);
 	return true;
 }
@@ -458,13 +449,7 @@ stock bool GetClientCollision(int client) { return view_as<bool>(GetEntData(clie
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool SetClientNoclip(int client, bool noclip)	{
-	if(!Tklib_IsValidClient(client))
-		return false;
-	
-	SetEntityMoveType(client, noclip ? MOVETYPE_NOCLIP:MOVETYPE_WALK);
-	return true;
-}
+stock bool SetClientNoclip(int client, bool noclip)	{ if(!Tklib_IsValidClient(client)) return false; SetEntityMoveType(client, noclip ? MOVETYPE_NOCLIP:MOVETYPE_WALK); return true; }
 
 /**
  *	Returns if the user is noclipping.
@@ -502,9 +487,7 @@ stock float GetClientMaxSpeed(int client) { return GetEntPropFloatEx(client, Pro
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool IsClientMutedEx(int client)	{
-	return view_as<bool>(GetClientListeningFlags(client) == VOICE_MUTED);
-}
+stock bool IsClientMutedEx(int client)	{ return view_as<bool>(GetClientListeningFlags(client) == VOICE_MUTED); }
 
 /**
  *	Set if the user should be muted or not.
@@ -514,13 +497,7 @@ stock bool IsClientMutedEx(int client)	{
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool SetClientMute(int client, bool mute)	{
-	if(!Tklib_IsValidClient(client, true))
-		return false;
-	
-	SetClientListeningFlags(client, mute ? VOICE_MUTED:VOICE_NORMAL);
-	return true;
-}
+stock bool SetClientMute(int client, bool mute)	{ if(!Tklib_IsValidClient(client, true)) return false; SetClientListeningFlags(client, mute ? VOICE_MUTED:VOICE_NORMAL); return true; }
 
 /**
  *	Slays the user.
@@ -531,10 +508,8 @@ stock bool SetClientMute(int client, bool mute)	{
  *	@error	If the user is invalid, this returns false.
  */
 stock bool SlayClient(int client, bool RandomDeath=false) {
-	if(!Tklib_IsValidClient(client, _, true))
-		return false;
-		
-	FakeClientCommandEx(client, RandomDeath ? "kill": GetRandomBool() ? "kill":"explode");
+	if(!Tklib_IsValidClient(client, _, true)) return false;
+	FakeClientCommandEx(client, RandomDeath ? "kill":GetRandomBool() ? "kill":"explode");
 	return true;
 }
 
@@ -668,9 +643,7 @@ stock int GetClientOfAuth(const char[] auth) {
 	
 	TargetLoop(client) {
 		GetClientAuth(client, tempauth, sizeof(tempauth));
-		
-		if(StrEqual(tempauth, auth, false))
-			user = client;
+		if(StrEqual(tempauth, auth, false)) user = client;
 	}
 	
 	return user;
@@ -691,9 +664,7 @@ stock int GetClientOfAuth3(const char[] auth) {
 	
 	TargetLoop(client) {
 		GetClientAuth3(client, tempauth, sizeof(tempauth));
-		
-		if(StrEqual(tempauth, auth, false))
-			user = client;
+		if(StrEqual(tempauth, auth, false)) user = client;
 	}
 	
 	return user;
@@ -718,13 +689,7 @@ stock bool GetClientNameEx(int client, char[] buffer, int maxlen) { return Tklib
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool SetClientNameEx(int client, const char[] name) {
-	if(!Tklib_IsValidClient(client, _, _, false))
-		return false;
-	
-	SetClientInfo(client, "name", name);
-	return true;
-}
+stock bool SetClientNameEx(int client, const char[] name) { if(!Tklib_IsValidClient(client, _, _, false)) return false; SetClientInfo(client, "name", name); return true; }
 
 /**
  *	Returns user count in the server.
@@ -735,11 +700,7 @@ stock bool SetClientNameEx(int client, const char[] name) {
  */
 stock int GetClientCountEx(bool nobots=true) {
 	int count = 0;
-	
-	TargetLoop(client) {
-		if(Tklib_IsValidClient(client, nobots, false, false)) count++;
-	}
-	
+	TargetLoop(client) if(Tklib_IsValidClient(client, nobots, false, false)) count++;
 	return count;
 }
 
@@ -753,11 +714,7 @@ stock int GetClientCountEx(bool nobots=true) {
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool SetClientModel(int client, const char[] model) {
-	if(!Tklib_IsValidClient(client, _, true)) return false;
-	SetEntityModel(client, model);
-	return true;
-}
+stock bool SetClientModel(int client, const char[] model) { if(!Tklib_IsValidClient(client, _, true)) return false; SetEntityModel(client, model); return true; }
 
 /**
  *	Returns the users current viewing angle.
@@ -768,16 +725,13 @@ stock bool SetClientModel(int client, const char[] model) {
  *	@error	If the used is invalid, this returns false.
  */
 stock bool GetClientViewAngles(int client, float view[3]) {
-	if(!Tklib_IsValidClient(client))
-		return false;
-	
+	if(!Tklib_IsValidClient(client)) return false;
 	float eyes[3], angles[3];
 	GetClientEyePosition(client, eyes); 
 	GetClientEyeAngles(client, angles);
 	TR_TraceRayFilter(eyes, angles, MASK_SOLID, RayType_Infinite, GetClientViewAngles_TraceEntityFilterPlayer, client);
 	if(TR_DidHit()) TR_GetEndPosition(view);
-	
-	return	true;
+	return true;
 }
 
 /**
@@ -980,7 +934,7 @@ stock bool SetClientHideHud(int client, int flags) { return SetEntPropEx(client,
  *	@param	maxlen		The maximum length of the buffer.
  *	@param	flags		Filter flags.
  *
- *	@error	If no valid users are found, this returns 0.
+ *	@error	If no valid users are found, this returns 0 and array 0 as -1.
  *
  *	@return	Returns the target count.
  */
@@ -1068,6 +1022,7 @@ stock int FindClientsByTarget(const char[] target, int caller=-1, char[] name, i
 	else if(Bots) strcopy(name, maxlen, "All Bots");
 	else if(SameTeam) strcopy(name, maxlen, "Same Team");
 	
+	if(found == 0) list[0] = -1;
 	return found;
 }
 
@@ -1084,14 +1039,7 @@ stock int FindClientsByTarget(const char[] target, int caller=-1, char[] name, i
  */
 stock int FindClientsByTeam(any team, bool nobots=false, int[] list) {
 	int found = 0;
-	
-	TargetLoop(client) {
-		if(Tklib_IsValidClient(client, nobots, false, false)) {
-			if(GetClientTeam(client) == team)
-				clients[found++] = client;
-		}
-	}
-	
+	TargetLoop(client) if(Tklib_IsValidClient(client, nobots, false, false)) if(GetClientTeam(client) == team) clients[found++] = client;
 	return found;
 }
 
@@ -1103,12 +1051,7 @@ stock int FindClientsByTeam(any team, bool nobots=false, int[] list) {
  *
  *	@param	If the user is invalid, procedure failed or invalid value is set, this returns false.
  */
-stock bool SetClientSuitSprintPower(int client, float value) {
-	if(value < 0 || value > 100)
-		return false;
-	
-	return SetEntPropFloatEx(client, Prop_Send, "m_flSuitPower", value);
-}
+stock bool SetClientSuitSprintPower(int client, float value) { return (value < 0 || value > 100) ? false : SetEntPropFloatEx(client, Prop_Send, "m_flSuitPower", value); }
 
 /**
  *	Returns the users suit sprint power.
@@ -1127,15 +1070,11 @@ stock float GetClientSuitSpritPower(int client)	{ return GetEntPropFloatEx(clien
  *	@return	If the user index is not found or account id is invalid, this returns -1.
  */
 stock int GetClientOfAccountID(int accountid) {
-	if(accountid < 1)
-		return -1;
+	if(accountid < 1) return -1;
 	
 	TargetLoop(client) {
-		if(!Tklib_IsValidClient(client, _, _, false))
-			continue;
-		
-		if(GetSteamAccountID(client) == accountid)
-			return client;
+		if(!Tklib_IsValidClient(client, _, _, false)) continue;
+		if(GetSteamAccountID(client) == accountid) return client;
 	}
 	
 	return -1;
@@ -1150,8 +1089,7 @@ stock int GetClientOfAccountID(int accountid) {
  *	@return	If the target is invalid, this returns -1. True otherwise.
  */
 stock int GetClientIPClones(int client, int[] list) {
-	if(!Tklib_IsValidClient(client))
-		return -1;
+	if(!Tklib_IsValidClient(client)) return -1;
 	
 	int i = 0;
 	char ip[2][24];
@@ -1159,12 +1097,9 @@ stock int GetClientIPClones(int client, int[] list) {
 	GetClientIP(client, ip[0], sizeof(ip[]));
 	
 	TargetLoop(target) {
-		if(!Tklib_IsValidClient(target))
-			continue;
-		
+		if(!Tklib_IsValidClient(target)) continue;
 		GetClientIP(target, ip[1], sizeof(ip[]));
-		if(StrEqual(ip[0], ip[1]))
-			list[i++] = target;
+		if(StrEqual(ip[0], ip[1])) list[i++] = target;
 	}
 	
 	return i;
@@ -1179,8 +1114,7 @@ stock int GetClientIPClones(int client, int[] list) {
  *	@return	If the user is invalid or weapon was not found, this returns -1.
  */
 stock int GetClientWeaponClassname(int client, const char[] weapon) {
-	if(!Tklib_IsValidClient(client, _, true))
-		return INVALID_ENT_REFERENCE;
+	if(!Tklib_IsValidClient(client, _, true)) return INVALID_ENT_REFERENCE;
 	
 	int ent = INVALID_ENT_REFERENCE;
 	static char clsname[64];
@@ -1188,9 +1122,7 @@ stock int GetClientWeaponClassname(int client, const char[] weapon) {
 	for(int slot = 6; slot--;) {
 		ent = GetPlayerWeaponSlot(client, slot);
 		GetEntityClassname(ent, clsname, sizeof(clsname));
-		
-		if(StrEqual(clsname, weapon, false))
-			return ent;
+		if(StrEqual(clsname, weapon, false)) return ent;
 	}
 	
 	return ent;
@@ -1221,31 +1153,13 @@ stock bool ClientHasWeapon(int client, const char[] weapon) { return view_as<boo
  *	@param	IgnoreInvalidTeam	If true, the invalid team users are counted as 'invalid'	Defaulted to false.
  */
 stock bool Tklib_IsValidClient(int client, bool IgnoreBot=false, bool IgnoreDead=false, bool IgnoreNonInGame=true, bool IgnoreNonConnected=true, bool IgnoreInvalidTeam=false) {
-	if(client == 0 || client == -1 || client < 1 || client > MaxClients)
-		return false;
-	if(IgnoreNonConnected) {
-		if(!IsClientConnected(client))
-			return false;
-	}
-	if(IgnoreNonInGame) {
-		if(!IsClientInGame(client))
-			return false;
-	}
-	if(IsClientSourceTV(client))
-		return false;
-	if(IsClientReplay(client))
-		return false;
-	if(IgnoreBot) {
-		if(IsFakeClient(client))
-			return false;
-	}
-	if(IgnoreDead) {
-		if(!IsPlayerAlive(client))
-			return false;
-	}
-	if(IgnoreInvalidTeam) {
-		if(GetClientTeam(client) < 1)
-			return false;
-	}
+	if(client == 0 || client == -1 || client < 1 || client > MaxClients) return false;
+	if(IgnoreNonConnected) if(!IsClientConnected(client)) return false;
+	if(IgnoreNonInGame) if(!IsClientInGame(client)) return false;
+	if(IsClientSourceTV(client)) return false;
+	if(IsClientReplay(client)) return false;
+	if(IgnoreBot) if(IsFakeClient(client)) return false;
+	if(IgnoreDead) if(!IsPlayerAlive(client)) return false;
+	if(IgnoreInvalidTeam) if(GetClientTeam(client) < 1) return false;
 	return true;
 }

@@ -91,38 +91,17 @@ stock DODTeam DOD_GetRandomTeam() { return view_as<DODTeam>(GetRandomInt(2, 3));
  *	@noreturn
  */
 stock void DOD_GetWeaponName(const char[] weapon, char[] buffer, int maxlen) {
-	if(StrContains(weapon, "k98", false) != -1)
-		strcopy(buffer, maxlen, "K98K");
-	
-	if(StrContains(weapon, "spade", false) != -1)
-		strcopy(buffer, maxlen, "Spade");
-	
-	if(StrContains(weapon, "riflegren_ger", false) != -1)
-		strcopy(buffer, maxlen, "Rifle Grenade (Ger)");
-	
-	if(StrContains(weapon, "mp40", false) != -1)
-		strcopy(buffer, maxlen, "MP40");
-	
-	if(StrContains(weapon, "p38", false) != -1)
-		strcopy(buffer, maxlen, "P38");
-	
-	if(StrContains(weapon, "frag_ger", false) != -1)
-		strcopy(buffer, maxlen, "Frag Grenade (Ger)");
-	
-	if(StrContains(weapon, "mp44", false) != -1)
-		strcopy(buffer, maxlen, "STG44");
-	
-	if(StrContains(weapon, "k98_scoped", false) != -1)
-		strcopy(buffer, maxlen, "K98 Sniper");
-	
-	if(StrContains(weapon, "mg42", false) != -1)
-		strcopy(buffer, maxlen, "MG42");
-	
-	if(StrContains(weapon, "pschreck", false) != -1)
-		strcopy(buffer, maxlen, "Panzerschreck");
-	
-	if(StrContains(weapon, "c96", false) != -1)
-		strcopy(buffer, maxlen, "C96");
+	if(StrContains(weapon, "k98", false) != -1) strcopy(buffer, maxlen, "K98K");
+	if(StrContains(weapon, "spade", false) != -1) strcopy(buffer, maxlen, "Spade");
+	if(StrContains(weapon, "riflegren_ger", false) != -1) strcopy(buffer, maxlen, "Rifle Grenade (Ger)");
+	if(StrContains(weapon, "mp40", false) != -1) strcopy(buffer, maxlen, "MP40");
+	if(StrContains(weapon, "p38", false) != -1) strcopy(buffer, maxlen, "P38");
+	if(StrContains(weapon, "frag_ger", false) != -1) strcopy(buffer, maxlen, "Frag Grenade (Ger)");
+	if(StrContains(weapon, "mp44", false) != -1) strcopy(buffer, maxlen, "STG44");
+	if(StrContains(weapon, "k98_scoped", false) != -1) strcopy(buffer, maxlen, "K98 Sniper");
+	if(StrContains(weapon, "mg42", false) != -1) strcopy(buffer, maxlen, "MG42");
+	if(StrContains(weapon, "pschreck", false) != -1) strcopy(buffer, maxlen, "Panzerschreck");
+	if(StrContains(weapon, "c96", false) != -1) strcopy(buffer, maxlen, "C96");
 }
 
 #endif

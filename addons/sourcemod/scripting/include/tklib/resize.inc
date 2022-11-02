@@ -64,9 +64,7 @@ stock float GetClientSize(int client, ResizeType type) {
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool SetClientHeadScale(int client, float scale) {
-	return SetEntPropFloatEx(client, Prop_Send, "m_flHeadScale", scale);
-}
+stock bool SetClientHeadScale(int client, float scale) { return SetEntPropFloatEx(client, Prop_Send, "m_flHeadScale", scale); }
 
 /**
  *	Returns the users head scale.
@@ -75,9 +73,7 @@ stock bool SetClientHeadScale(int client, float scale) {
  *
  *	@error	If the user is invalid, this return -1.0.
  */
-stock float GetClientHeadScale(int client) {
-	return GetEntPropFloatEx(client, Prop_Send, "m_flHeadScale");
-}
+stock float GetClientHeadScale(int client) { return GetEntPropFloatEx(client, Prop_Send, "m_flHeadScale"); }
 
 /**
  *	Set the users torso scale.
@@ -87,9 +83,7 @@ stock float GetClientHeadScale(int client) {
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool SetClientTorsoScale(int client, float scale) {
-	return SetEntPropFloatEx(client, Prop_Send, "m_flTorsoScale", scale);
-}
+stock bool SetClientTorsoScale(int client, float scale) { return SetEntPropFloatEx(client, Prop_Send, "m_flTorsoScale", scale); }
 
 /**
  *	Returns the users torso scale.
@@ -98,9 +92,7 @@ stock bool SetClientTorsoScale(int client, float scale) {
  *
  *	@param	If the user is invalid, this returns 0.0.
  */
-stock float GetClientTorsoScale(int client)	{
-	return GetEntPropFloatEx(client, Prop_Send, "m_flTorsoScale");
-}
+stock float GetClientTorsoScale(int client)	{ return GetEntPropFloatEx(client, Prop_Send, "m_flTorsoScale"); }
 
 /**
  *	Set the users hand scale.
@@ -110,9 +102,7 @@ stock float GetClientTorsoScale(int client)	{
  *
  *	@error	If the client is invalid, this returns false.
  */
-stock bool SetClientHandScale(int client, float scale) {
-	return SetEntPropFloatEx(client, Prop_Send, "m_flHandScale", scale);
-}
+stock bool SetClientHandScale(int client, float scale) { return SetEntPropFloatEx(client, Prop_Send, "m_flHandScale", scale); }
 
 /**
  *	Returns the users hand scale.
@@ -121,9 +111,7 @@ stock bool SetClientHandScale(int client, float scale) {
  *
  *	@error	If the client is invalid, this returns -1.0.
  */
-stock float GetClientHandScale(int client) {
-	return GetEntPropFloatEx(client, Prop_Send, "m_flHandScale");
-}
+stock float GetClientHandScale(int client) { return GetEntPropFloatEx(client, Prop_Send, "m_flHandScale"); }
 
 /**
  *	Set the entitys model scale/size.
@@ -133,9 +121,7 @@ stock float GetClientHandScale(int client) {
  *
  *	@error	If the entity or user is invalid, this returns false.
  */
-stock bool SetEntityModelScale(int entity, float scale)	{
-	return SetEntPropFloatEx(entity, Prop_Send, "m_flModelScale", scale);
-}
+stock bool SetEntityModelScale(int entity, float scale)	{ return SetEntPropFloatEx(entity, Prop_Send, "m_flModelScale", scale); }
 
 /**
  *	Returns the entitys model scale/size.
@@ -144,9 +130,7 @@ stock bool SetEntityModelScale(int entity, float scale)	{
  *
  *	@error	If the entity or user is invalid, this returns -1.0.
  */
-stock float GetEntityModelScale(int entity)	{
-	return GetEntPropFloatEx(entity, Prop_Send, "m_flModelScale");
-}
+stock float GetEntityModelScale(int entity)	{ return GetEntPropFloatEx(entity, Prop_Send, "m_flModelScale"); }
 
 /**
  *	Set the users step scale/size.
@@ -156,9 +140,7 @@ stock float GetEntityModelScale(int entity)	{
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool SetClientStepSize(int client, float scale) {
-	return SetEntPropFloatEx(client, Prop_Send, "m_flStepSize", scale);
-}
+stock bool SetClientStepSize(int client, float scale) { return SetEntPropFloatEx(client, Prop_Send, "m_flStepSize", scale); }
 
 /**
  *	Returns the users step size.
@@ -167,8 +149,6 @@ stock bool SetClientStepSize(int client, float scale) {
  *
  *	@error	If the user is invalid, this returns -1.0.
  */
-stock float GetClientStepSize(int client) {
-	return GetEntPropFloatEx(client, Prop_Send, "m_flStepSize");
-}
+stock float GetClientStepSize(int client) { return GetEntPropFloatEx(client, Prop_Send, "m_flStepSize"); }
 
 #endif

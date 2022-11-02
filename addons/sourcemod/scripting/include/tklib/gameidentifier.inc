@@ -4,43 +4,43 @@
 #if !defined _tklib_disable_gameidentifier
 
 enum GameIdentifier	{
-	Game_Unknown		= -1,
-	Game_SDK2006		= 0,
-	Game_SDK2007		= 1,
-	Game_SDK2013		= 2,
-	Game_AlienSwarm		= 3,
-	Game_BGT			= 4,
-	Game_BloodyGoodTime	= 4,
-	Game_DarkMessiah	= 5,
-	Game_Eye			= 6,
-	Game_Dota			= 7,
-	Game_Dota2			= 7,
-	Game_Blade			= 8,
-	Game_Insurgency		= 9,
-	Game_Contagion		= 10,
-	Game_BlackMesa		= 11,
-	Game_DOI			= 12,
-	Game_HL2DM			= 13,
-	Game_DODS			= 14,
-	Game_Portal1		= 15,
-	Game_Portal2		= 16,
-	Game_L4D1			= 17,
-	Game_L4D2			= 18,
-	Game_CSGO			= 19,
-	Game_CSCO			= 20,
-	Game_CSS			= 21,
-	Game_TF2			= 22,
-	Game_TF2B			= 23,
-	Game_TF2Beta		= 23,
-	Game_TF2C			= 24,
-	Game_TF2Classic		= 24,
-	Game_TF2V			= 25,
-	Game_TF2Vintage		= 25,
-	Game_TF2OP			= 26,
-	Game_TF2OpenFortress= 26,
-	Game_OpenFortress	= 26,
-	Game_CSPro			= 27,
-	Game_CSPromod		= 27
+	Game_Unknown = -1,
+	Game_SDK2006 = 0,
+	Game_SDK2007 = 1,
+	Game_SDK2013 = 2,
+	Game_AlienSwarm = 3,
+	Game_BGT = 4,
+	Game_BloodyGoodTime = 4,
+	Game_DarkMessiah = 5,
+	Game_Eye = 6,
+	Game_Dota = 7,
+	Game_Dota2 = 7,
+	Game_Blade = 8,
+	Game_Insurgency = 9,
+	Game_Contagion = 10,
+	Game_BlackMesa = 11,
+	Game_DOI = 12,
+	Game_HL2DM = 13,
+	Game_DODS = 14,
+	Game_Portal1 = 15,
+	Game_Portal2 = 16,
+	Game_L4D1 = 17,
+	Game_L4D2 = 18,
+	Game_CSGO = 19,
+	Game_CSCO = 20,
+	Game_CSS = 21,
+	Game_TF2 = 22,
+	Game_TF2B = 23,
+	Game_TF2Beta = 23,
+	Game_TF2C = 24,
+	Game_TF2Classic = 24,
+	Game_TF2V = 25,
+	Game_TF2Vintage = 25,
+	Game_TF2OP = 26,
+	Game_TF2OpenFortress = 26,
+	Game_OpenFortress = 26,
+	Game_CSPro = 27,
+	Game_CSPromod = 27
 }
 
 /**
@@ -69,36 +69,25 @@ stock GameIdentifier IdentifyGame()	{
 		//case Engine_Left4Dead: return Game_L4D1;
 		case Engine_Left4Dead2: return Game_L4D2;
 		case Engine_CSGO:	{
-			if(StrEqual(checkgame, "csgo"))
-				return Game_CSGO;
-			if(StrEqual(checkgame, "csco"))
-				return Game_CSCO;
+			if(StrEqual(checkgame, "csgo")) return Game_CSGO;
+			if(StrEqual(checkgame, "csco")) return Game_CSCO;
 		}
 		case Engine_CSS: return Game_CSS;
 		case Engine_TF2:	{
-			if(StrEqual(checkgame, "tf"))
-				return Game_TF2;
-			if(StrEqual(checkgame, "tfbeta"))
-				return Game_TF2Beta;
-			if(StrEqual(checkgame, "tf2classic"))
-				return Game_TF2Classic;
-			if(StrEqual(checkgame, "tf2vintage"))
-				return Game_TF2Vintage;
-			if(StrEqual(checkgame, "open_fortress"))
-				return Game_TF2OpenFortress;
+			if(StrEqual(checkgame, "tf")) return Game_TF2;
+			if(StrEqual(checkgame, "tfbeta")) return Game_TF2Beta;
+			if(StrEqual(checkgame, "tf2classic")) return Game_TF2Classic;
+			if(StrEqual(checkgame, "tf2vintage")) return Game_TF2Vintage;
+			if(StrEqual(checkgame, "open_fortress")) return Game_TF2OpenFortress;
 		}
 		case Engine_SourceSDK2006: return Game_SDK2006;
 		case Engine_SourceSDK2007:	{
-			if(StrEqual(checkgame, "portal"))
-				return Game_Portal1;
-			else if(StrEqual(checkgame, "cspromod"))
-				return Game_CSPromod;
-			else
-				return Game_SDK2007;
+			if(StrEqual(checkgame, "portal")) return Game_Portal1;
+			else if(StrEqual(checkgame, "cspromod")) return Game_CSPromod;
+			else return Game_SDK2007;
 		}
 		case Engine_SDK2013: return Game_SDK2013;
 	}
-	
 	return Game_Unknown;
 }
 
@@ -150,9 +139,7 @@ stock void GetGameName(char[] game_name, int maxlen) {
  *
  *	@return	If true, game you specified is active, else false.
  */
-stock bool IsCurrentGame(GameIdentifier gameversion)	{
-	return (IdentifyGame() == gameversion);
-}
+stock bool IsCurrentGame(GameIdentifier gameversion) { return (IdentifyGame() == gameversion); }
 
 /**
  *	Returns if the engine is the engine you you specified.
@@ -162,8 +149,6 @@ stock bool IsCurrentGame(GameIdentifier gameversion)	{
  *
  *	@return				If true, game you specified is active, else false.
  */
-stock bool IsCurrentEngine(EngineVersion engineversion)	{
-	return (GetEngineVersion() == engineversion);
-}
+stock bool IsCurrentEngine(EngineVersion engineversion)	{ return (GetEngineVersion() == engineversion); }
 
 #endif

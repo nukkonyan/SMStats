@@ -34,9 +34,7 @@ stock bool RemoveAllWeapons(int client)	{
  *
  *	@error	If the user is invalid or has no active weapon, this returns -1.
  */
-stock int GetClientActiveWeapon(int client)	{
-	return GetEntPropEntEx(client, Prop_Send, "m_hActiveWeapon");
-}
+stock int GetClientActiveWeapon(int client)	{ return GetEntPropEntEx(client, Prop_Send, "m_hActiveWeapon"); }
 
 /**
  *	Forces the users current active weapon.
@@ -46,10 +44,9 @@ stock int GetClientActiveWeapon(int client)	{
  *
  *	@error	If the user is invalid or has no active weapon, this returns false.
  */
-stock bool SetClientActiveWeapon(int client, any weapon)	{
+stock bool SetClientActiveWeapon(int client, any weapon) {
 	bool valid = false;
-	if((valid = SetEntPropEntEx(client, Prop_Send, "m_hActiveWeapon", weapon)))
-		ChangeEdictState(client, FindDataMapInfo(client, "m_hActiveWeapon"));
+	if((valid = SetEntPropEntEx(client, Prop_Send, "m_hActiveWeapon", weapon))) ChangeEdictState(client, FindDataMapInfo(client, "m_hActiveWeapon"));
 	return valid;		
 }
 
@@ -61,9 +58,7 @@ stock bool SetClientActiveWeapon(int client, any weapon)	{
  *
  *	@error	If the user is invalid, nothing will happen.
  */
-stock bool SetClientActiveWeaponAmmo(int client, int ammo)	{
-	return SetEntPropEx(GetClientActiveWeapon(client), Prop_Send, "m_iClip1", ammo);
-}
+stock bool SetClientActiveWeaponAmmo(int client, int ammo) { return SetEntPropEx(GetClientActiveWeapon(client), Prop_Send, "m_iClip1", ammo); }
 
 /**
  *	Set the users current active primary and secondary weapon ammo.
@@ -76,9 +71,7 @@ stock bool SetClientActiveWeaponAmmo(int client, int ammo)	{
  *
  *	@error	If the user is invalid, nothing will happen.
  */
-stock void SetClientActiveWeaponAmmoEx(int client, int primary, int secondary) {
-	SetWeaponAmmoEx(GetClientActiveWeapon(client), primary, secondary);
-}
+stock void SetClientActiveWeaponAmmoEx(int client, int primary, int secondary) { SetWeaponAmmoEx(GetClientActiveWeapon(client), primary, secondary); }
 
 /**
  *	Set the weapon primary ammo
@@ -88,9 +81,7 @@ stock void SetClientActiveWeaponAmmoEx(int client, int primary, int secondary) {
  *
  *	@error	If the weapon entity is invalid, this returns false.
  */
-stock bool SetWeaponAmmo(any weapon, int value)	{
-	return SetEntPropEx(weapon, Prop_Send, "m_iClip1", value);
-}
+stock bool SetWeaponAmmo(any weapon, int value)	{ return SetEntPropEx(weapon, Prop_Send, "m_iClip1", value); }
 
 /**
  *	Set the weapon primary and secondary ammo.
@@ -104,8 +95,7 @@ stock bool SetWeaponAmmo(any weapon, int value)	{
  *	@error	If the weapon is invalid, this returns false.
  */
 stock bool SetWeaponAmmoEx(any weapon, int primary, int secondary) {
-	if(!IsValidEntityEx(weapon))
-		return false;
+	if(!IsValidEntityEx(weapon)) return false;
 	
 	SetWeaponAmmo(weapon, primary);
 	SetWeaponReserveAmmo(weapon, secondary);
@@ -120,9 +110,7 @@ stock bool SetWeaponAmmoEx(any weapon, int primary, int secondary) {
  *
  *	@error	If the weapon is invalid, it returns -1.
  */
-stock int GetWeaponAmmo(any weapon)	{
-	return GetEntPropEx(weapon, Prop_Send, "m_iClip1");
-}
+stock int GetWeaponAmmo(any weapon)	{ return GetEntPropEx(weapon, Prop_Send, "m_iClip1"); }
 
 /**
  *	Returns the clients current active weapon primary ammo
@@ -247,8 +235,7 @@ stock bool IsValidWeapon(any weapon)	{
  *	@error	If the user is invalid or weapon is invalid, this returns false.
  */
 stock bool EquipPlayerWeaponEx(int client, any weapon)	{
-	if(!(Tklib_IsValidClient(client, _, true) && IsValidEntityEx(weapon)))
-		return false;
+	if(!(Tklib_IsValidClient(client, _, true) && IsValidEntityEx(weapon))) return false;
 	
 	//Credits to Bacardi for part of the code.
 	
