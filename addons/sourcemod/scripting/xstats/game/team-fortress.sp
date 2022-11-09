@@ -223,7 +223,7 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 	XStats_DebugText(false, "//===== XStats Debug Log: Teamplay_Flag_Event =====//");
 	XStats_DebugText(false, "player %N (%i)", client, client);
 	XStats_DebugText(false, "carrier %N (%i)", carrier, carrier);
-	XStats_DebugText(false, "eventtype %s", TF2_GetFlagTypeName[eventtype]);
+	XStats_DebugText(false, "eventtype %s", TF2_FlagTypeName[eventtype]);
 	XStats_DebugText(false, "home %s", Bool[home]);
 	XStats_DebugText(false, "teamname %s\n", teamname[team]);
 	
@@ -1114,7 +1114,7 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
 	Global.playerlist, class_kills[type], class_kills[type], Player[client].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
-	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]\n", TF2_GetClassTypeName[type], Player[client].Playername, class_kills[type], type);
+	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]\n", TF2_ClassTypeName[type], Player[client].Playername, class_kills[type], type);
 	
 	if(IsFakeClient(victim)) return; // Continue only if it's not a bot.
 	
@@ -1134,5 +1134,5 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
 	Global.playerlist, class_deaths[type], class_deaths[type], Player[victim].SteamID, Cvars.ServerID.IntValue);
 	DB.Threaded.Query(DBQuery_Callback, query);
-	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]\n", TF2_GetClassTypeName[type], Player[victim].Playername, class_deaths[type], type);
+	XStats_DebugText(false, "Updating class [%s] kills for %s (\"%s\") [Class ID: %i]\n", TF2_ClassTypeName[type], Player[victim].Playername, class_deaths[type], type);
 }

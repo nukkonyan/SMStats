@@ -4,93 +4,38 @@
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)	{
 	RegPluginLibrary("XStats");
 	
-	CreateNative("XStats_GetClientPoints", Native_GetClientPoints);
-	CreateNative("XStats.GetPoints", Public_GetClientPoints);
-	
-	CreateNative("XStats_GetClientPlayTime", Native_GetClientPlayTime);
-	CreateNative("XStats.GetPlayTime", Public_GetClientPlayTime);
-	
-	CreateNative("XStats_GetClientSession", Native_GetClientSession);
-	CreateNative("XStats.GetSession", Public_GetClientSession);
-	
-	CreateNative("XStats_ClearSessions", Native_ClearSessions);
-	CreateNative("XStats.ClearSessions", Public_ClearSessions);
-	
-	CreateNative("XStats_GetPrefix", Native_GetPrefix);
-	CreateNative("XStats.GetPrefix", Public_GetPrefix);
-	
-	CreateNative("XStats_Enabled", Native_Enabled);
-	CreateNative("XStats.Enabled.get", Public_Enabled);
-	
-	CreateNative("XStats_Active", Native_Active);
-	CreateNative("XStats.Active.get", Public_Active);
-	
-	CreateNative("XStats_AllowBots", Native_AllowBots);
-	CreateNative("XStats.AllowBots.get", Public_AllowBots);
-	
-	CreateNative("XStats_Debug", Native_Debug);
-	CreateNative("XStats.Debug.get", Public_Debug);
+	CreateNative("XStats.GetPoints", Native_GetClientPoints);
+	CreateNative("XStats.GetPlayTime", Native_GetClientPlayTime);
+	CreateNative("XStats.GetSession", Native_GetClientSession);
+	CreateNative("XStats.ClearSessions", Native_ClearSessions);
+	CreateNative("XStats.GetPrefix", Native_GetPrefix);
+	CreateNative("XStats.Enabled", Native_Enabled);
+	CreateNative("XStats.Active", Native_Active);
+	CreateNative("XStats.AllowBots", Native_AllowBots);
+	CreateNative("XStats.Debug", Native_Debug);
 }
 
-any Native_GetClientPoints(Handle plugin, int params)
-{
-	char auth[64];
-	GetNativeString(1, auth, sizeof(auth));
-	return GetClientPoints(auth);
-}
-any Public_GetClientPoints(Handle plugin, int params)
-{
-	char auth[64];
-	GetNativeString(2, auth, sizeof(auth));
+any Native_GetClientPoints(Handle plugin, int params) {
+	int maxlen; GetNativeStringLength(1, maxlen);
+	char[] auth = new char[maxlen];
+	GetNativeString(1, auth, maxlen);
 	return GetClientPoints(auth);
 }
 
-any Native_GetClientPlayTime(Handle plugin, int params)
-{
-	char auth[64];
-	GetNativeString(1, auth, sizeof(auth));
-	return GetClientPlayTime(auth);
-}
-any Public_GetClientPlayTime(Handle plugin, int params)
-{
-	char auth[64];
-	GetNativeString(2, auth, sizeof(auth));
+any Native_GetClientPlayTime(Handle plugin, int params) {
+	int maxlen = GetNativeStringLength(1, maxlen);
+	char[] auth = new char[maxlen];
+	GetNativeString(1, auth, maxlen);
 	return GetClientPlayTime(auth);
 }
 
-any Native_GetClientSession(Handle plugin, int params)
-{
+any Native_GetClientSession(Handle plugin, int params) {
 	int client = GetNativeCell(1);
+	XStats_SessionType sessiontype = GetNativeCell(2);
+	Function func = GetNativeFunction(3);
 	
-	if(!Tklib_IsValidClient(client, true))
-		ThrowNativeError(SP_ERROR_NATIVE, "[Xstats] Client index %i is invalid", client);
+	if(!Tklib_IsValidClient(client, true)) ThrowNativeError(SP_ERROR_NATIVE, "[XStats] Client index %i is invalid", client);
 	
-	GetStats(plugin, client, GetNativeCell(2), GetNativeFunction(3));
-}
-any Public_GetClientSession(Handle plugin, int params)
-{
-	int client = GetNativeCell(2);
-	
-	if(!Tklib_IsValidClient(client, true))
-		ThrowNativeError(SP_ERROR_NATIVE, "[Xstats] Client index %i is invalid", client);
-	
-	GetStats(plugin, client, GetNativeCell(3), GetNativeFunction(4));
-}
-
-any Native_ClearSessions(Handle plugin, int params)	{	ClearSessions(GetNativeCell(1));	}
-any Public_ClearSessions(Handle plugin, int params)	{	ClearSessions(GetNativeCell(2));	}
-any Native_GetPrefix(Handle plugin, int params)	{	SetNativeString(1, Global.Prefix, GetNativeCell(2), GetNativeCell(3));	}
-any Public_GetPrefix(Handle plugin, int params)	{	SetNativeString(2, Global.Prefix, GetNativeCell(3), GetNativeCell(4));	}
-any Native_Enabled(Handle plugin, int params)	{	return Cvars.PluginActive.BoolValue;	}
-any Public_Enabled(Handle plugin, int params)	{	return Cvars.PluginActive.BoolValue;	}
-any Native_Active(Handle plugin, int params)	{	return Global.RankActive;				}
-any Public_Active(Handle plugin, int params)	{	return Global.RankActive;				}
-any Native_AllowBots(Handle plugin, int params)	{	return Cvars.AllowBots.BoolValue;		}
-any Public_AllowBots(Handle plugin, int params)	{	return Cvars.AllowBots.BoolValue;		}
-any Native_Debug(Handle plugin, int params)		{	return Cvars.Debug.BoolValue;			}
-any Public_Debug(Handle plugin, int params)		{	return Cvars.Debug.BoolValue;			}
-
-int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function func)	{
 	int stats = 0;
 	switch(sessiontype)	{
 		/* Stats */
@@ -208,3 +153,10 @@ int GetStats(Handle plugin, int client, XStats_SessionType sessiontype, Function
 	Call_PushCell(stats);
 	Call_Finish();
 }
+
+any Native_ClearSessions(Handle plugin, int params) { ClearSessions(GetNativeCell(1)); }
+any Native_GetPrefix(Handle plugin, int params) { SetNativeString(1, Global.Prefix, GetNativeCell(2), GetNativeCell(3)); }
+any Native_Enabled(Handle plugin, int params) { return Cvars.PluginActive.BoolValue; }
+any Native_Active(Handle plugin, int params) { return Global.RankActive; }
+any Native_AllowBots(Handle plugin, int params) { return Cvars.AllowBots.BoolValue; }
+any Native_Debug(Handle plugin, int params) { return Cvars.Debug.BoolValue; }

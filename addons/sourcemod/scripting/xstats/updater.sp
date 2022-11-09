@@ -3,10 +3,7 @@
 /**
  *	Initialize updater addition.
  */
-void PrepareUpdater() {
-	if(!IsUpdaterAvailable())
-		return;
-	
+public void Updater_OnLoaded() {	
 	CreateTimer(5.0, Timer_PrepareUpdater);
 	XStats_DebugText(false, "Initializing 5 second delay for the update check on plugin startup.");
 }
@@ -37,7 +34,7 @@ public void OnLibraryAdded(const char[] name)	{
 
 public void Updater_OnPluginUpdated()	{
 	XStats_DebugText(false, "New update found and installed, Restarting plugin..");	
-	for(int client = 1; client < MaxClients; client++)	{
+	TargetLoop(client) {
 		if(Tklib_IsValidClient(client, true))
 			CPrintToChat(client, "%s %t", Global.Prefix, "Update Found");
 	}
@@ -49,11 +46,4 @@ stock Action Timer_CheckForUpdate(Handle timer)	{
 	XStats_DebugText(false, "Checking for new update..");
 	XStats_DebugText(false, "Current version: %s\n", Version);
 	Updater_ForceUpdate();
-}
-
-/**
- *	Returns if the updater is loaded.
- */
-stock bool IsUpdaterAvailable()	{
-	return view_as<bool>(GetFeatureStatus(FeatureType_Native, "Updater_AddPlugin") == FeatureStatus_Available && Cvars.Update.BoolValue);
 }

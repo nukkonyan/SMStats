@@ -493,7 +493,7 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 	}
 	
 	if(count < 1) return; /* Nothing happens after this if count is below 1 */
-	CPrintToChatAll("%s %t", Global.Prefix, "MVM Team Destroyed Tank", TF2_GetTeamStringName[2], points);
+	CPrintToChatAll("%s %t", Global.Prefix, "MVM Team Destroyed Tank", TF2_TeamNameEx[2], points);
 }
 
 /*	Need to use "player_death" event since "mvm_sentrybuster_killed"
@@ -781,7 +781,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	XStats_DebugText(false, "customkill %i", customkill);
 	XStats_DebugText(false, "deathflags %i", deathflags);
 	XStats_DebugText(false, "penetrated %i\n", penetrated);
-	XStats_DebugText(false, "crit type %i [%s]\n", crits, TF2_GetCritTypeName[crits]);
+	XStats_DebugText(false, "crit type %i [%s]\n", crits, TF2_CritTypeName[crits]);
 	XStats_DebugText(false, "Midair %s\n", Bool[midair]);
 	XStats_DebugText(false, "Points %i\n", points);
 	

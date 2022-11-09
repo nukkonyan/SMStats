@@ -32,7 +32,7 @@ public void OnClientAuthorized(int client, const char[] auth) {
 	GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 	GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
 	Format(Player[client].SteamID, sizeof(Player[].SteamID), auth);
-	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Player[client].Country = "unknown country";
+	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Player[client].Country = "unknown country";	
 	if(!DatabaseDirect()) {
 		XStats_DebugText(false, "Player %s was unable to be authorized properly due to database connection unavailable.", Player[client].Playername);
 		return;
@@ -103,6 +103,9 @@ public void OnClientPutInServer(int client) {
 		return;
 	}
 	
+	delete Player[client].InvCallback;
+	Player[client].InvCallback = new StringMapEx();
+	
 	/* Session */
 	ClearSessions(client);
 	
@@ -155,8 +158,9 @@ Action IntervalPlayTimer(Handle timer, int client) {
 	return Plugin_Handled;
 }
 
-public void OnClientDisconnect(int client) {
+public void OnClientDisconnect(int client) {	
 	if(!Tklib_IsValidClient(client, true)) return;
+	delete Player[client].InvCallback;
 	UpdateDamage(client);
 }
 

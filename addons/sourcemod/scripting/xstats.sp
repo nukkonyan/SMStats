@@ -7,7 +7,7 @@
 #pragma tabsize 0
 
 /* XStats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX. */
-#define Version "0.01a_02c"
+#define Version "0.01a_02d"
 SetPluginInfo("XStats - Statistical Multi-Tracker", _tklib_author, "XStats - Track kills, maps, kill events, achievements, etc.", Version, _tklib_author_url)
 
 /* Core */
@@ -18,11 +18,11 @@ XStatsGlobal Global;
 XStatsConnectSound Sound[2];
 
 /* Session */
-XStatsPlayer Player[MAXCLIENTS];
-XStatsPanel StatsPanel[MAXCLIENTS];
-XStatsSession Session[MAXCLIENTS];
-XStatsSession TotalStats[MAXCLIENTS];
-XStatsKillMsg KillMsg[MAXCLIENTS];
+XStatsPlayer Player[34];
+XStatsPanel StatsPanel[34];
+XStatsSession Session[34];
+XStatsSession TotalStats[34];
+XStatsKillMsg KillMsg[34];
 
 /* Includes. */
 #include "xstats/cvars.sp" /* Console variables */
@@ -39,15 +39,12 @@ XStatsKillMsg KillMsg[MAXCLIENTS];
 //#include	"xstats/achievements.sp" /* Achievements */
 
 public void OnPluginStart()	{
-	InvCallback = new StringMap();
-	
 	//Prepare.
 	PrepareDatabase(true);
 	PrepareForwards(); /* Forwards */
 	PrepareCvars(); /* Console variables */
 	PrepareGame(); /* Game stats */
 	PrepareCommands(); /* Commands */
-	PrepareUpdater(); /* Updater support */
 	PrepareEvents(); /* Global events */
 	PrepareSounds(); /* Connect sounds */
 	

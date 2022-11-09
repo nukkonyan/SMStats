@@ -1,41 +1,29 @@
-StringMap InvCallback = null;
-
 stock bool HasStored(int client, char[] str, any ...)
 {
 	char chocolate[128];
 	VFormat(chocolate, sizeof(chocolate), str, 3);
-	Format(chocolate, sizeof(chocolate), "%i_%s", Player[client].AccountID, chocolate);
-	
-	char value[8];
-	InvCallback.GetString(chocolate, value, sizeof(value));
-	
-	return IsValidString(value) ? StringToBool(value) : false;
+	return Player[client].InvCallback.GetStringBool("%i_%s", _, Player[client].AccountID, chocolate);
 }
 
 stock int GetStored(int client, char[] str, any ...)
 {
 	char milk[128];
 	VFormat(milk, sizeof(milk), str, 3);
-	Format(milk, sizeof(milk), "%i_%s", Player[client].AccountID, chocolate);
-	
-	char value[8];
-	InvCallback.GetString(chocolate, value, sizeof(value));
-	
-	return IsValidString(value) ? StringToInt(value) : -1;
+	return Player[client].InvCallback.GetStringIndex("%i_%s", _, Player[client].AccountID, chocolate);
 }
 
 stock bool SetStored(int client, char[] str, any value, any ...)
 {
-	char cookies[128], temp[8];
+	char cookies[128];
 	VFormat(cookies, sizeof(cookies), str, 4);
 	Format(cookies, sizeof(cookies), "%i_%s", Player[client].AccountID, cookies);
-	Format(temp, sizeof(temp), "%i", value);
 	
 	bool rtrn = false;
 	
-	switch(value) {
-		case true: rtrn = InvCallback.SetString(cookies, temp);
-		case false: rtrn = InvCallback.Remove(cookies);
+	switch(value)
+	{
+		case true: rtrn = Player[client].InvCallback.SetStringValue(cookies, value);
+		case false: rtrn = Player[client].InvCallback.Remove(cookies);
 	}
 	
 	return rtrn;
