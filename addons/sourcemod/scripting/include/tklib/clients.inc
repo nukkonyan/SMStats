@@ -539,7 +539,7 @@ stock bool SetClientLifestate(int client, int value) { return SetEntPropEx(clien
  *	@param	location	Buffer to store the location name.
  *	@param	len			Size of the buffer.
  *
- *	@error	If the user is invalid, this returns false.
+ *	@error	If the user is invalid or game mod not supported, this returns false.
  */
 stock bool GetClientNavLocation(int client, char[] location, int maxlen) { return GetEntPropStringEx(client, Prop_Send, "m_szLastPlaceName", location, maxlen); }
 
@@ -861,12 +861,7 @@ stock bool IsClientJumping(int client) { return GetEntPropBool(client, Prop_Send
  *
  *	@error	If the user is invalid, this returns false.
  */
-stock bool IsClientMidAir(int client) {
-	return	Tklib_IsValidClient(client, _, true) ? 
-	(GetClientFlags(client) == 256
-	|| GetClientFlags(client) == 258
-	|| GetClientFlags(client) == 262):false;
-}
+stock bool IsClientMidAir(int client) { return	Tklib_IsValidClient(client, _, true) ?  (GetClientFlags(client) == 256 || GetClientFlags(client) == 258 || GetClientFlags(client) == 262) : false; }
 
 /**
  *	Returns the users water level

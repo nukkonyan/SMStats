@@ -16,72 +16,9 @@ enum XStats {XStats_Invalid = -1}
 #include <xstats/functions>
 
 /**
- *	Returns the amount of points a user has.
- *
- *	@param	auth	The players steam authentication id.
- *
- *	@return	Returns the points from the server's current game playerlist table.
+ *	Returns if XStats is loaded.
  */
-native int XStats_GetClientPoints(const char[] auth);
-
-/**
- *	Returns the amount of playtime a user has.
- *
- *	@param	auth	The players steam authentication id.
- *
- *	@return	Returns the total playtime in minutes the user has.
- */
-native int XStats_GetClientPlayTime(const char[] auth);
-
-/*
- *	Returns the session stats count via Xstats_SessionType.
- *
- *	@param	client		The users index.
- *	@param	type		Type of Session stat to return.
- *	@param	callback	The callback.
- *
- *	@noreturn
- */
-native void XStats_GetClientSession(int client, XStats_SessionType type, XStatsSessionCallback callback);
-
-/**
- *	Clears the session statistis for the player.
- *
- *	@param	client	The users index.
- *
- *	@noreturn
- */
-native void XStats_ClearSessions(int client);
-
-/*
- *	Returns the prefix.
- *
- *	@param	prefix	The string buffer to store.
- *	@param	maxlen	The maximum length of the string buffer.
- *
- *	@noreturn
- */
-native void XStats_GetPrefix(char[] prefix, int maxlen);
-
-/**
- *	Returns if XStats is enabled.
- */
-native bool XStats_Enabled();
-	
-/**
- *	Returns if XStats is active.
- */
-native bool XStats_Active();
-
-/**
- *	Returns if the bots are allowed.
- */
-native bool XStats_AllowBots();
-
-/**
- *	Return if debug is active.
- */
-native bool XStats_Debug();
+stock bool IsXStatsLoaded() { return LibraryExists("XStats"); }
 
 /**
  *	Called as soon the prefix has been updated.
@@ -134,7 +71,7 @@ methodmap XStats __nullable__ {
 	 *
 	 *	@return	Returns the points from the server's current game playerlist table.
 	 */
-	public native int GetPoints(const char[] auth);
+	public static native int GetPoints(const char[] auth);
 	
 	/**
 	 *	Returns the amount of playtime a user has.
@@ -143,7 +80,7 @@ methodmap XStats __nullable__ {
 	 *
 	 *	@return	Returns the total playtime in minutes the user has.
 	 */
-	public native int GetPlayTime(const char[] auth);
+	public static native int GetPlayTime(const char[] auth);
 	
 	/*
 	 *	Returns the session stats count via Xstats_SessionType.
@@ -152,7 +89,7 @@ methodmap XStats __nullable__ {
 	 *	@param	type		Type of Session stat to return.
 	 *	@param	callback	The callback.
 	 */
-	public native void GetSession(int client, XStats_SessionType type, XStatsSessionCallback callback);
+	public static native void GetSession(int client, XStats_SessionType type, XStatsSessionCallback callback);
 
 	/**
 	 *	Clears the session statistis for the player.
@@ -161,7 +98,7 @@ methodmap XStats __nullable__ {
 	 *
 	 *	@noreturn
 	 */
-	public native void ClearSessions(int client);
+	public static native void ClearSessions(int client);
 
 	/*
 	 *	Returns the prefix.
@@ -169,35 +106,27 @@ methodmap XStats __nullable__ {
 	 *	@param	prefix	The string buffer to store.
 	  *	@param	maxlen	The maximum length of the string buffer.
 	 */
-	public native void GetPrefix(char[] prefix, int maxlen);
+	public static native void GetPrefix(char[] prefix, int maxlen);
 	
 	/**
 	 *	Returns if XStats is enabled.
 	 */
-	property bool Enabled {
-		public native get();
-	}
+	public static native bool Enabled();
 	
 	/**
 	 *	Returns if XStats is active.
 	 */
-	property bool Active {
-		public native get();
-	}
+	public static native bool Active();
 	
 	/**
 	 *	Returns if the bots are allowed.
 	 */
-	property bool AllowBots {
-		public native get();
-	}
+	public static native bool AllowBots();
 	
 	/**
 	 *	Return if debug is active.
 	 */
-	property bool Debug {
-		public native get();
-	}
+	public static native bool Debug();
 }
 
 public SharedPlugin __pl_XStats = {

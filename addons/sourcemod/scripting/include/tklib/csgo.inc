@@ -7,9 +7,9 @@
 #define MAX_CSGO_ITEM_DEFINITION 526
 
 stock char
-CSGO_GetTeamStringName[][] = {"{grey}Unassigned{default}","{grey}Spectators{default}","{orange}Terrorists{default}","{bluegrey}Counter-Terrorists{default}"},
-CSGO_GetTeamColour[][] = {"{grey}","{grey}","{orange}","{bluegrey}"},
-CSGO_GetRankName[][] = {"Unranked","Silver I","Silver II","Silver III","Silver IV","Silver Elite","Silver Elite Master","Gold Nova I","Gold Nova II","Gold Nova III","Gold Nova Master","Master Guardian I","Master Guardian II","Master Guardian Elite","Distinguished Master Guardian","Legendary Eagle","Legendary Eagle Master","Supreme Master First Class","The Global Elite"};
+CSGO_TeamNameEx[][] = {"{grey}Unassigned{default}","{grey}Spectators{default}","{yellow}Terrorists{default}","{bluegrey}Counter-Terrorists{default}"},
+CSGO_TeamColour[][] = {"{grey}","{grey}","{yellow}","{bluegrey}"},
+CSGO_RankName[][] = {"Unranked","Silver I","Silver II","Silver III","Silver IV","Silver Elite","Silver Elite Master","Gold Nova I","Gold Nova II","Gold Nova III","Gold Nova Master","Master Guardian I","Master Guardian II","Master Guardian Elite","Distinguished Master Guardian","Legendary Eagle","Legendary Eagle Master","Supreme Master First Class","The Global Elite"};
 
 enum CSGORank {
 	CSGORank_Recalibrated = -2,

@@ -4,17 +4,9 @@
 #if !defined _tklib_disable_l4d
 
 stock char
-L4D_GetTeamStringName[][] = {
-	"{grey}Unassigned{default}",
-	"{grey}Spectators{default}",
-	"{orange}Survivors{default}",
-	"{lightred}Zombies{default}"
-}, L4D_GetTeamColour[][] = {
-	"{grey}",
-	"{grey}",
-	"{orange}",
-	"{lightred}"
-};
+L4D_TeamNameEx[][] = {"{grey}Unassigned{default}","{grey}Spectators{default}","{orange}Survivors{default}","{lightred}Zombies{default}"},
+L4D_TeamName[][] = {"Unassigned","Spectators","Survivors","Zombies"},
+L4D_TeamColour[][] = {"{grey}","{grey}","{orange}","{lightred}"};
 
 //Left 4 Dead enum
 enum L4DTeam {
@@ -25,7 +17,7 @@ enum L4DTeam {
 	L4DTeam_Infected = 3
 }
 
-#define	L4DTeam(%1)		view_as<L4DTeam>(%1)
+#define	L4DTeam(%1) view_as<L4DTeam>(%1)
 
 /**
  *	Returns the users current team.

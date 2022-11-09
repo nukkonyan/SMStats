@@ -3,7 +3,7 @@
 //==========================================//
 #if !defined _tklib_disable_entities
 
-enum Entity	{
+enum Entity {
 	Entity_Unsupported = -2,
 	Entity_Invalid = -1,
 	Entity_Empty = 0
@@ -959,12 +959,12 @@ methodmap Entity __nullable__ {
 	 *	This is alternative to SetEntData, considered 'safer',
 	 *	gets the offset manually of the prop.
 	 *	
-	 *	@param	prop			Property to get offset out of to use.
-	 *	@param	value			Value to set.
-	 *	@param	size			Number of bytes to write (valid values are 1, 2, or 4).
-	 *	@param	changeState		If true, change will be sent over the network.
+	 *	@param	prop		Property to get offset out of to use.
+	 *	@param	value		Value to set.
+	 *	@param	size		Number of bytes to write (valid values are 1, 2, or 4).
+	 *	@param	changeState	If true, change will be sent over the network.
 	 *	
-	 *	@error	If invalid entity, offset out of reasonable bounds or invalid, this returns false.
+	 *	@error	If offset is out of reasonable bounds or invalid entity, this returns false.
 	 */
 	public bool SetDataOffset(const char[] prop, any value, int size=4, bool changeState=false) { return SetEntDataOffset(view_as<int>(this), prop, value, size, changeState); }
 	
@@ -974,14 +974,48 @@ methodmap Entity __nullable__ {
 	 *	This is alternative to GetEntData, considered 'safer',
 	 *	gets the offset manually of the prop.
 	 *	
+	 *	@param	prop	Property to get offset out of to use.
+	 *	@param	size	Number of bytes to read (valid values are 1, 2, or 4).
+	 *
+	 *	@return	Value at the given memory location.
+	 *
+	 *	@error	If offset is out of reasonable bounds or invalid entity, this returns -1.
+	 */
+	public any GetDataOffset(const char[] prop, int size=4) { return GetEntDataOffset(view_as<int>(this), prop, size); }
+	
+	/**
+	 *	Peeks into this entity's object data and sets the integer value at
+	 *	the given prop.
+	 *	This is alternative to SetEntData, considered 'safer',
+	 *	gets via offset found from netclass.
+	 *
+	 *	@param	entity		The entity index
+	 *	@param	netclass	The entity netclass.
+	 *	@param	prop		Property to get offset out of to use.
+	 *	@param	value		Value to set.
+	 *	@param	size		Number of bytes to write (valid values are 1, 2, or 4).
+	 *	@param	changeState	If true, change will be sent over the network.
+	 *	
+	 *	@error	If offset is out of reasonable bounds or invalid entity, this returns false.
+	 */
+	public bool SetDataNetClass(const char[] netclass, char[] prop, any value, int size=4, bool changeState=false) { return SetEntDataNetClass(view_as<int>(this), netclass, prop, value, size, changeState); }
+	
+	/**
+	 *	Peeks into this entity's object data and retrieves the integer value at
+	 *	the given offset.
+	 *	This is alternative to GetEntData, considered 'safer',
+	 *	gets via offset found from netclass.
+	 *
+	 *	@param	entity		The entity index
+	 *	@param	netclass	The entity netclass.
 	 *	@param	prop		Property to get offset out of to use.
 	 *	@param	size		Number of bytes to read (valid values are 1, 2, or 4).
 	 *
 	 *	@return	Value at the given memory location.
 	 *
-	 *	@error	If invalid entity, offset out of reasonable bounds or invalid, this returns -1.
+	 *	@error	If offset is out of reasonable bounds or invalid entity, this returns -1.
 	 */
-	public any GetDataOffset(const char[] prop, int size=4) { return GetEntDataOffset(view_as<int>(this), prop, size); }
+	public any GetDataNetClass(const char[] netclass, const char[] prop, int size=4) { return GetEntDataNetClass(view_as<int>(this), netclass, prop, size); }
 	
 	/**
 	 *	Peeks into an entity's object data and sets the entity index at the given offset.
@@ -1115,7 +1149,73 @@ methodmap Entity __nullable__ {
 	 */
 	public void GetDataArray(int offset, int[] array, int arraySize, int dataSize=4) { GetEntDataArray(view_as<int>(this), offset, array, arraySize, dataSize); }
 	
+	/**
+	 *	Wrapper function for finding a send property for a particular entity.
+	 *
+	 *	@param	prop		Property name.
+	 *	@param	actual		Defaults to false for backwards compatibility.
+	 *						If true, the newer FindSendPropInfo() function
+	 *						is used instead.
+	 *
+	 *	@return	An offset, or -1 on failure.
+	 */
+	public int GetSendPropOffs(const char[] prop, bool actual=false) { return GetEntSendPropOffs(view_as<int>(this), prop, actual); }
+	
 	//Other
+	
+	/**
+	 *	Returns the entity's absolute velocity.
+	 *
+	 *	@param	velocity	The velocity.
+	 *
+	 *	@error	If the entity is invalid or has no absolute velocity, this returns -1.0.
+	 */
+	public bool GetAbsVelocity(float velocity[3]) { return GetEntityVelocity(view_as<int>(this), velocity); }
+	
+	/**
+	 *	Set the entity's absolute velocity.
+	 *
+	 *	@param	velocity	The velocity.
+	 *
+	 *	@error	If the entity is invalid or has no absolute velocity, this returns -1.0.
+	 */
+	public bool SetAbsVelocity(const float velocity[3]) { return SetEntityAbsVelocity(view_as<int>(this), velocity); }
+	
+	/**
+	 *	Returns the entity's base velocity.
+	 *
+	 *	@param	velocity	The velocity.
+	 *
+	 *	@error	If the entity is invalid or has no base velocity, this returns -1.0.
+	 */
+	public bool GetBaseVelocity(float velocity[3]) { return GetEntityBaseVelocity(view_as<int>(this), velocity); }
+	
+	/**
+	 *	Set the entity's base velocity.
+	 *
+	*	@param	velocity	The velocity.
+	 *
+	 *	@error	If the entity is invalid or has no base velocity, this returns -1.0.
+	 */
+	public bool SetBaseOrigin(const float velocity[3]) { return SetEntityBaseOrigin(view_as<int>(this), velocity); }
+	
+	/**
+	 *	Returns the entity's velocity.
+	 *
+	 *	@param	velocity	The velocity.
+	 *
+	 *	@error	If the entity is invalid or has no velocity, this returns -1.0.
+	 */
+	public bool GetVelocity(float velocity[3]) { return GetEntityVelocity(view_as<int>(this), velocity); }
+	
+	/**
+	 *	Set the entity's velocity.
+	 *
+	 *	@param	velocity	The velocity.
+	 *
+	 *	@error	If the entity is invalid or has no velocity, this returns -1.0.
+	 */
+	public bool SetVelocity(const float velocity[3]) { return SetEntityVelocity(view_as<int>(this), velocity); }
 	
 	/**
 	 *	Entity's flags.
@@ -1831,3 +1931,48 @@ stock any GetEntDataOffset(int entity, const char[] prop, int size=4) {
 	if(offset < 1) return -1;
 	return GetEntData(entity, offset, size);
 }
+
+/**
+ *	Peeks into an entity's object data and sets the integer value at
+ *	the given prop.
+ *	This is alternative to SetEntData, considered 'safer',
+ *	Sets via offset found from netclass.
+ *
+ *	@param	entity		The entity index.
+ *	@param	netclass	The entity netclass.
+ *	@param	prop		Property to get offset out of to use.
+ *	@param	value		Value to set.
+ *	@param	size		Number of bytes to write (valid values are 1, 2, or 4).
+ *	@param	changeState	If true, change will be sent over the network.
+ *	
+ *	@error	If invalid entity, offset out of reasonable bounds or invalid, this returns false.
+ */
+stock bool SetEntDataNetClass(int entity, const char[] netclass, const char[] prop, any value, int size=4, bool changeState=false) {
+	int offset = FindSendPropInfo(netclass, prop);
+	if(offset < 1) return false;
+	SetEntData(entity, offset, value, size, changeState);
+	return true;
+}
+
+/**
+ *	Peeks into an entity's object data and retrieves the integer value at
+ *	the given offset.
+ *	This is alternative to GetEntData, considered 'safer',
+ *	Sets via offset found from netclass.
+ *
+ *	@param	entity		The entity index.
+ *	@param	netclass	The entity netclass.
+ *	@param	prop		Property to get offset out of to use.
+ *	@param	size		Number of bytes to read (valid values are 1, 2, or 4).
+ *
+ *	@return	Value at the given memory location.
+ *
+ *	@error	If invalid entity, offset out of reasonable bounds or invalid, this returns -1.
+ */
+stock any GetEntDataNetClass(int entity, const char[] netclass, const char[] prop, int size=4) {
+	int offset = FindSendPropInfo(netclass, prop);
+	if(offset < 1) return -1;
+	return GetEntData(entity, offset, size);
+}
+
+#define EntityWhileLoop(%1,%2) while((%1 = Entity.FindByClassname(%1, %2)).Valid())

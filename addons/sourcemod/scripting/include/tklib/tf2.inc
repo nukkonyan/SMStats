@@ -28,29 +28,33 @@ const TFTeam TFTeam_Red = view_as<TFTeam>(2);
 const TFTeam TFTeam_Blue = view_as<TFTeam>3);
 #endif
 
+const int MAX_TF2_CLASSES = 9;
+const int MAX_TF2C_CLASSES = 10;
+const int MAX_TF2_PLAYERS = 34; // TF2 Clients will never reach above index 33, maximum players available is only to 32 or 33, each counting as entity index 1 to 32/33. Excluding zombie gamemode?
+
 const TFClassType TFClass_All = TFClass_Scout|TFClass_Soldier|TFClass_Pyro|TFClass_DemoMan|TFClass_Heavy|TFClass_Engineer|TFClass_Medic|TFClass_Sniper|TFClass_Spy|TFClass_Civilian;
 
 //Get the team name via strings for colored chat purpose (Usage example: TF2_GetTeamStringNameEx[GetClientTeam(client)] will return the correct team name)
 stock char
-TF2_GetTeamStringName[][] = {"Unassigned","Spectators","RED","BLU","GRN","YLW"},
-TF2_GetTeamStringNameEx[][] = {"{grey}Unassigned{default}","{grey}Spectators{default}","{red}RED{default}","{blue}BLU{default}","{lightgreen}GRN{default}","{orange}YLW{default}"},
-TF2_GetTeamColour[][] = {"{grey}","{grey}","{red}","{blue}","{lightgreen}","{orange}"},
-TF2_GetFlagTypeName[][] = {"None","Picked up","Captured","Defended","Dropped","Carrier"},
-TF2_GetGameTypeName[][] = {"Unknown","Capture-The-Flag","Capture Points","Payload / Payload Race","Arena","Unknown","Unknown","Passball"},
-TF2_GetCritTypeName[][] = {"None","Mini-Crit","Crit"},
-TF2_GetClassTypeName[][] = {"Unknown","Scout","Sniper","Soldier","Demoman","Medic","Heavy","Pyro","Spy","Engineer","Civilian"},
-TF2_GetClassTypeNameLC[][] = {"unknown","scout","sniper","soldier","demoman","medic","heavy","pyro","spy","engineer","civilian"},
-TF2_GetBuildingTypeName[][] = {"Sentrygun","Dispenser","Teleporter Entrance","Teleporter Exit","Mini-Sentry","Sapper"},
-TF2_GetRobotPlayerModel[][] = {"","models/bots/scout/bot_scout.mdl","models/bots/sniper/bot_sniper.mdl","models/bots/soldier/bot_soldier.mdl","models/bots/demoman/bot_demoman.mdl","models/bots/medic/bot_medic.mdl","models/bots/heavy/bot_heavy.mdl","models/bots/pyro/bot_pyro.mdl","models/bots/spy/bot_spy.mdl","models/bots/engineer/bot_engineer.mdl"},
-TF2_GetPlayerZombieModel[][] = {"","models/player/items/scout/scout_zombie.mdl","models/player/items/sniper/sniper_zombie.mdl","models/player/items/soldier/soldier_zombie.mdl","models/player/items/demo/demo_zombie.mdl","models/player/items/medic/medic_zombie.mdl","models/player/items/heavy/heavy_zombie.mdl","models/player/items/pyro/pyro_zombie.mdl","models/player/items/spy/spy_zombie.mdl","models/player/items/engineer/engineer_zombie.mdl"},
-TF2_GetDefaultPlayerModel[][] = {"","models/player/scout.mdl","models/player/sniper.mdl","models/player/soldier.mdl","models/player/demoman.mdl","models/player/medic.mdl","models/player/heavy.mdl","models/player/pyro.mdl","models/player/spy.mdl","models/player/engineer.mdl"},
-TF2_GetStockWeaponTypeClassnamePrimary[][] = {"","tf_weapon_scattergun","tf_weapon_sniperrifle","tf_weapon_rocketlauncher","tf_weapon_grenadelauncher","tf_weapon_syringegun_medic","tf_weapon_minigun","tf_weapon_flamethrower","tf_weapon_revolver","tf_weapon_shotgun_primary"},
-TF2_GetStockWeaponTypeClassnameSecondary[][] = {"","tf_weapon_pistol_scout","tf_weapon_smg","tf_weapon_shotgun_soldier","tf_weapon_pipebomblauncher","tf_weapon_medigun","tf_weapon_shotgun_hwg","tf_weapon_shotgun_pyro","tf_weapon_sapper","tf_weapon_pistol"},
-TF2_GetStockWeaponTypeClassnameMelee[][] = {"","tf_weapon_bat","tf_weapon_club","tf_weapon_shovel","tf_weapon_bottle","tf_weapon_bonesaw","tf_weapon_fists","tf_weapon_fireaxe","tf_weapon_knife","tf_weapon_wrench"},
-TF2_GetPDATypeClassname[][] = {"","","","","","","","","tf_weapon_pda_spy","tf_weapon_pda_engineer_build"},
-TF2_GetPDA2TypeClassname[][] = {"","","","","","","","","tf_weapon_invis","tf_weapon_pda_engineer_destroy"},
-TF2_GetPDA3TypeClassname[][] = {"","","","","","","","","","tf_weapon_builder"},
-TF2_GetSlotName[][] = {"Primary","Secondary","Melee","Construction PDA / Disguise Kit","Demolition PDA / Invis Watch","Slot5","Slot6","Slot7","Slot8","Slot9","Slot10"},
+TF2_TeamName[][] = {"Unassigned","Spectators","RED","BLU","GRN","YLW"},
+TF2_TeamNameEx[][] = {"{grey}Unassigned{default}","{grey}Spectators{default}","{red}RED{default}","{blue}BLU{default}","{lightgreen}GRN{default}","{orange}YLW{default}"},
+TF2_TeamColour[][] = {"{grey}","{grey}","{red}","{blue}","{lightgreen}","{orange}"},
+TF2_FlagTypeName[][] = {"None","Picked up","Captured","Defended","Dropped","Carrier"},
+TF2_GameTypeName[][] = {"Unknown","Capture-The-Flag","Capture Points","Payload / Payload Race","Arena","Unknown","Unknown","Passball"},
+TF2_CritTypeName[][] = {"None","Mini-Crit","Crit"},
+TF2_ClassTypeName[][] = {"Unknown","Scout","Sniper","Soldier","Demoman","Medic","Heavy","Pyro","Spy","Engineer","Civilian"},
+TF2_ClassTypeNameLC[][] = {"unknown","scout","sniper","soldier","demoman","medic","heavy","pyro","spy","engineer","civilian"},
+TF2_BuildingTypeName[][] = {"Sentrygun","Dispenser","Teleporter Entrance","Teleporter Exit","Mini-Sentry","Sapper"},
+TF2_RobotPlayerModel[][] = {"","models/bots/scout/bot_scout.mdl","models/bots/sniper/bot_sniper.mdl","models/bots/soldier/bot_soldier.mdl","models/bots/demoman/bot_demoman.mdl","models/bots/medic/bot_medic.mdl","models/bots/heavy/bot_heavy.mdl","models/bots/pyro/bot_pyro.mdl","models/bots/spy/bot_spy.mdl","models/bots/engineer/bot_engineer.mdl"},
+TF2_PlayerZombieModel[][] = {"","models/player/items/scout/scout_zombie.mdl","models/player/items/sniper/sniper_zombie.mdl","models/player/items/soldier/soldier_zombie.mdl","models/player/items/demo/demo_zombie.mdl","models/player/items/medic/medic_zombie.mdl","models/player/items/heavy/heavy_zombie.mdl","models/player/items/pyro/pyro_zombie.mdl","models/player/items/spy/spy_zombie.mdl","models/player/items/engineer/engineer_zombie.mdl"},
+TF2_DefaultPlayerModel[][] = {"","models/player/scout.mdl","models/player/sniper.mdl","models/player/soldier.mdl","models/player/demoman.mdl","models/player/medic.mdl","models/player/heavy.mdl","models/player/pyro.mdl","models/player/spy.mdl","models/player/engineer.mdl"},
+TF2_StockWeaponTypeClassnamePrimary[][] = {"","tf_weapon_scattergun","tf_weapon_sniperrifle","tf_weapon_rocketlauncher","tf_weapon_grenadelauncher","tf_weapon_syringegun_medic","tf_weapon_minigun","tf_weapon_flamethrower","tf_weapon_revolver","tf_weapon_shotgun_primary"},
+TF2_StockWeaponTypeClassnameSecondary[][] = {"","tf_weapon_pistol_scout","tf_weapon_smg","tf_weapon_shotgun_soldier","tf_weapon_pipebomblauncher","tf_weapon_medigun","tf_weapon_shotgun_hwg","tf_weapon_shotgun_pyro","tf_weapon_sapper","tf_weapon_pistol"},
+TF2_StockWeaponTypeClassnameMelee[][] = {"","tf_weapon_bat","tf_weapon_club","tf_weapon_shovel","tf_weapon_bottle","tf_weapon_bonesaw","tf_weapon_fists","tf_weapon_fireaxe","tf_weapon_knife","tf_weapon_wrench"},
+TF2_PDATypeClassname[][] = {"","","","","","","","","tf_weapon_pda_spy","tf_weapon_pda_engineer_build"},
+TF2_PDA2TypeClassname[][] = {"","","","","","","","","tf_weapon_invis","tf_weapon_pda_engineer_destroy"},
+TF2_PDA3TypeClassname[][] = {"","","","","","","","","","tf_weapon_builder"},
+TF2_SlotName[][] = {"Primary","Secondary","Melee","Construction PDA / Disguise Kit","Demolition PDA / Invis Watch","Slot5","Slot6","Slot7","Slot8","Slot9","Slot10"},
 TF2_ConditionName[][] = {"Revving Minigun, Sniper Rifle. Gives zoomed/revved pose"
 ,"Sniper Rifle zooming"
 ,"Disguise smoke"
@@ -188,7 +192,7 @@ TF2_KillstreakerEffectName[][] = {"Fire Horns","Cerebral Discharge","Tornado","F
 stock TFClassType TF2_TauntsClassType[] = {TFClass_All,TFClass_All,TFClass_All,TFClass_Medic,TFClass_All,TFClass_All,TFClass_All,TFClass_Spy,TFClass_Medic,TFClass_All,TFClass_All,TFClass_Pyro,TFClass_Soldier,TFClass_Demoman,TFClass_Engineer,TFClass_Sniper,TFClass_Scout,TFClass_All,TFClass_Scout,TFClass_Demoman,TFClass_All,TFClass_All,TFClass_All,TFClass_Heavy,TFClass_All,TFClass_All,TFClass_Soldier,TFClass_Scout,TFClass_Pyro,TFClass_Scout,TFClass_Sniper,TFClass_Sniper,TFClass_Spy,TFClass_Heavy,TFClass_Engineer,TFClass_All,TFClass_Demoman,TFClass_All,TFClass_Soldier,TFClass_Soldier,TFClass_Spy,TFClass_Pyro,TFClass_All,TFClass_Sniper,TFClass_Demoman,TFClass_Engineer,TFClass_Heavy,TFClass_Heavy,TFClass_Engineer,TFClass_Pyro,TFClass_Scout,TFClass_Medic,TFClass_Pyro,TFClass_Scout,TFClass_Scout,TFClass_Spy,TFClass_Demoman,TFClass_Medic,TFClass_Soldier,TFClass_Scout,TFClass_Pyro,TFClass_Engineer,TFClass_Scout,TFClass_All,TFClass_Demoman,TFClass_Soldier,TFClass_Medic,TFClass_Heavy,TFClass_Scout,TFClass_Medic,TFClass_Sniper,TFClass_Pyro};
 
 stock int
-TF2_GetClassDefaultHealth[] = {125,200,175,175,300,125,150,125,125,175},
+TF2_ClassDefaultHealth[] = {125,200,175,175,300,125,150,125,125,175},
 TF2_Taunts[] = {167,438,463,477,1015,1106,1107,1108,1109,1110,1111,1112,1113,1114,1115,1116,1117,1118,1119,1120,1157,1162,1172,1174,1182,1183,1196,1197,30570,30572,30609,30614,30615,30616,30618,30621,30671,30672,30673,30761,30762,30763,30816,30839,30840,30842,30843,30844,30845,30876,30917,30918,30919,30920,30921,30922,31153,31154,31155,31156,31157,31160,31161,31162,31201,31202,31203,31207,31233,31236,31237,31239},
 TF2_Australiums[] = {4,7,13,14,15,16,18,19,20,21,29,36,38,45,61,132,141,194,197,200,201,202,203,205,206,207,208,211,228,264,424},
 TF2_Conditions[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129},
@@ -534,14 +538,14 @@ TF2_Weapons[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,2
 TF2_KillstreakerEffect[] = {2002,2003,2004,2005,2006,2007,2008},
 TF2_KillstreakerSheen[] = {0,1,2,3,4,5,6,7};
 
-#define MAX_TF2_TAUNTS sizeof(TF2_Taunts)
-#define MAX_TF2_CONDITIONS sizeof(TF2_Conditions)
-#define MAX_TF2_WARPAINTS sizeof(TF2_Warpaints)
-#define MAX_TF2_PAINTS sizeof(TF2_Paints)
-#define MAX_TF2_UNUSUALS sizeof(TF2_UnusualEffects)
-#define MAX_TF2_WEAPONS sizeof(TF2_Weapons)
-#define MAX_TF2_KILLSTREAKER_SHEENS sizeof(TF2_KillstreakerEffect)
-#define MAX_TF2_KILLSTREAKER_EFFECTS sizeof(TF2_KillstreakerSheen)
+const int MAX_TF2_TAUNTS = sizeof(TF2_Taunts);
+const int MAX_TF2_CONDITIONS = sizeof(TF2_Conditions);
+const int MAX_TF2_WARPAINTS = sizeof(TF2_Warpaints);
+const int MAX_TF2_PAINTS = sizeof(TF2_Paints);
+const int MAX_TF2_UNUSUALS = sizeof(TF2_UnusualEffects);
+const int MAX_TF2_WEAPONS = sizeof(TF2_Weapons);
+const int MAX_TF2_KILLSTREAKER_SHEENS = sizeof(TF2_KillstreakerEffect);
+const int MAX_TF2_KILLSTREAKER_EFFECTS = sizeof(TF2_KillstreakerSheen);
 
 //TF2 Flag Event
 enum TFFlag {
@@ -731,6 +735,141 @@ enum {
 	//More to be added.
 }
 
+//attributes id's - To be be continually updated.
+enum {
+	TF2Attr_DamagePenalty = 1,
+	TF2Attr_DamageBonus = 2,
+	TF2Attr_ClipSizePenalty = 3,
+	TF2Attr_ClipSizeBonus = 4,
+	TF2Attr_FireRatePenalty = 5,
+	TF2Attr_FireRateBonus = 6,
+	TF2Attr_HealRatePenalty = 7,
+	TF2Attr_HealRateBonus = 8,
+	TF2Attr_UberRatePenalty = 9,
+	TF2Attr_UberRateBonus = 10,
+	TF2Attr_OverhealBonus = 11,
+	TF2Attr_OverhealDecayPenalty = 12,
+	TF2Attr_OverhealDecayBonus = 13,
+	TF2Attr_OverhealDecayDisabled = 14,
+	TF2Attr_NoRandomCrits = 15,
+	TF2Attr_HealOnHitForRapidfire = 16,
+	TF2Attr_AddUberHit = 17,
+	TF2Attr_MedigunChargeCrits = 18,
+	TF2Attr_DmmgBonusHit = 19,
+	TF2Attr_CritsVsBurning = 20,
+	TF2Attr_DmgPenaltyVsNonBurning = 21,
+	TF2Attr_NoCritsVsNonBurning = 22,
+	TF2Attr_CompressionBlast = 23,
+	TF2Attr_FlameCritsFromBehind = 24,
+	TF2Attr_HiddenSecMaxAmmoPenality = 25,
+	TF2Attr_MaxHealthBonus = 26,
+	TF2Attr_AltFireDisabled = 27,
+	TF2Attr_HiddenNoRandomCrits = 28,
+	TF2Attr_FistsRadialBuff = 30,
+	TF2Attr_CritboostKill = 31,
+	TF2Attr_SlowEnemyHit = 32,
+	TF2Attr_CloakFeignDeath = 33,
+	TF2Attr_CloakConsumeRate = 34,
+	TF2Attr_CloakRegenRate = 35,
+	TF2Attr_SpreadPenalty = 36,
+	TF2Attr_HiddenPriMaxAmmoBonus = 37,
+	TF2Attr_Sandman = 38,
+	TF2Attr_DmgPenaltyVsNonStunned = 39,
+	TF2Attr_ZoomMoveSpeedDisabled = 40,
+	TF2Attr_SniperChargeRate = 41,
+	TF2Attr_NoHeadshots = 42,
+	TF2Attr_ScattergunFAN = 43,
+	TF2Attr_ScattergunKnockback = 44,
+	TF2Attr_BulletsPerShot = 45,
+	TF2Attr_ZoomPenalty = 46,
+	TF2Attr_NoZoom = 47,
+	TF2Attr_CloakMovementBased = 48,
+	TF2Attr_NoDoubleJump = 49,
+	TF2Attr_CloakAbsorbDmg = 50,
+	TF2Attr_CritHeadshot = 51,
+	TF2Attr_Razorback = 52,
+	TF2Attr_WearerCannotIgnite = 53,
+	TF2Attr_MoveSpeedPenalty = 54,
+	TF2Attr_JarateDesc = 56,
+	TF2Attr_HealthRegen = 57,
+	TF2Attr_SelfDmgPushForceIncrease = 58,
+	TF2Attr_SelfDmgPushForceDecrease = 59,
+	TF2Attr_DmgTakenFireDecrease = 60,
+	TF2Attr_DmgTakenFireIncrease = 61,
+	TF2Attr_DmgTakenCritDecrease = 62,
+	TF2Attr_DmgTakenCritIncrease = 63,
+	TF2Attr_DmgTakenBlastDecrease = 64,
+	TF2Attr_DmgTakenBlastIncrease = 65,
+	TF2Attr_DmgTakenBulletsDecrease = 66,
+	TF2Attr_DmgTakenBulletsIncrease = 67,
+	TF2Attr_IncreaseCapValue = 68,
+	TF2Attr_HealthFromHealerDecrease = 69,
+	TF2Attr_HealthFromHealerIncrease = 70,
+	TF2Attr_AfterburnDmgIncrease = 71,
+	TF2Attr_AfterburnDmgDecrease = 72,
+	TF2Attr_AfterburnDurationIncrease = 73,
+	TF2Attr_AfterburnDurationDecrease = 74,
+	TF2Attr_MoveSpeedDeployIncrease = 75,
+	TF2Attr_MaxAmmoPrWearerIncrease = 76,
+	TF2Attr_MaxAmmoPriWearerDecrease = 77,
+	TF2Attr_MaxAmmoSecWearerIncrease = 78,
+	TF2Attr_MaxAmmoSecWearerDecrease = 79,
+	TF2Attr_MaxMetalWearerIncrease = 80,
+	TF2Attr_MaxMetalWearerDecrease = 81,
+	TF2Attr_CloakDurationIncrease = 82,
+	TF2Attr_CloakDurationDecrease = 83,
+	TF2Attr_CloakRegenRateIncrease = 84,
+	TF2Attr_CloakRegenRateDecrease = 85,
+	TF2Attr_MinigunSpinupTimeIncrease = 86,
+	TF2Attr_MinigunSpinupTimeDecrease = 87,
+	TF2Attr_MaxStickybombsIncrease = 88,
+	TF2Attr_MaxStickybombsincrease = 89,
+	TF2Attr_SniperZoomChargeRateIncrease = 90,
+	TF2Attr_SniperZoomChargeRateDecrease = 91,
+	TF2Attr_ConstructionRateIncrease = 92,
+	TF2Attr_ConstructionRateDecrease = 93,
+	TF2Attr_RepairRateIncrease = 94,
+	TF2Attr_RepairRateDecrease = 95,
+	TF2Attr_ReloadTimeIncrease = 96,
+	TF2Attr_ReloadTimeDecrease = 97,
+	TF2Attr_SelfDmgHitForRapidfire = 98,
+	TF2Attr_BlastRadiusIncrease = 99,
+	TF2Attr_BlastRadiusDecrease = 100,
+	TF2Attr_UnusualEffect = 134,
+	TF2Attr_SelfMadeDesc = 141,
+	TF2Attr_PaintRGB1 = 142,
+	TF2Attr_TurnToGold = 150,
+	TF2Attr_Purchased = 172,
+	TF2Attr_PaintRGB2 = 261,
+	TF2Attr_TwoWayTeleporter = 276,
+	TF2Attr_PDAPipBoyInterface = 295,
+	TF2Attr_DispenserRadiusIncreased = 345,
+	TF2Attr_HeadScale = 444,
+	TF2Attr_UnusualEffectVerticalOffset = 519,
+	TF2Attr_UnusualEffectUseHeadOrigin = 520,
+	TF2Attr_ItemStyleOverride = 542,
+	TF2Attr_TorsoScale = 620,
+	TF2Attr_LimitedQuantityItem = 692,
+	TF2Attr_HandScale = 699,
+	TF2Attr_WarpaintWear = 725,
+	TF2Attr_Warpaint = 834,
+	TF2Attr_SpellPaint = 1004,
+	TF2Attr_SpellFootprints = 1005,
+	TF2Attr_SpellVoicesFromBelow = 1006,
+	TF2Attr_SpellPumpkinExplosions = 1007,
+	TF2Attr_SpellGreenFlames = 1008,
+	TF2Attr_SpellExorcism = 1009,
+	TF2Attr_KillstreaksEffect = 2013,
+	TF2Attr_KillstreaksSheen = 2014,
+	TF2Attr_LootRarity = 2022,
+	TF2Attr_Killstreaks = 2025,
+	TF2Attr_Australium = 2027,
+	TF2Attr_Marketable = 2028,
+	TF2Attr_OnTauntUnusualEffect = 2041,
+	TF2Attr_Festivized = 2053,
+	TF2Attr_ItemDropWave = 3018,
+}
+
 #define	TFTeam(%1) view_as<TFTeam>(%1)
 #define	TFFlag(%1) view_as<TFFlag>(%1)
 #define	TFSlot(%1) view_as<TFSlot>(%1)
@@ -739,7 +878,6 @@ enum {
 #define	TFQuality(%1) view_as<TFQuality>(%1)
 #define	TFMethod(%1) view_as<TFMethod>(%1)
 #define	TFGameType(%1) view_as<TFGameType>(%1)
-
 
 /**
  *	Set the users mvm currency/cash.
@@ -1495,19 +1633,19 @@ stock bool TF2_SetClientAirDash(int client, int value) { return SetEntPropEx(cli
 /**
  *	Returns if TF2Attributes is available.
  */
-stock bool IsTF2AttributesLoaded() { return view_as<bool>(GetFeatureStatus(FeatureType_Native, "TF2Attrib_SetByName") == FeatureStatus_Available); }
+stock bool IsTF2AttributesLoaded() { return LibraryExists("tf2attributes"); }
 
 /**
- *	Returns if TF2Econ is available.
+ *	Returns if TF2Econ Data is available.
  */
-stock bool IsTF2EconLoaded() { return view_as<bool>(GetFeatureStatus(FeatureType_Native, "TF2Econ_GetItemName") == FeatureStatus_Available); }
+stock bool IsTF2EconDataLoaded() { return LibraryExists("tf_econ_data"); }
 
 /**
  *	Returns the Footprint name type.
  *
- *	@param	defindex	The definition index of the footprint.
- *	@param	type		The buffer to store the name.
- *	@param	maxlen		The maximum length of the buffer.
+ *	@param	index	The footprint index.
+ *	@param	type	The buffer to store the name.
+ *	@param	maxlen	The maximum length of the buffer.
  *
  *	@noreturn.
  */
@@ -1529,7 +1667,6 @@ stock void TF2_GetFootprintName(int defindex, char[] type, int maxlen) {
 		case 13595446: strcopy(type, maxlen, "Flames");
 		case 41234123: strcopy(type, maxlen, "Pink");
 		case 51234123: strcopy(type, maxlen, "Lime");
-		default: strcopy(type, maxlen, "Unknown");
 	}
 }
 
@@ -1847,23 +1984,25 @@ stock void TF2_TurnAustralium(any weapon) {
 		case true: {
 			SetEntDataOffset(weapon, "m_iItemDefinitionIndex", 1071); /* Turn to golden frying pan. */
 			#if defined _tf2attributes_included
-			TF2Attrib_SetByName(weapon, "turn to gold", 1.0);
-			TF2Attrib_SetByName(weapon, "killstreak tier", 1.0);
-			TF2Attrib_SetByName(weapon, "killstreak effect", view_as<float>(GetRandomInt(2002, 2008)));
-			TF2Attrib_SetByName(weapon, "killstreak idleeffect", view_as<float>(GetRandomInt(1, 7)));
-			TF2Attrib_SetByName(weapon, "item style override", 0.0);
+			TF2Attrib_SetByDefIndex(weapon, 150, 1.0);
+			TF2Attrib_SetByDefIndex(weapon, 2025, 1.0);
+			TF2Attrib_SetByDefIndex(weapon, 2013, view_as<float>(GetRandomInt(2002, 2008)));
+			TF2Attrib_SetByDefIndex(weapon, 2014, view_as<float>(GetRandomInt(1, 7)));
+			TF2Attrib_SetByDefIndex(weapon, 542, 0.0);
 			#endif
 		}
 		/* Turn the weapon to australium. */
 		case false: {
 			#if defined _tf2attributes_included
-			TF2Attrib_SetByName(weapon, "is australium item", 1.0);
-			TF2Attrib_SetByName(weapon, "item style override", 1.0);
+			TF2Attrib_SetByDefIndex(weapon, 542, 1.0);
 			#endif
 		}
 	}
 	
-	TF2Attrib_SetByName(weapon, "loot rarity", 1.0);
+	#if defined _tf2attributes_included
+	TF2Attrib_SetByDefIndex(weapon, 2027, 1.0);
+	TF2Attrib_SetByDefIndex(weapon, 3018, 1.0);
+	#endif
 }
 
 /**
@@ -1873,54 +2012,19 @@ stock void TF2_TurnAustralium(any weapon) {
  *	@param	buffer	Buffer to store the killstreaker name.
  *	@param	maxlen	Maximum length of the buffer.
  *
- *	@return	Returns true if the definition index is valid, false otherwise. 
+ *	@noreturn. 
  */
-stock bool TF2_GetKillstreakerName(int index, char[] buffer, int maxlen) {
+stock void TF2_GetKillstreakerName(int index, char[] buffer, int maxlen) {
 	switch(index) {
-		/* Fire Horns. */
-		case 2002: {
-			strcopy(buffer, maxlen, "Fire Horns");
-			return true;
-		}
-		
-		/* Cerebral Discharge. */
-		case 2003: {
-			strcopy(buffer, maxlen, "Cerebral Discharge");
-			return true;
-		}
-		
-		/* Tornado. */
-		case 2004: {
-			strcopy(buffer, maxlen, "Tornado");
-			return true;
-		}
-		
-		/* Flames. */
-		case 2005: {
-			strcopy(buffer, maxlen, "Flames");
-			return true;
-		}
-		
-		/* Singularity. */
-		case 2006: {
-			strcopy(buffer, maxlen, "Singularity");
-			return true;
-		}
-		
-		/* Incinerator. */
-		case 2007: {
-			strcopy(buffer, maxlen, "Incinerator");
-			return true;
-		}
-		
-		/* Hypno-Beam. */
-		case 2008: {
-			strcopy(buffer, maxlen, "Hypno-Beam");
-			return true;
-		}
+		case 2002: strcopy(buffer, maxlen, "Fire Horns");
+		case 2003: strcopy(buffer, maxlen, "Cerebral Discharge");
+		case 2004: strcopy(buffer, maxlen, "Tornado");
+		case 2005: strcopy(buffer, maxlen, "Flames");
+		case 2006: strcopy(buffer, maxlen, "Singularity");
+		case 2007: strcopy(buffer, maxlen, "Incinerator");
+		case 2008: strcopy(buffer, maxlen, "Hypno-Beam");
+		default: strcopy(buffer, maxlen, "None"); /* Invalid. */
 	}
-	
-	return false;
 }
 
 #if defined _tf2attributes_included
@@ -1995,6 +2099,8 @@ stock bool TF2_TurnDefaultDefIndexToUpgraded(any weapon) {
 		case 24: SetEntData(weapon, offset, 210);
 		case 25: SetEntData(weapon, offset, 737);
 		case 29: SetEntData(weapon, offset, 211);
+		case 30: SetEntData(weapon, offset, 212);
+		case 735: SetEntData(weapon, offset, 736);
 	}
 	
 	return true;
@@ -2307,20 +2413,20 @@ stock bool TF2_ReplaceClientRobotVoicelines(int client, char[] sound, bool giant
 	TFClassType class = TF2_GetPlayerClass(client);
 	
 	char vc[3][64];
-	Format(vc[0], sizeof(vc[]), "vo/%s_", TF2_GetClassTypeNameLC[class]);
+	Format(vc[0], sizeof(vc[]), "vo/%s_", TF2_ClassTypeNameLC[class]);
 	switch(giant) {
 		case true: {
-			Format(vc[1], sizeof(vc[]), "vo/mvm/mght/%s_", TF2_GetClassTypeNameLC[class]);
-			Format(vc[2], sizeof(vc[]), "%s_mvm_m", TF2_GetClassTypeNameLC[class]);
+			Format(vc[1], sizeof(vc[]), "vo/mvm/mght/%s_", TF2_ClassTypeNameLC[class]);
+			Format(vc[2], sizeof(vc[]), "%s_mvm_m", TF2_ClassTypeNameLC[class]);
 		}
 		case false: {
-			Format(vc[1], sizeof(vc[]), "vo/mvm/norm/%s_", TF2_GetClassTypeNameLC[class]);
-			Format(vc[2], sizeof(vc[]), "%s_mvm", TF2_GetClassTypeNameLC[class]);
+			Format(vc[1], sizeof(vc[]), "vo/mvm/norm/%s_", TF2_ClassTypeNameLC[class]);
+			Format(vc[2], sizeof(vc[]), "%s_mvm", TF2_ClassTypeNameLC[class]);
 		}
 	}
 	
 	ReplaceString(sound, 128, vc[0], vc[1], false);
-	ReplaceString(sound, 128, TF2_GetClassTypeName[class], vc[2], false);
+	ReplaceString(sound, 128, TF2_ClassTypeName[class], vc[2], false);
 	PrecacheSound(sound);
 	return true;
 }
@@ -2333,7 +2439,7 @@ stock bool TF2_ReplaceClientRobotVoicelines(int client, char[] sound, bool giant
  *
  *	@return	Returns the entity's owner.
  */
-stock int TF2_FindWeaponByDefinitionIndex(int client, int defindex) {
+stock any TF2_FindWeaponByDefinitionIndex(int client, int defindex) {
 	for(TFSlot slot = TFSlot_Primary; slot < TFSlot_PDA2; slot++) {
 		int weapon = TF2_GetPlayerWeaponSlot(client, slot);
 		if(IsValidEntityEx(weapon) && GetEntityDefinitionIndex(weapon) == defindex && GetEntityOwner(weapon) == client) return weapon;
@@ -2350,10 +2456,10 @@ stock int TF2_FindWeaponByDefinitionIndex(int client, int defindex) {
  *
  *	@return	Returns the entity's owner.
  */
-stock int TF2_FindCosmeticByDefinitionIndex(int client, int defindex) {
+stock any TF2_FindCosmeticByDefinitionIndex(int client, int defindex) {
 	int wearable = 0;
-	while((wearable = FindEntityByClassname(wearable, "tf_wearable")) != -1)  if(IsValidEntityEx(wearable) && GetEntityDefinitionIndex(wearable) == defindex && GetEntityOwner(wearable) == client) return wearable;
-	while((wearable = FindEntityByClassname(wearable, "tf_wearable_levelable_item")) != -1)  if(IsValidEntityEx(wearable) && GetEntityDefinitionIndex(wearable) == defindex && GetEntityOwner(wearable) == client) return wearable;
+	while((wearable = FindEntityByClassname(wearable, "tf_wearable")) != -1) if(IsValidEntityEx(wearable) && GetEntityDefinitionIndex(wearable) == defindex && GetEntityOwner(wearable) == client) return wearable;
+	while((wearable = FindEntityByClassname(wearable, "tf_wearable_levelable_item")) != -1) if(IsValidEntityEx(wearable) && GetEntityDefinitionIndex(wearable) == defindex && GetEntityOwner(wearable) == client) return wearable;
 	return -1;
 }
 
@@ -2664,5 +2770,35 @@ stock int TF2_EquipPlayerCosmetic(int client, int cosmetic) {
 	delete EquipWearable;
 	return offset;
 }
+
+/**
+ *	Returns if the class is valid.
+ *
+ *	@param	class	The TFClassType class type.
+ */
+stock bool TF2_IsValidClass(TFClassType class) { return (class >= TFClass_Scout && class <= TFClass_Civilian); }
+
+/**
+ *	Retrieves the users active class.
+ *
+ *	@param	client	The users index.
+ *
+ *	@error	If user is invalid, this returns TFClass_Invalid.
+ */
+stock TFClassType TF2_GetPlayerActiveClass(int client) {
+	TFClassType class = view_as<TFClassType>(GetEntPropEx(client, Prop_Send, "m_iClass"))
+	, desired = view_as<TFClassType>(GetEntPropEx(client, Prop_Send, "m_iDesiredPlayerClass"));
+	
+	return TF2_IsValidClass(class) ? class : TF2_IsValidClass(desired) ? desired : TFClass_Invalid;
+}
+
+/**
+ *	Returns if the user has valid class.
+ *
+ *	@param	client	The users index.
+ *
+ *	@error	If the user is invalid, this returns false.
+ */
+stock bool TF2_PlayerHasValidClass(int client) { return TF2_IsValidClass(TF2_GetPlayerActiveClass(client)); }
 
 #endif

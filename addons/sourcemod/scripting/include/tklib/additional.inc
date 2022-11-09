@@ -4,43 +4,19 @@
 #if !defined _tklib_disable_additional
 
 //Get true of false message statements easier.
-stock char Bool[][] = {
-	"False",
-	"True",
-	"Maybe"
-},
+stock char Bool[][] = {"False","True","Maybe"},
 //Coloured
-BoolEx[][] = {
-	"{red}False{default}",
-	"{green}True{default}",
-	"{orange}Maybe{default}"
-},
+BoolEx[][] = {"{red}False{default}","{green}True{default}","{orange}Maybe{default}"},
 //Useful for simple open/closing door entites. Value 0 = Close, 1 = Open.
-DoorSwitch[][] = {
-	"close",
-	"open"
-},
+DoorSwitch[][] = {"close","open"},
 //On - Off switch.
-OnOff[][] = {
-	"Off",
-	"On"
-},
+OnOff[][] = {"Off","On"},
 //On - Off switch coloured.
-OnOffEx[][] = {
-	"{red}Off{default}",
-	"{green}On{default}"
-},
-PropTypeName[][] = {
-	"",
-	"Prop_Send",
-	"Prop_Data"
-};
+OnOffEx[][] = {"{red}Off{default}","{green}On{default}"},
+//Property name
+PropTypeName[][] = {"","Prop_Send","Prop_Data"};
 
-enum boolEx {
-	False = 0,
-	True = 1,
-	Maybe = 2
-}
+enum boolEx { False = 0, True = 1, Maybe = 2 } //useful?
 
 /**
  *	Returns the AdminFlag from the ADMFLAG you specify.
@@ -51,27 +27,27 @@ stock AdminFlag AdmflagToAdminFlag(int adminflags) {
 	AdminFlag adminflag;
 	
 	switch(adminflags)	{
-		case ADMFLAG_RESERVATION:	adminflag = Admin_Reservation;
-		case ADMFLAG_GENERIC:		adminflag = Admin_Generic;
-		case ADMFLAG_KICK:			adminflag = Admin_Kick;
-		case ADMFLAG_BAN:			adminflag = Admin_Ban;
-		case ADMFLAG_UNBAN:			adminflag = Admin_Unban;
-		case ADMFLAG_SLAY:			adminflag = Admin_Slay;
-		case ADMFLAG_CHANGEMAP:		adminflag = Admin_Changemap;
-		case ADMFLAG_CONVARS:		adminflag = Admin_Convars;
-		case ADMFLAG_CONFIG:		adminflag = Admin_Config;
-		case ADMFLAG_CHAT:			adminflag = Admin_Chat;
-		case ADMFLAG_VOTE:			adminflag = Admin_Vote;
-		case ADMFLAG_PASSWORD:		adminflag = Admin_Password;
-		case ADMFLAG_RCON:			adminflag = Admin_RCON;
-		case ADMFLAG_CHEATS:		adminflag = Admin_Cheats;
-		case ADMFLAG_ROOT:			adminflag = Admin_Root;
-		case ADMFLAG_CUSTOM1:		adminflag = Admin_Custom1;
-		case ADMFLAG_CUSTOM2:		adminflag = Admin_Custom2;
-		case ADMFLAG_CUSTOM3:		adminflag = Admin_Custom3;
-		case ADMFLAG_CUSTOM4:		adminflag = Admin_Custom4;
-		case ADMFLAG_CUSTOM5:		adminflag = Admin_Custom5;
-		case ADMFLAG_CUSTOM6:		adminflag = Admin_Custom6;
+		case ADMFLAG_RESERVATION: adminflag = Admin_Reservation;
+		case ADMFLAG_GENERIC: adminflag = Admin_Generic;
+		case ADMFLAG_KICK: adminflag = Admin_Kick;
+		case ADMFLAG_BAN: adminflag = Admin_Ban;
+		case ADMFLAG_UNBAN: adminflag = Admin_Unban;
+		case ADMFLAG_SLAY: adminflag = Admin_Slay;
+		case ADMFLAG_CHANGEMAP: adminflag = Admin_Changemap;
+		case ADMFLAG_CONVARS: adminflag = Admin_Convars;
+		case ADMFLAG_CONFIG: adminflag = Admin_Config;
+		case ADMFLAG_CHAT: adminflag = Admin_Chat;
+		case ADMFLAG_VOTE: adminflag = Admin_Vote;
+		case ADMFLAG_PASSWORD: adminflag = Admin_Password;
+		case ADMFLAG_RCON: adminflag = Admin_RCON;
+		case ADMFLAG_CHEATS: adminflag = Admin_Cheats;
+		case ADMFLAG_ROOT: adminflag = Admin_Root;
+		case ADMFLAG_CUSTOM1: adminflag = Admin_Custom1;
+		case ADMFLAG_CUSTOM2: adminflag = Admin_Custom2;
+		case ADMFLAG_CUSTOM3: adminflag = Admin_Custom3;
+		case ADMFLAG_CUSTOM4: adminflag = Admin_Custom4;
+		case ADMFLAG_CUSTOM5: adminflag = Admin_Custom5;
+		case ADMFLAG_CUSTOM6: adminflag = Admin_Custom6;
 	}
 	
 	return adminflag;
@@ -86,27 +62,27 @@ stock int AdminFlaglagToAdmflag(AdminFlag adminflags) {
 	int adminflag;
 	
 	switch(adminflags)	{
-		case Admin_Reservation:	adminflag = ADMFLAG_RESERVATION;
-		case Admin_Generic:		adminflag = ADMFLAG_GENERIC;
-		case Admin_Kick:		adminflag = ADMFLAG_KICK;
-		case Admin_Ban:			adminflag = ADMFLAG_BAN;
-		case Admin_Unban:		adminflag = ADMFLAG_UNBAN;
-		case Admin_Slay:		adminflag = ADMFLAG_SLAY;
-		case Admin_Changemap:	adminflag = ADMFLAG_CHANGEMAP;
-		case Admin_Convars:		adminflag = ADMFLAG_CONVARS;
-		case Admin_Config:		adminflag = ADMFLAG_CONFIG;
-		case Admin_Chat:		adminflag = ADMFLAG_CHAT;
-		case Admin_Vote:		adminflag = ADMFLAG_VOTE;
-		case Admin_Password:	adminflag = ADMFLAG_PASSWORD;
-		case Admin_RCON:		adminflag = ADMFLAG_RCON;
-		case Admin_Cheats:		adminflag = ADMFLAG_CHEATS;
-		case Admin_Root:		adminflag = ADMFLAG_ROOT;
-		case Admin_Custom1:		adminflag = ADMFLAG_CUSTOM1;
-		case Admin_Custom2:		adminflag = ADMFLAG_CUSTOM2;
-		case Admin_Custom3:		adminflag = ADMFLAG_CUSTOM3;
-		case Admin_Custom4:		adminflag = ADMFLAG_CUSTOM4;
-		case Admin_Custom5:		adminflag = ADMFLAG_CUSTOM5;
-		case Admin_Custom6:		adminflag = ADMFLAG_CUSTOM6;
+		case Admin_Reservation: adminflag = ADMFLAG_RESERVATION;
+		case Admin_Generic: adminflag = ADMFLAG_GENERIC;
+		case Admin_Kick: adminflag = ADMFLAG_KICK;
+		case Admin_Ban: adminflag = ADMFLAG_BAN;
+		case Admin_Unban: adminflag = ADMFLAG_UNBAN;
+		case Admin_Slay: adminflag = ADMFLAG_SLAY;
+		case Admin_Changemap: adminflag = ADMFLAG_CHANGEMAP;
+		case Admin_Convars: adminflag = ADMFLAG_CONVARS;
+		case Admin_Config: adminflag = ADMFLAG_CONFIG;
+		case Admin_Chat: adminflag = ADMFLAG_CHAT;
+		case Admin_Vote: adminflag = ADMFLAG_VOTE;
+		case Admin_Password: adminflag = ADMFLAG_PASSWORD;
+		case Admin_RCON: adminflag = ADMFLAG_RCON;
+		case Admin_Cheats: adminflag = ADMFLAG_CHEATS;
+		case Admin_Root: adminflag = ADMFLAG_ROOT;
+		case Admin_Custom1: adminflag = ADMFLAG_CUSTOM1;
+		case Admin_Custom2: adminflag = ADMFLAG_CUSTOM2;
+		case Admin_Custom3: adminflag = ADMFLAG_CUSTOM3;
+		case Admin_Custom4: adminflag = ADMFLAG_CUSTOM4;
+		case Admin_Custom5: adminflag = ADMFLAG_CUSTOM5;
+		case Admin_Custom6: adminflag = ADMFLAG_CUSTOM6;
 	}
 	
 	return adminflag;
@@ -121,11 +97,7 @@ stock int AdminFlaglagToAdmflag(AdminFlag adminflags) {
  *
  *	@return	Integer of the returned argument.
  */
-stock int GetCmdInt(int argnum) {
-	char buffer[256];
-	GetCmdArg(argnum, buffer, sizeof(buffer));
-	return StringToInt(buffer);
-}
+stock int GetCmdInt(int argnum) { char buffer[16]; GetCmdArg(argnum, buffer, sizeof(buffer)); return StringToInt(buffer); }
 
 /**
  *	Retrieves a command as boolean given its index, from the current console or server command.
@@ -136,11 +108,7 @@ stock int GetCmdInt(int argnum) {
  *
  *	@return	Integer of the returned argument.
  */
-stock bool GetCmdBool(int argnum) {
-	char buffer[256];
-	GetCmdArg(argnum, buffer, sizeof(buffer));
-	return view_as<bool>(StringToInt(buffer));
-}
+stock bool GetCmdBool(int argnum) { char buffer[16]; GetCmdArg(argnum, buffer, sizeof(buffer)); return view_as<bool>(StringToInt(buffer)); }
 
 /**
  *	Retrieves a command as a float point given its index, from the current console or server command.
@@ -151,11 +119,7 @@ stock bool GetCmdBool(int argnum) {
  *
  *	@return	Integer of the returned argument.
  */
-stock float GetCmdFloat(int argnum) {
-	char buffer[256];
-	GetCmdArg(argnum, buffer, sizeof(buffer));
-	return StringToFloat(buffer);
-}
+stock float GetCmdFloat(int argnum) { char buffer[16]; GetCmdArg(argnum, buffer, sizeof(buffer)); return StringToFloat(buffer); }
 
 /**
  *	Turns an integer into a floating point.
@@ -163,31 +127,7 @@ stock float GetCmdFloat(int argnum) {
  *	@param value	Float to convert.
  *	@return			Integer result, or 0 on error. 
  */
-stock int FloatToInt(float value) {
-	char buffer[16];
-	FloatToString(value, buffer, sizeof(buffer));
-	return StringToInt(buffer);
-}
-
-/**
- *	Same as SQL_Connect but this is if you just want a temporary connection.
- *
- *	@param		confname		The name of the database config connection.
- *	@param		persistent		If true, it will try to use a previous persistent connection.
- *	@param		debug			If true, it will show message if the connection returned 'null' (Error) or if it succeeded.
- */
-stock Database SQL_Connect2(const char[] confname, bool persistent=true, bool dbg=false) {
-	char error[256];
-	Database database = SQL_Connect(confname, persistent, error, sizeof(error));
-	if(dbg)	{
-		switch(database == null)	{
-			case true: PrintToServer("[SQL_Connect2] : Connection to database \"%s\" had an error (%s)", confname, error);
-			case false: PrintToServer("[SQL_Connect2] : Connection to database \"%s\" succeeded!", confname);
-		}
-	}
-	
-	return database;
-}
+stock int FloatToInt(float value) { char buffer[16]; FloatToString(value, buffer, sizeof(buffer)); return StringToInt(buffer); }
 
 /**
  *	Returns GetRandomInt(0, 1) in boolean.
@@ -203,20 +143,14 @@ stock bool GetRandomBool() { return view_as<bool>(GetRandomInt(0, 1)); }
  *	@param	native2		Native 2.
  *	@param	func		Native callback.
  */
-stock void CreateNativeEx(const char[] native1, const char[] native2, NativeCall func) {
-	CreateNative(native1, func);
-	CreateNative(native2, func);
-}
+stock void CreateNativeEx(const char[] native1, const char[] native2, NativeCall func) { CreateNative(native1, func); CreateNative(native2, func); }
 
 /**
  *	Same as MarkNativeAsOptional but you use 2 natives before marking it optional.
  *	Useful for cleaning up code and also for 2 natives that use same forward.
  *	Paired with CreateNativeEx.
  */
-stock void MarkNativeAsOptionalEx(const char[] native1, const char[] native2) {
-	MarkNativeAsOptional(native1);
-	MarkNativeAsOptional(native2);
-}
+stock void MarkNativeAsOptionalEx(const char[] native1, const char[] native2) { MarkNativeAsOptional(native1); MarkNativeAsOptional(native2); }
 
 /**
  *	Functions the same as CreateNative and MarkNativeAsOptional.
@@ -225,10 +159,7 @@ stock void MarkNativeAsOptionalEx(const char[] native1, const char[] native2) {
  *	@param	name	The dynamic native name.
  *	@param	func	The dynamic native callback.
  */
-stock void CreateOptionalNative(const char[] name, NativeCall func) {
-	CreateNative(name, func);
-	MarkNativeAsOptional(name);
-}
+stock void CreateOptionalNative(const char[] name, NativeCall func) { CreateNative(name, func); MarkNativeAsOptional(name); }
 
 /**
  *	Auto-switches the bool value on/off.
@@ -239,10 +170,7 @@ stock void CreateOptionalNative(const char[] name, NativeCall func) {
  *	@param	value		The value to toggle.
  *	@return	Returns the new value.
  */
-stock bool AutoSwitch(bool value) {
-	value = value ? false : true;
-	return value;
-}
+stock void AutoSwitch(bool &value) { value = value ? false : true; }
 
 /**
  *	Same as AddFileToDownloadsTable but adds support for additional parameters.
@@ -302,7 +230,7 @@ stock bool AddFolderToDownloadsTable(const char[] path, bool precache=false, con
 	}
 	
 	delete DLPath;
-	return	success;
+	return success;
 }
 
 /**
@@ -317,20 +245,17 @@ stock bool AddFolderToDownloadsTable(const char[] path, bool precache=false, con
 stock bool SayText2(int client, int index=-1, const char[] message, any ...) {
 	if(!Tklib_IsValidClient(client)) return false;
 	if(index != -1)	if(!Tklib_IsValidClient(index)) return false;
-	
-	if(GetFeatureStatus(FeatureType_Native, "GetUserMessageType") == FeatureStatus_Unavailable
-	|| GetUserMessageId("SayText2") == INVALID_MESSAGE_ID)
-		return false;
+	if(GetFeatureStatus(FeatureType_Native, "GetUserMessageType") == FeatureStatus_Unavailable || GetUserMessageId("SayText2") == INVALID_MESSAGE_ID) return false;
 	
 	Handle msg = null;
-	bool success = false;
 	
-	if((msg = StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS)) != null)	{
-		char format[256];
-		VFormat(format, sizeof(format), message, 4);
+	if((msg = StartMessageOne("SayText2", client, USERMSG_RELIABLE|USERMSG_BLOCKHOOKS)) != null) {
+		int maxlen = strlen(message)+65;
+		char[] format = new char[maxlen];
+		VFormat(format, maxlen, message, 4);
 		
-		switch(GetUserMessageType())	{
-			case	UM_Protobuf:	{
+		switch(GetUserMessageType()) {
+			case UM_Protobuf: {
 				Protobuf pb = UserMessageToProtobuf(msg);
 				pb.SetInt("ent_idx", index);
 				pb.SetBool("chat", true);
@@ -340,7 +265,7 @@ stock bool SayText2(int client, int index=-1, const char[] message, any ...) {
 				pb.AddString("params", "");
 				pb.AddString("params", "");
 			}
-			case	UM_BitBuf:	{
+			case UM_BitBuf: {
 				BfWrite bf = UserMessageToBfWrite(msg);
 				bf.WriteByte(index);
 				bf.WriteByte(true);
@@ -349,24 +274,25 @@ stock bool SayText2(int client, int index=-1, const char[] message, any ...) {
 		}
 	
 		EndMessage();
-		success = true;
+		return true
 	}
 	
-	return success;
+	return false;
 }
 
 /**
  *	Sends a SayText2 usermessage to everyone.
  *
- *	@param	index		Sender index.
- *	@param	message		Message.
+ *	@param	index	Sender index.
+ *	@param	message	Message.
  *
  *	@noreturn
  */
 stock void SayText2All(int index=-1, const char[] message, any ...) {
-	char format[256];
-	VFormat(format, sizeof(format), message, 2);
-	for(int client = 1; client < MaxClients; client++) if(Tklib_IsValidClient(client, true)) SayText2(client, index, format);
+	int maxlen = strlen(message)+65;
+	char[] format = new char[maxlen];
+	VFormat(format, maxlen, message, 2);
+	TargetLoop(client) if(Tklib_IsValidClient(client, true)) SayText2(client, index, format);
 }
 
 /**
@@ -385,17 +311,18 @@ stock bool GetNativeBool(int param)	{ return view_as<bool>(GetNativeCell(param))
  *	recieving the results.
  *	This one is allows for additional parameters, making Format not required.
  *
- *	@param		database	The database handle.
- *	@param		query		The query string.
+ *	@param	database	The database handle.
+ *	@param	query		The query string.
  *
- *	@return		A new Query Handle on success, else nulll.
+ *	@return	A new Query Handle on success, else nulll.
  *
- *	@error		If database is invalid, this returns null.
+ *	@error	If database is invalid, this returns null.
  */
 stock DBResultSet SQL_QueryEx(Handle database, const char[] query, any ...) {
 	if(database != null) {
-		char format[8192];
-		VFormat(format, sizeof(format), query, 3);
+		int maxlen = strlen(query)+97;
+		char[] format = new char[maxlen];
+		VFormat(format, maxlen, query, 3);
 		return SQL_Query(database, format, -1);
 	}
 	
@@ -472,11 +399,7 @@ stock void GetNameFromColourTag(const char[] source, char[] colour, int maxlen) 
  *
  *	@param	value	The integer to convert.
  */
-stock float IntToFloat(int value) {
-	char str[16];
-	IntToString(value, str, sizeof(str));
-	return StringToFloat(str);
-}
+stock float IntToFloat(int value) { char str[16]; IntToString(value, str, sizeof(str)); return StringToFloat(str); }
 
 /**
  *	Returns the servers ip.
@@ -554,10 +477,7 @@ stock int ItemDrawBool(bool value) { return value ? ITEMDRAW_DISABLED : ITEMDRAW
  *
  *	@error	If the handle is invalid, this returns true.
  */
-stock bool IsArrayEmpty(ArrayList array) {
-	if(array == null) return true;
-	return view_as<bool>(array.Length == 0);
-}
+stock bool IsArrayEmpty(ArrayList array) { return (!array) ? true : view_as<bool>(array.Length == 0); }
 
 /**
  *	Kills the timer handle.
@@ -570,11 +490,7 @@ stock bool IsArrayEmpty(ArrayList array) {
  *
  *	@error	If invalid timer handle, returns false.
  */
-stock bool KillTimerEx(Handle timer, bool autoClose=false) {
-	if(!timer) return false;
-	KillTimer(timer, autoClose);
-	return true;
-}
+stock bool KillTimerEx(Handle timer, bool autoClose=false) { if(!timer) return false; KillTimer(timer, autoClose); return true; }
 
 /**
  *	Returns if the steam authentication id is valid.
@@ -583,9 +499,23 @@ stock bool KillTimerEx(Handle timer, bool autoClose=false) {
  */
 stock bool IsValidSteamID(const char[] auth) {
 	if(StrContainsEx(auth, "STEAM_0:", false)) return true;
+	if(StrContainsEx(auth, "STEAM_1:", false)) return true;
 	if(auth[0] == '\0') return false;
-	if(!StrEmpty(auth)) return false;
+	if(!IsValidString(auth)) return false;
 	return true;
 }
+
+/**
+ *	Returns a random value between value 1 'any1' and value 2 'any2'
+ *
+ *	@param	any1	First value, the minimum value.
+ *	@param	any2	Second value, the maximum value.
+ */
+stock any GetRandomAny(any any1, any any2) { return GetRandomInt(any1, any2); }
+
+/**
+ *	Returns if the updater is loaded.
+ */
+stock bool IsUpdaterAvailable()	{ return view_as<bool>(GetFeatureStatus(FeatureType_Native, "Updater_AddPlugin") == FeatureStatus_Available); }
 
 #endif

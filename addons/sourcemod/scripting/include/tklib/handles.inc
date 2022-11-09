@@ -34,23 +34,23 @@ methodmap MenuEx < Menu {
 	public bool AddItem(const char[] info, const char[] display, int style = ITEMDRAW_DEFAULT) { return view_as<Menu>(this).AddItem(info, display, style); }
 	
 	public bool AddItemEx(const char[] info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
-		int maxlen = strlen(display)+65;
-		char[] format = new char[maxlen];
+		int maxlen = strlen(display)+128;
+		char[] format = new char[maxlen++];
 		VFormat(format, maxlen, display, 5);
 		return view_as<Menu>(this).AddItem(info, format, style);
 	}
 	
 	public bool AddItemInt(int info, const char[] display, int style = ITEMDRAW_DEFAULT) {
-		char dummy[8];
+		char dummy[16];
 		IntToString(info, dummy, sizeof(dummy));
 		return view_as<Menu>(this).AddItem(dummy, display, style);
 	}
 	
 	public bool AddItemIntEx(int info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
-		char dummy[8];
+		char dummy[16];
 		IntToString(info, dummy, sizeof(dummy));
-		int maxlen = strlen(display)+65;
-		char[] format = new char[maxlen];
+		int maxlen = strlen(display)+128;
+		char[] format = new char[maxlen++];
 		VFormat(format, maxlen, display, 5);
 		return view_as<Menu>(this).AddItem(dummy, format, style);
 	}
@@ -64,8 +64,8 @@ methodmap MenuEx < Menu {
 	public bool AddItemAnyEx(any info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
 		char dummy[16];
 		IntToString(info, dummy, sizeof(dummy));
-		int maxlen = strlen(display)+65;
-		char[] format = new char[maxlen];
+		int maxlen = strlen(display)+128;
+		char[] format = new char[maxlen++];
 		VFormat(dummy, maxlen, display, 5);
 		return view_as<Menu>(this).AddItem(dummy, format, style);
 	}
@@ -79,8 +79,8 @@ methodmap MenuEx < Menu {
 	public bool AddItemFloatEx(float info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
 		char dummy[16];
 		FloatToString(info, dummy, sizeof(dummy));
-		int maxlen = strlen(display)+65;
-		char[] format = new char[maxlen];
+		int maxlen = strlen(display)+128;
+		char[] format = new char[maxlen++];
 		VFormat(format, maxlen, display, 5);
 		return view_as<Menu>(this).AddItem(dummy, format, style);
 	}
@@ -102,7 +102,7 @@ methodmap MenuEx < Menu {
 	public any GetItemAny(int position, int &style=0, char[] dispBuf="", int dispBufLen=0) {
 		char dummy[16];
 		view_as<Menu>(this).GetItem(position, dummy, sizeof(dummy), style, dispBuf, dispBufLen);
-		return StringToAny(dummy);
+		return StringToInt(dummy);
 	}
 	
 	/**
@@ -271,6 +271,432 @@ methodmap PanelEx < Panel {
 	}
 }
 
+//May seem useless, just StringMap with additional functions
+methodmap StringMapEx < StringMap {
+	/*
+	 *	Creates a hash map. A hash map is a container that can map strings (called
+	 *	"keys") to arbitrary values (cells, arrays, or strings). Keys in a hash map
+	 *	are unique. That is, there is at most one entry in the map for a given key.
+	 *
+	 *	Insertion, deletion, and lookup in a hash map are all considered to be fast
+	 *	operations, amortized to O(1), or constant time.
+	 *
+	 *	The word "Trie" in this API is historical. As of SourceMod 1.6, tries have
+	 *	been internally replaced with hash tables, which have O(1) insertion time
+	 *	instead of O(n).
+	 *
+	 *	The StringMap must be freed via delete or CloseHandle().
+	 */
+	public StringMapEx() { return view_as<StringMapEx>(new StringMap()); }
+	
+	/*
+	 *	Clones a string map, returning a new handle with the same size and data.
+	 *	This should NOT be confused with CloneHandle. This is a completely new
+	 *	handle with the same data but no relation to the original. It should be
+	 *	closed when no longer needed with delete or CloseHandle().
+	 *
+	 *	@return	New handle to the cloned string map
+	 */
+	public StringMapEx Clone() { return view_as<StringMapEx>(view_as<StringMap>(this).Clone()); }
+	
+	/*
+	 *	Sets a value in a hash map, either inserting a new entry or replacing an old one.
+	 *
+	 *	@param	key			Key string.
+	 *	@param	value		Value to store at this key.
+	 *	@param	replace		If false, operation will fail if the key is already set.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetValue(const char[] key, any value, bool replace=true) { return view_as<StringMap>(this).SetValue(key, value, replace); }
+	
+	/*
+	 *	Retrieves a value in a Map.
+	 *
+	 *	@param	key		Key string.
+	 *	@param	size	Optional parameter to store the number of elements written to the buffer.
+	 *	@param	...		Additional key parameters.
+	 *
+	 *	@return	True on success. False if the key is not set, or the key is set as an array or string (not a value).
+	 */
+	public bool GetValue(const char[] key, int &size=0, any ...) {
+		char dummy[256];
+		VFormat(dummy, sizeof(dummy), key, 3);
+		return view_as<StringMap>(this).GetValue(dummy, size);
+	}
+	
+	/*
+	 *	Sets an array value in a Map, either inserting a new entry or replacing an old one.
+	 *
+	 *	@param	key			Key string.
+	 *	@param	array		Array to store.
+	 *	@param	array_size	Number of items in the array. (Array size)
+	 *	@param	replace		If false, operation will fail if the key is already set.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetArray(const char[] key, const any[] array, int array_size, bool replace=true, any ...) {
+		char dummy[256];
+		VFormat(dummy, sizeof(dummy), key, 5);
+		return view_as<StringMap>(this).SetArray(dummy, array, array_size, replace);
+	}
+	
+	/*
+	 *	Retrieves an array in a Map.
+	 *	
+	 *	@param	key			Key string.
+	 *	@param	array		Buffer to store array.
+	 *	@param	array_size	Maximum size of array buffer. (Array size)
+	 *	@param	size		Optional parameter to store the number of elements written to the buffer.
+	 *	@param	...			Additional key parameters.
+	 *
+	 *	@return	True on success.  False if the key is not set, or the key is set as a value or string (not an array).
+	 */
+	public bool GetArray(const char[] key, any[] array, int array_size, int &size=0, any ...) {
+		char dummy[256];
+		VFormat(dummy, sizeof(dummy), key, 5);
+		return view_as<StringMap>(this).GetArray(dummy, array, array_size, size);
+	}
+	
+	/*
+	 *	Sets a string value in a Map, either inserting a new entry or replacing an old one.
+	 *
+	 *	@param	key			Key string.
+	 *	@param	value		String to store.
+	 *	@param	replace		If false, operation will fail if the key is already set.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetString(const char[] key, const char[] value, bool replace=true) { return view_as<StringMap>(this).SetString(key, value, replace); }
+	
+	/*
+	 *	Sets an index in a Map.
+	 *
+	 *	@param	key		Key string.
+	 *	@param	value	Index to store.
+	 *	@param	replace	If false, operation will fail if the key is already set.
+	 *	@param	...		Additional key parameters.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetStringIndex(const char[] key, int index, bool replace=true, any ...) {
+		char value[16], dummy[256];
+		IntToString(index, value, sizeof(value));
+		VFormat(dummy, sizeof(dummy), key, 4);
+		return view_as<StringMap>(this).SetString(dummy, value, replace);
+	}
+	
+	/*
+	 *	Sets a value in a Map.
+	 *
+	 *	@param	key		Key string.
+	 *	@param	value	Value to store.
+	 *	@param	replace	If false, operation will fail if the key is already set.
+	 *	@param	...		Additional key parameters.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetStringValue(const char[] key, any value, bool replace=true, any ...) {
+		char val[16], dummy[256];
+		IntToString(value, val, sizeof(val));
+		VFormat(dummy, sizeof(dummy), key, 4);
+		return view_as<StringMap>(this).SetString(dummy, val, replace);
+	}
+	
+	/*
+	 *	Sets a boolean value in a Map.
+	 *
+	 *	@param	key		Key string.
+	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *	@param	...		Additional key parameters.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetStringBool(const char[] key, bool value, bool replace=true, any ...) {
+		char val[16], dummy[256];
+		IntToString(view_as<int>(value), val, sizeof(val));
+		VFormat(dummy, sizeof(dummy), key, 4);
+		return view_as<StringMap>(this).SetString(dummy, val, replace);
+	}
+	
+	/*
+	 *	Sets a string value in a Map, either inserting a new entry or replacing an old one.
+	 *
+	 *	@param	index	Key index.
+	 *	@param	value	String to store.
+	 *	@param	replace	If false, operation will fail if the key is already set.
+	 *	@param	...		Additional value parameters.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetIndexString(int index, const char[] value, bool replace=true, any ...) {
+		char key[16], dummy[256];
+		IntToString(index, key, sizeof(key));
+		VFormat(dummy, sizeof(dummy), value, 4);
+		return view_as<StringMap>(this).SetString(key, dummy, replace);
+	}
+	
+	/*
+	 *	Sets a string value in a Map, either inserting a new entry or replacing an old one.
+	 *
+	 *	@param	index	Key index.
+	 *	@param	value	Index to store.
+	 *	@param	replace	If false, operation will fail if the key is already set.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetIndex(int index, int value, bool replace=true) {
+		char key[16], val[16];
+		IntToString(index, key, sizeof(key));
+		IntToString(value, val, sizeof(val));
+		return view_as<StringMap>(this).SetString(key, val, replace);
+	}
+	
+	/*
+	 *	Sets an array value in a Map, either inserting a new entry or replacing an old one.
+	 *
+	 *	@param	index		Key index.
+	 *	@param	array		Array to store.
+	 *	@param	array_size	Number of items in the array.
+	 *	@param	replace		If false, operation will fail if the key is already set.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetIndexArray(int index, const any[] array, int array_size, bool replace=true) {
+		char key[16];
+		IntToString(index, key, sizeof(key));
+		return view_as<StringMap>(this).SetArray(key, array, array_size, replace);
+	}
+	
+	/*
+	 *	Retrieves a string in a Map.
+	 *
+	 *	@param	key		Key string.
+	 *	@param	value	Buffer to store value.
+	 *	@param	maxlen	Maximum size of string buffer.
+	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *
+	 *	@return	True on success.  False if the key is not set, or the key is set as a value or array (not a string).
+	 */
+	public bool GetString(const char[] key, char[] value, int maxlen, int &size=0) { return view_as<StringMap>(this).GetString(key, value, maxlen, size); }
+	
+	/*
+	 *	Retrieves an index in a Map.
+	 *
+	 *	@param	key		Key string.
+	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *	@param	...		Additional key parameters.
+	 *
+	 *	@return	Value on success. 0 if the key is not set, or the key is set as a value or array (not a string).
+	 */
+	public int GetStringIndex(const char[] key, int &size=0, any ...) {
+		char value[16], dummy[256];
+		VFormat(dummy, sizeof(dummy), key, 3);
+		view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size);
+		return StringToInt(value);
+	}
+	
+	/*
+	 *	Retrieves a value in a Map.
+	 *
+	 *	@param	key		Key string.
+	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *	@param	...		Additional key parameters.
+	 *
+	 *	@return	Value on success. 0 if the key is not set, or the key is set as a value or array (not a string).
+	 */
+	public any GetStringValue(const char[] key, int &size=0, any ...) {
+		char value[16], dummy[256];
+		VFormat(dummy, sizeof(dummy), key, 3);
+		view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size);
+		return StringToInt(value);
+	}
+	
+	/*
+	 *	Retrieves a value in a Map.
+	 *
+	 *	@param	key		Key string.
+	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *	@param	...		Additional key parameters.
+	 *
+	 *	@return	Value on success. 0 if the key is not set, or the key is set as a value or array (not a string).
+	 */
+	public bool GetStringBool(const char[] key, int &size=0, any ...) {
+		char value[16], dummy[256];
+		VFormat(dummy, sizeof(dummy), key, 3);
+		view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size);
+		return view_as<bool>(StringToInt(value));
+	}
+	
+	/*
+	 *	Retrieves an index in a Map.
+	 *
+	 *	@param	index	Key index.
+	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *
+	 *	@return	value on success. 0 if the key is not set, or the key is set as a value or array (not a string).
+	 */
+	public int GetIndex(int index, any &size=0) {
+		char key[16], value[16];
+		IntToString(index, key, sizeof(key));
+		view_as<StringMap>(this).GetString(key, value, sizeof(value), size);
+		return StringToInt(value);
+	}
+	
+	/*
+	 *	Retrieves a string in a Map.
+	 *
+	 *	@param	index	Key index.
+	 *	@param	value	Buffer to store value.
+	 *	@param	maxlen	Maximum size of string buffer.
+	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *	@param	...		Additional value parameters
+	 *
+	 *	@return	True on success.  False if the key is not set, or the key is set as a value or array (not a string).
+	 */
+	public bool GetIndexString(int index, char[] value, int maxlen, int &size=0, any ...) {
+		char key[16], dummy[256];
+		IntToString(index, key, sizeof(key));
+		VFormat(dummy, sizeof(dummy), value, 5);
+		return view_as<StringMap>(this).GetString(key, dummy, maxlen, size);
+	}
+	
+	/*
+	 *	Retrieves an array in a Map.
+	 *	
+	 *	@param	index		Key index.
+	 *	@param	array		Buffer to store array.
+	 *	@param	array_size	Maximum size of array buffer.
+	 *	@param	size		Optional parameter to store the number of elements written to the buffer.
+	 *
+	 *	@return	True on success.  False if the key is not set, or the key is set as a value or string (not an array).
+	 */
+	public bool GetIndexArray(int index, any[] array, int array_size, int &size=0) {
+		char key[16];
+		IntToString(index, key, sizeof(key));
+		return view_as<StringMap>(this).GetArray(key, array, array_size, size);
+	}
+	
+	/*
+	 *	Checks whether a key is present in a Map.
+	 *
+	 *	@param	key	Key string.
+	 *
+	 *	@return	True if the key has been found, else false.
+	 */
+	public bool ContainsKey(const char[] key) { return view_as<StringMap>(this).ContainsKey(key); }
+	
+	/*
+	 *	Checks whether a key is present in a Map.
+	 *
+	 *	@param	index	Key index.
+	 *
+	 *	@return	True if the key has been found, else false.
+	 */
+	public bool ContainsIndex(int index) {
+		char key[16];
+		IntToString(index, key, sizeof(key));
+		return view_as<StringMap>(this).ContainsKey(key);
+	}
+	
+	/*
+	 *	Removes a key entry from a Map.
+	 *
+	 *	@param	key	Key string.
+	 *
+	 *	@return	True on success, false if the value was never set.
+	 */
+	public bool Remove(const char[] key) { return view_as<StringMap>(this).Remove(key); }
+	
+	/*
+	 *	Removes a key entry from a Map.
+	 *
+	 *	@param	index	Key index.
+	 *
+	 *	@return	True on success, false if the value was never set.
+	 */
+	public bool RemoveIndex(int index) {
+		char key[16];
+		IntToString(index, key, sizeof(key));
+		return view_as<StringMap>(this).Remove(key);
+	}
+
+	/*
+	 *	Clears all entries from a Map.
+	 */
+	public void Clear() { view_as<StringMap>(this).Clear(); }
+
+	/*
+	 *	Create a snapshot of the map's keys. See StringMapSnapshot.
+	 */
+	public Handle Snapshot() { view_as<StringMap>(this).Snapshot(); }
+
+	/*
+	 *	Retrieves the number of elements in a map.
+	 */
+	property int Size {
+		public get() { return view_as<StringMap>(this).Size; }
+	}
+}
+
+methodmap StringMapSnapshotEx < StringMapSnapshot {
+	/**
+	 *	Create a snapshot of the maps's keys. See StringMapSnapshot.
+	 *	Same as StringMap.Snapshot(), but more 'straightforward' (?)
+	 *
+	 *	@param	stringmap	The map you want to clone its keys from.
+	 */
+	public StringMapSnapshotEx(Handle stringmap) { return view_as<StringMapSnapshotEx>(view_as<StringMap>(stringmap).Snapshot()); }
+	
+	/*
+	 *	Returns the number of keys in the map snapshot.
+	 */
+	property int Length {
+		public get() { return view_as<StringMapSnapshot>(this).Length; }
+	}
+	
+	/*
+	 *	Returns the buffer size required to store a given key. That is, it
+	 *	returns the length of the key plus one.
+	 *	
+	 *	@param	index	Key index (starting from 0).
+	 *
+	 *	@return	Buffer size required to store the key string.
+	 *
+	 *	@error	Index out of range.
+	 */
+	public int KeyBufferSize(int index) { return view_as<StringMapSnapshot>(this).KeyBufferSize(index); }
+	
+	/*
+	 *	Retrieves the key string of a given key in a map snapshot.
+	 *	
+	 *	@param	index		Key index (starting from 0).
+	 *	@param	buffer		String buffer.
+	 *	@param	maxlength	Maximum buffer length.
+	 *
+	 *	@return	Number of bytes written to the buffer.
+	 *
+	 *	@error	Index out of range.
+	 */
+	public int GetKey(int index, char[] buffer, int maxlength) { return view_as<StringMapSnapshot>(this).GetKey(index, buffer, maxlength); }
+	
+	/*
+	 *	Retrieves the key string of a given key in a map snapshot.
+	 *	
+	 *	@param	index		Key index (starting from 0).
+	 *
+	 *	@return	Index value.
+	 *
+	 *	@error	Index out of range.
+	 */
+	public int GetIndex(int index) {
+		char dummy[16], val[16];
+		IntToString(index, dummy, sizeof(dummy));
+		view_as<StringMapSnapshot>(this).GetKey(index, val, sizeof(val));
+		return StringToInt(val);
+	}
+}
+
 /**
  *	Creates a new console boolean variable.
  *
@@ -287,9 +713,7 @@ methodmap PanelEx < Panel {
  *
  *	@error               Convar name is blank or is the same as an existing console command.
  */
-stock ConVar CreateConVarBool(const char[] name, bool defaultValue, const char[] description, int flags=0) {
-	return CreateConVar(name, defaultValue ? "1":"0", description, flags, true, 0.0, true, 1.0);
-}
+stock ConVar CreateConVarBool(const char[] name, bool defaultValue, const char[] description, int flags=0) { return CreateConVar(name, defaultValue ? "1":"0", description, flags, true, 0.0, true, 1.0); }
 
 /**
  *	Adds ConVar flag(s).
@@ -373,3 +797,25 @@ stock bool RemoveConVarFlagsEx(const char[] convar, int flags)	{
  *	@return	If handle is valid, this returns true. Returns false otherwise.
  */
 stock bool IsValidAddress(Address address) { return view_as<bool>(address != Address_Null); }
+
+/**
+ *	Same as SQL_Connect but this is if you just want a temporary connection.
+ *
+ *	@param	confname	The name of the database config connection.
+ *	@param	persistent	If true, it will try to use a previous persistent connection.
+ *	@param	dbg			If true, it will show message if the connection returned 'null' (Error) or if it succeeded.
+ *
+ *	@return	Returns the SQL Connection. If invalid, returns null.
+ */
+stock Database SQL_Connect2(const char[] confname, bool persistent=true, bool dbg=false) {
+	char error[256];
+	Database database = SQL_Connect(confname, persistent, error, sizeof(error));
+	if(dbg) {
+		switch(!database) {
+			case true: PrintToServer("[Tklib: SQL_Connect2] - Connection to database \"%s\" had an error (%s)", confname, error);
+			case false: PrintToServer("[Tklib: SQL_Connect2] - Connection to database \"%s\" succeeded!", confname);
+		}
+	}
+	
+	return database;
+}

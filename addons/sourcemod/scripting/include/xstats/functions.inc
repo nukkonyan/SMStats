@@ -269,6 +269,8 @@ enum struct XStatsPlayer {
 	
 	int Points;
 	int Position;
+	
+	StringMapEx InvCallback;
 }
 
 enum struct XStatsPanel {

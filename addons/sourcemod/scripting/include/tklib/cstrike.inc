@@ -4,12 +4,12 @@
 #if !defined _tklib_no_cstrike
 
 stock char
-CSS_GetTeamStringName[][] = {"{grey}Unassigned{default}","{grey}Spectators{default}","{red}Terrorists{default}","{blue}Counter-Terrorists{default}"},
-CSS_GetTeamColour[][] = {"{grey}","{grey}","{red}","{blue}"},
+CSS_TeamNameEx[][] = {"{grey}Unassigned{default}","{grey}Spectators{default}","{red}Terrorists{default}","{blue}Counter-Terrorists{default}"},
+CSS_TeamColour[][] = {"{grey}","{grey}","{red}","{blue}"},
 CS_TeamName[][] = {"Unassigned","Spectators","Terrorists","Counter-Terrorists"},
-CS_TeamNameEx[][] = {"Unassigned","Spec","T","CT"},
-CS_GetSlotName[][] = {"Primary","Secondary","Knife","Grenade","C4 Bomb","Slot 5","Slot 6","Slot 7","Slot 8","Slot 9","Slot 10","Shield"},
-CS_GetWeaponTypeName[][] = {"Knife","Pistol","SMG","Rifle","Shotgun","Sniper","Machine Gun","C4 Bomb","Zeus Taser","Grenade","Weapon Type 10","Health Shot"};
+CS_TeamNameShort[][] = {"Unassigned","Spec","T","CT"},
+CS_SlotName[][] = {"Primary","Secondary","Knife","Grenade","C4 Bomb","Slot 5","Slot 6","Slot 7","Slot 8","Slot 9","Slot 10","Shield"},
+CS_WeaponTypeName[][] = {"Knife","Pistol","SMG","Rifle","Shotgun","Sniper","Machine Gun","C4 Bomb","Zeus Taser","Grenade","Weapon Type 10","Health Shot"};
 
 //CS Slots
 enum CSSlot {

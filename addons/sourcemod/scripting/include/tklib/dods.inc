@@ -4,17 +4,9 @@
 #if !defined _tklib_disable_dods
 
 stock char
-DOD_GetTeamStringName[][] = {
-	"{grey}Unassigned{default}",
-	"{grey}Spectators{defualt}",
-	"{red}Wehrmacht{default}",
-	"{blue}U.S Army{default}"
-}, DODS_GetTeamColour[][] = {
-	"{grey}",
-	"{grey}",
-	"{red}",
-	"{blue}"
-};
+DOD_TeamNameEx[][] = {"{grey}Unassigned{default}","{grey}Spectators{default}","{red}Wehrmacht{default}","{blue}U.S Army{default}"},
+DOD_TeamName[][] = {"Unassigned","Spectators","Wehrmacht","U.S Army"},
+DOD_GetTeamColour[][] = {"{grey}","{grey}","{red}","{blue}"};
 
 //Day Of Defeat: Source enum
 enum DODTeam {
@@ -26,25 +18,25 @@ enum DODTeam {
 }
 
 enum DODSlot {
-	DODSlot_Primary		= 0,
-	DODSlot_Secondary	= 1,
-	DODSlot_Slot3		= 2,
-	DODSlot_Slot4		= 3,
-	DOSSlot_Slot5		= 4
+	DODSlot_Primary = 0,
+	DODSlot_Secondary = 1,
+	DODSlot_Slot3 = 2,
+	DODSlot_Slot4 = 3,
+	DOSSlot_Slot5 = 4
 }
 
 enum {
-	DOD_Weapon_K98K				= 1,
-	DOD_Weapon_Spade			= 2,
-	DOD_Weapon_RifleGrenade_Ger	= 3,
-	DOD_Weapon_MP40				= 4,
-	DOD_Weapon_P38				= 5,
-	DOD_Weapon_FragGrenade_Ger	= 6,
-	DOD_Weapon_STG44			= 7,
-	DOD_Weapon_K98_Sniper		= 8,
-	DOD_Weapon_MG42				= 9,
-	DOD_Weapon_PanzerSchreck	= 10,
-	DOD_Weapon_C96				= 11,
+	DOD_Weapon_K98K = 1,
+	DOD_Weapon_Spade = 2,
+	DOD_Weapon_RifleGrenade_Ger = 3,
+	DOD_Weapon_MP40 = 4,
+	DOD_Weapon_P38 = 5,
+	DOD_Weapon_FragGrenade_Ger = 6,
+	DOD_Weapon_STG44 = 7,
+	DOD_Weapon_K98_Sniper = 8,
+	DOD_Weapon_MG42 = 9,
+	DOD_Weapon_PanzerSchreck = 10,
+	DOD_Weapon_C96 = 11,
 }
 
 #define	DODTeam(%1) view_as<DODTeam>(%1)
