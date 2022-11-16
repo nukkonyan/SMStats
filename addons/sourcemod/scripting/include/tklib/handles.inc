@@ -49,7 +49,7 @@ methodmap MenuEx < Menu {
 	public bool AddItemIntEx(int info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
 		char dummy[16];
 		IntToString(info, dummy, sizeof(dummy));
-		int maxlen = strlen(display)+128;
+		int maxlen = strlen(display)*3;
 		char[] format = new char[maxlen++];
 		VFormat(format, maxlen, display, 5);
 		return view_as<Menu>(this).AddItem(dummy, format, style);
@@ -64,7 +64,7 @@ methodmap MenuEx < Menu {
 	public bool AddItemAnyEx(any info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
 		char dummy[16];
 		IntToString(info, dummy, sizeof(dummy));
-		int maxlen = strlen(display)+128;
+		int maxlen = strlen(display)*3;
 		char[] format = new char[maxlen++];
 		VFormat(dummy, maxlen, display, 5);
 		return view_as<Menu>(this).AddItem(dummy, format, style);
@@ -79,7 +79,7 @@ methodmap MenuEx < Menu {
 	public bool AddItemFloatEx(float info, const char[] display, int style = ITEMDRAW_DEFAULT, any ...) {
 		char dummy[16];
 		FloatToString(info, dummy, sizeof(dummy));
-		int maxlen = strlen(display)+128;
+		int maxlen = strlen(display)*3;
 		char[] format = new char[maxlen++];
 		VFormat(format, maxlen, display, 5);
 		return view_as<Menu>(this).AddItem(dummy, format, style);
@@ -134,8 +134,8 @@ methodmap PanelEx < Panel {
 	 *	@param	...		Additional parameters.
 	 */
 	public bool SetTitle(const char[] text, any ...) {
-		int maxlen = strlen(text)+65;
-		char[] dummy = new char[maxlen];
+		int maxlen = strlen(text)*3;
+		char[] dummy = new char[maxlen++];
 		VFormat(dummy, maxlen, text, 3); /* 1 is the panel, 2 is the input, 3 is the parameters */
 		view_as<Panel>(this).SetTitle(dummy);
 	}
@@ -152,8 +152,8 @@ methodmap PanelEx < Panel {
 	 *	@return			A slot position, or 0 if item was a rawline or could not be drawn.
 	 */
 	public int DrawItem(const char[] text, any ...) {
-		int maxlen = strlen(text)+65;
-		char[] dummy = new char[maxlen];
+		int maxlen = strlen(text)*3;
+		char[] dummy = new char[maxlen++];
 		VFormat(dummy, maxlen, text, 3);
 		return view_as<Panel>(this).DrawItem(dummy);
 	}
@@ -171,8 +171,8 @@ methodmap PanelEx < Panel {
 	 *	@return			A slot position, or 0 if item was a rawline or could not be drawn.
 	 */
 	public int DrawItemEx(const char[] text, int style=ITEMDRAW_DEFAULT, any ...) {
-		int maxlen = strlen(text)+65;
-		char[] dummy = new char[maxlen];
+		int maxlen = strlen(text)*3;
+		char[] dummy = new char[maxlen++];
 		VFormat(dummy, maxlen, text, 4);
 		return view_as<Panel>(this).DrawItem(dummy, style);
 	}
@@ -186,8 +186,8 @@ methodmap PanelEx < Panel {
 	 *	@return			True on success, false if raw lines are not supported.
 	 */
 	public bool DrawText(const char[] text, any ...) {
-		int maxlen = strlen(text)+65;
-		char[] dummy = new char[maxlen];
+		int maxlen = strlen(text)*3;
+		char[] dummy = new char[maxlen++];
 		VFormat(dummy, maxlen, text, 3);
 		return view_as<Panel>(this).DrawText(dummy);
 	}
@@ -305,10 +305,16 @@ methodmap StringMapEx < StringMap {
 	 *	@param	key			Key string.
 	 *	@param	value		Value to store at this key.
 	 *	@param	replace		If false, operation will fail if the key is already set.
+	 *	@param	...			Additional key parameters.
 	 *
 	 *	@return	True on success, false on failure.
 	 */
-	public bool SetValue(const char[] key, any value, bool replace=true) { return view_as<StringMap>(this).SetValue(key, value, replace); }
+	public bool SetValue(const char[] key, any value, bool replace=true, any ...) {
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 4);
+		return view_as<StringMap>(this).SetValue(dummy, value, replace);
+	}
 	
 	/*
 	 *	Retrieves a value in a Map.
@@ -320,8 +326,9 @@ methodmap StringMapEx < StringMap {
 	 *	@return	True on success. False if the key is not set, or the key is set as an array or string (not a value).
 	 */
 	public bool GetValue(const char[] key, int &size=0, any ...) {
-		char dummy[256];
-		VFormat(dummy, sizeof(dummy), key, 3);
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 3);
 		return view_as<StringMap>(this).GetValue(dummy, size);
 	}
 	
@@ -336,8 +343,9 @@ methodmap StringMapEx < StringMap {
 	 *	@return	True on success, false on failure.
 	 */
 	public bool SetArray(const char[] key, const any[] array, int array_size, bool replace=true, any ...) {
-		char dummy[256];
-		VFormat(dummy, sizeof(dummy), key, 5);
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 5);
 		return view_as<StringMap>(this).SetArray(dummy, array, array_size, replace);
 	}
 	
@@ -353,8 +361,9 @@ methodmap StringMapEx < StringMap {
 	 *	@return	True on success.  False if the key is not set, or the key is set as a value or string (not an array).
 	 */
 	public bool GetArray(const char[] key, any[] array, int array_size, int &size=0, any ...) {
-		char dummy[256];
-		VFormat(dummy, sizeof(dummy), key, 5);
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 5);
 		return view_as<StringMap>(this).GetArray(dummy, array, array_size, size);
 	}
 	
@@ -380,9 +389,11 @@ methodmap StringMapEx < StringMap {
 	 *	@return	True on success, false on failure.
 	 */
 	public bool SetStringIndex(const char[] key, int index, bool replace=true, any ...) {
-		char value[16], dummy[256];
+		char value[16];
 		IntToString(index, value, sizeof(value));
-		VFormat(dummy, sizeof(dummy), key, 4);
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 4);
 		return view_as<StringMap>(this).SetString(dummy, value, replace);
 	}
 	
@@ -397,9 +408,11 @@ methodmap StringMapEx < StringMap {
 	 *	@return	True on success, false on failure.
 	 */
 	public bool SetStringValue(const char[] key, any value, bool replace=true, any ...) {
-		char val[16], dummy[256];
+		char val[16];
 		IntToString(value, val, sizeof(val));
-		VFormat(dummy, sizeof(dummy), key, 4);
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 4);
 		return view_as<StringMap>(this).SetString(dummy, val, replace);
 	}
 	
@@ -413,9 +426,11 @@ methodmap StringMapEx < StringMap {
 	 *	@return	True on success, false on failure.
 	 */
 	public bool SetStringBool(const char[] key, bool value, bool replace=true, any ...) {
-		char val[16], dummy[256];
+		char val[16];
 		IntToString(view_as<int>(value), val, sizeof(val));
-		VFormat(dummy, sizeof(dummy), key, 4);
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 4);
 		return view_as<StringMap>(this).SetString(dummy, val, replace);
 	}
 	
@@ -430,9 +445,11 @@ methodmap StringMapEx < StringMap {
 	 *	@return	True on success, false on failure.
 	 */
 	public bool SetIndexString(int index, const char[] value, bool replace=true, any ...) {
-		char key[16], dummy[256];
+		char key[16];
 		IntToString(index, key, sizeof(key));
-		VFormat(dummy, sizeof(dummy), value, 4);
+		int maxlen = strlen(value)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, value, 4);
 		return view_as<StringMap>(this).SetString(key, dummy, replace);
 	}
 	
@@ -475,10 +492,16 @@ methodmap StringMapEx < StringMap {
 	 *	@param	value	Buffer to store value.
 	 *	@param	maxlen	Maximum size of string buffer.
 	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *	@param	...		Additional key parameters.
 	 *
 	 *	@return	True on success.  False if the key is not set, or the key is set as a value or array (not a string).
 	 */
-	public bool GetString(const char[] key, char[] value, int maxlen, int &size=0) { return view_as<StringMap>(this).GetString(key, value, maxlen, size); }
+	public bool GetString(const char[] key, char[] value, int maxlen, int &size=0, any ...) {
+		int len = strlen(key)*3;
+		char[] dummy = new char[len++];
+		VFormat(dummy, len, key, 5);
+		return view_as<StringMap>(this).GetString(dummy, value, maxlen, size);
+	}
 	
 	/*
 	 *	Retrieves an index in a Map.
@@ -487,12 +510,14 @@ methodmap StringMapEx < StringMap {
 	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
 	 *	@param	...		Additional key parameters.
 	 *
-	 *	@return	Value on success. 0 if the key is not set, or the key is set as a value or array (not a string).
+	 *	@return	Value on success. -1 if the key is not set, or the key is set as a value or array (not a string).
 	 */
 	public int GetStringIndex(const char[] key, int &size=0, any ...) {
-		char value[16], dummy[256];
-		VFormat(dummy, sizeof(dummy), key, 3);
-		view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size);
+		char value[16];
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 3);
+		if(!view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size)) return -1;
 		return StringToInt(value);
 	}
 	
@@ -503,12 +528,14 @@ methodmap StringMapEx < StringMap {
 	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
 	 *	@param	...		Additional key parameters.
 	 *
-	 *	@return	Value on success. 0 if the key is not set, or the key is set as a value or array (not a string).
+	 *	@return	Value on success. -1 if the key is not set, or the key is set as a value or array (not a string).
 	 */
 	public any GetStringValue(const char[] key, int &size=0, any ...) {
-		char value[16], dummy[256];
-		VFormat(dummy, sizeof(dummy), key, 3);
-		view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size);
+		char value[16];
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 3);
+		if(!view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size)) return -1;
 		return StringToInt(value);
 	}
 	
@@ -519,12 +546,14 @@ methodmap StringMapEx < StringMap {
 	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
 	 *	@param	...		Additional key parameters.
 	 *
-	 *	@return	Value on success. 0 if the key is not set, or the key is set as a value or array (not a string).
+	 *	@return	Value on success. false if the key is not set, or the key is set as a value or array (not a string).
 	 */
 	public bool GetStringBool(const char[] key, int &size=0, any ...) {
-		char value[16], dummy[256];
-		VFormat(dummy, sizeof(dummy), key, 3);
-		view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size);
+		char value[16];
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 3);
+		if(!view_as<StringMap>(this).GetString(dummy, value, sizeof(value), size)) return false;
 		return view_as<bool>(StringToInt(value));
 	}
 	
@@ -555,9 +584,11 @@ methodmap StringMapEx < StringMap {
 	 *	@return	True on success.  False if the key is not set, or the key is set as a value or array (not a string).
 	 */
 	public bool GetIndexString(int index, char[] value, int maxlen, int &size=0, any ...) {
-		char key[16], dummy[256];
+		char key[16];
 		IntToString(index, key, sizeof(key));
-		VFormat(dummy, sizeof(dummy), value, 5);
+		int len = strlen(value)*3;
+		char[] dummy = new char[len++];
+		VFormat(dummy, len, value, 5);
 		return view_as<StringMap>(this).GetString(key, dummy, maxlen, size);
 	}
 	
@@ -603,10 +634,16 @@ methodmap StringMapEx < StringMap {
 	 *	Removes a key entry from a Map.
 	 *
 	 *	@param	key	Key string.
+	 *	@param	...	Additional key parameters.
 	 *
 	 *	@return	True on success, false if the value was never set.
 	 */
-	public bool Remove(const char[] key) { return view_as<StringMap>(this).Remove(key); }
+	public bool Remove(const char[] key, any ...) {
+		int maxlen = strlen(key)*3;
+		char[] dummy = new char[maxlen++];
+		VFormat(dummy, maxlen, key, 2);
+		return view_as<StringMap>(this).Remove(dummy);
+	}
 	
 	/*
 	 *	Removes a key entry from a Map.
@@ -694,6 +731,224 @@ methodmap StringMapSnapshotEx < StringMapSnapshot {
 		IntToString(index, dummy, sizeof(dummy));
 		view_as<StringMapSnapshot>(this).GetKey(index, val, sizeof(val));
 		return StringToInt(val);
+	}
+}
+
+// Lil' alternative to Database handle.
+
+/**
+ * Callback for receiving asynchronous database connections.
+ *
+ *	@param	db		Handle to the database connection.
+ *	@param	error	Error string if there was an error.  The error could be 
+ *					empty even if an error condition exists, so it is important 
+ *					to check the actual Handle value instead.
+ *	@param	data	Data passed in via the original threaded invocation.
+ */
+typeset SQLConnectCallbackEx {
+	function void (DatabaseEx db, const char[] error);
+	function void (Database db, const char[] error);
+	function void (DatabaseEx db, const char[] error, any data);
+	function void (Database db, const char[] error, any data);
+}
+
+/**
+ *	Callback for receiving asynchronous database query results.
+ *
+ *	@param	db			Cloned handle to the database connection.
+ *	@param	results		Result object, or null on failure.
+ *	@param	error		Error string if there was an error.  The error could be 
+ *						empty even if an error condition exists, so it is important 
+ *						to check the actual results value instead.
+ * @param	data		Data passed in via the original threaded invocation.
+ */
+typeset SQLQueryCallbackEx {
+	function void (DatabaseEx db, DBResultSet results, const char[] error);
+	function void (Database db, DBResultSet results, const char[] error);
+	function void (DatabaseEx db, DBResultSet results, const char[] error, any data);
+	function void (Database db, DBResultSet results, const char[] error, any data);
+}
+
+methodmap DatabaseEx < Handle {
+	/*
+	 *	Connects to a database asynchronously, so the game thread is not blocked.
+	 *
+	 *	@param	callback	Callback. If no driver was found, the owner is null.
+	 *	@param	name		Database configuration name.
+	 *	@param	data		Extra data value to pass to the callback.
+	 */
+	public static void Connect(SQLConnectCallbackEx callback, const char[] name="default", any data=0) {
+		Database.Connect(view_as<SQLConnectCallback>(callback), name, data);
+	}
+	
+	public DatabaseEx ConnectEx(const char[] confname, bool persistent=true, char[] error, int maxlen) {
+		return view_as<DatabaseEx>(SQL_Connect(confname, persistent, error, maxlen));
+	}
+	
+	public DatabaseEx Connect2(const char[] confname, bool persistent=true, bool dbg=false) {
+		return view_as<DatabaseEx>(SQL_Connect2(confname, persistent, dbg));
+	}
+
+	// Returns the driver for this database connection.
+	property DBDriver Driver {
+		public get() {
+			return view_as<Database>(this).Driver;
+		}
+	}
+
+	// Sets the character set of the connection. 
+	// Like SET NAMES .. in mysql, but stays after connection problems.
+	// 
+	// Example: "utf8", "latin1"
+	//
+	// @param charset       The character set string to change to.
+	// @return              True, if character set was changed, false otherwise.
+	public bool SetCharset(const char[] charset="utf8mb4") {
+		return view_as<Database>(this).SetCharset(charset);
+	}
+
+	// Escapes a database string for literal insertion.  This is not needed
+	// for binding strings in prepared statements.  
+	//
+	// Generally, database strings are inserted into queries enclosed in 
+	// single quotes (').  If user input has a single quote in it, the 
+	// quote needs to be escaped.  This function ensures that any unsafe 
+	// characters are safely escaped according to the database engine and 
+	// the database's character set.
+	//
+	// NOTE: SourceMod only guarantees properly escaped strings when the query
+	// encloses the string in single quotes. While drivers tend to allow double
+	// quotes (") instead, the string may be not be escaped (for example, on SQLite)!
+	//
+	// @param string        String to quote.
+	// @param buffer        Buffer to store quoted string in.
+	// @param maxlen        Maximum length of the buffer.
+	// @param written       Optionally returns the number of bytes written.
+	// @return              True on success, false if buffer is not big enough.
+	//                      The buffer must be at least 2*strlen(string)+1.
+	public bool Escape(const char[] string, char[] buffer, int maxlen, int &written=0) {
+		return view_as<Database>(this).Escape(string, buffer, maxlen, written);
+	}
+
+	// Formats a string according to the SourceMod format rules (see documentation).
+	// All format specifiers are escaped (see SQL_EscapeString) unless the '!' flag is used.
+	//
+	// @param buffer        Destination string buffer.
+	// @param maxlen        Maximum length of output string buffer.
+	// @param format        Formatting rules.
+	// @param ...           Variable number of format parameters.
+	// @return              Number of cells written.
+	public int Format(char[] buffer, int maxlen, const char[] format, any ...) {
+		int len = (strlen(format)+1)*3;
+		char[] fmt = new char[len];
+		VFormat(fmt, len, format, 5);
+		return view_as<Database>(this).Format(buffer, maxlen, fmt);
+	}
+
+	// Returns whether a database is the same connection as another database.
+	public native bool IsSameConnection(Database other);
+
+	// Executes a query via a thread. The result handle is passed through the
+	// callback.
+	//
+	// The database handle returned through the callback is always a new Handle,
+	// and if necessary, IsSameConnection() should be used to test against other
+	// connections.
+	//
+	// The result handle returned through the callback is temporary and destroyed 
+	// at the end of the callback.
+	//
+	// @param callback       Callback.
+	// @param query          Query string.
+	// @param data           Extra data value to pass to the callback.
+	// @param prio           Priority queue to use.
+	public void Query(SQLQueryCallbackEx callback, const char[] query, any data = 0, DBPriority prio = DBPrio_Normal) {
+		view_as<Database>(this).Query(view_as<SQLQueryCallback>(callback), query, data, prio);
+	}
+	
+	public void QueryEx(SQLQueryCallbackEx callback, const char[] query, any data = 0, DBPriority prio = DBPrio_Normal, any ...) {
+		int maxlen = (strlen(query)+1)*3;
+		char[] dummy = new char[maxlen];
+		VFormat(dummy, maxlen, query, 6);
+		view_as<Database>(this).Query(view_as<SQLQueryCallback>(callback), dummy, data, prio);
+	}
+	
+	/**
+	 *	Executes a simply query and returns a query Handle for
+	 *	recieving the results.
+	 *	This one is allows for additional parameters, making Format not required.
+	 *
+	 *	@param	query		The query string.
+	 *
+	 *	@return	A new Query Handle on success, else nulll.
+	 *
+	 *	@error	If the database is invalid, this returns null.
+	 */
+	public DBResultSet Query2(const char[] query, any ...) {
+		if(view_as<Database>(this) != null) {
+			int maxlen = (strlen(query)+1)*2;
+			char[] format = new char[maxlen];
+			VFormat(format, maxlen, query, 3);
+			return SQL_Query(view_as<Database>(this), format);
+		}
+		
+		return null;
+	}
+
+	// Sends a transaction to the database thread. The transaction handle is
+	// automatically closed. When the transaction completes, the optional
+	// callback is invoked.
+	//
+	// @param txn            A transaction handle.
+	// @param onSuccess      An optional callback to receive a successful transaction.
+	// @param onError        An optional callback to receive an error message.
+	// @param data           An optional value to pass to callbacks.
+	// @param prio           Priority queue to use.
+	public void Execute(Transaction txn, 
+						SQLTxnSuccess onSuccess = INVALID_FUNCTION, 
+						SQLTxnFailure onError = INVALID_FUNCTION, 
+						any data = 0, DBPriority prio = DBPrio_Normal) {
+		view_as<Database>(this).Execute(txn, onSuccess, onError, data, prio);
+	}
+	                           
+	// Returns if a named configuration is present in databases.cfg.
+	//
+	// @param name          Configuration name.
+	// @return              True if it exists, false otherwise.
+	//
+	public static bool CheckConfig(const char[] name) {
+		return SQL_CheckConfig(name);
+	}
+	
+	// Locks a database so threading operations will not interrupt.
+	//
+	// If you are using a database Handle for both threading and non-threading,
+	// this MUST be called before doing any set of non-threading DB operations.
+	// Otherwise you risk corrupting the database driver's memory or network
+	// connection.
+	// 
+	// Leaving a lock on a database and then executing a threaded query results
+	// in a dead lock! Make sure to call Database.Unlock()!
+	//
+	// If the lock cannot be acquired, the main thread will pause until the 
+	// threaded operation has concluded.
+	//
+	// @error               Invalid database Handle.
+	//
+	public void Lock() {
+		SQL_LockDatabase(view_as<Database>(this));
+	}
+	
+	// Unlocks a database so threading operations may continue.
+	//
+	// @error               Invalid database Handle.
+	//
+	public void Unlock() {
+		SQL_UnlockDatabase(view_as<Database>(this));
+	}
+	
+	public bool GetError(char[] error, int maxlen) {
+		return SQL_GetError(view_as<Database>(this), error, maxlen);
 	}
 }
 
@@ -818,4 +1073,27 @@ stock Database SQL_Connect2(const char[] confname, bool persistent=true, bool db
 	}
 	
 	return database;
+}
+
+/**
+ *	Executes a simply query and returns a query Handle for
+ *	recieving the results.
+ *	This one is allows for additional parameters, making Format not required.
+ *
+ *	@param	database	The database handle.
+ *	@param	query		The query string.
+ *
+ *	@return	A new Query Handle on success, else nulll.
+ *
+ *	@error	If database is invalid, this returns null.
+ */
+stock DBResultSet SQL_QueryEx(Handle database, const char[] query, any ...) {
+	if(database != null) {
+		int maxlen = (strlen(query)+1)*2;
+		char[] format = new char[maxlen];
+		VFormat(format, maxlen, query, 3);
+		return SQL_Query(database, format);
+	}
+	
+	return null;
 }

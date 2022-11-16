@@ -37,7 +37,7 @@ void Games_DatabaseConnected()	{
 				//PrintToServer("[%i] %s", len, table);
 			}
 			
-			DB.Threaded.Query(DBQuery_CreateTables, query, 1);
+			SQL.Query(DBQuery_CreateTables, query, 1);
 		}
 		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for players statistical tracking.) (Did you install it correctly?.)", Global.logprefix, Global.playerlist);
 	}
@@ -57,7 +57,7 @@ void Games_DatabaseConnected()	{
 				//PrintToServer("[%i] %s", len, table);
 			}
 			
-			DB.Threaded.Query(DBQuery_CreateTables, query, 2);
+			SQL.Query(DBQuery_CreateTables, query, 2);
 		}
 		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking kills.) (Did you install it correctly?.)", Global.logprefix, Global.kill_log);
 	}
@@ -79,7 +79,7 @@ void Games_DatabaseConnected()	{
 						//PrintToServer("[%i] %s", len, table);
 					}
 					
-					DB.Threaded.Query(DBQuery_CreateTables, query, 3);
+					SQL.Query(DBQuery_CreateTables, query, 3);
 				}
 				case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking items found, traded, etc.) (Did you install it correctly?.)", Global.logprefix, Global.item_found);
 			}
@@ -101,7 +101,7 @@ void Games_DatabaseConnected()	{
 				//PrintToServer("[%i] %s", len, table);
 			}
 			
-			DB.Threaded.Query(DBQuery_CreateTables, query, 4);
+			SQL.Query(DBQuery_CreateTables, query, 4);
 		}
 		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking maps.) (Did you install it correctly?.)", Global.logprefix, Global.maps_log);
 	}
@@ -121,7 +121,7 @@ void Games_DatabaseConnected()	{
 				//PrintToServer("[%i] %s", len, table);
 			}
 			
-			DB.Threaded.Query(DBQuery_CreateTables, query, 5);
+			SQL.Query(DBQuery_CreateTables, query, 5);
 		}
 		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking weapon kills.) (Did you install it correctly?.)", Global.logprefix, Global.weapons);
 	}
@@ -141,7 +141,7 @@ void Games_DatabaseConnected()	{
 				//PrintToServer("[%i] %s", len, table);
 			}
 			
-			DB.Threaded.Query(DBQuery_CreateTables, query, 6);
+			SQL.Query(DBQuery_CreateTables, query, 6);
 		}
 		case false: XStats_DebugText(false, "%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking custom achievements.) (Did you install it correctly?.)", Global.logprefix, Global.achievements);
 	}

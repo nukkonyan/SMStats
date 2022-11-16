@@ -67,7 +67,7 @@ stock void TotalStatistics_TF2(int client)	{
 	len += Format(query[len], sizeof(query)-len, ", PassBallsBlocked");
 	/* Prepare the query */
 	len += Format(query[len], sizeof(query)-len, "from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_TotalStatistics_TF2, query, client);
+	SQL.Query(DBQuery_TotalStatistics_TF2, query, client);
 }
 
 stock void DBQuery_TotalStatistics_TF2(Database database, DBResultSet results, const char[] error, int client)	{

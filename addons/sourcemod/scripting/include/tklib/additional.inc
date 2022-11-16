@@ -26,7 +26,7 @@ enum boolEx { False = 0, True = 1, Maybe = 2 } //useful?
 stock AdminFlag AdmflagToAdminFlag(int adminflags) {
 	AdminFlag adminflag;
 	
-	switch(adminflags)	{
+	switch(adminflags) {
 		case ADMFLAG_RESERVATION: adminflag = Admin_Reservation;
 		case ADMFLAG_GENERIC: adminflag = Admin_Generic;
 		case ADMFLAG_KICK: adminflag = Admin_Kick;
@@ -289,56 +289,11 @@ stock bool SayText2(int client, int index=-1, const char[] message, any ...) {
  *	@noreturn
  */
 stock void SayText2All(int index=-1, const char[] message, any ...) {
-	int maxlen = strlen(message)+65;
+	int maxlen = strlen(message)*3;
 	char[] format = new char[maxlen];
 	VFormat(format, maxlen, message, 2);
 	TargetLoop(client) if(Tklib_IsValidClient(client, true)) SayText2(client, index, format);
 }
-
-/**
- *	Returns a cell in boolean from native parameter.
- *
- *	@param	param	Parameter number, starting from 1.
- *
- *	@return			Boolean value from cell at the parameter number.
- *
- *	@error			Invalid paramteter number or calling from non-native function.
- */
-stock bool GetNativeBool(int param)	{ return view_as<bool>(GetNativeCell(param)); }
-
-/**
- *	Executes a simply query and returns a query Handle for
- *	recieving the results.
- *	This one is allows for additional parameters, making Format not required.
- *
- *	@param	database	The database handle.
- *	@param	query		The query string.
- *
- *	@return	A new Query Handle on success, else nulll.
- *
- *	@error	If database is invalid, this returns null.
- */
-stock DBResultSet SQL_QueryEx(Handle database, const char[] query, any ...) {
-	if(database != null) {
-		int maxlen = strlen(query)+97;
-		char[] format = new char[maxlen];
-		VFormat(format, maxlen, query, 3);
-		return SQL_Query(database, format, -1);
-	}
-	
-	return null;
-}
-
-/**
- *	Returns a cell in address from native parameter.
- *
- *	@param	param	Parameter number, starting from 1.
- *
- *	@return	Address value from cell at the parameter number.
- *
- *	@error	Invalid paramteter number or calling from non-native function.
- */
-stock Address GetNativeAddress(int param) { return view_as<Address>(GetNativeCell(param)); }
 
 /**
  *	Returns if SourceBans is loaded.
@@ -516,6 +471,6 @@ stock any GetRandomAny(any any1, any any2) { return GetRandomInt(any1, any2); }
 /**
  *	Returns if the updater is loaded.
  */
-stock bool IsUpdaterAvailable()	{ return view_as<bool>(GetFeatureStatus(FeatureType_Native, "Updater_AddPlugin") == FeatureStatus_Available); }
+stock bool IsUpdaterAvailable()	{ return LibraryExists("updater"); }
 
 #endif

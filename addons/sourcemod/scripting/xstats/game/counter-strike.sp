@@ -67,12 +67,12 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 		Session[client].BombsPlanted++;
 		Format(query, sizeof(query), "update `%s` set BombsPlanted = BombsPlanted+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		if((points = BombEvent[0].IntValue) > 0)	{
-			AddSessionPoints(client, points);
+			Session[client].AddPoints(points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", Global.playerlist, points, Player[client].SteamID);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 			
 			CPrintToChat(client, "%s %t", Global.Prefix, "Bomb Planted", Player[client].Name, GetClientPoints(Player[client].SteamID), points);
 		}
@@ -84,12 +84,12 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 		Session[client].BombsDefused++;
 		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		if((points = BombEvent[1].IntValue) > 0)	{
-			AddSessionPoints(client, points);
+			Session[client].AddPoints(points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", Global.playerlist, points, Player[client].SteamID);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 			
 			CPrintToChat(client, "%s %t", Global.Prefix, "Bomb Defused", Player[client].Name, GetClientPoints(Player[client].SteamID), points);
 		}
@@ -99,12 +99,12 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 		Session[client].BombsExploded++;
 		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		if((points = BombEvent[2].IntValue) > 0)	{
-			AddSessionPoints(client, points);
+			Session[client].AddPoints(points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", Global.playerlist, points, Player[client].SteamID);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 			
 			CPrintToChat(client, "%s %t", Global.Prefix, "Bomb Exploded", Player[client].Name, GetClientPoints(Player[client].SteamID), points);
 		}
@@ -131,7 +131,7 @@ stock void CS_Hostages(Event event, const char[] event_name, bool dontBroadcast)
 			
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, HostagesRescued = HostagesRescued+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 		}
 	}
 	
@@ -143,7 +143,7 @@ stock void CS_Hostages(Event event, const char[] event_name, bool dontBroadcast)
 			
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, HostagesKilled = HostagesKilled+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 		}
 	}
 }
@@ -191,7 +191,7 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set FlashedOpponents = FlashedOpponents+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 }
 
 Action Timer_CS_Flashed(Handle timer, int client)	{	m_bIsFlashed[client] = false;	}

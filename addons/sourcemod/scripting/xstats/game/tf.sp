@@ -483,7 +483,7 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 		if(Tklib_IsValidClient(client, true) && !IsValidAbuse(client) && TF2_GetClientTeam(client) == TFTeam_Red)	{
 			count++;
 			
-			AddSessionPoints(client, points);
+			Session[client].AddPoints(points);
 			Session[client].TanksDestroyed++;
 			
 			char query[512];
@@ -518,13 +518,13 @@ stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool do
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
 	Session[client].SentryBustersKilled++;
-	AddSessionPoints(client, points);
+	Session[client].AddPoints(points);
 	CPrintToChat(client, "%s %t", Global.Prefix, "MvM Kill Sentry Buster", Player[client].Name, Player[client].Points, points);
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set Points = Points+%i, SentryBustersKilled = SentryBustersKilled+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 }
 
 stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool dontBroadcast)	{
@@ -537,13 +537,13 @@ stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool d
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
 	Session[client].BombsResetted++;
-	AddSessionPoints(client, points);
+	Session[client].AddPoints(points);
 	CPrintToChat(client, "%s %t", Global.Prefix, "MvM Player Reset Bomb", Player[client].Name, Player[client].Points, points);
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set Points = Points+%i, BombsResetted = BombsResetted+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 }
 
 /* Item found */
@@ -590,7 +590,7 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	len += Format(query[len], sizeof(query)-len, "values");
 	len += Format(query[len], sizeof(query)-len, "('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f')",
 	Cvars.ServerID.IntValue, Player[client].Playername, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, wear);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 	
 	XStats_DebugText(false, "Inserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear) with values ('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f') onto %s",
 	Cvars.ServerID.IntValue, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, wear, Global.item_found);
@@ -805,13 +805,13 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		if(dominated_assister)	{
 			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 		}
 		
 		if(revenge_assister)	{
 			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 		}
 	}
 	
@@ -821,7 +821,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	Session[client].Kills++;
 	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 		
 	//If the inflictor entity is a building.
 	switch(TF2_IsEntityBuilding(inflictor))	{
@@ -832,14 +832,14 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 					Session[client].MiniSentrykills++;
 					Format(query, sizeof(query), "update `%s` set SentryKills = SentryKills+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-					DB.Threaded.Query(DBQuery_Callback, query);
+					SQL.Query(DBQuery_Callback, query);
 					XStats_DebugText(false, "Building: Sentry\n");
 				}
 				case TFBuilding_MiniSentry:	{
 					Session[client].Sentrykills++;
 					Format(query, sizeof(query), "update `%s` set MiniSentryKills = MiniSentryKills+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-					DB.Threaded.Query(DBQuery_Callback, query);
+					SQL.Query(DBQuery_Callback, query);
 					XStats_DebugText(false, "Building: Mini-Sentry\n");
 				}
 			}
@@ -849,16 +849,16 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 				case true: {
 					Session[client].Telefrags++;
 					points += TF2_TeleFrag.IntValue;
-					AddSessionPoints(client, TF2_TeleFrag.IntValue);
+					Session[client].AddPoints(TF2_TeleFrag.IntValue);
 					Format(query, sizeof(query), "update `%s` set Telefrags = Telefrags+1 where SteamID='%s' and ServerID='%i'",
 					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-					DB.Threaded.Query(DBQuery_Callback, query);
+					SQL.Query(DBQuery_Callback, query);
 					XStats_DebugText(false, "Telefrag\n");
 				}
 				case false:	{
 					Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'",
 					Global.weapons, fix_weapon, fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
-					DB.Threaded.Query(DBQuery_Callback, query);
+					SQL.Query(DBQuery_Callback, query);
 					XStats_DebugText(false, "Updating kill for weapon \"%s\" (Definition index %i) for %s", fix_weapon, defindex, Player[client].Playername);
 				}
 			}
@@ -869,7 +869,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Headshots++;
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Headshot\n");
 	}
 		
@@ -877,7 +877,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Backstabs++;
 		Format(query, sizeof(query), "update `%s` set Backstabs = Backstabs+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Backstab\n");
 	}
 		
@@ -885,7 +885,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Dominations++;
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Dominated\n");
 	}
 		
@@ -893,7 +893,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Revenges++;
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Revenge\n");
 	}
 		
@@ -901,7 +901,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Noscopes++;
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Noscope\n");
 	}
 		
@@ -909,7 +909,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Tauntkills++;
 		Format(query, sizeof(query), "update `%s` set TauntKills = TauntKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Tauntkill\n");
 	}
 	
@@ -917,7 +917,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Deflects++;
 		Format(query, sizeof(query), "update `%s` set Deflects = Deflects+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Deflectkill\n");
 	}
 	
@@ -925,7 +925,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Gibs++;
 		Format(query, sizeof(query), "update `%s` set Gibs = Gibs+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Gibkill\n");
 	}
 	
@@ -933,7 +933,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Airshots++;
 		Format(query, sizeof(query), "update `%s` set Airshots = Airshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Airshot\n");
 	}
 	
@@ -941,7 +941,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].Collaterals++;
 		Format(query, sizeof(query), "update `%s` set Collaterals = Collaterals+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		if(TF2_Collat.IntValue > 0) points += TF2_Collat.IntValue;
 		XStats_DebugText(false, "Collateral\n");
@@ -951,7 +951,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].MidAirKills++;
 		Format(query, sizeof(query), "update `%s` set MidAirKills = MidAirKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "MidAir Kill\n");
 	}
 		
@@ -960,25 +960,25 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			Session[client].MiniCritkills++;
 			Format(query, sizeof(query), "update `%s` set MiniCritKills = MiniCritKills+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 			XStats_DebugText(false, "Mini-Crit\n");
 		}
 		case TFCritType_Crit: {
 			Session[client].Critkills++;
 			Format(query, sizeof(query), "update `%s` set CritKills = CritKills+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-			DB.Threaded.Query(DBQuery_Callback, query);
+			SQL.Query(DBQuery_Callback, query);
 			XStats_DebugText(false, "Crit\n");
 		}
 	}
 	
 	if(points > 0) {
-		AddSessionPoints(client, points);
+		Session[client].AddPoints(points);
 		XStats_DebugText(false, "Processing kill message..\n");
 		
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		PrepareKillMessage(client, victim, points);
 	}
@@ -991,7 +991,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		len += Format(log[len], sizeof(log)-len, "values");
 		len += Format(log[len], sizeof(log)-len, "('%i', '%i', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i', '%i')",
 		Cvars.ServerID.IntValue, GetTime(), Player[client].SteamID, Player[victim].SteamID, Player[assist].SteamID, fix_weapon, headshot, backstab, noscope, midair, crits);
-		DB.Threaded.Query(DBQuery_Kill_Log, log);
+		SQL.Query(DBQuery_Kill_Log, log);
 		
 		XStats_DebugText(false, "Inserting (ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType) values ('%i', '%i', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i', '%i') into %s",
 		Cvars.ServerID.IntValue, GetTime(), Player[client].SteamID, Player[victim].SteamID, Player[assist].SteamID, fix_weapon, headshot, backstab, noscope, midair, crits, Global.kill_log);

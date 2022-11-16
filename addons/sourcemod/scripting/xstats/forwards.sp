@@ -32,17 +32,20 @@ public void OnClientAuthorized(int client, const char[] auth) {
 	GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 	GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
 	Format(Player[client].SteamID, sizeof(Player[].SteamID), auth);
-	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Player[client].Country = "unknown country";	
+	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Player[client].Country = "unknown country";
+	/*
 	if(!DatabaseDirect()) {
 		XStats_DebugText(false, "Player %s was unable to be authorized properly due to database connection unavailable.", Player[client].Playername);
 		return;
 	}
+	*/
 	
-	DBResultSet results = SQL_QueryEx(DB.Direct, "select * from `%s` where SteamID='%s'", Global.playerlist, auth);
+	SQL.Lock();
+	DBResultSet results = SQL.Query2("select * from `%s` where SteamID='%s'", Global.playerlist, auth);
 	switch(results != null && results.RowCount != 0) {
 		/* Player was found */
 		case true: {
-			results = SQL_QueryEx(DB.Direct, "update `%s` set IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
+			results = SQL.Query2("update `%s` set IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[client].IP, Player[client].SteamID, Cvars.ServerID.IntValue);
 			
 			/* Avoid showing ip due to privacy */
@@ -51,13 +54,13 @@ public void OnClientAuthorized(int client, const char[] auth) {
 			
 			if(results == null)	{
 				char error[256];
-				SQL_GetError(DB.Direct, error, sizeof(error));
+				SQL_GetError(SQL, error, sizeof(error));
 				XStats_DebugText(true, "Updating player table into \"%s\" failed! (%s)", Global.playerlist, error);
 			}
 		}
 		/* Player wasn't found, adding.. */
 		case false: {
-			results = SQL_QueryEx(DB.Direct, "insert into `%s` (SteamID, IPAddress, ServerID) values ('%s', '%s', '%i')",
+			results = SQL.Query2("insert into `%s` (SteamID, IPAddress, ServerID) values ('%s', '%s', '%i')",
 			Global.playerlist, Player[client].SteamID, Player[client].IP, Cvars.ServerID.IntValue);
 			
 			XStats_DebugText(false, "Inserting into table \"%s\" \nSteamID \"%s\" (ServerID %i)",
@@ -65,17 +68,17 @@ public void OnClientAuthorized(int client, const char[] auth) {
 			
 			if(results == null) {
 				char error[256];
-				SQL_GetError(DB.Direct, error, sizeof(error));
+				SQL_GetError(SQL, error, sizeof(error));
 				XStats_DebugText(true, "Inserting player table into \"%s\" failed! (%s)", Global.playerlist, error);
 			}
 		}
 	}
 	
-	results = SQL_QueryEx(DB.Direct, "select * from `%s` where SteamID='%s'", Global.weapons, auth);
+	results = SQL.Query2("select * from `%s` where SteamID='%s'", Global.weapons, auth);
 	
 	/* Player wasn't found, adding.. */
 	if(results == null || results != null && results.RowCount == 0) {
-		results = SQL_QueryEx(DB.Direct, "insert into `%s` (SteamID, ServerID) values ('%s', '%i')",
+		results = SQL.Query2("insert into `%s` (SteamID, ServerID) values ('%s', '%i')",
 		Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
 		
 		XStats_DebugText(false, "Inserting into table \"%s\" \nSteamID \"%s\" (ServerID %i)",
@@ -83,12 +86,13 @@ public void OnClientAuthorized(int client, const char[] auth) {
 		
 		if(results == null) {
 			char error[256];
-			SQL_GetError(DB.Direct, error, sizeof(error));
+			SQL_GetError(SQL, error, sizeof(error));
 			XStats_DebugText(true, "Inserting player table into \"%s\" failed! (%s)", Global.weapons, error);
 		}
 	}
 	
 	delete results;
+	SQL.Unlock();
 }
 
 public void OnClientPutInServer(int client) {
@@ -144,7 +148,7 @@ Action IntervalPlayTimer(Handle timer, int client) {
 	
 	XStats_DebugText(false, "//===== XStats Debug Log: Updating players total ingame minutes =====//");
 	
-	if(DB.Threaded == null) {
+	if(!SQL) {
 		XStats_DebugText(false, "Tried updating player ingame total for %s time but database is invalid (Is the database actually connected?), ignoring..", Player[client].Playername);
 		return Plugin_Handled;
 	}
@@ -153,7 +157,7 @@ Action IntervalPlayTimer(Handle timer, int client) {
 	char query[256];
 	Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_IntervalPlayTimer, query, client);
+	SQL.Query(DBQuery_IntervalPlayTimer, query, client);
 	XStats_DebugText(false, "Updating playtime by adding additional minute for %s [%i Points]", Player[client].Playername, Player[client].Points);
 	return Plugin_Handled;
 }
@@ -182,7 +186,7 @@ Action MapLogTimer(Handle timer) {
 		return Plugin_Handled;
 	}
 	
-	if(DB.Threaded == null) {
+	if(!SQL) {
 		XStats_DebugText(false, "Tried updating map statistics but database is invalid (Is the database actually connected?), ignoring..");
 		return Plugin_Handled;
 	}
@@ -190,7 +194,7 @@ Action MapLogTimer(Handle timer) {
 	/* Check if map exists in database table */
 	char query[256];
 	Format(query, sizeof(query), "select '%s' from `%s`", Global.CurrentMap, Global.maps_log);
-	DB.Threaded.Query(DBQuery_MapLog_1, query);
+	SQL.Query(DBQuery_MapLog_1, query);
 	
 	XStats_DebugText(false, "//===== XStats Debug Log: Map Log =====//");
 	XStats_DebugText(false, "Checking if map \"%s\" exists on database table \"%s\"\n", Global.CurrentMap, Global.maps_log);
@@ -205,18 +209,18 @@ void DBQuery_MapLog_1(Database database, DBResultSet results, const char[] error
 		case true: {
 			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
 			Global.maps_log, Global.CurrentMap, Cvars.ServerID.IntValue);
-			DB.Threaded.Query(DBQuery_MapLog_2, query);
+			SQL.Query(DBQuery_MapLog_2, query);
 			XStats_DebugText(false, "Map was found, updating the playtime for \"%s\" by adding additional minute on database table \"%s\"\n", Global.CurrentMap, Global.maps_log);
 		}
 		/* Map was not found, lets add it */
 		case false: {
 			Format(query, sizeof(query), "insert into `%s` (MapName) values ('%s')", Global.maps_log, Global.CurrentMap);
-			DB.Threaded.Query(DBQuery_MapLog_2, query);
+			SQL.Query(DBQuery_MapLog_2, query);
 			XStats_DebugText(false, "Map \"%s\" not found on database, inserting it..\n", Global.CurrentMap);
 			
 			Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where MapName='%s' and ServerID='%i'",
 			Global.maps_log, Global.CurrentMap, Cvars.ServerID.IntValue);
-			DB.Threaded.Query(DBQuery_MapLog_2, query);
+			SQL.Query(DBQuery_MapLog_2, query);
 			XStats_DebugText(false, "Updating the playtime on the added map by adding additional minute\n");
 		}
 	}

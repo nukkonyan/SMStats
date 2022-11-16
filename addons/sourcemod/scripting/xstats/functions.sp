@@ -37,11 +37,13 @@ stock bool SetStored(int client, char[] str, any value, any ...)
 stock int GetClientPoints(const char[] auth) {
 	int points = 0;
 	
-	if(DB.Direct != null) {
-		DBResultSet results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
+	if(SQL != null) {
+		SQL.Lock();
+		DBResultSet results = SQL.Query2("select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		points = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
 		
 		delete results;
+		SQL.Unlock();
 	}
 	
 	XStats_DebugText(false, "GetClientPoints was fired for \"%s\", returning %i", auth, points);
@@ -57,17 +59,18 @@ stock int GetClientPosition(const char[] auth) {
 	int position = 0;
 	int points = 0;
 	
-	if(DB.Direct != null) {
-		DBResultSet results = SQL_QueryEx(DB.Direct, "select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
+	if(SQL != null) {
+		SQL.Lock();
+		DBResultSet results = SQL.Query2("select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		while(results != null && results.FetchRow()) {
 			points = results.FetchInt(0);
 			
-			results = SQL_QueryEx(DB.Direct, "select count(*) from `%s` where Points >='%i' and ServerID='%i'", Global.playerlist, points, Cvars.ServerID.IntValue);
-			while(results.FetchRow())
-				position = results.FetchInt(0);
+			results = SQL.Query2("select count(*) from `%s` where Points >='%i' and ServerID='%i'", Global.playerlist, points, Cvars.ServerID.IntValue);
+			while(results.FetchRow()) position = results.FetchInt(0);
 		}
 		
 		delete results;
+		SQL.Unlock();
 	}
 	
 	XStats_DebugText(false, "GetClientPosition was fired for \"%s\", returning %i", auth, position);
@@ -80,12 +83,13 @@ stock int GetClientPosition(const char[] auth) {
 stock int GetTablePlayerCount() {
 	int playercount = 0;
 	
-	if(DB.Direct != null) {
-		DBResultSet results = SQL_QueryEx(DB.Direct, "select count(*) from `%s` where ServerID='%i'", Global.playerlist, Cvars.ServerID.IntValue);
-		while(results != null && results.FetchRow())
-			playercount = results.FetchInt(0);
+	if(SQL != null) {
+		SQL.Lock();
+		DBResultSet results = SQL.Query2("select count(*) from `%s` where ServerID='%i'", Global.playerlist, Cvars.ServerID.IntValue);
+		while(results != null && results.FetchRow()) playercount = results.FetchInt(0);
 		
 		delete results;
+		SQL.Unlock();
 	}
 	
 	XStats_DebugText(false, "GetTablePlayerCount was fired, returning %i", playercount);
@@ -100,10 +104,12 @@ stock int GetTablePlayerCount() {
 stock int GetClientPlayTime(const char[] auth) {
 	int playtime = 0;
 	
-	if(DB.Direct != null) {
-		DBResultSet results = SQL_QueryEx(DB.Direct, "select PlayTime from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
+	if(SQL != null) {
+		SQL.Lock();
+		DBResultSet results = SQL.Query2("select PlayTime from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		playtime = (results != null && results.FetchRow()) ? results.FetchInt(0) : 0;
 		delete results;
+		SQL.Unlock();
 	}
 	
 	XStats_DebugText(false, "GetClientPlayTime was fired for \"%s\", returning %i", auth, playtime);
@@ -277,31 +283,19 @@ stock float GetRatio(int count1, int count2) {
 	return ratio;
 }
 
-/*	Add and remove session points. Just to make it easier :) */
-stock void AddSessionPoints(int client, int value) { Session[client].Points += value; }
-stock void RemoveSessionPoints(int client, int value) { Session[client].Points -= value; }
-
 /**
  *	Update players last connected time state.
  *
  *	@param	auth	The players steam authentication id.
  */
 stock void UpdateLastConnectedState(const char[] auth) {
-	char error[256];
-	Database database = SQL_Connect(Xstats, false, error, sizeof(error));
-	if(database == null)	{
-		XStats_DebugText(true, "Failed to establish connection for UpdateLastConnectedState. (%s)", error);
+	if(!SQL) {
+		XStats_DebugText(true, "Failed to establish database connection for UpdateLastConnectedState. (Invalid database connection)");
 		return;
 	}
 	
-	char query[256];
-	Format(query, sizeof(query), "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'",
-	Global.playerlist, GetTime(), auth, Cvars.ServerID.IntValue);
-	database.Query(DBQuery_Callback, query);
-	
-	Format(query, sizeof(query), "update `%s` set LastConnectedServerID='%i' where SteamID='%s'",
-	Global.playerlist, Cvars.ServerID.IntValue, auth);
-	database.Query(DBQuery_Callback, query);
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'", _, _, Global.playerlist, GetTime(), auth, Cvars.ServerID.IntValue);
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set LastConnectedServerID='%i' where SteamID='%s'", _, _, Global.playerlist, Cvars.ServerID.IntValue, auth);
 }
 
 /**
@@ -318,7 +312,7 @@ stock void RemoveOldConnectedPlayers(int days = 30) {
 	DataPack pack = new DataPack();
 	pack.WriteCell(time);
 	pack.WriteCell(days);
-	DB.Threaded.Query(DBQuery_RemoveOldPlayers_1, query, pack);
+	SQL.Query(DBQuery_RemoveOldPlayers_1, query, pack);
 }
 
 stock void DBQuery_RemoveOldPlayers_1(Database database, DBResultSet results, const char[] error, DataPack pack)	{
@@ -327,7 +321,7 @@ stock void DBQuery_RemoveOldPlayers_1(Database database, DBResultSet results, co
 	int days = pack.ReadCell();
 	delete pack;
 	
-	if(results == null) XStats_DebugText(true, "Deleting old players failed! (%s)", error);
+	if(!results) XStats_DebugText(true, "Deleting old players failed! (%s)", error);
 	
 	int count = 0;
 	while(results.FetchRow()) {
@@ -342,13 +336,12 @@ stock void DBQuery_RemoveOldPlayers_1(Database database, DBResultSet results, co
 		char query[150];
 		Format(query, sizeof(query), "delete from `%s` where LastLastConnectedServerID='%i'",
 		Global.playerlist, time, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_RemoveOldPlayers_2, query);
+		SQL.Query(DBQuery_RemoveOldPlayers_2, query);
 	}
 }
 
 stock void DBQuery_RemoveOldPlayers_2(Database database, DBResultSet results, const char[] error, any data)	{
-	if(results == null)
-		XStats_DebugText(true, "Deleting old players failed! (%s)", error);
+	if(!results) XStats_DebugText(true, "Deleting old players failed! (%s)", error);
 }
 
 //====================//
@@ -548,13 +541,13 @@ stock bool AssistedKill(int assist, int client, int victim) {
 	Session[assist].Assists++;
 	Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 	XStats_DebugText(false, "Updating assist count for %s", Player[assist].Playername);
 	
 	if(Cvars.AssistKill.IntValue > 0) {
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Cvars.AssistKill.IntValue, Player[assist].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		XStats_DebugText(false, "Updating points for %s due to assisting a kill", Player[victim].Playername);
 		
 		Player[assist].Points = GetClientPoints(Player[assist].SteamID);
@@ -578,7 +571,7 @@ stock void VictimDied(int victim) {
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[victim].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 	XStats_DebugText(false, "Updating death count for %s", Player[victim].Playername);
 	
 	int points;
@@ -592,12 +585,12 @@ stock void VictimDied(int victim) {
 	}
 		
 	int victim_points = GetClientPoints(Player[victim].SteamID);
-	RemoveSessionPoints(victim, points);
+	Session[victim].RemovePoints(points);
 	CPrintToChat(victim, "%s %t", Global.Prefix, "Death Kill Event", Player[victim].Name, victim_points, points);
 	
 	Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, points, Player[victim].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 	XStats_DebugText(false, "Updating points for %s due to dying", Player[victim].Playername);
 }
 
@@ -657,22 +650,12 @@ stock void RoundEnded()	{
 	ResetAssister();
 }
 
-stock void CheckPlayersPluginStart()	{
+stock Action CheckPlayersPluginStart(Handle timer) {
+	if(!SQL) return Plugin_Handled;
+	
 	XStats_DebugText(false, "//===== XStats Debug Log: CheckPlayersPluginStart =====//\n");
 	
-	/* disabled temporarily.
-	// Isolated temporary connection. Deleted shortly after
-	Database database = SQL_Connect2(Xstats, false);
-	
-	if(database == null) {
-		XStats_DebugText(false, "Failed connecting an isolated direct database connection.");
-		delete database;
-		return;
-	}
-	
-	database.SetCharset("utf8mb4");
 	DBResultSet results;
-	*/
 	
 	TargetLoop(client) {
 		/* Bots needs a name too, right? */
@@ -690,17 +673,14 @@ stock void CheckPlayersPluginStart()	{
 		GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 		if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 		
-		/*
-		results = SQL_QueryEx(database, "select * from `%s` where SteamID = '%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		results = SQL.Query2("select * from `%s` where SteamID = '%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		XStats_DebugText(false, "Checking if player %s exists on the playerlist table in the database", Player[client].Playername);
 		switch(results != null && results.RowCount != 0) {
 			// Player exists
 			case true: {
 				XStats_DebugText(false, "Found player %s in \"%s\" at ServerID %i, initializing forwards OnClientPutInServer..",
 				Player[client].Playername, Global.playerlist, Cvars.ServerID.IntValue);
-				XStats_DebugText(false, "Points: %i\nPositioned: %i\n",
-				(Player[client].Points = GetClientPoints(Player[client].SteamID)), (Player[client].Position = GetClientPosition(Player[client].SteamID)));
+				XStats_DebugText(false, "Points: %i\nPositioned: %i\n", (Player[client].Points = GetClientPoints(Player[client].SteamID)), (Player[client].Position = GetClientPosition(Player[client].SteamID)));
 				
 				OnClientPutInServer(client);
 			}
@@ -710,30 +690,28 @@ stock void CheckPlayersPluginStart()	{
 				char temp_playername[64];
 				temp_playername = Player[client].Playername;
 				TrimString(temp_playername);
-				database.Escape(temp_playername, temp_playername, sizeof(temp_playername));
+				SQL.Escape(temp_playername, temp_playername, sizeof(temp_playername));
 				
-				results = SQL_QueryEx(database, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
+				results = SQL.Query2("insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
 				Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
 				XStats_DebugText(false, "Failed to find player %s on playerlist table, inserting new query directly onto database.", Player[client].Playername);
-				if(results != null)
-					OnClientPutInServer(client);
+				if(results != null) OnClientPutInServer(client);
 			}
 		}
 		
 		// weapons table.
-		results = SQL_QueryEx(database, "select * from `%s` where SteamID = '%s'",
+		results = SQL.Query2("select * from `%s` where SteamID = '%s'",
 		Global.weapons, Player[client].SteamID);
 		XStats_DebugText(false, "Checking if player %s exists on weapons table in the database", Player[client].Playername);
-		if(results == null || results != null && results.RowCount == 0)	{
-			results = SQL_QueryEx(DB.Direct, "insert into `%s` (SteamID, ServerID) values ('%s', '%i')",
+		if(!results || results != null && results.RowCount == 0)	{
+			results = SQL.Query2("insert into `%s` (SteamID, ServerID) values ('%s', '%i')",
 			Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
 			XStats_DebugText(false, "Failed to find player %s on weapons table, inserting new query directly onto database.", Player[client].Playername);
 		}
-		*/
 	}
 	
-	//delete results;
-	//delete database;
+	delete results;
+	return Plugin_Handled;
 }
 
 /**
@@ -1084,7 +1062,7 @@ stock void XStats_UpdateTable(const char[] table, int client, bool increment=tru
 	char query[512], Increment[][] = {"-","+"};
 	Format(query, sizeof(query), "alter table %s update '%s' = '%s' %s 1 where SteamID = '%s' and ServerID = '%i'",
 	Global.playerlist, table, table, Increment[increment], Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 }
 
 /* Sends a message to all that XStats has crashed just before crashing the plugin. */
@@ -1107,7 +1085,7 @@ stock void XStats_SetFailState(const char[] reason, any ...) {
 stock void UpdateDamage(int client)	{
 	char query[192];
 	Format(query, sizeof(query), "select DamageDone from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_UpdateDamage, query, client, DBPrio_Low);
+	SQL.Query(DBQuery_UpdateDamage, query, client, DBPrio_Low);
 }
 
 void DBQuery_UpdateDamage(Database database, DBResultSet results, const char[] error, int client) {
@@ -1115,6 +1093,6 @@ void DBQuery_UpdateDamage(Database database, DBResultSet results, const char[] e
 		char query[192];
 		Format(query, sizeof(query), "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query, _, DBPrio_Low); /* Low priority to lower chances of lag spikes */
+		SQL.Query(DBQuery_Callback, query, _, DBPrio_Low); /* Low priority to lower chances of lag spikes */
 	}
 }

@@ -1,17 +1,21 @@
 Action RankPanel(int client, int args=-1) {
-	if(!DatabaseDirect()) {
+	if(!SQL) {
 		CPrintToChat(client, "%s The database connection is unavailable, please contact the server author.", Global.Prefix);
 		XStats_DebugText(false, "Player %s tried catching a database connection for rank panel but failed.", Player[client].Playername);
 		return Plugin_Handled;
 	}
 	
-	DBResultSet results = SQL_QueryEx(DB.Direct,
-	"select Points, PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
+	SQL.Lock();
+	DBResultSet results = SQL.Query2("select Points, PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	
-	if(results == null)	{
-		CPrintToChat(client, "%s You don't seem to be on the database, you may try rejoin or contact the server author.", Global.Prefix);
-		XStats_DebugText(false, "Player %s tried using rank panel but was not able to find the player on the database table.", Player[client].Playername);
+	if(!results) {
+		char error[256];
+		SQL.GetError(error, sizeof(error));
+		
+		CPrintToChat(client, "%s Player stats were unable to be retrieved from the database, please contact the server author.", Global.Prefix);
+		//CPrintToChat(client, "%s You don't seem to be on the database, you may try rejoin or contact the server author.", Global.Prefix);
+		XStats_DebugText(false, "Player %s tried using rank panel but was unable to retrieve the player on the database table. (%s)", Player[client].Playername, error);
 		return Plugin_Handled;
 	}
 	
@@ -20,6 +24,8 @@ Action RankPanel(int client, int args=-1) {
 		XStats_DebugText(false, "Player %s tried fetching rows from the database table for the rank panel but failed.", Player[client].Playername);
 		return Plugin_Handled;
 	}
+	
+	SQL.Unlock();
 	
 	Player[client].Position = GetClientPosition(Player[client].SteamID);
 	int players = GetTablePlayerCount();
@@ -32,7 +38,7 @@ Action RankPanel(int client, int args=-1) {
 	int damagedone = results.FetchInt(6);
 	float kdr = GetRatio(kills, deaths);
 	
-	delete results;
+	delete results;	
 	StatsPanel[client].Main = true;
 	
 	PanelEx panel = new PanelEx();
@@ -211,7 +217,7 @@ stock void RankPanel_CurrentSession(int client)	{
 
 /* Total Statistics */
 stock void RankPanel_TotalStatistics(int client) {
-	if(DB.Threaded == null) {
+	if(!SQL) {
 		CPrintToChat(client, "%s The threaded database connection is unavailable, please contact the server author.", Global.Prefix);
 		return;
 	}

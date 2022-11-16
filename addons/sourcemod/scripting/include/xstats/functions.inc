@@ -119,6 +119,10 @@ enum struct XStatsSession {
 	int Assists;
 	int DamageDone;
 	
+	/*	Add and remove session points. Just to make it easier :) */
+	void AddPoints(int value) { this.Points += value; }
+	void RemovePoints(int value) { this.Points -= value; }
+	
 	/* Generic */
 	int Dominations;
 	int Revenges;
@@ -333,7 +337,6 @@ enum struct XStatsForwards {
 }
 
 enum struct XStatsDatabase {
-	Database Threaded;
 	Database Direct;
 }
 

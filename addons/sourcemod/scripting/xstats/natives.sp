@@ -1,7 +1,7 @@
 /**
  *	Prepare the natives.
  */
-public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)	{
+public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max) {
 	RegPluginLibrary("XStats");
 	
 	CreateNative("XStats.GetPoints", Native_GetClientPoints);

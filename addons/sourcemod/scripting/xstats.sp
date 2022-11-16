@@ -7,22 +7,23 @@
 #pragma tabsize 0
 
 /* XStats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX. */
-#define Version "0.01a_02d"
+#define Version "0.01a_02e"
 SetPluginInfo("XStats - Statistical Multi-Tracker", _tklib_author, "XStats - Track kills, maps, kill events, achievements, etc.", Version, _tklib_author_url)
 
 /* Core */
-XStatsDatabase DB;
+//XStatsDatabase DB;
+DatabaseEx SQL;
 XStatsForwards Forward;
 XStatsCvars Cvars;
 XStatsGlobal Global;
 XStatsConnectSound Sound[2];
 
 /* Session */
-XStatsPlayer Player[34];
-XStatsPanel StatsPanel[34];
-XStatsSession Session[34];
-XStatsSession TotalStats[34];
-XStatsKillMsg KillMsg[34];
+XStatsPlayer Player[MaxPlayers+1];
+XStatsPanel StatsPanel[MaxPlayers+1];
+XStatsSession Session[MaxPlayers+1];
+XStatsSession TotalStats[MaxPlayers+1];
+XStatsKillMsg KillMsg[MaxPlayers+1];
 
 /* Includes. */
 #include "xstats/cvars.sp" /* Console variables */
@@ -54,5 +55,5 @@ public void OnPluginStart()	{
 	CPrintToChatAll("{orange}XStats version {lightgreen}%s {orange}loaded", Version);
 	
 	/* Incase the plugin were launched manually or perhaps started (?)*/
-	CheckPlayersPluginStart();
+	CreateTimer(2.5, CheckPlayersPluginStart);
 }

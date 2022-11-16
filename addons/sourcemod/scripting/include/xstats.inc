@@ -141,21 +141,13 @@ public SharedPlugin __pl_XStats = {
 
 #if !defined REQUIRE_PLUGIN
 public void __pl_XStats_SetNTVOptional() {
-	MarkNativeAsOptional("XStats_GetClientPoints");
 	MarkNativeAsOptional("XStats.GetPoints");
-	MarkNativeAsOptional("XStats_GetClientPlayTime");
 	MarkNativeAsOptional("XStats.GetPlayTime");
-	MarkNativeAsOptional("XStats_GetClientSession");
 	MarkNativeAsOptional("XStats.GetSession");
-	MarkNativeAsOptional("XStats_Enabled");
-	MarkNativeAsOptional("XStats.Enabled.get");
-	MarkNativeAsOptional("XStats_ClearSessions");
+	MarkNativeAsOptional("XStats.Enabled");
 	MarkNativeAsOptional("XStats.ClearSessions");
-	MarkNativeAsOptional("XStats_Active");
-	MarkNativeAsOptional("XStats.Active.get");
-	MarkNativeAsOptional("XStats_Active");
+	MarkNativeAsOptional("XStats.Active");
 	MarkNativeAsOptional("XStats.AllowBots.get");
-	MarkNativeAsOptional("XStats_Debug");
-	MarkNativeAsOptional("XStats.Debug.get");
+	MarkNativeAsOptional("XStats.Debug");
 }
 #endif

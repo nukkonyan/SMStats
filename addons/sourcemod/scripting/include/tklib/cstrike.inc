@@ -149,7 +149,7 @@ stock bool CS_SetClientPendingTeam(int client, CSTeam team)	{ return SetClientPe
  */
 stock CSTeam CS_GetClientPendingTeam(int client) { return view_as<CSTeam>(GetClientPendingTeam(client)); }
 
-#if !defined _tklib_no_sdktools
+#if defined _sdktools_included
 /**
  *	Returns if the warmup is currently ongoing
  */
@@ -449,7 +449,7 @@ stock int CS_GetSniperZoomLevel(int weapon)	{ return GetEntPropEx(weapon, Prop_S
  *
  *	@error	If the weapon entity is invalid, this returns false.
  */
-stock bool CS_SetWeaponInBurstMode(int weapon, bool value) { return SetEntPropEx(weapon, Prop_Send, "m_bBurstMode", value); }
+stock bool CS_SetWeaponBurstMode(int weapon, bool value) { return SetEntPropEx(weapon, Prop_Send, "m_bBurstMode", value); }
 
 /**
  *	Returns if the weapon is in burst mode.

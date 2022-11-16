@@ -139,7 +139,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	|| StrEqual(weapon, "weapon_snowball")); /* Not really a grenade but whatever, just for some specific stuff */
 	
 	int assist = GetClientOfUserId(event.GetInt(EVENT_STR_ASSISTER));
-	int defindex = CSGO_GetWeaponDefindex(weapon);
+	int defindex = CSGO_GetItemDefindex(weapon);
 	//int penetrated = event.GetInt(EVENT_STR_PENETRATED);
 	bool midair = IsClientMidAir(client);
 	bool headshot = event.GetBool(EVENT_STR_HEADSHOT);
@@ -206,17 +206,17 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	Session[client].Kills++;
 	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 	
 	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'",
 	Global.weapons, weapon, weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
-	DB.Threaded.Query(DBQuery_Callback, query);
+	SQL.Query(DBQuery_Callback, query);
 	
 	if(headshot) {
 		Session[client].Headshots++;
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		XStats_DebugText(false, "Headshot\n");
 	}
@@ -225,7 +225,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Session[client].Dominations++;
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		XStats_DebugText(false, "Dominated\n");
 	}
@@ -234,7 +234,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Session[client].Revenges++;
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		XStats_DebugText(false, "Revenge\n");
 	}
@@ -243,7 +243,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Session[client].Noscopes++;
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		XStats_DebugText(false, "Noscope\n");
 	}
@@ -252,7 +252,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Session[client].SmokeKills++;
 		Format(query, sizeof(query), "update `%s` set ThruSmokes = ThruSmokes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		XStats_DebugText(false, "Thru smoke\n");
 	}
@@ -261,7 +261,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Session[client].KnifeKills++;
 		Format(query, sizeof(query), "update `%s` set KnifeKills = KnifeKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		XStats_DebugText(false, "Knife Kill\n");
 	}
@@ -270,7 +270,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Session[client].GrenadeKills++;
 		Format(query, sizeof(query), "update `%s` set GrenadeKills = GrenadeKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		XStats_DebugText(false, "Grenade kill\n");
 	}
@@ -279,16 +279,16 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Session[client].BombKills++;
 		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		XStats_DebugText(false, "Bomb kill\n");
 	}
 	
 	if(points > 0) {
-		AddSessionPoints(client, points);
+		Session[client].AddPoints(points);
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-		DB.Threaded.Query(DBQuery_Callback, query);
+		SQL.Query(DBQuery_Callback, query);
 		
 		PrepareKillMessage(client, victim, points);
 		
@@ -300,7 +300,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 			len += Format(log[len], sizeof(log)-len, "values");
 			len += Format(log[len], sizeof(log)-len, "('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i')",
 			Cvars.ServerID.IntValue, GetTime(), Player[client].Playername, Player[client].SteamID, Player[victim].Playername, Player[victim].SteamID, Player[assist].Playername, Player[assist].SteamID, weapon, headshot, noscope, thrusmoke, attackerblind);
-			DB.Threaded.Query(DBQuery_Kill_Log, log);
+			SQL.Query(DBQuery_Kill_Log, log);
 			
 			XStats_DebugText(false, "Inserting (ServerID, Time, Playername, SteamID, Victim_Playername, Victim_SteamID, Assister_Playername, Assister_SteamID, Weapon, Headshot, Noscope, ThruSmoke, BlindedKill) values ('%i', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i') into %s",
 			Cvars.ServerID.IntValue, GetTime(), Player[client].Playername, Player[client].SteamID, Player[victim].Playername, Player[victim].SteamID, Player[assist].Playername, Player[assist].SteamID, weapon, headshot, noscope, thrusmoke, attackerblind, Global.kill_log);
