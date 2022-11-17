@@ -14,13 +14,13 @@ Action Timer_PrepareDatabase(Handle timer) {
 void DBConnect(DatabaseEx database, const char[] error) {
 	if(database == null) {
 		delete database;
-		XStats_DebugText(true, "Database connection failed! (%s)", error);
+		SetFailState("[XStats] Database connection failed! (%s)", error);
 		return;
 	}
 	
 	SQL = database;
 	SQL.SetCharset("utf8mb4"); //Fix characters.
-	XStats_DebugText(false, "Database connection was successful!");
+	PrintToServer("[XStats] Database connection was successful!");
 	Games_DatabaseConnected();
 }
 
