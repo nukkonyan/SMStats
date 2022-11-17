@@ -8,15 +8,15 @@ ConVar	HostageEvent[2];
 stock int m_hLastFlashBangGrenade = 0;
 stock int m_hLastHeGrenade = 0;
 stock int m_hLastSmokeGrenade = 0;
-stock int m_hLastFirebombGrenade[MAXPLAYERS] = {0, ...};
-stock int m_hLastGrenade[MAXPLAYERS] = {0, ...};
+stock int m_hLastFirebombGrenade[MaxPlayers+1] = -1;
+stock int m_hLastGrenade[MaxPlayers+1] = -1;
 
 stock int m_hLastBombPlanter = 0;
 stock int m_hLastBombDefuser = 0;
 
-stock bool m_bIsFlashed[MAXPLAYERS] = false;
+stock bool m_bIsFlashed[MaxPlayers+1] = false;
 
-void PrepareGame_CounterStrike()	{
+void PrepareGame_CounterStrike() {
 	/* Bomb events */
 	BombEvent[0] = CreateConVar("xstats_points_bomb_planted",	"2", "XStats: Counter-Strike - Points given when planting the bomb.", _, true);
 	BombEvent[1] = CreateConVar("xstats_points_bomb_defused",	"2", "XStats: Counter-Strike - Points given when defusing the bomb.", _, true);
@@ -27,19 +27,18 @@ void PrepareGame_CounterStrike()	{
 	HostageEvent[1] = CreateConVar("xstats_points_hostage_killed",	"2", "XStats: Counter-Strike - Points taken when hostage is killed.", _, true);
 	
 	/* Events */
-	HookEventEx(EVENT_BOMB_PLANTED,		CS_Bombs, EventHookMode_Pre);
-	HookEventEx(EVENT_BOMB_DEFUSED,		CS_Bombs, EventHookMode_Pre);
-	HookEventEx(EVENT_BOMB_EXPLODED,	CS_Bombs, EventHookMode_Pre);
+	HookEventEx(EVENT_BOMB_PLANTED, CS_Bombs, EventHookMode_Pre);
+	HookEventEx(EVENT_BOMB_DEFUSED, CS_Bombs, EventHookMode_Pre);
+	HookEventEx(EVENT_BOMB_EXPLODED, CS_Bombs, EventHookMode_Pre);
 	
 	/* Hostages */
-	HookEventEx(EVENT_HOSTAGE_RESCUED,	CS_Hostages, EventHookMode_Pre);
-	HookEventEx(EVENT_HOSTAGE_KILLED,	CS_Hostages, EventHookMode_Pre);
+	HookEventEx(EVENT_HOSTAGE_RESCUED, CS_Hostages, EventHookMode_Pre);
+	HookEventEx(EVENT_HOSTAGE_KILLED, CS_Hostages, EventHookMode_Pre);
 	
 	/* Blinded */
-	HookEventEx(EVENT_PLAYER_BLIND,		CS_Flashed, EventHookMode_Pre);
+	HookEventEx(EVENT_PLAYER_BLIND, CS_Flashed, EventHookMode_Pre);
 	
-	if(IsCurrentGame(Game_CSGO))
-		HookEventEx(EVENT_WEAPON_FIRE, Weapon_Fire_CSGO, EventHookMode_Pre);
+	if(IsCurrentGame(Game_CSGO)) HookEvent(EVENT_WEAPON_FIRE, Weapon_Fire_CSGO, EventHookMode_Pre);
 }
 
 /**
@@ -51,12 +50,10 @@ void PrepareGame_CounterStrike()	{
  */
 
 stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats())
-		return;
+	if(!IsValidStats()) return;
 	
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(client, true))
-		return;
+	if(!Tklib_IsValidClient(client, true)) return;
 	
 	char query[256];
 	int points = 0;
@@ -194,24 +191,23 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 	SQL.Query(DBQuery_Callback, query);
 }
 
-Action Timer_CS_Flashed(Handle timer, int client)	{	m_bIsFlashed[client] = false;	}
+Action Timer_CS_Flashed(Handle timer, int client) { m_bIsFlashed[client] = false; }
 
 stock void Weapon_Fire_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
 	int client = GetClientOfUserId(event.GetInt("userid"));
 	
 	/* Since both Incendiary and Molotov counts as 'firebomb', we need to get the correct grenade. */
 	char[] weapon = new char[64];
-	event.GetString(EVENT_STR_WEAPON, weapon, 64); /* You can use sizeof() on construction character function */
+	event.GetString(EVENT_STR_WEAPON, weapon, 64); /* You can't use sizeof() on construction character function */
 	
-	XStats_DebugText(false, "//===== Weapon_Fire_CSGO =====//");
-	XStats_DebugText(false, "Client: %N", client);
-	XStats_DebugText(false, "weapon: \%s\"", weapon);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "//===== Weapon_Fire_CSGO =====//"
+	... "\nClient: %N"
+	... "\nWeapon: \%s\"\n"
+	, client
+	, weapon);
 	
-	if(StrEqual(weapon, "weapon_incgrenade"))
-		m_hLastFirebombGrenade[client] = CSGO_Grenade_Incendiary;
-	if(StrEqual(weapon, "weapon_molotov"))
-		m_hLastFirebombGrenade[client] = CSGO_Grenade_Molotov;
+	if(StrEqual(weapon, "weapon_incgrenade")) m_hLastFirebombGrenade[client] = CSGO_Grenade_Incendiary;
+	if(StrEqual(weapon, "weapon_molotov")) m_hLastFirebombGrenade[client] = CSGO_Grenade_Molotov;
 }
 
 /**
@@ -220,23 +216,23 @@ stock void Weapon_Fire_CSGO(Event event, const char[] event_name, bool dontBroad
  */
 public Action CS_OnBuyCommand(int client, const char[] weapon)	{
 	if(Tklib_IsValidClient(client, true))	{
-		DataPack pack = new DataPack();
+		DataPack pack;
+		CreateDataTimer(0.25, Timer_OnBuyCommand, pack);
 		pack.WriteCell(client);
 		pack.WriteString(weapon);
-		CreateTimer(0.25, Timer_OnBuyCommand, pack);
+		pack.Reset();
 	}
 }
 
 stock Action Timer_OnBuyCommand(Handle timer, DataPack pack)	{
-	pack.Reset();
 	int client = pack.ReadCell();
 	char weapon[64];
 	pack.ReadString(weapon, sizeof(weapon));
-	delete pack;
 	
 	/* If player left */
 	if(!IsClientConnected(client))	{
 		KillTimer(timer);
+		delete pack;
 		return Plugin_Handled;
 	}
 	
@@ -259,46 +255,43 @@ stock void OnEntityCreated_CounterStrike(int entity, const char[] classname)	{
 	if(StrEqual(classname, "flashbang_projectile")
 	|| StrEqual(classname, "hegrenade_projectile")
 	|| StrEqual(classname, "smokegrenade_projectile"))	{
-		DataPack pack = new DataPack();
+		DataPack pack;
+		CreateDataTimer(0.01, Timer_OnEntityCreated, pack);
 		pack.WriteCell(EntIndexToEntRef(entity));
 		pack.WriteString(classname);
-		CreateTimer(0.01, Timer_OnEntityCreated, pack);
+		pack.Reset();
 	}
 }
 
 stock Action Timer_OnEntityCreated(Handle timer, DataPack pack)	{
-	pack.Reset();
 	int ref = pack.ReadCell();
 	char[] classname = new char[96];
 	pack.ReadString(classname, 96);
-	delete pack;
 	
-	int entity = EntRefToEntIndex(ref);
+	Entity entity = Ent(EntRefToEntIndex(ref));
 	
 	/* If entity goes invalid. */
-	if(!IsValidEntityEx(entity))	{
+	if(!entity.Valid()) {
 		KillTimer(timer);
+		delete pack;
 		return Plugin_Handled;
 	}
 	
-	int client = Ent(entity).Owner; /*GetEntPropEntEx(entity, Prop_Send, "m_hThrower");*/
+	int client = entity.Owner; /*entity.GetPropEnt(Prop_Send, "m_hThrower");*/
 	
-	if(StrEqual(classname, "flashbang_projectile"))
-		m_hLastFlashBangGrenade = client;
+	if(StrEqual(classname, "flashbang_projectile")) m_hLastFlashBangGrenade = client;
+	if(StrEqual(classname, "hegrenade_projectile")) m_hLastHeGrenade = client;
+	if(StrEqual(classname, "smokegrenade_projectile")) m_hLastSmokeGrenade = client;
 	
-	if(StrEqual(classname, "hegrenade_projectile"))
-		m_hLastHeGrenade = client;
-	
-	if(StrEqual(classname, "smokegrenade_projectile"))
-		m_hLastSmokeGrenade = client;
-	
-	XStats_DebugText(false, "//===== OnEntityCreated_CounterStrike =====//");
-	XStats_DebugText(false, " ");
-	XStats_DebugText(false, "Classname \"%s\"", classname);
-	XStats_DebugText(false, "Entity index \"%i\"", entity);
-	XStats_DebugText(false, "Entity reference \"%i\"", ref);
-	XStats_DebugText(false, "Thrower \"%i\" \"%d\" (%N)", classname, client, client, client);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "//===== OnEntityCreated_CounterStrike =====//"
+	... "\nClassname \"%s\""
+	... "\nEntity index \"%i\""
+	... "\nEntity reference \"%i\""
+	... "\nThrower \"%i\" \"%d\" (%N)\n"
+	, classname
+	, entity
+	, ref
+	, classname, client, client, client);
 	
 	//XStats_DebugText(false, "OnEntityCreated \nclassname \"%s\" \nentity index %i \nentity reference %i \n", classname, entity, ref);
 	return Plugin_Handled;

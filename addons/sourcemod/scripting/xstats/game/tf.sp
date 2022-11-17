@@ -13,447 +13,447 @@ ConVar TF2_Collat;
  */
 void PrepareGame_TF2() {
 	//Weapon cvars
-	Cvars.Weapon[0]	= CreateConVar("xstats_points_weapon_bat",						"10", "XStats: TF2 - Points given when killing with Bat.", _, true);
-	Cvars.Weapon[1]	= CreateConVar("xstats_points_weapon_bottle",					"10", "XStats: TF2 - Points given when killing with Bottle.", _, true);
-	Cvars.Weapon[2]	= CreateConVar("xstats_points_weapon_fireaxe",					"10", "XStats: TF2 - Points given when killing with Fire Axe.", _, true);
-	Cvars.Weapon[3]	= CreateConVar("xstats_points_weapon_kukri",					"10", "XStats: TF2 - Points given when killing with Kukri.", _, true);
-	Cvars.Weapon[4]	= CreateConVar("xstats_points_weapon_knife",					"10", "XStats: TF2 - Points given when killing with Knife.", _, true);
-	Cvars.Weapon[5]	= CreateConVar("xstats_points_weapon_fists",					"10", "XStats: TF2 - Points given when killing with Fists", _, true);
-	Cvars.Weapon[6]	= CreateConVar("xstats_points_weapon_shovel",					"10", "XStats: TF2 - Points given when killing with Shovel.", _, true);
-	Cvars.Weapon[7]	= CreateConVar("xstats_points_weapon_wrench",					"10", "XStats: TF2 - Points given when killing with Wrench.", _, true);
-	Cvars.Weapon[8]	= CreateConVar("xstats_points_weapon_bonesaw",					"10", "XStats: TF2 - Points given when killing with Bonesaw.", _, true);
-	Cvars.Weapon[9]	= CreateConVar("xstats_points_weapon_shotgun",					"10", "XStats: TF2 - Points given when killing with Shotgun.", _, true);
-	Cvars.Weapon[10] = Cvars.Weapon[9];	//Same Shotgun, different TFClass type.
-	Cvars.Weapon[11] = Cvars.Weapon[9];	//Same Shotgun, different TFClass type.
-	Cvars.Weapon[12] = Cvars.Weapon[9];	//Same Shotgun, different TFClass type.
-	Cvars.Weapon[13] = CreateConVar("xstats_points_weapon_scattergun",				"10", "XStats: TF2 - Points given when killing with Scattergun.", _, true);
-	Cvars.Weapon[14] = CreateConVar("xstats_points_weapon_sniperrifle",				"10", "XStats: TF2 - Points given when killing with Sniper Rifle.", _, true);
-	Cvars.Weapon[15] = CreateConVar("xstats_points_weapon_minigun",					"10", "XStats: TF2 - Points given when killing with Minigun.", _, true);
-	Cvars.Weapon[16] = CreateConVar("xstats_points_weapon_smg",						"10", "XStats: TF2 - Points given when killing with SMG.", _, true);
-	Cvars.Weapon[17] = CreateConVar("xstats_points_weapon_syringegun",				"10", "XStats: TF2 - Points given when killing with Syringe Gun.", _, true);
-	Cvars.Weapon[18] = CreateConVar("xstats_points_weapon_rocketlauncher",			"10", "XStats: TF2 - Points given when killing with Rocket Launcher.", _, true);
-	Cvars.Weapon[19] = CreateConVar("xstats_points_weapon_grenadelauncher",			"10", "XStats: TF2 - Points given when killing with Grenade Launcher.", _, true);
-	Cvars.Weapon[20] = CreateConVar("xstats_points_weapon_stickybomblauncher",		"10", "XStats: TF2 - Points given when killing with StickyBomb Launcher", _, true);
-	Cvars.Weapon[21] = CreateConVar("xstats_points_weapon_flamethrower",			"10", "XStats: TF2 - Points given when killing with Flamethrower.", _, true);
-	Cvars.Weapon[22] = CreateConVar("xstats_points_weapon_pistol",					"10", "XStats: TF2 - Points given when killing with Pistol.", _, true);
-	Cvars.Weapon[23] = Cvars.Weapon[22];	//Same Pistol, different TFClass type.
-	Cvars.Weapon[24] = CreateConVar("xstats_points_weapon_revolver",				"10", "XStats: TF2 - Points given when killing with Revolver.", _, true);
-	Cvars.Weapon[36] = CreateConVar("xstats_points_weapon_blutsauger",				"10", "XStats: TF2 - Points given when killing with Blutsauger.", _, true);
-	Cvars.Weapon[37] = CreateConVar("xstats_points_weapon_ubersaw",					"10", "XStats: TF2 - Points given when killing with Ubersaw.", _, true);
-	Cvars.Weapon[38] = CreateConVar("xstats_points_weapon_axtinguisher",			"10", "XStats: TF2 - Points given when killing with Axtinguisher.", _, true);
-	Cvars.Weapon[39] = CreateConVar("xstats_points_weapon_flaregun",				"10", "XStats: TF2 - Points given when killing with Flaregun.", _, true);
-	Cvars.Weapon[40] = CreateConVar("xstats_points_weapon_backburner",				"10", "XStats: TF2 - Points given when killing with Backburner.", _, true);
-	Cvars.Weapon[41] = CreateConVar("xstats_points_weapon_natascha",				"10", "XStats: TF2 - Points given when killing with Natascha.", _, true);
-	Cvars.Weapon[43] = CreateConVar("xstats_points_weapon_killerglovesofboxing",	"10", "XStats: TF2 - Points given when killing with Killer Gloves Of Boxing", _, true);
-	Cvars.Weapon[44] = CreateConVar("xstats_points_weapon_sandman",					"10", "XStats: TF2 - Points given when killing with Sandman.", _, true);
-	Cvars.Weapon[45] = CreateConVar("xstats_points_weapon_forceanature",			"10", "XStats: TF2 - Points given when killing with Force-A-Nature", _, true);
-	Cvars.Weapon[56] = CreateConVar("xstats_points_weapon_huntsman",				"10", "XStats: TF2 - Points given when killing with Huntsman.", _, true);
-	Cvars.Weapon[61] = CreateConVar("xstats_points_weapon_ambassador",				"10", "XStats: TF2 - Points given when killing with Ambassador.", _, true);
-	Cvars.Weapon[127] = CreateConVar("xstats_points_weapon_directhit",				"10", "XStats: TF2 - Points given when killing with Direct-Hit.", _, true);
-	Cvars.Weapon[128] = CreateConVar("xstats_points_weapon_equalizer",				"10", "XStats: TF2 - Points given when killing with Equalizer.", _, true);
-	Cvars.Weapon[130] = CreateConVar("xstats_points_weapon_scottishresistance",		"10", "XStats: TF2 - Points given when killing with Scottish Resistance.", _, true);
-	Cvars.Weapon[131] = CreateConVar("xstats_points_weapon_chargentarge",			"10", "XStats: TF2 - Points given when killing with Charge n' Targe", _, true);
-	Cvars.Weapon[132] = CreateConVar("xstats_points_weapon_eyelander",				"10", "XStats: TF2 - Points given when killing with Eyelander.", _, true);
-	Cvars.Weapon[140] = CreateConVar("xstats_points_weapon_wrangler",				"10", "XStats: TF2 - Points given when killing with Wrangler.", _, true);
-	Cvars.Weapon[141] = CreateConVar("xstats_points_weapon_frontierjustice",		"10", "XStats: TF2 - Points given when killing with Frontier Justice.", _, true);
-	Cvars.Weapon[142] = CreateConVar("xstats_points_weapon_gunslinger",				"10", "XStats: TF2 - Points given when killing with gunslinger.", _, true);
-	Cvars.Weapon[153] = CreateConVar("xstats_points_weapon_homewrecker",			"10", "XStats: TF2 - Points given when killing with homewrecker.", _, true);
-	Cvars.Weapon[154] = CreateConVar("xstats_points_weapon_paintrain",				"10", "XStats: TF2 - Points given when killing with pain train.", _, true);
-	Cvars.Weapon[155] = CreateConVar("xstats_points_weapon_southernhospitality",	"10", "XStats: TF2 - Points given when killing with southern hospitality.", _, true);
-	Cvars.Weapon[160] = CreateConVar("xstats_points_weapon_lugermorph",				"10", "XStats: TF2 - Points given when killing with lugermorph", _, true);
-	Cvars.Weapon[161] = CreateConVar("xstats_points_weapon_bigkill",				"10", "XStats: TF2 - Points given when killing with big kill.", _, true);
-	Cvars.Weapon[169] = CreateConVar("xstats_points_weapon_wrench",					"10", "XStats: TF2 - Points given when killing with wrench.", _, true);
-	Cvars.Weapon[171] = CreateConVar("xstats_points_weapon_tribalmansshiv",			"10", "XStats: TF2 - Points given when killing with tribalman's shiv.", _, true);
-	Cvars.Weapon[172] = CreateConVar("xstats_points_weapon_scotsmansskullcutter",	"10", "XStats: TF2 - Points given when killing with scotsman's skullcutter.", _, true);
-	Cvars.Weapon[173] = CreateConVar("xstats_points_weapon_vitasaw",				"10", "XStats: TF2 - Points given when killing with vita saw.", _, true);
-	Cvars.Weapon[190] = Cvars.Weapon[0];	//Same as default Bat, used for strange, renamed & skinned versions.
-	Cvars.Weapon[191] = Cvars.Weapon[1];	//Same as default Bottle, used for strange, renamed & skinned versions.
-	Cvars.Weapon[192] = Cvars.Weapon[2];	//Same as default Fire Axe, used for strange, renamed & skinned versions.
-	Cvars.Weapon[193] = Cvars.Weapon[3];	//Same as default Kukri, used for strange, renamed & skinned versions.
-	Cvars.Weapon[194] = Cvars.Weapon[4];	//Same as default Knife, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[195] = Cvars.Weapon[5];	//Same as default Fists, used for strange & renamed version.
-	Cvars.Weapon[196] = Cvars.Weapon[6];	//Same as default Shovel, used for strange, renamed & skinned versions.
-	Cvars.Weapon[197] = Cvars.Weapon[7];	//Same as default Wrench, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[198] = Cvars.Weapon[8];	//Same as default Bonesaw, used for strange, renamed & skinned versions.
-	Cvars.Weapon[199] = Cvars.Weapon[9];	//Same as default Shotgun, used for strange, renamed & skinned versions.
-	Cvars.Weapon[200] = Cvars.Weapon[13];	//Same as default Scattergun, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[201] = Cvars.Weapon[14];	//Same as default Sniper Rifle, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[202] = Cvars.Weapon[15];	//Same as default Minigun, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[203] = Cvars.Weapon[16];	//Same as default SMG, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[204] = Cvars.Weapon[17];	//Same as default Syringe gun, used for strange, renamed & skinned versions.
-	Cvars.Weapon[205] = Cvars.Weapon[18];	//Same as default Rocket Launcher, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[206] = Cvars.Weapon[19];	//Same as default Grenade Launcher, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[207] = Cvars.Weapon[20];	//Same as default Stickybomb Launcher, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[208] = Cvars.Weapon[21];	//Same as default Flamethrower, used for australium, strange, renamed & skinned versions.
-	Cvars.Weapon[209] = Cvars.Weapon[22];	//Same as default Pistol, used for strange, renamed & skinned versions.
-	Cvars.Weapon[210] = Cvars.Weapon[24];	//Same as default Revolver, used for strange, renamed & skinned versions.
-	Cvars.Weapon[214] = CreateConVar("xstats_points_weapon_powerjack",				"10", "XStats: TF2 - Points given when killing with Power Jack.", _, true);
-	Cvars.Weapon[215] = CreateConVar("xstats_points_weapon_degreaser",				"10", "XStats: TF2 - Points given when killing with Degreaser.", _, true);
-	Cvars.Weapon[220] = CreateConVar("xstats_points_weapon_shortstop",				"10", "XStats: TF2 - Points given when killing with Shortstop", _, true);
-	Cvars.Weapon[221] = CreateConVar("xstats_points_weapon_holymackerel",			"10", "XStats: TF2 - Points given when killing with Holy Mackerel.", _, true);
-	Cvars.Weapon[224] = CreateConVar("xstats_points_weapon_letranger",				"10", "XStats: TF2 - Points given when killing with L'etranger.", _, true);
-	Cvars.Weapon[225] = CreateConVar("xstats_points_weapon_eternalreward",			"10", "XStats: TF2 - Points given when killing with Eternal Reward.", _, true);
-	Cvars.Weapon[228] = CreateConVar("xstats_points_weapon_blackbox",				"10", "XStats: TF2 - Points given when killing with Black Box.", _, true);
-	Cvars.Weapon[230] = CreateConVar("xstats_points_weapon_sydneysleeper",			"10", "XStats: TF2 - Points given when killing with Sydney Sleeper.", _, true);
-	Cvars.Weapon[232] = CreateConVar("xstats_points_weapon_bushwacka",				"10", "XStats: TF2 - Points given when killing with Bushwacka.", _, true);
-	Cvars.Weapon[237] = Cvars.Weapon[18];	//Rocket Jumper.
-	Cvars.Weapon[239] = CreateConVar("xstats_points_weapon_goru",					"10", "XStats: TF2 - Points given when killing with Gloves of Running Urgently.", _, true);
-	Cvars.Weapon[264] = CreateConVar("xstats_points_weapon_fryingpan",				"10", "XStats: TF2 - Points given when killing with Frying Pan.", _, true);
-	Cvars.Weapon[265] = Cvars.Weapon[20];	//Sticky Jumper.
-	Cvars.Weapon[266] = CreateConVar("xstats_points_weapon_hhhh",					"10", "XStats: TF2 - Points given when killing with Horseless Headless Horsemann's Headtaker", _, true);
-	Cvars.Weapon[294] = Cvars.Weapon[160];	//Same Lugermorph, different TFClass type.
-	Cvars.Weapon[298] = CreateConVar("xstats_points_weapon_ironcurtain",			"10", "XStats: TF2 - Points given when killing with Iron Curtain.", _, true);
-	Cvars.Weapon[304] = CreateConVar("xstats_points_weapon_amputator",				"10", "XStats: TF2 - Points given when killing with Amputator.", _, true);
-	Cvars.Weapon[305] = CreateConVar("xstats_points_weapon_crusaderscrossbow",		"10", "XStats: TF2 - Points given when killing with Crusader's Crossbow.", _, true);
-	Cvars.Weapon[307] = CreateConVar("xstats_points_weapon_ullapoolcaber",			"10", "XStats: TF2 - Points given when killing with Ullapool Caber.", _, true);
-	Cvars.Weapon[308] = CreateConVar("xstats_points_weapon_lochnload",				"10", "XStats: TF2 - Points given when killing with Loch-n-Load.", _, true);
-	Cvars.Weapon[310] = CreateConVar("xstats_points_weapon_warriorsspirit",			"10", "XStats: TF2 - Points given when killing with Warrior's Spirit.", _, true);
-	Cvars.Weapon[312] = CreateConVar("xstats_points_weapon_brassbeast",				"10", "XStats: TF2 - Points given when killing with Brass Beast.", _, true);
-	Cvars.Weapon[317] = CreateConVar("xstats_points_weapon_candycane",				"10", "XStats: TF2 - Points given when killing with Candy Cane.", _, true);
-	Cvars.Weapon[325] = CreateConVar("xstats_points_weapon_bostonbasher",			"10", "XStats: TF2 - Points given when killing with Boston Basher.", _, true);
-	Cvars.Weapon[326] = CreateConVar("xstats_points_weapon_backscratcher",			"10", "XStats: TF2 - Points given when killing with Back Scratcher.", _, true);
-	Cvars.Weapon[327] = CreateConVar("xstats_points_weapon_claidheamhmor",			"10", "XStats: TF2 - Points given when killing with Claidheamh Mór.", _, true);
-	Cvars.Weapon[329] = CreateConVar("xstats_points_weapon_jag",					"10", "XStats: TF2 - Points given when killing with Jag.", _, true);
-	Cvars.Weapon[331] = CreateConVar("xstats_points_weapon_fistsofsteel",			"10", "XStats: TF2 - Points given when killing with Fists Of Steel.", _, true);
-	Cvars.Weapon[348] = CreateConVar("xstats_points_weapon_sharpenedvolcanofragment", "10", "XStats: TF2 - Points given when killing with Sharpened Volcano Fragment.", _, true);
-	Cvars.Weapon[349] = CreateConVar("xstats_points_weapon_sunonastick",			"10", "XStats: TF2 - Points given when killing with Sun-On-A-Stick.", _, true);
-	Cvars.Weapon[351] = CreateConVar("xstats_points_weapon_detonator",				"10", "XStats: TF2 - Points given when killing with Detonator.", _, true);
-	Cvars.Weapon[355] = CreateConVar("xstats_points_weapon_fanowar",				"10", "XStats: TF2 - Points given when killing with Fan O' War.", _, true);
-	Cvars.Weapon[356] = CreateConVar("xstats_points_weapon_conniverskunai",			"10", "XStats: TF2 - Points given when killing with Conniver's Kunai.", _, true);
-	Cvars.Weapon[357] = CreateConVar("xstats_points_weapon_halfzatoichi",			"10", "XStats: TF2 - Points given when killing with Half-Zatoichi.", _, true);
-	Cvars.Weapon[401] = CreateConVar("xstats_points_weapon_shahanshah",				"10", "XStats: TF2 - Points given when killing with Shahanshah.", _, true);
-	Cvars.Weapon[402] = CreateConVar("xstats_points_weapon_bazaarbargain",			"10", "XStats: TF2 - Points given when killing with Bazaar Bargain.", _, true);
-	Cvars.Weapon[404] = CreateConVar("xstats_points_weapon_persainpersuader",		"10", "XStats: TF2 - Points given when killing with Persain Pursuader.", _, true);
-	Cvars.Weapon[406] = CreateConVar("xstats_points_weapon_splendidscreen",			"10", "XStats: TF2 - Points given when killing with Splendid Screen.", _, true);
-	Cvars.Weapon[412] = CreateConVar("xstats_points_weapon_overdose",				"10", "XStats: TF2 - Points given when killing with Overdose.", _, true);
-	Cvars.Weapon[413] = CreateConVar("xstats_points_weapon_solemnvow",				"10", "XStats: TF2 - Points given when killing with Solmen Wov.", _, true);
-	Cvars.Weapon[414] = CreateConVar("xstats_points_weapon_libertylauncher",		"10", "XStats: TF2 - Points given when killing with Liberty Launcher.", _, true);
-	Cvars.Weapon[415] = CreateConVar("xstats_points_weapon_reserveshooter",			"10", "XStats: TF2 - Points given when killing with Reserve Shooter.", _, true);
-	Cvars.Weapon[416] = CreateConVar("xstats_points_weapon_marketgardener",			"10", "XStats: TF2 - Points given when killing with Market Gardener.", _, true);
-	Cvars.Weapon[423] = CreateConVar("xstats_points_weapon_saxxy",					"10", "XStats: TF2 - Points given when killing with Saxxy.", _, true);
-	Cvars.Weapon[424] = CreateConVar("xstats_points_weapon_tomislav",				"10", "XStats: TF2 - Points given when killing with Tomislav.", _, true);
-	Cvars.Weapon[425] = CreateConVar("xstats_points_weapon_familybusiness",			"10", "XStats: TF2 - Points given when killing with Family Business.", _, true);
-	Cvars.Weapon[426] = CreateConVar("xstats_points_weapon_evictionnotice",			"10", "XStats: TF2 - Points given when killing with Eviction Notice.", _, true);
-	Cvars.Weapon[441] = CreateConVar("xstats_points_weapon_cowmangler5000",			"10", "XStats: TF2 - Points given when killing with Cow Mangler 5000", _, true);
-	Cvars.Weapon[442] = CreateConVar("xstats_points_weapon_righteousbison",			"10", "XStats: TF2 - Points given when killing with Righteous Bison.", _, true);
-	Cvars.Weapon[444] = CreateConVar("xstats_points_weapon_mantreads",				"10", "XStats: TF2 - Points given when killing with Mantreads.", _, true);
-	Cvars.Weapon[447] = CreateConVar("xstats_points_weapon_disciplinaryaction",		"10", "XStats: TF2 - Points given when killing with Disciplinary Action.", _, true);
-	Cvars.Weapon[448] = CreateConVar("xstats_points_weapon_sodapopper",				"10", "XStats: TF2 - Points given when killing with Soda Popper.", _, true);
-	Cvars.Weapon[449] = CreateConVar("xstats_points_weapon_winger",					"10", "XStats: TF2 - Points given when killing with Winger.", _, true);
-	Cvars.Weapon[450] = CreateConVar("xstats_points_weapon_atomizer",				"10", "XStats: TF2 - Points given when killing with Atomizer.", _, true);
-	Cvars.Weapon[452] = CreateConVar("xstats_points_weapon_threeruneblade",			"10", "XStats: TF2 - Points given when killing with Three Rune Blade.", _, true);
-	Cvars.Weapon[457] = CreateConVar("xstats_points_weapon_postalpummeler",			"10", "XStats: TF2 - Points given when killing with Postal Pummeler.", _, true);
-	Cvars.Weapon[460] = CreateConVar("xstats_points_weapon_enforcer",				"10", "XStats: TF2 - Points given when killing with Enforcer.", _, true);
-	Cvars.Weapon[461] = CreateConVar("xstats_points_weapon_bigearner",				"10", "XStats: TF2 - Points given when killing with Big Earner.", _, true);
-	Cvars.Weapon[466] = CreateConVar("xstats_points_weapon_maul",					"10", "XStats: TF2 - Points given when killing with Maul.", _, true);
-	Cvars.Weapon[474] = CreateConVar("xstats_points_weapon_conscentiousobjector",	"10", "XStats: TF2 - Points given when killing with Conscentious Objector.", _, true);
-	Cvars.Weapon[482] = CreateConVar("xstats_points_weapon_nessiesnineiron",		"10", "XStats: TF2 - Points given when killing with Nessie's Nine-Iron.", _, true);
-	Cvars.Weapon[513] = CreateConVar("xstats_points_weapon_original",				"10", "XStats: TF2 - Points given when killing with Original.", _, true);
-	Cvars.Weapon[525] = CreateConVar("xstats_points_weapon_diamondback",			"10", "XStats: TF2 - Points given when killing with Diamondback.", _, true);
-	Cvars.Weapon[526] = CreateConVar("xstats_points_weapon_machina",				"10", "XStats: TF2 - Points given when killing with Machina.", _, true);
-	Cvars.Weapon[527] = CreateConVar("xstats_points_weapon_widowmaker",				"10", "XStats: TF2 - Points given when killing with Widowmaker.", _, true);
-	Cvars.Weapon[528] = CreateConVar("xstats_points_weapon_shortcircuit",			"10", "XStats: TF2 - Points given when killing with Short Circuit.", _, true);
-	Cvars.Weapon[572] = CreateConVar("xstats_points_weapon_unarmedcombat",			"10", "XStats: TF2 - Points given when killing with Unarmed Combat.", _, true);
-	Cvars.Weapon[574] = CreateConVar("xstats_points_weapon_wangaprick",				"10", "XStats: TF2 - Points given when killing with Wanga Prick.", _, true);
-	Cvars.Weapon[587] = CreateConVar("xstats_points_weapon_apocofists",				"10", "XStats: TF2 - Points given when killing with Apoco Fists.", _, true);
-	Cvars.Weapon[588] = CreateConVar("xstats_points_weapon_pomson6000",				"10", "XStats: TF2 - Points given when killing with Pomson 6000.", _, true);
-	Cvars.Weapon[589] = CreateConVar("xstats_points_weapon_eurekaeffect",			"10", "XStats: TF2 - Points given when killing with Eureka Effect.", _, true);
-	Cvars.Weapon[593] = CreateConVar("xstats_points_weapon_thirddegree",			"10", "XStats: TF2 - Points given when killing with Third Degree", _, true);
-	Cvars.Weapon[594] = CreateConVar("xstats_points_weapon_phlogistinator",			"10", "XStats: TF2 - Points given when killing with Phlogistinator.", _, true);
-	Cvars.Weapon[595] = CreateConVar("xstats_points_weapon_manmelter",				"10", "XStats: TF2 - Points given when killing with Man Melter.", _, true);
-	Cvars.Weapon[609] = CreateConVar("xstats_points_weapon_scottishhandshake",		"10", "XStats: TF2 - Points given when killing with Scottish Handshake.", _, true);
-	Cvars.Weapon[638] = CreateConVar("xstats_points_weapon_sharpdresser",			"10", "XStats: TF2 - Points given when killing with Sharp Dresser.", _, true);
-	Cvars.Weapon[648] = CreateConVar("xstats_points_weapon_wrapassassin",			"10", "XStats: TF2 - Points given when killing with Wrap Assassin.", _, true);
-	Cvars.Weapon[649] = CreateConVar("xstats_points_weapon_spycicle",				"10", "XStats: TF2 - Points given when killing with Spycicle.", _, true);
-	Cvars.Weapon[654] = Cvars.Weapon[15];	//Festive Minigun.
-	Cvars.Weapon[656] = CreateConVar("xstats_points_weapon_holidaypunch",			"10", "XStats: TF2 - Points given when killing with Holiday Punch.", _, true);
-	Cvars.Weapon[658] = Cvars.Weapon[18];	//Festive Rocket Launcher.
-	Cvars.Weapon[659] = Cvars.Weapon[21];	//Festive Flamethrower.
-	Cvars.Weapon[660] = Cvars.Weapon[0];	//Festive Bat.
-	Cvars.Weapon[661] = Cvars.Weapon[20];	//Festive StickyBomb Launcher.
-	Cvars.Weapon[662] = Cvars.Weapon[7];	//Festive Wrench.
-	Cvars.Weapon[664] = Cvars.Weapon[14];	//Festive Sniper Rifle.
-	Cvars.Weapon[665] = Cvars.Weapon[4];	//Festive Knife.
-	Cvars.Weapon[669] = Cvars.Weapon[13];	//Festive Scattergun.
-	Cvars.Weapon[727] = CreateConVar("xstats_points_weapon_blackrose",				"10", "XStats: TF2 - Points given when killing with Blackrose.", _, true);
-	Cvars.Weapon[739] = CreateConVar("xstats_points_weapon_lollichop",				"10", "XStats: TF2 - Points given when killing with Lollichop.", _, true);
-	Cvars.Weapon[740] = CreateConVar("xstats_points_weapon_scorchshot",				"10", "XStats: TF2 - Points given when killing with Scorch Shot.", _, true);
-	Cvars.Weapon[741] = CreateConVar("xstats_points_weapon_rainblower",				"10", "XStats: TF2 - Points given when killing with Rainblower.", _, true);
-	Cvars.Weapon[751] = CreateConVar("xstats_points_weapon_cleanerscarbine",		"10", "XStats: TF2 - Points given when killing with Cleaner's Carbine.", _, true);
-	Cvars.Weapon[752] = CreateConVar("xstats_points_weapon_hitmansheatmaker",		"10", "XStats: TF2 - Points given when killing with Hitman's Heatmaker.", _, true);
-	Cvars.Weapon[772] = CreateConVar("xstats_points_weapon_babyfacesblaster",		"10", "XStats: TF2 - Points given when killing with Baby Face's Blaster.", _, true);
-	Cvars.Weapon[773] = CreateConVar("xstats_points_weapon_prettyboyspocketpistol",	"10", "XStats: TF2 - Points given when killing with Pretty Boy's Pocket Pistol.", _, true);
-	Cvars.Weapon[775] = CreateConVar("xstats_points_weapon_escapeplan",				"10", "XStats: TF2 - Points given when killing with Escape Plan.", _, true);
-	Cvars.Weapon[792] = Cvars.Weapon[14];	//Default Sniper Rifle.			Silver Botkiller Mk. I.
-	Cvars.Weapon[793] = Cvars.Weapon[15];	//Default Minigun.				Silver Botkiller Mk. I.
-	Cvars.Weapon[795] = Cvars.Weapon[7];	//Default Wrench.				Silver Botkiller Mk. I.
-	Cvars.Weapon[797] = Cvars.Weapon[20];	//Default Stickybomb Launcher.	Silver Botkiller Mk. I.
-	Cvars.Weapon[798] = Cvars.Weapon[21];	//Default Flamethrower.			Silver Botkiller Mk. I.
-	Cvars.Weapon[799] = Cvars.Weapon[13];	//Default Scattergun.			Silver Botkiller Mk. I.
-	Cvars.Weapon[800] = Cvars.Weapon[18];	//Default Rocket Launcher.		Silver Botkiller Mk. I.
-	Cvars.Weapon[801] = Cvars.Weapon[14];	//Default Sniper Rifle.			Gold Botkiller Mk. I.
-	Cvars.Weapon[802] = Cvars.Weapon[15];	//Default Minigun.				Gold Botkiller Mk. I.
-	Cvars.Weapon[804] = Cvars.Weapon[7];	//Default Wrench.				Gold Botkiller Mk. I.
-	Cvars.Weapon[806] = Cvars.Weapon[20];	//Default Stickybomb Launcher.	Gold Botkiller Mk. I.
-	Cvars.Weapon[807] = Cvars.Weapon[21];	//Default Flamethrower.			Gold Botkiller Mk. I.
-	Cvars.Weapon[808] = Cvars.Weapon[13];	//Default Scattergun.			Gold Botkiller Mk. I.
-	Cvars.Weapon[809] = Cvars.Weapon[18];	//Default Rocket Launcher.		Gold Botkiller Mk. I.
-	Cvars.Weapon[811] = CreateConVar("xstats_points_weapon_huolongheater",		"10", "XStats: TF2 - Points given when killing with Huo-Long Heater.", _, true);
-	Cvars.Weapon[812] = CreateConVar("xstats_points_weapon_flyingguillotine",	"10", "XStats: TF2 - Points given when killing with Flying Guillotine", _, true);
-	Cvars.Weapon[813] = CreateConVar("xstats_points_weapon_neonannihilator",	"10", "XStats: TF2 - Points given when killing with Neon Annihilator.", _, true);
-	Cvars.Weapon[832] = Cvars.Weapon[811];	//Genuine Huo-Long Heater.
-	Cvars.Weapon[833] = Cvars.Weapon[812];	//Genuine Flying Guillotine.
-	Cvars.Weapon[834] = Cvars.Weapon[813];	//Genuine Neon Annihilator.
-	Cvars.Weapon[850] = Cvars.Weapon[15];	//Deflector (MvM Minigun used by Giant Deflector Heavies.)
-	Cvars.Weapon[851] = CreateConVar("xstats_points_weapon_awperhand",			"10", "XStats: TF2 - Points given when killing with AWPer Hand.", _, true);
-	Cvars.Weapon[880] = CreateConVar("xstats_points_weapon_freedomstaff",		"10", "XStats: TF2 - Points given when killing with Freedom Staff.", _, true);
-	Cvars.Weapon[881] = Cvars.Weapon[14];	//Default Sniper Rifle.			Rust Botkiller Mk. I.
-	Cvars.Weapon[882] = Cvars.Weapon[15];	//Default Minigun.				Rust Botkiller Mk. I.
-	Cvars.Weapon[884] = Cvars.Weapon[7];	//Default Wrench.				Rust Botkiller Mk. I.
-	Cvars.Weapon[886] = Cvars.Weapon[20];	//Default Stickybomb Launcher.	Rust Botkiller Mk. I.
-	Cvars.Weapon[887] = Cvars.Weapon[21];	//Default Flamethrower.			Rust Botkiller Mk. I.
-	Cvars.Weapon[888] = Cvars.Weapon[13];	//Default Scattergun.			Rust Botkiller Mk. I.
-	Cvars.Weapon[889] = Cvars.Weapon[18];	//Default Rocket Launcher.		Rust Botkiller Mk. I.
-	Cvars.Weapon[890] = Cvars.Weapon[14];	//Default Sniper Rifle.			Blood Botkiller Mk. I.
-	Cvars.Weapon[891] = Cvars.Weapon[15];	//Default Minigun.				Blood Botkiller Mk. I.
-	Cvars.Weapon[893] = Cvars.Weapon[7];	//Default Wrench.				Blood Botkiller Mk. I.
-	Cvars.Weapon[895] = Cvars.Weapon[20];	//Default Stickybomb Launcher.	Blood Botkiller Mk. I.
-	Cvars.Weapon[896] = Cvars.Weapon[21];	//Default Flamethrower.			Blood Botkiller Mk. I.
-	Cvars.Weapon[897] = Cvars.Weapon[13];	//Default Scattergun.			Blood Botkiller Mk. I.
-	Cvars.Weapon[898] = Cvars.Weapon[18];	//Default Rocket Launcher.		Blood Botkiller Mk. I.
-	Cvars.Weapon[899] = Cvars.Weapon[14];	//Default Sniper Rifle.			Carbonado Botkiller Mk. I.
-	Cvars.Weapon[900] = Cvars.Weapon[15];	//Default Minigun.				Carbonado Botkiller Mk. I.
-	Cvars.Weapon[902] = Cvars.Weapon[7];	//Default Wrench.				Carbonado Botkiller Mk. I.
-	Cvars.Weapon[904] = Cvars.Weapon[20];	//Default Stickybomb Launcher.	Carbonado Botkiller Mk. I.
-	Cvars.Weapon[905] = Cvars.Weapon[21];	//Default Flamethrower.			Carbonado Botkiller Mk. I.
-	Cvars.Weapon[906] = Cvars.Weapon[13];	//Default Scattergun.			Carbonado Botkiller Mk. I.
-	Cvars.Weapon[907] = Cvars.Weapon[18];	//Default Rocket Launcher.		Carbonado Botkiller Mk. I.
-	Cvars.Weapon[908] = Cvars.Weapon[14];	//Default Sniper Rifle.			Diamond Botkiller Mk. I.
-	Cvars.Weapon[909] = Cvars.Weapon[15];	//Default Minigun.				Diamond Botkiller Mk. I.
-	Cvars.Weapon[911] = Cvars.Weapon[7];	//Default Wrench.				Diamond Botkiller Mk. I.
-	Cvars.Weapon[913] = Cvars.Weapon[20];	//Default Stickybomb Launcher.	Diamond Botkiller Mk. I.
-	Cvars.Weapon[914] = Cvars.Weapon[21];	//Default Flamethrower.			Diamond Botkiller Mk. I.
-	Cvars.Weapon[915] = Cvars.Weapon[13];	//Default Scattergun.			Diamond Botkiller Mk. I.
-	Cvars.Weapon[916] = Cvars.Weapon[18];	//Default Rocket Launcher.		Diamond Botkiller Mk. I.
-	Cvars.Weapon[939] = CreateConVar("xstats_points_weapon_batouttahell",	"10", "XStats: TF2 - Points given when killing with Bat Outta Hell.", _, true);
-	Cvars.Weapon[954] = CreateConVar("xstats_points_weapon_memorymaker",	"10", "XStats: TF2 - Points given when killing with Memory Maker.", _, true);
-	Cvars.Weapon[957] = Cvars.Weapon[14];	//Default Sniper Rifle.			Silver Botkiller Mk. II.
-	Cvars.Weapon[958] = Cvars.Weapon[15];	//Default Minigun.				Silver Botkiller Mk. II.
-	Cvars.Weapon[960] = Cvars.Weapon[7];	//Default Wrench.				Silver Botkiller Mk. II.
-	Cvars.Weapon[962] = Cvars.Weapon[20];	//Default Stickybomb Launcher.	Silver Botkiller Mk. II.
-	Cvars.Weapon[963] = Cvars.Weapon[21];	//Default Flamethrower.			Silver Botkiller Mk. II.
-	Cvars.Weapon[964] = Cvars.Weapon[13];	//Default Scattergun.			Silver Botkiller Mk. II.
-	Cvars.Weapon[965] = Cvars.Weapon[18];	//Default Rocket Launcher.		Silver Botkiller Mk. II.
-	Cvars.Weapon[966] = Cvars.Weapon[14];	//Default Sniper Rifle.			Gold Botkiller Mk. II.
-	Cvars.Weapon[967] = Cvars.Weapon[15];	//Default Minigun.				Gold Botkiller Mk. II.
-	Cvars.Weapon[969] = Cvars.Weapon[7];	//Default Wrench.				Gold Botkiller Mk. II.
-	Cvars.Weapon[971] = Cvars.Weapon[20];	//Default Stickybomb Launcher.	Gold Botkiller Mk. II.
-	Cvars.Weapon[972] = Cvars.Weapon[21];	//Default Flamethrower.			Gold Botkiller Mk. II.
-	Cvars.Weapon[973] = Cvars.Weapon[13];	//Default Scattergun.			Gold Botkiller Mk. II.
-	Cvars.Weapon[974] = Cvars.Weapon[18];	//Default Rocket Launcher.		Gold Botkiller Mk. II.
-	Cvars.Weapon[996] = CreateConVar("xstats_points_weapon_loosecannon",	"10", "XStats: TF2 - Points given when killing with Loose Cannon.", _, true);
-	Cvars.Weapon[997] = CreateConVar("xstats_points_weapon_rescueranger",	"10", "XStats: TF2 - Points given when killing with Rescue Ranger.", _, true);
-	Cvars.Weapon[999] = Cvars.Weapon[221];	//Festive Holy Mackerel.
-	Cvars.Weapon[1000] = Cvars.Weapon[38];	//Festive Axtinguisher.
-	Cvars.Weapon[1003] = Cvars.Weapon[37];	//Festive Ubersaw.
-	Cvars.Weapon[1004] = Cvars.Weapon[141];//Festive Frontier Justice.
-	Cvars.Weapon[1005] = Cvars.Weapon[56];	//Festive Huntsman.
-	Cvars.Weapon[1006] = Cvars.Weapon[61];	//Festive Ambassador.
-	Cvars.Weapon[1007] = Cvars.Weapon[19];	//Festive Grenade Launcher.
-	Cvars.Weapon[1013] = CreateConVar("xstats_points_weapon_hamshank",	"10", "XStats: TF2 - Points given when killing with Ham Shank.", _, true);
-	Cvars.Weapon[1071] = Cvars.Weapon[264];//Golden Frying Pan.
-	Cvars.Weapon[1078] = Cvars.Weapon[45];	//Festive Force-A-Nature.
-	Cvars.Weapon[1079] = Cvars.Weapon[305];//Festive Crusader's Crossbow.
-	Cvars.Weapon[1081] = Cvars.Weapon[39];	//Festive Flare Gun.
-	Cvars.Weapon[1082] = Cvars.Weapon[132];//Festive Eyelander.
-	Cvars.Weapon[1084] = Cvars.Weapon[239];//Festive Gloves of Running Urgently.
-	Cvars.Weapon[1085] = Cvars.Weapon[228];//Festive Black Box.
-	Cvars.Weapon[1092] = CreateConVar("xstats_points_weapon_fortifiedcompound",		"10", "XStats: TF2 - Points given when killing with Fortified Compound.", _, true);
-	Cvars.Weapon[1098] = CreateConVar("xstats_points_weapon_classic",				"10", "XStats: TF2 - Points given when killing with Classic.", _, true);
-	Cvars.Weapon[1099] = CreateConVar("xstats_points_weapon_tideturner",			"10", "XStats: TF2 - Points given when killing with Tide Turner.", _, true);
-	Cvars.Weapon[1100] = CreateConVar("xstats_points_weapon_breadbite",				"10", "XStats: TF2 - Points given when killing with Bread Bite.", _, true);
-	Cvars.Weapon[1103] = CreateConVar("xstats_points_weapon_backscatter",			"10", "XStats: TF2 - Points given when killing with Back Scatter.", _, true);
-	Cvars.Weapon[1104] = CreateConVar("xstats_points_weapon_airstrike",				"10", "XStats: TF2 - Points given when killing with Air Strike.", _, true);
-	Cvars.Weapon[1123] = CreateConVar("xstats_points_weapon_necrosmasher",			"10", "XStats: TF2 - Points given when killing with Necro Smasher.", _, true);
-	Cvars.Weapon[1127] = CreateConVar("xstats_points_weapon_crossingguard",			"10", "XStats: TF2 - Points given when killing with Crossing Guard.", _, true);
-	Cvars.Weapon[1141] = Cvars.Weapon[9];	//Festive Shotgun.
-	Cvars.Weapon[1142] = Cvars.Weapon[24];	//Festive Revolver.
-	Cvars.Weapon[1144] = Cvars.Weapon[131];//Festive Chargin' Targe.
-	Cvars.Weapon[1146] = Cvars.Weapon[40];	//Festive Backburner.
-	Cvars.Weapon[1149] = Cvars.Weapon[16];	//Festive SMG.
-	Cvars.Weapon[1150] = CreateConVar("xstats_points_weapon_quickebomblauncher",	"10", "XStats: TF2 - Points given when killing with Quickiebomb Launcher.", _, true);
-	Cvars.Weapon[1151] = CreateConVar("xstats_points_weapon_ironbomber",			"10", "XStats: TF2 - Points given when killing with Iron Bomber.", _, true);
-	Cvars.Weapon[1153] = CreateConVar("xstats_points_weapon_panicattack",			"10", "XStats: TF2 - Points given when killing with Panic Attack.", _, true);
-	Cvars.Weapon[1178] = CreateConVar("xstats_points_weapon_dragonsfury",			"10", "XStats: TF2 - Points given when killing with Dragon's Fury.", _, true);
-	Cvars.Weapon[1179] = CreateConVar("xstats_points_weapon_thermalthruster",		"10", "XStats: TF2 - Points given when killing with Thermal Thruster.", _, true);
-	Cvars.Weapon[1181] = CreateConVar("xstats_points_weapon_hothand",				"10", "XStats: TF2 - Points given when killing with Hot Hand.", _, true);
-	Cvars.Weapon[1184] = Cvars.Weapon[239];	//Gloves of Running Urgently. (Used by MvM Robots.)
-	Cvars.Weapon[15000]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Night Owl.
-	Cvars.Weapon[15001]	= Cvars.Weapon[16];	//Skinned SMG.					Woodsy Widowmaker.
-	Cvars.Weapon[15002]	= Cvars.Weapon[13];	//Skinned Scattergun.			Night Terror.
-	Cvars.Weapon[15003]	= Cvars.Weapon[9];	//Skinned Shotgun.				Backwoods Boomstick.
-	Cvars.Weapon[15004]	= Cvars.Weapon[15];	//Skinned Minigun.				King of The Jungle.
-	Cvars.Weapon[15005]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Forest Fire.
-	Cvars.Weapon[15006]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Woodland Warrior.
-	Cvars.Weapon[15007]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Purple Range.
-	Cvars.Weapon[15009]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Sudden Flurry.
-	Cvars.Weapon[15011]	= Cvars.Weapon[24];	//Skinned Revolver.				Psychedeic Slugger.
-	Cvars.Weapon[15012]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Carpet Bomber.
-	Cvars.Weapon[15013]	= Cvars.Weapon[22];	//Skinned Pistol.				Red Rock Roscoe.
-	Cvars.Weapon[15014]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Sand Cannon.
-	Cvars.Weapon[15015]	= Cvars.Weapon[13];	//Skinned Scattergun.			Tartan Torpedo.
-	Cvars.Weapon[15016]	= Cvars.Weapon[9];	//Skinned Shotgun.				Rustic Ruiner.
-	Cvars.Weapon[15017]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Barn Burner.
-	Cvars.Weapon[15018]	= Cvars.Weapon[22];	//Skinned Pistol.				Homemade Heater.
-	Cvars.Weapon[15019]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Lumber From Down Under.
-	Cvars.Weapon[15020]	= Cvars.Weapon[15];	//Skinned Minigun.				Iron Wood.
-	Cvars.Weapon[15021]	= Cvars.Weapon[13];	//Skinned Scattergun.			Country Crusher.
-	Cvars.Weapon[15022]	= Cvars.Weapon[16];	//Skinned SMG.					Plaid Potshotter.
-	Cvars.Weapon[15023]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Shot In The Dark.
-	Cvars.Weapon[15024]	= Cvars.Weapon[20];	//Skinned Grenade Launcher.		Blasted Bombardier.
-	Cvars.Weapon[15026]	= Cvars.Weapon[15];	//Skinned Minigun.				Antique Annihilator.
-	Cvars.Weapon[15027]	= Cvars.Weapon[24];	//Skinned Revolver.				Old Country.
-	Cvars.Weapon[15028]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		American Pastoral.
-	Cvars.Weapon[15029]	= Cvars.Weapon[13];	//Skinned Scattergun.			Backcountry Blaster.
-	Cvars.Weapon[15030]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Bovine Blazemaker.
-	Cvars.Weapon[15031]	= Cvars.Weapon[15];	//Skinned Minigun.				War Room.
-	Cvars.Weapon[15032]	= Cvars.Weapon[16];	//Skinned SMG.					Treadplate Tormenter.
-	Cvars.Weapon[15033]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Bogtrotter.
-	Cvars.Weapon[15034]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Earth, Sky and Fire.
-	Cvars.Weapon[15035]	= Cvars.Weapon[22];	//Skinned Pistol.				Hickory Holepuncher.
-	Cvars.Weapon[15036]	= Cvars.Weapon[13];	//Skinned Scattergun.			Spruce Deuce.
-	Cvars.Weapon[15037]	= Cvars.Weapon[16];	//Skinned SMG.					Team Sprayer.
-	Cvars.Weapon[15038]	= Cvars.Weapon[20];	//Skinned Grenade Launcher.		Rooftop Wrangler.
-	Cvars.Weapon[15040]	= Cvars.Weapon[15];	//Skinned Minigun.				Citizen Pain.
-	Cvars.Weapon[15041]	= Cvars.Weapon[22];	//Skinned Pistol.				Local Hero.
-	Cvars.Weapon[15042]	= Cvars.Weapon[24];	//Skinned Revolver.				Mayor.
-	Cvars.Weapon[15043]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Smalltown Bringdown.
-	Cvars.Weapon[15044]	= Cvars.Weapon[9];	//Skinned Shotgun.				Civic Duty.
-	Cvars.Weapon[15045]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Liquid Asset.
-	Cvars.Weapon[15046]	= Cvars.Weapon[22];	//Skinned Pistol.				Black Dahlia.
-	Cvars.Weapon[15047]	= Cvars.Weapon[9];	//Skinned Shotgun.				Lightning Rod.
-	Cvars.Weapon[15048]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Pink Elephant.
-	Cvars.Weapon[15049]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Flash Fryer.
-	Cvars.Weapon[15051]	= Cvars.Weapon[24];	//Skinned Revolver.				Dead Reckoner.
-	Cvars.Weapon[15052]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Shell Shocker.
-	Cvars.Weapon[15053]	= Cvars.Weapon[13];	//Skinned Scattergun.			Current Event.
-	Cvars.Weapon[15054]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Turbine Torcher.
-	Cvars.Weapon[15055]	= Cvars.Weapon[15];	//Skinned Minigun.				Brick House.
-	Cvars.Weapon[15056]	= Cvars.Weapon[22];	//Skinned Pistol.				Sandstone Special.
-	Cvars.Weapon[15057]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Aqua Marine.
-	Cvars.Weapon[15058]	= Cvars.Weapon[16];	//Skinned SMG.					Low Profile.
-	Cvars.Weapon[15059]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Thunderbolt.
-	Cvars.Weapon[15060]	= Cvars.Weapon[22];	//Skinned Pistol.				Macabre Web.
-	Cvars.Weapon[15061]	= Cvars.Weapon[22];	//Skinned Pistol.				Nutcracker.
-	Cvars.Weapon[15062]	= Cvars.Weapon[24];	//Skinned Revolver.				Boneyard.
-	Cvars.Weapon[15063]	= Cvars.Weapon[24];	//Skinned Revolver.				Wildwood.
-	Cvars.Weapon[15064]	= Cvars.Weapon[24];	//Skinned Revolver.				Macabre Web.
-	Cvars.Weapon[15065]	= Cvars.Weapon[13];	//Skinned Scattergun.			Macabre Web.
-	Cvars.Weapon[15066]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Autumn.
-	Cvars.Weapon[15067]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Pumpkin Patch.
-	Cvars.Weapon[15068]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Nutcracker.
-	Cvars.Weapon[15069]	= Cvars.Weapon[13];	//Skinned Scattergun.			Nutcracker.
-	Cvars.Weapon[15070]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Pumpkin Patch.
-	Cvars.Weapon[15071]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Boneyard.
-	Cvars.Weapon[15072]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Wildwood.
-	Cvars.Weapon[15073]	= Cvars.Weapon[7];	//Skinned Wrench.				Nutcracker.
-	Cvars.Weapon[15074]	= Cvars.Weapon[7];	//Skinned Wrench.				Autumn.
-	Cvars.Weapon[15075]	= Cvars.Weapon[7];	//Skinned Wrench.				Boneyard.
-	Cvars.Weapon[15076]	= Cvars.Weapon[16];	//Skinned SMG.					Wildwood.
-	Cvars.Weapon[15077]	= Cvars.Weapon[19];	//Skinned Grenade Launcher.		Autumn.
-	Cvars.Weapon[15079]	= Cvars.Weapon[19];	//Skinned Grenade Launcher.		Macabre Web.
-	Cvars.Weapon[15081]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Autumn.
-	Cvars.Weapon[15082]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Autumn.
-	Cvars.Weapon[15083]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Pumpkin Patch.
-	Cvars.Weapon[15084]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Macabre Web.
-	Cvars.Weapon[15085]	= Cvars.Weapon[9];	//Skinned Shotgun.				Autumn.
-	Cvars.Weapon[15086]	= Cvars.Weapon[15];	//Skinned Minigun.				Macabre Web.
-	Cvars.Weapon[15087]	= Cvars.Weapon[15];	//Skinned Minigun.				Pumpkin Patch.
-	Cvars.Weapon[15088]	= Cvars.Weapon[15];	//Skinned Minigun.				Nutcracker.
-	Cvars.Weapon[15089]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Balloonicorn.
-	Cvars.Weapon[15090]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Rainbow.
-	Cvars.Weapon[15091]	= Cvars.Weapon[19];	//Skinned Grenade Launcher.		Rainbow.
-	Cvars.Weapon[15092]	= Cvars.Weapon[19];	//Skinned Grenade Launcher.		Sweet Dreams.
-	Cvars.Weapon[15094]	= Cvars.Weapon[4];	//Skinned Knife.				Blue Mew.
-	Cvars.Weapon[15095]	= Cvars.Weapon[4];	//Skinned Knife.				Brain Candy.
-	Cvars.Weapon[15096]	= Cvars.Weapon[4];	//Skinned Knife.				Stabbed To Hell.
-	Cvars.Weapon[15098]	= Cvars.Weapon[15];	//Skinned Minigun.				Brain Candy.
-	Cvars.Weapon[15099]	= Cvars.Weapon[15];	//Skinned Minigun.				Mister Cuddles.
-	Cvars.Weapon[15100]	= Cvars.Weapon[22];	//Skinned Pistol.				Blue Mew.
-	Cvars.Weapon[15101]	= Cvars.Weapon[22];	//Skinned Pistol.				Brain Candy.
-	Cvars.Weapon[15102]	= Cvars.Weapon[22];	//Skinned Pistol.				Shot To Hell.
-	Cvars.Weapon[15103]	= Cvars.Weapon[24];	//Skinned Revolver.				Flower Power.
-	Cvars.Weapon[15104]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Blue Mew.
-	Cvars.Weapon[15105]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Brain Candy.
-	Cvars.Weapon[15106]	= Cvars.Weapon[13];	//Skinned Scattergun.			Bluw Mew.
-	Cvars.Weapon[15107]	= Cvars.Weapon[13];	//Skinned Scattergun.			Flower Power.
-	Cvars.Weapon[15108]	= Cvars.Weapon[13];	//Skinned Scattergun.			Shot to Hell.
-	Cvars.Weapon[15109]	= Cvars.Weapon[9];	//Skinned Shotgun.				Flower Power.
-	Cvars.Weapon[15110]	= Cvars.Weapon[15];	//Skinned SMG.					Blue Mew.
-	Cvars.Weapon[15111]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Balloonicorn.
-	Cvars.Weapon[15112]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Rainbow.
-	Cvars.Weapon[15113]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Sweet Dreams.
-	Cvars.Weapon[15114]	= Cvars.Weapon[7];	//Skinned Wrench.				Torqued To Hell.
-	Cvars.Weapon[15115]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Coffin Nail.
-	Cvars.Weapon[15116]	= Cvars.Weapon[19];	//Skinned Grenade Launcher.		Coffin Nail.
-	Cvars.Weapon[15117]	= Cvars.Weapon[19];	//Skinned Grenade Launcher.		Top Shelf.
-	Cvars.Weapon[15118]	= Cvars.Weapon[4];	//Skinned Knife.				Dressed To Kill.
-	Cvars.Weapon[15119]	= Cvars.Weapon[4];	//Skinned Knife.				Top Shelf.
-	Cvars.Weapon[15123]	= Cvars.Weapon[15];	//Skinned Minigun.				Coffin Nail.
-	Cvars.Weapon[15124]	= Cvars.Weapon[15];	//Skinned Minigun.				Dressed To Kill.
-	Cvars.Weapon[15125]	= Cvars.Weapon[15];	//Skinned Minigun.				Top Shelf.
-	Cvars.Weapon[15126]	= Cvars.Weapon[22];	//Skinned Pistol.				Dressed To Kill.
-	Cvars.Weapon[15127]	= Cvars.Weapon[24];	//Skinned Revolver.				Top Shelf.
-	Cvars.Weapon[15128]	= Cvars.Weapon[24];	//Skinned Revolver.				Top Shelf.
-	Cvars.Weapon[15129]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Coffin Nail.
-	Cvars.Weapon[15130]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		High Roller's.
-	Cvars.Weapon[15131]	= Cvars.Weapon[13];	//Skinned Scattergun.			Coffin Nail.
-	Cvars.Weapon[15132]	= Cvars.Weapon[9];	//Skinned Shotgun.				Coffin Nail.
-	Cvars.Weapon[15133]	= Cvars.Weapon[9];	//Skinned Shotgun.				Dressed To Kill.
-	Cvars.Weapon[15134]	= Cvars.Weapon[16];	//Skinned SMG.					High Roller's.
-	Cvars.Weapon[15135]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Coffin Nail.
-	Cvars.Weapon[15136]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Dressed To Kill.
-	Cvars.Weapon[15137]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Coffin Nail.
-	Cvars.Weapon[15138]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Dressed To Kill.
-	Cvars.Weapon[15139]	= Cvars.Weapon[7];	//Skinned Wrench.				Dressed To Kill.
-	Cvars.Weapon[15140]	= Cvars.Weapon[7];	//Skinned Wrench.				Top Shelf.
-	Cvars.Weapon[15141]	= Cvars.Weapon[21];	//Skinned Flame Thrower.		Warhawk.
-	Cvars.Weapon[15142]	= Cvars.Weapon[19];	//Skinned Grenade Launcher.		Warhawk.
-	Cvars.Weapon[15143]	= Cvars.Weapon[4];	//Skinned Knife.				Blitzkrieg.
-	Cvars.Weapon[15144]	= Cvars.Weapon[4];	//Skinned Knife.				Airwolf.
-	Cvars.Weapon[15147]	= Cvars.Weapon[15];	//Skinned Minigun.				Butcher Bird.
-	Cvars.Weapon[15148]	= Cvars.Weapon[22];	//Skinned Pistol.				Blitzkrieg.
-	Cvars.Weapon[15149]	= Cvars.Weapon[24];	//Skinned Revolver.				Blitzkrieg.
-	Cvars.Weapon[15050]	= Cvars.Weapon[18];	//Skinned Rocket Launcher.		Warhawk.
-	Cvars.Weapon[15151]	= Cvars.Weapon[13];	//Skinned Scattergun.			Killer Bee.
-	Cvars.Weapon[15152]	= Cvars.Weapon[9];	//Skinned Shotgun.				Red Bear.
-	Cvars.Weapon[15153]	= Cvars.Weapon[16];	//Skinned SMG.					Blitzkrieg.
-	Cvars.Weapon[15154]	= Cvars.Weapon[14];	//Skinned Sniper Rifle.			Airwolf.
-	Cvars.Weapon[15155]	= Cvars.Weapon[20];	//Skinned Stickybomb Launcher.	Blitzkrieg.
-	Cvars.Weapon[15156]	= Cvars.Weapon[7];	//Skinned Wrench.				Airwolf.
-	Cvars.Weapon[15157]	= Cvars.Weapon[13];	//Skinned Scattergun.			Corsair.
-	Cvars.Weapon[15158]	= Cvars.Weapon[19];	//Skinned Grenade Launcher.		Butcher Bird.
-	Cvars.Weapon[19010]	= Cvars.Weapon[18];	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 1.
-	Cvars.Weapon[19011]	= Cvars.Weapon[9];	//TF2Items Give Weapon: Beta Pocket Shotgun.
-	Cvars.Weapon[19012]	= Cvars.Weapon[129];//TF2Items Give Weapon: Beta Split Equalizer 1.
-	Cvars.Weapon[19013]	= Cvars.Weapon[129];//TF2Items Give Weapon: Beta Split Equalizer 2.
-	Cvars.Weapon[19015]	= Cvars.Weapon[14];	//TF2Items Give Weapon: Beta Sniper Rifle 1.
-	Cvars.Weapon[19016]	= Cvars.Weapon[18];	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 2.
-	Cvars.Weapon[19017]	= Cvars.Weapon[18];	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 3.
-	Cvars.Weapon[30474]	= CreateConVar("xstats_points_weapon_nostromonapalmer", "10", "XStats: TF2 - Points given when killing with Nostromo Napalmer.", _, true);
-	Cvars.Weapon[30665]	= CreateConVar("xstats_points_weapon_shootingstar",		"10", "XStats: TF2 - Points given when killing with Shooting star.", _, true);
-	Cvars.Weapon[30666]	= CreateConVar("xstats_points_weapon_capper",			"10", "XStats: TF2 - Points given when killing with C.A.P.P.E.R.", _, true);
-	Cvars.Weapon[30667]	= CreateConVar("xstats_points_weapon_batsaber",			"10", "XStats: TF2 - Points given when killing with Batsaber.", _, true);
-	Cvars.Weapon[30668]	= CreateConVar("xstats_points_weapon_gigarcounter",		"10", "XStats: TF2 - Points given when killing with Gigar Counter.", _, true);
-	Cvars.Weapon[30758]	= CreateConVar("xstats_points_weapon_prinnymachete",	"10", "XStats: TF2 - Points given when killing with Prinny Machete.", _, true);	
+	Cvars.CreateWeapon(0, "xstats_points_weapon_bat", 10, "XStats: TF2 - Points given when killing with Bat.");
+	Cvars.CreateWeapon(1, "xstats_points_weapon_bottle", 10, "XStats: TF2 - Points given when killing with Bottle.");
+	Cvars.CreateWeapon(2, "xstats_points_weapon_fireaxe", 10, "XStats: TF2 - Points given when killing with Fire Axe.");
+	Cvars.CreateWeapon(3, "xstats_points_weapon_kukri", 10, "XStats: TF2 - Points given when killing with Kukri.");
+	Cvars.CreateWeapon(4, "xstats_points_weapon_knife", 10, "XStats: TF2 - Points given when killing with Knife.");
+	Cvars.CreateWeapon(5, "xstats_points_weapon_fists", 10, "XStats: TF2 - Points given when killing with Fists");
+	Cvars.CreateWeapon(6, "xstats_points_weapon_shovel", 10, "XStats: TF2 - Points given when killing with Shovel.");
+	Cvars.CreateWeapon(7, "xstats_points_weapon_wrench", 10, "XStats: TF2 - Points given when killing with Wrench.");
+	Cvars.CreateWeapon(8, "xstats_points_weapon_bonesaw", 10, "XStats: TF2 - Points given when killing with Bonesaw.");
+	Cvars.CreateWeapon(9, "xstats_points_weapon_shotgun", 10, "XStats: TF2 - Points given when killing with Shotgun.");
+	Cvars.SameWeapon(10, 9); //Same Shotgun, different TFClass type.
+	Cvars.SameWeapon(11, 9); //Same Shotgun, different TFClass type.
+	Cvars.SameWeapon(12, 9); //Same Shotgun, different TFClass type.
+	Cvars.CreateWeapon(13, "xstats_points_weapon_scattergun", 10, "XStats: TF2 - Points given when killing with Scattergun.");
+	Cvars.CreateWeapon(14, "xstats_points_weapon_sniperrifle", 10, "XStats: TF2 - Points given when killing with Sniper Rifle.");
+	Cvars.CreateWeapon(15, "xstats_points_weapon_minigun", 10, "XStats: TF2 - Points given when killing with Minigun.");
+	Cvars.CreateWeapon(16, "xstats_points_weapon_smg", 10, "XStats: TF2 - Points given when killing with SMG.");
+	Cvars.CreateWeapon(17, "xstats_points_weapon_syringegun", 10, "XStats: TF2 - Points given when killing with Syringe Gun.");
+	Cvars.CreateWeapon(18, "xstats_points_weapon_rocketlauncher", 10, "XStats: TF2 - Points given when killing with Rocket Launcher.");
+	Cvars.CreateWeapon(19, "xstats_points_weapon_grenadelauncher", 10, "XStats: TF2 - Points given when killing with Grenade Launcher.");
+	Cvars.CreateWeapon(20, "xstats_points_weapon_stickybomblauncher", 10, "XStats: TF2 - Points given when killing with StickyBomb Launcher");
+	Cvars.CreateWeapon(21, "xstats_points_weapon_flamethrower", 10, "XStats: TF2 - Points given when killing with Flamethrower.");
+	Cvars.CreateWeapon(22, "xstats_points_weapon_pistol", 10, "XStats: TF2 - Points given when killing with Pistol.");
+	Cvars.SameWeapon(23, 22); //Same Pistol, different TFClass type.
+	Cvars.CreateWeapon(24, "xstats_points_weapon_revolver", 10, "XStats: TF2 - Points given when killing with Revolver.");
+	Cvars.CreateWeapon(36, "xstats_points_weapon_blutsauger", 10, "XStats: TF2 - Points given when killing with Blutsauger.");
+	Cvars.CreateWeapon(37, "xstats_points_weapon_ubersaw", 10, "XStats: TF2 - Points given when killing with Ubersaw.");
+	Cvars.CreateWeapon(38, "xstats_points_weapon_axtinguisher", 10, "XStats: TF2 - Points given when killing with Axtinguisher.");
+	Cvars.CreateWeapon(39, "xstats_points_weapon_flaregun", 10, "XStats: TF2 - Points given when killing with Flaregun.");
+	Cvars.CreateWeapon(40, "xstats_points_weapon_backburner", 10, "XStats: TF2 - Points given when killing with Backburner.");
+	Cvars.CreateWeapon(41, "xstats_points_weapon_natascha", 10, "XStats: TF2 - Points given when killing with Natascha.");
+	Cvars.CreateWeapon(43, "xstats_points_weapon_killerglovesofboxing", 10, "XStats: TF2 - Points given when killing with Killer Gloves Of Boxing");
+	Cvars.CreateWeapon(44, "xstats_points_weapon_sandman", 10, "XStats: TF2 - Points given when killing with Sandman.");
+	Cvars.CreateWeapon(45, "xstats_points_weapon_forceanature", 10, "XStats: TF2 - Points given when killing with Force-A-Nature");
+	Cvars.CreateWeapon(56, "xstats_points_weapon_huntsman", 10, "XStats: TF2 - Points given when killing with Huntsman.");
+	Cvars.CreateWeapon(61, "xstats_points_weapon_ambassador", 10, "XStats: TF2 - Points given when killing with Ambassador.");
+	Cvars.CreateWeapon(127, "xstats_points_weapon_directhit", 10, "XStats: TF2 - Points given when killing with Direct-Hit.");
+	Cvars.CreateWeapon(128, "xstats_points_weapon_equalizer", 10, "XStats: TF2 - Points given when killing with Equalizer.");
+	Cvars.CreateWeapon(130, "xstats_points_weapon_scottishresistance", 10, "XStats: TF2 - Points given when killing with Scottish Resistance.");
+	Cvars.CreateWeapon(131, "xstats_points_weapon_chargentarge", 10, "XStats: TF2 - Points given when killing with Charge n' Targe");
+	Cvars.CreateWeapon(132, "xstats_points_weapon_eyelander", 10, "XStats: TF2 - Points given when killing with Eyelander.");
+	Cvars.CreateWeapon(140, "xstats_points_weapon_wrangler", 10, "XStats: TF2 - Points given when killing with Wrangler.");
+	Cvars.CreateWeapon(141, "xstats_points_weapon_frontierjustice", 10, "XStats: TF2 - Points given when killing with Frontier Justice.");
+	Cvars.CreateWeapon(142, "xstats_points_weapon_gunslinger", 10, "XStats: TF2 - Points given when killing with gunslinger.");
+	Cvars.CreateWeapon(153, "xstats_points_weapon_homewrecker", 10, "XStats: TF2 - Points given when killing with homewrecker.");
+	Cvars.CreateWeapon(154, "xstats_points_weapon_paintrain", 10, "XStats: TF2 - Points given when killing with pain train.");
+	Cvars.CreateWeapon(155, "xstats_points_weapon_southernhospitality", 10, "XStats: TF2 - Points given when killing with southern hospitality.");
+	Cvars.CreateWeapon(160, "xstats_points_weapon_lugermorph", 10, "XStats: TF2 - Points given when killing with lugermorph");
+	Cvars.CreateWeapon(161, "xstats_points_weapon_bigkill", 10, "XStats: TF2 - Points given when killing with big kill.");
+	Cvars.CreateWeapon(169, "xstats_points_weapon_wrench", 10, "XStats: TF2 - Points given when killing with wrench.");
+	Cvars.CreateWeapon(171, "xstats_points_weapon_tribalmansshiv", 10, "XStats: TF2 - Points given when killing with tribalman's shiv.");
+	Cvars.CreateWeapon(172, "xstats_points_weapon_scotsmansskullcutter", 10, "XStats: TF2 - Points given when killing with scotsman's skullcutter.");
+	Cvars.CreateWeapon(173, "xstats_points_weapon_vitasaw", 10, "XStats: TF2 - Points given when killing with vita saw.");
+	Cvars.SameWeapon(190, 0); //Same as default Bat, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(191, 1); //Same as default Bottle, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(192, 2); //Same as default Fire Axe, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(193, 3); //Same as default Kukri, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(194, 4); //Same as default Knife, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(195, 5); //Same as default Fists, used for strange & renamed version.
+	Cvars.SameWeapon(196, 6); //Same as default Shovel, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(197, 7); //Same as default Wrench, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(198, 8); //Same as default Bonesaw, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(199, 9); //Same as default Shotgun, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(200, 13); //Same as default Scattergun, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(201, 14); //Same as default Sniper Rifle, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(202, 15); //Same as default Minigun, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(203, 16); //Same as default SMG, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(204, 17); //Same as default Syringe gun, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(205, 18); //Same as default Rocket Launcher, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(206, 19); //Same as default Grenade Launcher, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(207, 20); //Same as default Stickybomb Launcher, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(208, 21); //Same as default Flamethrower, used for australium, strange, renamed & skinned versions.
+	Cvars.SameWeapon(209, 22); //Same as default Pistol, used for strange, renamed & skinned versions.
+	Cvars.SameWeapon(210, 24); //Same as default Revolver, used for strange, renamed & skinned versions.
+	Cvars.CreateWeapon(214, "xstats_points_weapon_powerjack", 10, "Power Jack");
+	Cvars.CreateWeapon(215, "xstats_points_weapon_degreaser", 10, "Degreaser");
+	Cvars.CreateWeapon(220, "xstats_points_weapon_shortstop", 10, "Shortstop");
+	Cvars.CreateWeapon(221, "xstats_points_weapon_holymackerel", 10, "Holy Mackerel");
+	Cvars.CreateWeapon(224, "xstats_points_weapon_letranger", 10, "L'etranger");
+	Cvars.CreateWeapon(225, "xstats_points_weapon_eternalreward", 10, "Eternal Reward");
+	Cvars.CreateWeapon(228, "xstats_points_weapon_blackbox", 10, "Black Box");
+	Cvars.CreateWeapon(230, "xstats_points_weapon_sydneysleeper", 10, "Sydney Sleeper");
+	Cvars.CreateWeapon(232, "xstats_points_weapon_bushwacka", 10, "Bushwacka");
+	Cvars.SameWeapon(237, 18); //Rocket Jumper.
+	Cvars.CreateWeapon(239, "xstats_points_weapon_goru", 10, "Gloves of Running Urgently");
+	Cvars.CreateWeapon(264, "xstats_points_weapon_fryingpan", 10, "Frying Pan");
+	Cvars.SameWeapon(265, 20);	//Sticky Jumper.
+	Cvars.CreateWeapon(266, "xstats_points_weapon_hhhh", 10, "Horseless Headless Horsemann's Headtaker");
+	Cvars.SameWeapon(294, 160);	//Same Lugermorph, different TFQuality type.
+	Cvars.CreateWeapon(298, "xstats_points_weapon_ironcurtain", 10, "Iron Curtain");
+	Cvars.CreateWeapon(304, "xstats_points_weapon_amputator", 10, "Amputator");
+	Cvars.CreateWeapon(305, "xstats_points_weapon_crusaderscrossbow", 10, "Crusader's Crossbow");
+	Cvars.CreateWeapon(307, "xstats_points_weapon_ullapoolcaber", 10, "Ullapool Caber");
+	Cvars.CreateWeapon(308, "xstats_points_weapon_lochnload", 10, "Loch-n-Load");
+	Cvars.CreateWeapon(310, "xstats_points_weapon_warriorsspirit", 10, "Warrior's Spirit");
+	Cvars.CreateWeapon(312, "xstats_points_weapon_brassbeast", 10, "Brass Beast");
+	Cvars.CreateWeapon(317, "xstats_points_weapon_candycane", 10, "Candy Cane");
+	Cvars.CreateWeapon(325, "xstats_points_weapon_bostonbasher", 10, "Boston Basher");
+	Cvars.CreateWeapon(326, "xstats_points_weapon_backscratcher", 10, "Back Scratcher");
+	Cvars.CreateWeapon(327, "xstats_points_weapon_claidheamhmor", 10, "Claidheamh Mór");
+	Cvars.CreateWeapon(329, "xstats_points_weapon_jag", 10, "Jag");
+	Cvars.CreateWeapon(331, "xstats_points_weapon_fistsofsteel", 10, "Fists Of Steel");
+	Cvars.CreateWeapon(348, "xstats_points_weapon_sharpenedvolcanofragment", 10, "Sharpened Volcano Fragment");
+	Cvars.CreateWeapon(349, "xstats_points_weapon_sunonastick", 10, "Sun-On-A-Stick");
+	Cvars.CreateWeapon(351, "xstats_points_weapon_detonator", 10, "Detonator");
+	Cvars.CreateWeapon(355, "xstats_points_weapon_fanowar", 10, "Fan O' War");
+	Cvars.CreateWeapon(356, "xstats_points_weapon_conniverskunai", 10, "Conniver's Kunai");
+	Cvars.CreateWeapon(357, "xstats_points_weapon_halfzatoichi", 10, "Half-Zatoichi");
+	Cvars.CreateWeapon(401, "xstats_points_weapon_shahanshah", 10, "Shahanshah");
+	Cvars.CreateWeapon(402, "xstats_points_weapon_bazaarbargain", 10, "Bazaar Bargain");
+	Cvars.CreateWeapon(404, "xstats_points_weapon_persainpersuader", 10, "Persain Pursuader");
+	Cvars.CreateWeapon(406, "xstats_points_weapon_splendidscreen", 10, "Splendid Screen");
+	Cvars.CreateWeapon(412, "xstats_points_weapon_overdose", 10, "Overdose");
+	Cvars.CreateWeapon(413, "xstats_points_weapon_solemnvow", 10, "Solmen Wov");
+	Cvars.CreateWeapon(414, "xstats_points_weapon_libertylauncher", 10, "Liberty Launcher");
+	Cvars.CreateWeapon(415, "xstats_points_weapon_reserveshooter", 10, "Reserve Shooter");
+	Cvars.CreateWeapon(416, "xstats_points_weapon_marketgardener", 10, "Market Gardener");
+	Cvars.CreateWeapon(423, "xstats_points_weapon_saxxy", 10, "Saxxy");
+	Cvars.CreateWeapon(424, "xstats_points_weapon_tomislav", 10, "Tomislav");
+	Cvars.CreateWeapon(425, "xstats_points_weapon_familybusiness", 10, "Family Business");
+	Cvars.CreateWeapon(426, "xstats_points_weapon_evictionnotice", 10, "Eviction Notice");
+	Cvars.CreateWeapon(441, "xstats_points_weapon_cowmangler5000", 10, "Cow Mangler 5000");
+	Cvars.CreateWeapon(442, "xstats_points_weapon_righteousbison", 10, "Righteous Bison");
+	Cvars.CreateWeapon(444, "xstats_points_weapon_mantreads", 10, "Mantreads");
+	Cvars.CreateWeapon(447, "xstats_points_weapon_disciplinaryaction", 10, "Disciplinary Action");
+	Cvars.CreateWeapon(448, "xstats_points_weapon_sodapopper", 10, "Soda Popper");
+	Cvars.CreateWeapon(449, "xstats_points_weapon_winger", 10, "Winger");
+	Cvars.CreateWeapon(450, "xstats_points_weapon_atomizer", 10, "Atomizer");
+	Cvars.CreateWeapon(452, "xstats_points_weapon_threeruneblade", 10, "Three Rune Blade");
+	Cvars.CreateWeapon(457, "xstats_points_weapon_postalpummeler", 10, "Postal Pummeler");
+	Cvars.CreateWeapon(460, "xstats_points_weapon_enforcer", 10, "Enforcer");
+	Cvars.CreateWeapon(461, "xstats_points_weapon_bigearner", 10, "Big Earner");
+	Cvars.CreateWeapon(466, "xstats_points_weapon_maul", 10, "Maul");
+	Cvars.CreateWeapon(474, "xstats_points_weapon_conscentiousobjector", 10, "Conscentious Objector");
+	Cvars.CreateWeapon(482, "xstats_points_weapon_nessiesnineiron", 10, "Nessie's Nine-Iron");
+	Cvars.CreateWeapon(513, "xstats_points_weapon_original", 10, "Original");
+	Cvars.CreateWeapon(525, "xstats_points_weapon_diamondback", 10, "Diamondback");
+	Cvars.CreateWeapon(526, "xstats_points_weapon_machina", 10, "Machina");
+	Cvars.CreateWeapon(527, "xstats_points_weapon_widowmaker", 10, "Widowmaker");
+	Cvars.CreateWeapon(528, "xstats_points_weapon_shortcircuit", 10, "Short Circuit");
+	Cvars.CreateWeapon(572, "xstats_points_weapon_unarmedcombat", 10, "Unarmed Combat");
+	Cvars.CreateWeapon(574, "xstats_points_weapon_wangaprick", 10, "Wanga Prick");
+	Cvars.CreateWeapon(587, "xstats_points_weapon_apocofists", 10, "Apoco Fists");
+	Cvars.CreateWeapon(588, "xstats_points_weapon_pomson6000", 10, "Pomson 6000");
+	Cvars.CreateWeapon(589, "xstats_points_weapon_eurekaeffect", 10, "Eureka Effect");
+	Cvars.CreateWeapon(593, "xstats_points_weapon_thirddegree", 10, "Third Degree");
+	Cvars.CreateWeapon(594, "xstats_points_weapon_phlogistinator", 10, "Phlogistinator.");
+	Cvars.CreateWeapon(595, "xstats_points_weapon_manmelter", 10, "Man Melter");
+	Cvars.CreateWeapon(609, "xstats_points_weapon_scottishhandshake", 10, "Scottish Handshake");
+	Cvars.CreateWeapon(638, "xstats_points_weapon_sharpdresser", 10, "Sharp Dresser");
+	Cvars.CreateWeapon(648, "xstats_points_weapon_wrapassassin", 10, "Wrap Assassin");
+	Cvars.CreateWeapon(649, "xstats_points_weapon_spycicle", 10, "Spycicle");
+	Cvars.SameWeapon(654, 15); //Festive Minigun.
+	Cvars.CreateWeapon(656, "xstats_points_weapon_holidaypunch", 10, "Holiday Punch");
+	Cvars.SameWeapon(658, 18); //Festive Rocket Launcher.
+	Cvars.SameWeapon(659, 21); //Festive Flamethrower.
+	Cvars.SameWeapon(660, 0); //Festive Bat.
+	Cvars.SameWeapon(661, 20); //Festive StickyBomb Launcher.
+	Cvars.SameWeapon(662, 7); //Festive Wrench.
+	Cvars.SameWeapon(664, 14); //Festive Sniper Rifle.
+	Cvars.SameWeapon(665, 4); //Festive Knife.
+	Cvars.SameWeapon(669, 13); //Festive Scattergun.
+	Cvars.CreateWeapon(727, "xstats_points_weapon_blackrose", 10, "Blackrose");
+	Cvars.CreateWeapon(739, "xstats_points_weapon_lollichop", 10, "Lollichop");
+	Cvars.CreateWeapon(740, "xstats_points_weapon_scorchshot", 10, "Scorch Shot");
+	Cvars.CreateWeapon(741, "xstats_points_weapon_rainblower", 10, "Rainblower");
+	Cvars.CreateWeapon(751, "xstats_points_weapon_cleanerscarbine", 10, "Cleaner's Carbine");
+	Cvars.CreateWeapon(752, "xstats_points_weapon_hitmansheatmaker", 10, "Hitman's Heatmaker");
+	Cvars.CreateWeapon(772, "xstats_points_weapon_babyfacesblaster", 10, "Baby Face's Blaster");
+	Cvars.CreateWeapon(773, "xstats_points_weapon_prettyboyspocketpistol", 10, "Pretty Boy's Pocket Pistol");
+	Cvars.CreateWeapon(775, "xstats_points_weapon_escapeplan", 10, "Escape Plan");
+	Cvars.SameWeapon(792, 14); //Default Sniper Rifle.			Silver Botkiller Mk. I.
+	Cvars.SameWeapon(793, 15); //Default Minigun.				Silver Botkiller Mk. I.
+	Cvars.SameWeapon(795, 7); //Default Wrench.					Silver Botkiller Mk. I.
+	Cvars.SameWeapon(797, 20); //Default Stickybomb Launcher.	Silver Botkiller Mk. I.
+	Cvars.SameWeapon(798, 21); //Default Flamethrower.			Silver Botkiller Mk. I.
+	Cvars.SameWeapon(799, 13); //Default Scattergun.			Silver Botkiller Mk. I.
+	Cvars.SameWeapon(800, 18); //Default Rocket Launcher.		Silver Botkiller Mk. I.
+	Cvars.SameWeapon(801, 14); //Default Sniper Rifle.			Gold Botkiller Mk. I.
+	Cvars.SameWeapon(802, 15); //Default Minigun.				Gold Botkiller Mk. I.
+	Cvars.SameWeapon(804, 7); //Default Wrench.					Gold Botkiller Mk. I.
+	Cvars.SameWeapon(806, 20); //Default Stickybomb Launcher.	Gold Botkiller Mk. I.
+	Cvars.SameWeapon(807, 21); //Default Flamethrower.			Gold Botkiller Mk. I.
+	Cvars.SameWeapon(808, 13); //Default Scattergun.			Gold Botkiller Mk. I.
+	Cvars.SameWeapon(809, 18); //Default Rocket Launcher.		Gold Botkiller Mk. I.
+	Cvars.CreateWeapon(811, "xstats_points_weapon_huolongheater", 10, "Huo-Long Heater");
+	Cvars.CreateWeapon(812, "xstats_points_weapon_flyingguillotine", 10, "Flying Guillotine");
+	Cvars.CreateWeapon(813, "xstats_points_weapon_neonannihilator", 10, "Neon Annihilator");
+	Cvars.SameWeapon(832, 811); //Genuine Huo-Long Heater.
+	Cvars.SameWeapon(833, 812); //Genuine Flying Guillotine.
+	Cvars.SameWeapon(834, 813); //Genuine Neon Annihilator.
+	Cvars.SameWeapon(850, 15); //Deflector (MvM Minigun used by Giant Deflector Heavies.)
+	Cvars.CreateWeapon(851, "xstats_points_weapon_awperhand", 10, "AWPer Hand");
+	Cvars.CreateWeapon(880, "xstats_points_weapon_freedomstaff", 10, "Freedom Staff");
+	Cvars.SameWeapon(881, 14); //Default Sniper Rifle.			Rust Botkiller Mk. I.
+	Cvars.SameWeapon(882, 15); //Default Minigun.				Rust Botkiller Mk. I.
+	Cvars.SameWeapon(884, 7); //Default Wrench.					Rust Botkiller Mk. I.
+	Cvars.SameWeapon(886, 20); //Default Stickybomb Launcher.	Rust Botkiller Mk. I.
+	Cvars.SameWeapon(887, 21); //Default Flamethrower.			Rust Botkiller Mk. I.
+	Cvars.SameWeapon(888, 13); //Default Scattergun.			Rust Botkiller Mk. I.
+	Cvars.SameWeapon(889, 18); //Default Rocket Launcher.		Rust Botkiller Mk. I.
+	Cvars.SameWeapon(890, 14); //Default Sniper Rifle.			Blood Botkiller Mk. I.
+	Cvars.SameWeapon(891, 15); //Default Minigun.				Blood Botkiller Mk. I.
+	Cvars.SameWeapon(893, 7); //Default Wrench.					Blood Botkiller Mk. I.
+	Cvars.SameWeapon(895, 20); //Default Stickybomb Launcher.	Blood Botkiller Mk. I.
+	Cvars.SameWeapon(896, 21); //Default Flamethrower.			Blood Botkiller Mk. I.
+	Cvars.SameWeapon(897, 13); //Default Scattergun.			Blood Botkiller Mk. I.
+	Cvars.SameWeapon(898, 18); //Default Rocket Launcher.		Blood Botkiller Mk. I.
+	Cvars.SameWeapon(899, 14); //Default Sniper Rifle.			Carbonado Botkiller Mk. I.
+	Cvars.SameWeapon(900, 15); //Default Minigun.				Carbonado Botkiller Mk. I.
+	Cvars.SameWeapon(902, 7); //Default Wrench.					Carbonado Botkiller Mk. I.
+	Cvars.SameWeapon(904, 20); //Default Stickybomb Launcher.	Carbonado Botkiller Mk. I.
+	Cvars.SameWeapon(905, 21); //Default Flamethrower.			Carbonado Botkiller Mk. I.
+	Cvars.SameWeapon(906, 13); //Default Scattergun.			Carbonado Botkiller Mk. I.
+	Cvars.SameWeapon(907, 18); //Default Rocket Launcher.		Carbonado Botkiller Mk. I.
+	Cvars.SameWeapon(908, 14); //Default Sniper Rifle.			Diamond Botkiller Mk. I.
+	Cvars.SameWeapon(909, 15); //Default Minigun.				Diamond Botkiller Mk. I.
+	Cvars.SameWeapon(911, 7); //Default Wrench.					Diamond Botkiller Mk. I.
+	Cvars.SameWeapon(913, 20); //Default Stickybomb Launcher.	Diamond Botkiller Mk. I.
+	Cvars.SameWeapon(914, 21); //Default Flamethrower.			Diamond Botkiller Mk. I.
+	Cvars.SameWeapon(915, 13); //Default Scattergun.			Diamond Botkiller Mk. I.
+	Cvars.SameWeapon(916, 18); //Default Rocket Launcher.		Diamond Botkiller Mk. I.
+	Cvars.CreateWeapon(939, "xstats_points_weapon_batouttahell", 10, "Bat Outta Hell");
+	Cvars.CreateWeapon(954, "xstats_points_weapon_memorymaker",	10, "Memory Maker");
+	Cvars.SameWeapon(957, 14); //Default Sniper Rifle.			Silver Botkiller Mk. II.
+	Cvars.SameWeapon(958, 15); //Default Minigun.				Silver Botkiller Mk. II.
+	Cvars.SameWeapon(960, 7); //Default Wrench.					Silver Botkiller Mk. II.
+	Cvars.SameWeapon(962, 20); //Default Stickybomb Launcher.	Silver Botkiller Mk. II.
+	Cvars.SameWeapon(963, 21); //Default Flamethrower.			Silver Botkiller Mk. II.
+	Cvars.SameWeapon(964, 13); //Default Scattergun.			Silver Botkiller Mk. II.
+	Cvars.SameWeapon(965, 18); //Default Rocket Launcher.		Silver Botkiller Mk. II.
+	Cvars.SameWeapon(966, 14); //Default Sniper Rifle.			Gold Botkiller Mk. II.
+	Cvars.SameWeapon(967, 15); //Default Minigun.				Gold Botkiller Mk. II.
+	Cvars.SameWeapon(969, 7); //Default Wrench.					Gold Botkiller Mk. II.
+	Cvars.SameWeapon(971, 20); //Default Stickybomb Launcher.	Gold Botkiller Mk. II.
+	Cvars.SameWeapon(972, 21); //Default Flamethrower.			Gold Botkiller Mk. II.
+	Cvars.SameWeapon(973, 13); //Default Scattergun.			Gold Botkiller Mk. II.
+	Cvars.SameWeapon(974, 18); //Default Rocket Launcher.		Gold Botkiller Mk. II.
+	Cvars.CreateWeapon(996, "xstats_points_weapon_loosecannon", 10, "Loose Cannon");
+	Cvars.CreateWeapon(997, "xstats_points_weapon_rescueranger", 10, "Rescue Ranger");
+	Cvars.SameWeapon(999, 221); //Festive Holy Mackerel.
+	Cvars.SameWeapon(1000, 38); //Festive Axtinguisher.
+	Cvars.SameWeapon(1003, 37); //Festive Ubersaw.
+	Cvars.SameWeapon(1004, 141); //Festive Frontier Justice.
+	Cvars.SameWeapon(1005, 56); //Festive Huntsman.
+	Cvars.SameWeapon(1006, 61); //Festive Ambassador.
+	Cvars.SameWeapon(1007, 19); //Festive Grenade Launcher.
+	Cvars.CreateWeapon(1013, "xstats_points_weapon_hamshank", 10, "Ham Shank");
+	Cvars.SameWeapon(1071, 264);//Golden Frying Pan.
+	Cvars.SameWeapon(1078, 45);	//Festive Force-A-Nature.
+	Cvars.SameWeapon(1079, 305);//Festive Crusader's Crossbow.
+	Cvars.SameWeapon(1081, 39);	//Festive Flare Gun.
+	Cvars.SameWeapon(1082, 132);//Festive Eyelander.
+	Cvars.SameWeapon(1084, 239);//Festive Gloves of Running Urgently.
+	Cvars.SameWeapon(1085, 228);//Festive Black Box.
+	Cvars.CreateWeapon(1092, "xstats_points_weapon_fortifiedcompound", 10, "Fortified Compound");
+	Cvars.CreateWeapon(1098, "xstats_points_weapon_classic", 10, "Classic");
+	Cvars.CreateWeapon(1099, "xstats_points_weapon_tideturner", 10, "Tide Turner");
+	Cvars.CreateWeapon(1100, "xstats_points_weapon_breadbite", 10, "Bread Bite");
+	Cvars.CreateWeapon(1103, "xstats_points_weapon_backscatter", 10, "Back Scatter");
+	Cvars.CreateWeapon(1104, "xstats_points_weapon_airstrike", 10, "Air Strike");
+	Cvars.CreateWeapon(1123, "xstats_points_weapon_necrosmasher", 10, "Necro Smasher");
+	Cvars.CreateWeapon(1127, "xstats_points_weapon_crossingguard", 10, "Crossing Guard");
+	Cvars.SameWeapon(1141, 9); //Festive Shotgun.
+	Cvars.SameWeapon(1142, 24); //Festive Revolver.
+	Cvars.SameWeapon(1144, 131); //Festive Chargin' Targe.
+	Cvars.SameWeapon(1146, 40); //Festive Backburner.
+	Cvars.SameWeapon(1149, 16); //Festive SMG.
+	Cvars.CreateWeapon(1150, "xstats_points_weapon_quickebomblauncher",	10, "Quickiebomb Launcher");
+	Cvars.CreateWeapon(1151, "xstats_points_weapon_ironbomber", 10, "Iron Bomber");
+	Cvars.CreateWeapon(1153, "xstats_points_weapon_panicattack", 10, "Panic Attack");
+	Cvars.CreateWeapon(1178, "xstats_points_weapon_dragonsfury", 10, "Dragon's Fury");
+	Cvars.CreateWeapon(1179, "xstats_points_weapon_thermalthruster", 10, "Thermal Thruster");
+	Cvars.CreateWeapon(1181, "xstats_points_weapon_hothand", 10, "Hot Hand");
+	Cvars.SameWeapon(1184, 239);	//Gloves of Running Urgently. (Used by MvM Robots.)
+	Cvars.SameWeapon(15000, 14);	//Skinned Sniper Rifle.			Night Owl.
+	Cvars.SameWeapon(15001, 16);	//Skinned SMG.					Woodsy Widowmaker.
+	Cvars.SameWeapon(15002, 13);	//Skinned Scattergun.			Night Terror.
+	Cvars.SameWeapon(15003, 9);		//Skinned Shotgun.				Backwoods Boomstick.
+	Cvars.SameWeapon(15004, 15);	//Skinned Minigun.				King of The Jungle.
+	Cvars.SameWeapon(15005, 21);	//Skinned Flame Thrower.		Forest Fire.
+	Cvars.SameWeapon(15006, 18);	//Skinned Rocket Launcher.		Woodland Warrior.
+	Cvars.SameWeapon(15007, 14);	//Skinned Sniper Rifle.			Purple Range.
+	Cvars.SameWeapon(15009, 20);	//Skinned Stickybomb Launcher.	Sudden Flurry.
+	Cvars.SameWeapon(15011, 24);	//Skinned Revolver.				Psychedeic Slugger.
+	Cvars.SameWeapon(15012, 20);	//Skinned Stickybomb Launcher.	Carpet Bomber.
+	Cvars.SameWeapon(15013, 22);	//Skinned Pistol.				Red Rock Roscoe.
+	Cvars.SameWeapon(15014, 18);	//Skinned Rocket Launcher.		Sand Cannon.
+	Cvars.SameWeapon(15015, 13);	//Skinned Scattergun.			Tartan Torpedo.
+	Cvars.SameWeapon(15016, 9);		//Skinned Shotgun.				Rustic Ruiner.
+	Cvars.SameWeapon(15017, 21);	//Skinned Flame Thrower.		Barn Burner.
+	Cvars.SameWeapon(15018, 22);	//Skinned Pistol.				Homemade Heater.
+	Cvars.SameWeapon(15019, 14);	//Skinned Sniper Rifle.			Lumber From Down Under.
+	Cvars.SameWeapon(15020, 15);	//Skinned Minigun.				Iron Wood.
+	Cvars.SameWeapon(15021, 13);	//Skinned Scattergun.			Country Crusher.
+	Cvars.SameWeapon(15022, 16);	//Skinned SMG.					Plaid Potshotter.
+	Cvars.SameWeapon(15023, 14);	//Skinned Sniper Rifle.			Shot In The Dark.
+	Cvars.SameWeapon(15024, 20);	//Skinned Grenade Launcher.		Blasted Bombardier.
+	Cvars.SameWeapon(15026, 15);	//Skinned Minigun.				Antique Annihilator.
+	Cvars.SameWeapon(15027, 24);	//Skinned Revolver.				Old Country.
+	Cvars.SameWeapon(15028, 18);	//Skinned Rocket Launcher.		American Pastoral.
+	Cvars.SameWeapon(15029, 13);	//Skinned Scattergun.			Backcountry Blaster.
+	Cvars.SameWeapon(15030, 21);	//Skinned Flame Thrower.		Bovine Blazemaker.
+	Cvars.SameWeapon(15031, 15);	//Skinned Minigun.				War Room.
+	Cvars.SameWeapon(15032, 16);	//Skinned SMG.					Treadplate Tormenter.
+	Cvars.SameWeapon(15033, 14);	//Skinned Sniper Rifle.			Bogtrotter.
+	Cvars.SameWeapon(15034, 21);	//Skinned Flame Thrower.		Earth, Sky and Fire.
+	Cvars.SameWeapon(15035, 22);	//Skinned Pistol.				Hickory Holepuncher.
+	Cvars.SameWeapon(15036, 13);	//Skinned Scattergun.			Spruce Deuce.
+	Cvars.SameWeapon(15037, 16);	//Skinned SMG.					Team Sprayer.
+	Cvars.SameWeapon(15038, 20);	//Skinned Grenade Launcher.		Rooftop Wrangler.
+	Cvars.SameWeapon(15040, 15);	//Skinned Minigun.				Citizen Pain.
+	Cvars.SameWeapon(15041, 22);	//Skinned Pistol.				Local Hero.
+	Cvars.SameWeapon(15042, 24);	//Skinned Revolver.				Mayor.
+	Cvars.SameWeapon(15043, 18);	//Skinned Rocket Launcher.		Smalltown Bringdown.
+	Cvars.SameWeapon(15044, 9);		//Skinned Shotgun.				Civic Duty.
+	Cvars.SameWeapon(15045, 20);	//Skinned Stickybomb Launcher.	Liquid Asset.
+	Cvars.SameWeapon(15046, 22);	//Skinned Pistol.				Black Dahlia.
+	Cvars.SameWeapon(15047, 9);		//Skinned Shotgun.				Lightning Rod.
+	Cvars.SameWeapon(15048, 20);	//Skinned Stickybomb Launcher.	Pink Elephant.
+	Cvars.SameWeapon(15049, 21);	//Skinned Flame Thrower.		Flash Fryer.
+	Cvars.SameWeapon(15051, 24);	//Skinned Revolver.				Dead Reckoner.
+	Cvars.SameWeapon(15052, 18);	//Skinned Rocket Launcher.		Shell Shocker.
+	Cvars.SameWeapon(15053, 13);	//Skinned Scattergun.			Current Event.
+	Cvars.SameWeapon(15054, 21);	//Skinned Flame Thrower.		Turbine Torcher.
+	Cvars.SameWeapon(15055, 15);	//Skinned Minigun.				Brick House.
+	Cvars.SameWeapon(15056, 22);	//Skinned Pistol.				Sandstone Special.
+	Cvars.SameWeapon(15057, 18);	//Skinned Rocket Launcher.		Aqua Marine.
+	Cvars.SameWeapon(15058, 16);	//Skinned SMG.					Low Profile.
+	Cvars.SameWeapon(15059, 14);	//Skinned Sniper Rifle.			Thunderbolt.
+	Cvars.SameWeapon(15060, 22);	//Skinned Pistol.				Macabre Web.
+	Cvars.SameWeapon(15061, 22);	//Skinned Pistol.				Nutcracker.
+	Cvars.SameWeapon(15062, 24);	//Skinned Revolver.				Boneyard.
+	Cvars.SameWeapon(15063, 24);	//Skinned Revolver.				Wildwood.
+	Cvars.SameWeapon(15064, 24);	//Skinned Revolver.				Macabre Web.
+	Cvars.SameWeapon(15065, 13);	//Skinned Scattergun.			Macabre Web.
+	Cvars.SameWeapon(15066, 21);	//Skinned Flame Thrower.		Autumn.
+	Cvars.SameWeapon(15067, 21);	//Skinned Flame Thrower.		Pumpkin Patch.
+	Cvars.SameWeapon(15068, 21);	//Skinned Flame Thrower.		Nutcracker.
+	Cvars.SameWeapon(15069, 13);	//Skinned Scattergun.			Nutcracker.
+	Cvars.SameWeapon(15070, 14);	//Skinned Sniper Rifle.			Pumpkin Patch.
+	Cvars.SameWeapon(15071, 14);	//Skinned Sniper Rifle.			Boneyard.
+	Cvars.SameWeapon(15072, 14);	//Skinned Sniper Rifle.			Wildwood.
+	Cvars.SameWeapon(15073, 7);		//Skinned Wrench.				Nutcracker.
+	Cvars.SameWeapon(15074, 7);		//Skinned Wrench.				Autumn.
+	Cvars.SameWeapon(15075, 7);		//Skinned Wrench.				Boneyard.
+	Cvars.SameWeapon(15076, 16);	//Skinned SMG.					Wildwood.
+	Cvars.SameWeapon(15077, 19);	//Skinned Grenade Launcher.		Autumn.
+	Cvars.SameWeapon(15079, 19);	//Skinned Grenade Launcher.		Macabre Web.
+	Cvars.SameWeapon(15081, 18);	//Skinned Rocket Launcher.		Autumn.
+	Cvars.SameWeapon(15082, 20);	//Skinned Stickybomb Launcher.	Autumn.
+	Cvars.SameWeapon(15083, 20);	//Skinned Stickybomb Launcher.	Pumpkin Patch.
+	Cvars.SameWeapon(15084, 20);	//Skinned Stickybomb Launcher.	Macabre Web.
+	Cvars.SameWeapon(15085, 9);		//Skinned Shotgun.				Autumn.
+	Cvars.SameWeapon(15086, 15);	//Skinned Minigun.				Macabre Web.
+	Cvars.SameWeapon(15087, 15);	//Skinned Minigun.				Pumpkin Patch.
+	Cvars.SameWeapon(15088, 15);	//Skinned Minigun.				Nutcracker.
+	Cvars.SameWeapon(15089, 21);	//Skinned Flame Thrower.		Balloonicorn.
+	Cvars.SameWeapon(15090, 21);	//Skinned Flame Thrower.		Rainbow.
+	Cvars.SameWeapon(15091, 19);	//Skinned Grenade Launcher.		Rainbow.
+	Cvars.SameWeapon(15092, 19);	//Skinned Grenade Launcher.		Sweet Dreams.
+	Cvars.SameWeapon(15094, 4);		//Skinned Knife.				Blue Mew.
+	Cvars.SameWeapon(15095, 4);		//Skinned Knife.				Brain Candy.
+	Cvars.SameWeapon(15096, 4);		//Skinned Knife.				Stabbed To Hell.
+	Cvars.SameWeapon(15098, 15);	//Skinned Minigun.				Brain Candy.
+	Cvars.SameWeapon(15099, 15);	//Skinned Minigun.				Mister Cuddles.
+	Cvars.SameWeapon(15100, 22);	//Skinned Pistol.				Blue Mew.
+	Cvars.SameWeapon(15101, 22);	//Skinned Pistol.				Brain Candy.
+	Cvars.SameWeapon(15102, 22);	//Skinned Pistol.				Shot To Hell.
+	Cvars.SameWeapon(15103, 24);	//Skinned Revolver.				Flower Power.
+	Cvars.SameWeapon(15104, 18);	//Skinned Rocket Launcher.		Blue Mew.
+	Cvars.SameWeapon(15105, 18);	//Skinned Rocket Launcher.		Brain Candy.
+	Cvars.SameWeapon(15106, 13);	//Skinned Scattergun.			Bluw Mew.
+	Cvars.SameWeapon(15107, 13);	//Skinned Scattergun.			Flower Power.
+	Cvars.SameWeapon(15108, 13);	//Skinned Scattergun.			Shot to Hell.
+	Cvars.SameWeapon(15109, 9);		//Skinned Shotgun.				Flower Power.
+	Cvars.SameWeapon(15110, 15);	//Skinned SMG.					Blue Mew.
+	Cvars.SameWeapon(15111, 14);	//Skinned Sniper Rifle.			Balloonicorn.
+	Cvars.SameWeapon(15112, 14);	//Skinned Sniper Rifle.			Rainbow.
+	Cvars.SameWeapon(15113, 20);	//Skinned Stickybomb Launcher.	Sweet Dreams.
+	Cvars.SameWeapon(15114, 7);		//Skinned Wrench.				Torqued To Hell.
+	Cvars.SameWeapon(15115, 21);	//Skinned Flame Thrower.		Coffin Nail.
+	Cvars.SameWeapon(15116, 19);	//Skinned Grenade Launcher.		Coffin Nail.
+	Cvars.SameWeapon(15117, 19);	//Skinned Grenade Launcher.		Top Shelf.
+	Cvars.SameWeapon(15118, 4);		//Skinned Knife.				Dressed To Kill.
+	Cvars.SameWeapon(15119, 4);		//Skinned Knife.				Top Shelf.
+	Cvars.SameWeapon(15123, 15);	//Skinned Minigun.				Coffin Nail.
+	Cvars.SameWeapon(15124, 15);	//Skinned Minigun.				Dressed To Kill.
+	Cvars.SameWeapon(15125, 15);	//Skinned Minigun.				Top Shelf.
+	Cvars.SameWeapon(15126, 22);	//Skinned Pistol.				Dressed To Kill.
+	Cvars.SameWeapon(15127, 24);	//Skinned Revolver.				Top Shelf.
+	Cvars.SameWeapon(15128, 24);	//Skinned Revolver.				Top Shelf.
+	Cvars.SameWeapon(15129, 18);	//Skinned Rocket Launcher.		Coffin Nail.
+	Cvars.SameWeapon(15130, 18);	//Skinned Rocket Launcher.		High Roller's.
+	Cvars.SameWeapon(15131, 13);	//Skinned Scattergun.			Coffin Nail.
+	Cvars.SameWeapon(15132, 9);		//Skinned Shotgun.				Coffin Nail.
+	Cvars.SameWeapon(15133, 9);		//Skinned Shotgun.				Dressed To Kill.
+	Cvars.SameWeapon(15134, 16);	//Skinned SMG.					High Roller's.
+	Cvars.SameWeapon(15135, 14);	//Skinned Sniper Rifle.			Coffin Nail.
+	Cvars.SameWeapon(15136, 14);	//Skinned Sniper Rifle.			Dressed To Kill.
+	Cvars.SameWeapon(15137, 20);	//Skinned Stickybomb Launcher.	Coffin Nail.
+	Cvars.SameWeapon(15138, 20);	//Skinned Stickybomb Launcher.	Dressed To Kill.
+	Cvars.SameWeapon(15139, 7);		//Skinned Wrench.				Dressed To Kill.
+	Cvars.SameWeapon(15140, 7);		//Skinned Wrench.				Top Shelf.
+	Cvars.SameWeapon(15141, 21);	//Skinned Flame Thrower.		Warhawk.
+	Cvars.SameWeapon(15142, 19);	//Skinned Grenade Launcher.		Warhawk.
+	Cvars.SameWeapon(15143, 4);		//Skinned Knife.				Blitzkrieg.
+	Cvars.SameWeapon(15144, 4);		//Skinned Knife.				Airwolf.
+	Cvars.SameWeapon(15147, 15);	//Skinned Minigun.				Butcher Bird.
+	Cvars.SameWeapon(15148, 22);	//Skinned Pistol.				Blitzkrieg.
+	Cvars.SameWeapon(15149, 24);	//Skinned Revolver.				Blitzkrieg.
+	Cvars.SameWeapon(15050, 18);	//Skinned Rocket Launcher.		Warhawk.
+	Cvars.SameWeapon(15151, 13);	//Skinned Scattergun.			Killer Bee.
+	Cvars.SameWeapon(15152, 9);		//Skinned Shotgun.				Red Bear.
+	Cvars.SameWeapon(15153, 16);	//Skinned SMG.					Blitzkrieg.
+	Cvars.SameWeapon(15154, 14);	//Skinned Sniper Rifle.			Airwolf.
+	Cvars.SameWeapon(15155, 20);	//Skinned Stickybomb Launcher.	Blitzkrieg.
+	Cvars.SameWeapon(15156, 7);		//Skinned Wrench.				Airwolf.
+	Cvars.SameWeapon(15157, 13);	//Skinned Scattergun.			Corsair.
+	Cvars.SameWeapon(15158, 19);	//Skinned Grenade Launcher.		Butcher Bird.
+	Cvars.SameWeapon(19010, 18);	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 1.
+	Cvars.SameWeapon(19011, 9);		//TF2Items Give Weapon: Beta Pocket Shotgun.
+	Cvars.SameWeapon(19012, 129);	//TF2Items Give Weapon: Beta Split Equalizer 1.
+	Cvars.SameWeapon(19013, 129);	//TF2Items Give Weapon: Beta Split Equalizer 2.
+	Cvars.SameWeapon(19015, 14);	//TF2Items Give Weapon: Beta Sniper Rifle 1.
+	Cvars.SameWeapon(19016, 18);	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 2.
+	Cvars.SameWeapon(19017, 18);	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 3.
+	Cvars.CreateWeapon(30474, "xstats_points_weapon_nostromonapalmer", 10, "Nostromo Napalmer");
+	Cvars.CreateWeapon(30665, "xstats_points_weapon_shootingstar", 10, "Shooting star");
+	Cvars.CreateWeapon(30666, "xstats_points_weapon_capper", 10, "C.A.P.P.E.R");
+	Cvars.CreateWeapon(30667, "xstats_points_weapon_batsaber", 10, "Batsaber");
+	Cvars.CreateWeapon(30668, "xstats_points_weapon_gigarcounter", 10, "Gigar Counter");
+	Cvars.CreateWeapon(30758, "xstats_points_weapon_prinnymachete", 10, "Prinny Machete");	
 	
 	/* Other */
-	TF2_Collat = CreateConVar("xstats_points_collateralkill",	"2", "XStats: TF2 - Extra points given when pulling a collateral kill.", _, true);
+	TF2_Collat = CreateConVar("xstats_points_collateralkill", "2", "XStats: TF2 - Extra points given when pulling a collateral kill.", _, true);
 	
 	/* MvM - Arrayed to make it way easier to handle due to long event names */
-	TF2_MvM[0] = CreateConVar("xstats_points_mvm_destroytank",		"5", "XStats: TF2 - Points given to red team when tank is destroyed.", _, true);
+	TF2_MvM[0] = CreateConVar("xstats_points_mvm_destroytank", "5", "XStats: TF2 - Points given to red team when tank is destroyed.", _, true);
 	TF2_MvM[1] = CreateConVar("xstats_points_mvm_killsentrybuster",	"5", "XStats: TF2 - Points given when killing Sentry Buster.", _, true);
-	TF2_MvM[2] = CreateConVar("xstats_points_mvm_resetbomb",		"5", "XStats: TF2 - Points given when bomb is reset.", _, true);
+	TF2_MvM[2] = CreateConVar("xstats_points_mvm_resetbomb", "5", "XStats: TF2 - Points given when bomb is reset.", _, true);
 	
 	/* Events */
 	
@@ -473,7 +473,7 @@ void PrepareGame_TF2() {
 }
 
 /* MvM */
-stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, bool dontBroadcast)	{
+stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, bool dontBroadcast) {
 	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[0].IntValue < 1) return;
 	
 	int points = TF2_MvM[0].IntValue;
@@ -584,16 +584,32 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	};
 	
 	char query[512];
-	int len = 0;
-	len += Format(query[len], sizeof(query)-len, "insert into `%s`", Global.item_found);
-	len += Format(query[len], sizeof(query)-len, "(ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)");
-	len += Format(query[len], sizeof(query)-len, "values");
-	len += Format(query[len], sizeof(query)-len, "('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f')",
-	Cvars.ServerID.IntValue, Player[client].Playername, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, wear);
+	Format(query, sizeof(query), "insert into `%s`"
+	... "(ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)"
+	... "values"
+	... "('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f')"
+	, Global.item_found
+	, Cvars.ServerID.IntValue
+	, Player[client].Playername
+	, Player[client].SteamID
+	, quality
+	, quality_name
+	, method
+	, method_name[method]
+	, defindex
+	, wear);
 	SQL.Query(DBQuery_Callback, query);
 	
-	XStats_DebugText(false, "Inserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear) with values ('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f') onto %s",
-	Cvars.ServerID.IntValue, Player[client].SteamID, quality, quality_name, method, method_name[method], defindex, wear, Global.item_found);
+	XStats_DebugText(false, "Inserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear) with values ('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f') onto %s"
+	, Cvars.ServerID.IntValue
+	, Player[client].SteamID
+	, quality
+	, quality_name
+	, method
+	, method_name[method]
+	, defindex
+	, wear
+	, Global.item_found);
 }
 
 /* Deaths */
@@ -603,8 +619,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	//It's a fake death.
 	if(event.GetInt(EVENT_STR_DEATH_FLAGS) & TF_DEATHFLAG_DEADRINGER) {
 		event.SetBool("fakedeath", true);
-		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
-		XStats_DebugText(false, "Detected fake death, ignoring.");
+		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//" ... "\nDetected fake death, ignoring.");
 		return;
 	}
 	
@@ -616,8 +631,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	if(StrEqual(weapon, "player") || StrEqual(weapon, "world")) {
 	//if(customkill & TF_CUSTOM_SUICIDE) { TF_CUSTOM_SUICIDE is broken, applied on any kill event :|
-		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
-		XStats_DebugText(false, "Detected invalid killer (suicide), ignoring to prevent issues..\n");
+		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//" ... "Detected invalid killer (suicide), ignoring to prevent issues..\n");
 		return;	
 	}
 	
@@ -771,19 +785,31 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	if(!telefrag) TF2_FixWeaponClassname(client, fix_weapon, sizeof(fix_weapon), defindex, weapon);
 	
 	/* Debug */
-	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//");
-	XStats_DebugText(false, "client %s (index %i)", Player[client].Playername, client);
-	XStats_DebugText(false, "victim %s (index %i)", Player[victim].Playername, victim);
-	XStats_DebugText(false, "assist %s (index %i)", Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist);
-	XStats_DebugText(false, "inflictor %i\n", inflictor);
-	XStats_DebugText(false, "weapon \"%s\"", weapon);
-	XStats_DebugText(false, "defindex %i", defindex);
-	XStats_DebugText(false, "customkill %i", customkill);
-	XStats_DebugText(false, "deathflags %i", deathflags);
-	XStats_DebugText(false, "penetrated %i\n", penetrated);
-	XStats_DebugText(false, "crit type %i [%s]\n", crits, TF2_CritTypeName[crits]);
-	XStats_DebugText(false, "Midair %s\n", Bool[midair]);
-	XStats_DebugText(false, "Points %i\n", points);
+	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//"
+	... "client %s (index %i)"
+	... "victim %s (index %i)"
+	... "assist %s (index %i)"
+	... "inflictor %i\n"
+	... "weapon \"%s\""
+	... "defindex %i"
+	... "customkill %i"
+	... "deathflags %i"
+	... "penetrated %i\n"
+	... "crit type %i [%s]\n"
+	... "Midair %s\n"
+	... "Points %i\n"
+	, Player[client].Playername, client
+	, Player[victim].Playername, victim
+	, Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist
+	, inflictor
+	, weapon
+	, defindex
+	, customkill
+	, deathflags
+	, penetrated
+	, crits, TF2_CritTypeName[crits]
+	, Bool[midair]
+	, points);
 	
 	/* Kill msg stuff */
 	KillMsg[client].MidAirKill = midair;
@@ -802,13 +828,13 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	//There was an assist.
 	if(AssistedKill(assist, client, victim)) {
-		if(dominated_assister)	{
+		if(dominated_assister) {
 			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 			SQL.Query(DBQuery_Callback, query);
 		}
 		
-		if(revenge_assister)	{
+		if(revenge_assister) {
 			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 			SQL.Query(DBQuery_Callback, query);

@@ -56,8 +56,8 @@ stock int GetClientPoints(const char[] auth) {
  *	@param	auth	The players steam authentication id.
  */
 stock int GetClientPosition(const char[] auth) {
-	int position = 0;
-	int points = 0;
+	int position = 0
+	, points = 0;
 	
 	if(SQL != null) {
 		SQL.Lock();
@@ -352,16 +352,14 @@ stock void DBQuery_RemoveOldPlayers_2(Database database, DBResultSet results, co
  *	Callback query for death events.
  */
 stock void DBQuery_Callback(Database database, DBResultSet results, const char[] error, any data)	{
-	if(results == null)
-		XStats_DebugText(true, "Updating table \"%s\" failed! (%s)", Global.playerlist, error);
+	if(!results) XStats_DebugText(true, "Updating table \"%s\" failed! (%s)", Global.playerlist, error);
 }
 
 /**
  *	Callback query for kill log.
  */
 stock void DBQuery_Kill_Log(Database database, DBResultSet results, const char[] error, any data)	{
-	if(results == null)
-		XStats_DebugText(true, "Adding kill log event to \"%s\" failed! (%s)", Global.kill_log, error);
+	if(!results) XStats_DebugText(true, "Adding kill log event to \"%s\" failed! (%s)", Global.kill_log, error);
 }
 
 /**
@@ -371,16 +369,14 @@ stock void DBQuery_IntervalPlayTimer(Database database, DBResultSet results, con
 	if(!IsClientConnected(client))
 		return;
 	
-	if(results == null)
-		XStats_DebugText(true, "Updating playtime by 1 minute for client index %i to \"%s\" failed! (%s)", client, Global.playerlist, error);
+	if(!results) XStats_DebugText(true, "Updating playtime by 1 minute for client index %i to \"%s\" failed! (%s)", client, Global.playerlist, error);
 }
 
 /**
  *	Callback query for database query insertions.
  */
 stock void DBQuery_DB(Database database, DBResultSet results, const char[] error, int data)	{
-	if(results == null)
-		XStats_DebugText(true, "Creating query for database table id %i failed! (%s)", data, error);
+	if(!results) XStats_DebugText(true, "Creating query for database table id %i failed! (%s)", data, error);
 }
 
 /**
@@ -534,8 +530,7 @@ stock void PrepareTF2FlagEventForward(int client, int carrier, TFFlag flag, bool
  *	@return	Returns if the assister is valid.
  */
 stock bool AssistedKill(int assist, int client, int victim) {
-	if(!Tklib_IsValidClient(assist, true))
-		return false;
+	if(!Tklib_IsValidClient(assist, true)) return false;
 	
 	char query[256];
 	Session[assist].Assists++;

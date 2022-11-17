@@ -153,10 +153,10 @@ void PrepareGame_TeamFortress()	{
 stock void Teamplay_Point_Captured(Event event, const char[] event_name, bool dontBroadcast) {
 	if(!IsValidStats() || TF2_PointCaptured.IntValue < 1) return;
 	
-	char[] cappers = new char[MaxClients];
+	char[] cappers = new char[MaxPlayers];
 	char query[256], cpname[64];
 	event.GetString(EVENT_STR_CPNAME, cpname, sizeof(cpname));
-	event.GetString(EVENT_STR_CAPPERS, cappers, MaxClients);
+	event.GetString(EVENT_STR_CAPPERS, cappers, MaxPlayers);
 	int points = TF2_PointCaptured.IntValue;
 	
 	char captured_point[64];
@@ -220,12 +220,17 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 		/* 3 */ "RED"
 	};
 	
-	XStats_DebugText(false, "//===== XStats Debug Log: Teamplay_Flag_Event =====//");
-	XStats_DebugText(false, "player %N (%i)", client, client);
-	XStats_DebugText(false, "carrier %N (%i)", carrier, carrier);
-	XStats_DebugText(false, "eventtype %s", TF2_FlagTypeName[eventtype]);
-	XStats_DebugText(false, "home %s", Bool[home]);
-	XStats_DebugText(false, "teamname %s\n", teamname[team]);
+	XStats_DebugText(false, "//===== XStats Debug Log: Teamplay_Flag_Event =====//"
+	... "\nplayer %N (%i)"
+	... "\ncarrier %N (%i)"
+	... "\neventtype %s"
+	... "\nhome %s"
+	... "\nteamname %s\n"
+	, client, client
+	, carrier, carrier
+	, TF2_FlagTypeName[eventtype]
+	, Bool[home]
+	, teamname[team]);
 	
 	char query[1024];
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
@@ -728,13 +733,15 @@ stock void Halloween_Boss_Killed(Event event, const char[] event_name, bool dont
 		"Merasmus",
 	}, boss_name[64];
 	
-	XStats_DebugText(false, "//===== Halloween_Boss_Killed =====//");
-	XStats_DebugText(false, "killer %N", client);
-	XStats_DebugText(false, "boss id %i", boss);
-	XStats_DebugText(false, "boss \"%s\"", boss_name_debug[boss]);
-	XStats_DebugText(false, " ");
-	XStats_DebugText(false, "Points %i", points);
-	XStats_DebugText(false, " ");
+	XStats_DebugText(false, "//===== Halloween_Boss_Killed =====//"
+	... "\nkiller %N"
+	... "\nboss id %i"
+	... "\nboss \"%s\""
+	... "\nPoints %i\n"
+	, client
+	, boss
+	, boss_name_debug[boss]
+	, points);
 	
 	Format(boss_name, sizeof(boss_name), "%s{default}", halloween_type[boss]);
 	
@@ -929,10 +936,13 @@ void FramePlayerJarated(DataPack pack)	{
 		}
 	}
 	
-	XStats_DebugText(false, "//===== XStats Debug Log: PlayerJarated =====//");
-	XStats_DebugText(false, "Client: %s (index %i)", Player[client].Playername, client);
-	XStats_DebugText(false, "Victim: %s (index %i)", Player[victim].Playername, victim);
-	XStats_DebugText(false, "Defindex: %i\n", defindex);
+	XStats_DebugText(false, "//===== XStats Debug Log: PlayerJarated =====//"
+	... "\nClient: %s (index %i)"
+	... "\nVictim: %s (index %i)"
+	... "\nDefindex: %i\n"
+	, Player[client].Playername, client
+	, Player[victim].Playername, victim
+	, defindex);
 }
 
 //float Extinguished_Timer = 10.0;
@@ -1000,9 +1010,11 @@ Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int players
 	if(!Tklib_IsValidClient(victim)) return Plugin_Handled;
 	
 	Session[client].Ignited++;
-	XStats_DebugText(false, "//===== XStats Debug Log: PlayerIgnited =====//");
-	XStats_DebugText(false, "Client: %s (index %i)", Player[client].Playername, client);
-	XStats_DebugText(false, "Victim: %s (index %i)\n", Player[client].Playername, victim);
+	XStats_DebugText(false, "//===== XStats Debug Log: PlayerIgnited =====//"
+	... "\nClient: %s (index %i)"
+	... "\nVictim: %s (index %i)\n"
+	, Player[client].Playername, client
+	, Player[client].Playername, victim);
 	return Plugin_Continue;
 }
 

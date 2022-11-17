@@ -11,7 +11,6 @@
 SetPluginInfo("XStats - Statistical Multi-Tracker", _tklib_author, "XStats - Track kills, maps, kill events, achievements, etc.", Version, _tklib_author_url)
 
 /* Core */
-//XStatsDatabase DB;
 DatabaseEx SQL;
 XStatsForwards Forward;
 XStatsCvars Cvars;
