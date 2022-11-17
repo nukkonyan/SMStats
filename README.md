@@ -4,7 +4,7 @@
 
 ## Note: plugin is currently in development phase, errors are to be expected.
 
-`` You may NOT modify the plugin and distribute on to another place/source``
+# `` You may NOT modify the plugin and distribute on to another place/source``
 
 XStats is a Multi-Statistics tracking plugin.
 
