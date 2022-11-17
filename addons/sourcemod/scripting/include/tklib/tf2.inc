@@ -2719,28 +2719,28 @@ stock bool TF2_SetClientDesiredClass(int client, TFClassType class) { return Set
  *
  *	@param	index	The paint kit index.
  */
-stock bool TF2_IsValidPaintKit(int index) { for(int i = MAX_TF2_PAINTS; i--;) { if(TF2_Paints[i] == index) return true; } return false; }
+stock bool TF2_IsValidPaintKit(int index) { for(int i = MaxTF2Paints; i--;) { if(TF2_Paints[i] == index) return true; } return false; }
 
 /**
  *	Returns if the unusual effect index is valid.
  *
  *	@param	index	The unusual particle index.
  */
-stock bool TF2_IsValidUnusual(int index) { for(int i = MAX_TF2_UNUSUALS; i--;) { if(TF2_UnusualEffects[i] == index) return true; } return false; }
+stock bool TF2_IsValidUnusual(int index) { for(int i = MaxTF2Unusuals; i--;) { if(TF2_UnusualEffects[i] == index) return true; } return false; }
 
 /**
  *	Returns if the definition index is a valid weapon.
  *
  *	@param	defindex	The weapon definition index.
  */
-stock bool TF2_IsValidWeaponDefindex(int defindex) { for(int i = MAX_TF2_WEAPONS; i--;) { if(TF2_Weapons[i] == defindex) return true; } return false; }
+stock bool TF2_IsValidWeaponDefindex(int defindex) { for(int i = MaxTF2Weapons; i--;) { if(TF2_Weapons[i] == defindex) return true; } return false; }
 
 /**
  *	Returns if the definition index is a valid taunt.
  *
  *	@param	defindex	The taunt definition index.
  */
-stock bool TF2_IsValidTaunt(int defindex) { for(int i = MAX_TF2_TAUNTS; i--;) { if(TF2_Taunts[i] == defindex) return true; } return false; }
+stock bool TF2_IsValidTaunt(int defindex) { for(int i = MaxTF2Taunts; i--;) { if(TF2_Taunts[i] == defindex) return true; } return false; }
 
 /**
  *	Equips the user the cosmetic item.
