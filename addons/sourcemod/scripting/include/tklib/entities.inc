@@ -628,7 +628,7 @@ methodmap Entity __nullable__ {
 		return SetEntityGlobalName(view_as<int>(this), dummy);
 	}
 	
-	public static Entity FindByClassname(any startEnt, const char[] classname) { return view_as<Entity>(FindEntityByClassname(startEnt, classname)); }
+	public static any FindByClassname(const char[] classname) { return FindEntityByClassname(0, classname); }
 	
 	/**
 	 *	Find entity via classname if it exists.

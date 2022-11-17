@@ -275,8 +275,8 @@
 #define Bot(%1) IsFakeClient(%1)
 #define boolean bool
 #define integer int
-#define CONSOLE 0
-#define MAXCLIENTS MAXPLAYERS+1
+const int Console = 0;
+const int MaxPlayers = 33; // Clients will never reach above index 33, maximum players available is only to 32 or 33, each counting as entity index 1 to 32/33. Excluding zombie gamemode?
 #endif
 
 //Includes

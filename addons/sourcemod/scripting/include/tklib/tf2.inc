@@ -537,14 +537,15 @@ TF2_Weapons[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,2
 TF2_KillstreakerEffect[] = {2002,2003,2004,2005,2006,2007,2008},
 TF2_KillstreakerSheen[] = {0,1,2,3,4,5,6,7};
 
-const int MAX_TF2_TAUNTS = sizeof(TF2_Taunts);
-const int MAX_TF2_CONDITIONS = sizeof(TF2_Conditions);
-const int MAX_TF2_WARPAINTS = sizeof(TF2_Warpaints);
-const int MAX_TF2_PAINTS = sizeof(TF2_Paints);
-const int MAX_TF2_UNUSUALS = sizeof(TF2_UnusualEffects);
-const int MAX_TF2_WEAPONS = sizeof(TF2_Weapons);
-const int MAX_TF2_KILLSTREAKER_SHEENS = sizeof(TF2_KillstreakerEffect);
-const int MAX_TF2_KILLSTREAKER_EFFECTS = sizeof(TF2_KillstreakerSheen);
+const int MaxTF2Taunts = sizeof(TF2_Taunts);
+const int MaxTF2Conditions = sizeof(TF2_Conditions);
+const int MaxTF2Warpaints = sizeof(TF2_Warpaints);
+const int MaxTF2Paints = sizeof(TF2_Paints);
+const int MaxTF2Unusuals = sizeof(TF2_UnusualEffects);
+const int MaxTF2Weapons = sizeof(TF2_Weapons);
+const int MaxTF2KillstreakEffects = sizeof(TF2_KillstreakerEffect);
+const int MaxTF2KillstreakSheens = sizeof(TF2_KillstreakerSheen);
+const int MaxTF2WeaponDefinitionIndex = 30578;
 
 //TF2 Flag Event
 enum TFFlag {

@@ -319,7 +319,57 @@ enum struct XStatsCvars {
 	ConVar AntiAbuse;
 	ConVar Update;
 	ConVar RemoveOldPlayers;
-	ConVar Weapon[40000];
+	ConVar Weapon[MaxTF2WeaponDefinitionIndex+1000]; //Temporary
+	//ArrayList Weapons;
+	
+	void CreateTF2Weapon(int defindex, const char[] cvarname, int value, const char[] description)
+	{
+		char dummy[16];
+		IntToString(value, dummy, sizeof(dummy));
+		
+		int maxlen = StrLen(description)+96;
+		char[] desc = new char[maxlen];
+		Format(desc, maxlen, "XStats: TF2 - Points given when killing with %s.", desc);
+		
+		//I use constructed cvar instead of ArrayList or StringMap due to errors about invalid indexes.
+		//ConVar cvar = CreateConVar(cvarname, dummy, description, _, true);
+		//this.Weapons.Set(defindex, cvar);
+		this.Weapon[defindex] = CreateConVar(cvarname, dummy, desc, _, true);
+	}
+	
+	void CreateCSSWeapon(int defindex, const char[] cvarname, int value, char[] description)
+	{
+		char dummy[16];
+		IntToString(value, dummy, sizeof(dummy));
+		
+		int maxlen = StrLen(description)+96;
+		char[] desc = new char[maxlen];
+		Format(desc, maxlen, "XStats: CSS - Points given when killing with %s.", desc);
+		
+		this.Weapon[defindex] = CreateConVar(cvarname, dummy, desc, _, true);
+	}
+	
+	void CreateCSGOWeapon(int defindex, const char[] cvarname, int value, char[] description)
+	{
+		char dummy[16];
+		IntToString(value, dummy, sizeof(dummy));
+		
+		int maxlen = StrLen(description)+96;
+		char[] desc = new char[maxlen];
+		Format(desc, maxlen, "XStats: CS:GO - Points given when killing with %s.", desc);
+		
+		this.Weapon[defindex] = CreateConVar(cvarname, dummy, desc, _, true);
+	}
+	
+	void SameWeapon(int defindex1, int defindex2)
+	{
+		this.Weapon[defindex1] = this.Weapon[defindex2];
+	}
+	
+	ConVar GetWeaponCvar(int defindex)
+	{
+		return this.Weapon[defindex];
+	}
 }
 
 enum struct XStatsConnectSound {
@@ -334,10 +384,6 @@ enum struct XStatsForwards {
 	GlobalForward TF2_FlagEvent;
 	
 	PrivateForward GetStats;
-}
-
-enum struct XStatsDatabase {
-	Database Direct;
 }
 
 /**
@@ -362,7 +408,8 @@ stock char Kill_Type[][] = {
 	"Kill Event Type 13",	//Blinded Kill.
 };
 
-typeset XStatsSessionCallback {
+typeset XStatsSessionCallback
+{
 	function void (XStats_SessionType type, int client, int count);
 	function void (XStats_SessionType type, int client);
 }

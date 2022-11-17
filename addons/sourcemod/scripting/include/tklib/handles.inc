@@ -1,5 +1,18 @@
+/**
+ *	Called when a menu action is completed.
+ *
+ *	@param	menu	The menu being acted upon.
+ *	@param	action	The action of the menu.
+ *	@param	param1	First action parameter (usually the client).
+ *	@param	param2	Second action parameter (usually the item).
+ */
+typeset MenuHandlerEx {
+	function void (Menu menu, MenuAction action, int param1, int param2);
+	function void (MenuEx menu, MenuAction action, int param1, int param2);
+}
+
 methodmap MenuEx < Menu {
-	public MenuEx(MenuHandler handler) { return view_as<MenuEx>(new Menu(handler)); }
+	public MenuEx(MenuHandlerEx handler) { return view_as<MenuEx>(new Menu(view_as<MenuHandler>(handler))); }
 	
 	/*
 	 *	Displays a menu to a user.
@@ -238,8 +251,8 @@ methodmap PanelEx < Panel {
 	 *
 	 *	@return				True on success, false on failure.
 	 */
-	public void Send(int client, MenuHandler handler, int time=MENU_TIME_FOREVER)	{
-		view_as<Panel>(this).Send(client, handler, time);
+	public void Send(int client, MenuHandlerEx handler, int time=MENU_TIME_FOREVER)	{
+		view_as<Panel>(this).Send(client, view_as<MenuHandler>(handler), time);
 		delete view_as<Panel>(this);
 	}
 	
@@ -454,7 +467,7 @@ methodmap StringMapEx < StringMap {
 	}
 	
 	/*
-	 *	Sets a string value in a Map, either inserting a new entry or replacing an old one.
+	 *	Sets a index in a Map, either inserting a new entry or replacing an old one.
 	 *
 	 *	@param	index	Key index.
 	 *	@param	value	Index to store.
@@ -464,6 +477,22 @@ methodmap StringMapEx < StringMap {
 	 */
 	public bool SetIndex(int index, int value, bool replace=true) {
 		char key[16], val[16];
+		IntToString(index, key, sizeof(key));
+		IntToString(value, val, sizeof(val));
+		return view_as<StringMap>(this).SetString(key, val, replace);
+	}
+	
+	/*
+	 *	Sets a index value in a Map, either inserting a new entry or replacing an old one.
+	 *
+	 *	@param	index	Key index.
+	 *	@param	value	Index to store.
+	 *	@param	replace	If false, operation will fail if the key is already set.
+	 *
+	 *	@return	True on success, false on failure.
+	 */
+	public bool SetIndexValue(int index, any value, bool replace=true) {
+		char key[16], val[64];
 		IntToString(index, key, sizeof(key));
 		IntToString(value, val, sizeof(val));
 		return view_as<StringMap>(this).SetString(key, val, replace);
@@ -567,6 +596,21 @@ methodmap StringMapEx < StringMap {
 	 */
 	public int GetIndex(int index, any &size=0) {
 		char key[16], value[16];
+		IntToString(index, key, sizeof(key));
+		view_as<StringMap>(this).GetString(key, value, sizeof(value), size);
+		return StringToInt(value);
+	}
+	
+	/*
+	 *	Retrieves a value in a Map.
+	 *
+	 *	@param	index	Key index.
+	 *	@param	size	Optional parameter to store the number of bytes written to the buffer.
+	 *
+	 *	@return	value on success. 0 if the key is not set, or the key is set as a value or array (not a string).
+	 */
+	public any GetIndexValue(int index, any &size=0) {
+		char key[16], value[64];
 		IntToString(index, key, sizeof(key));
 		view_as<StringMap>(this).GetString(key, value, sizeof(value), size);
 		return StringToInt(value);
@@ -861,16 +905,26 @@ methodmap DatabaseEx < Handle {
 	// @param callback       Callback.
 	// @param query          Query string.
 	// @param data           Extra data value to pass to the callback.
-	// @param prio           Priority queue to use.
-	public void Query(SQLQueryCallbackEx callback, const char[] query, any data = 0, DBPriority prio = DBPrio_Normal) {
-		view_as<Database>(this).Query(view_as<SQLQueryCallback>(callback), query, data, prio);
-	}
-	
-	public void QueryEx(SQLQueryCallbackEx callback, const char[] query, any data = 0, DBPriority prio = DBPrio_Normal, any ...) {
+	// @param prio           Priority queue to use.	
+	public void Query(SQLQueryCallbackEx callback, const char[] query, any data = 0, DBPriority prio = DBPrio_Normal, any ...) {
 		int maxlen = (strlen(query)+1)*3;
 		char[] dummy = new char[maxlen];
 		VFormat(dummy, maxlen, query, 6);
 		view_as<Database>(this).Query(view_as<SQLQueryCallback>(callback), dummy, data, prio);
+	}
+	
+	public void QueryEx(SQLQueryCallbackEx callback, const char[] query, any ...) {
+		int maxlen = (strlen(query)+1)*3;
+		char[] dummy = new char[maxlen];
+		VFormat(dummy, maxlen, query, 4);
+		view_as<Database>(this).Query(view_as<SQLQueryCallback>(callback), dummy);
+	}
+	
+	public void QueryEx2(SQLQueryCallbackEx callback, const char[] query, any data=0, any ...) {
+		int maxlen = (strlen(query)+1)*3;
+		char[] dummy = new char[maxlen];
+		VFormat(dummy, maxlen, query, 5);
+		view_as<Database>(this).Query(view_as<SQLQueryCallback>(callback), dummy, data);
 	}
 	
 	/**
