@@ -1,4 +1,4 @@
-void PrepareDatabase(bool PluginLoad = false)	{
+void PrepareDatabase(bool PluginLoad = false) {
 	if(!DatabaseEx.CheckConfig("xstats"))
 		XStats_DebugText(true, "FATAL ERROR 404 DATABASE_NOT_CONFIGURED: \"xstats\" was not found in the /configs/databases.cfg file, make sure you've entered it and correctly, must be matching \"xstats\" or else it'll fail.");
 	

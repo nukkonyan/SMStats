@@ -612,10 +612,10 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	, defindex
 	, wear);
 	
-	XStats_DebugText(false, "Inserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)"
-	... "with values"
-	... "('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f')"
-	... "onto %s"
+	XStats_DebugText(false, "// ===== Item_Found_TF2 ===== \\"
+	... "\nInserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)"
+	... "\nWith values ('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f')"
+	... "\nonto %s"
 	, Cvars.ServerID.IntValue
 	, Player[client].SteamID
 	, quality

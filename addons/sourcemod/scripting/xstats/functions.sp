@@ -1,27 +1,23 @@
-stock bool HasStored(int client, char[] str, any ...)
-{
+stock bool HasStored(int client, char[] str, any ...) {
 	char chocolate[128];
 	VFormat(chocolate, sizeof(chocolate), str, 3);
 	return Player[client].InvCallback.GetStringBool("%i_%s", _, Player[client].AccountID, chocolate);
 }
 
-stock int GetStored(int client, char[] str, any ...)
-{
+stock int GetStored(int client, char[] str, any ...) {
 	char milk[128];
 	VFormat(milk, sizeof(milk), str, 3);
 	return Player[client].InvCallback.GetStringIndex("%i_%s", _, Player[client].AccountID, chocolate);
 }
 
-stock bool SetStored(int client, char[] str, any value, any ...)
-{
+stock bool SetStored(int client, char[] str, any value, any ...) {
 	char cookies[128];
 	VFormat(cookies, sizeof(cookies), str, 4);
 	Format(cookies, sizeof(cookies), "%i_%s", Player[client].AccountID, cookies);
 	
 	bool rtrn = false;
 	
-	switch(value)
-	{
+	switch(value) {
 		case true: rtrn = Player[client].InvCallback.SetStringValue(cookies, value);
 		case false: rtrn = Player[client].InvCallback.Remove(cookies);
 	}
