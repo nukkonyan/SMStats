@@ -603,14 +603,14 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	... "'%f')"
 	, Global.item_found
 	, Cvars.ServerID.IntValue
-	, Player[client].Playername
 	, Player[client].SteamID
 	, quality
 	, quality_name
 	, method
 	, method_name[method]
 	, defindex
-	, wear);
+	, wear
+	, Player[client].Playername);
 	
 	XStats_DebugText(false, "// ===== Item_Found_TF2 ===== \\"
 	... "\nInserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)"
