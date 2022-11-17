@@ -3,36 +3,35 @@
  */
 void PrepareGame_CSS()	{
 	//Weapon cvars
-	Cvars.Weapon[CSS_Weapon_Deagle]	= CreateConVar("xstats_points_weapon_deagle",	"5", "XStats: CSS - Points given when killing with Deagle.", _, true);
-	Cvars.Weapon[CSS_Weapon_Glock]	= CreateConVar("xstats_points_weapon_glock",	"5", "XStats: CSS - Points given when killing with Glock.", _, true);
-	Cvars.Weapon[CSS_Weapon_Ak47]	= CreateConVar("xstats_points_weapon_ak47",		"5", "XStats: CSS - Points given when killing with Ak47.", _, true);
-	Cvars.Weapon[CSS_Weapon_Aug]	= CreateConVar("xstats_points_weapon_aug",		"5", "XStats: CSS - Points given when killing with Aug.", _, true);
-	Cvars.Weapon[CSS_Weapon_AWP]	= CreateConVar("xstats_points_weapon_awp",		"5", "XStats: CSS - Points given when killing with Awp.", _, true);
-	Cvars.Weapon[CSS_Weapon_Famas]	= CreateConVar("xstats_points_weapon_famas",	"5", "XStats: CSS - Points given when killing with Famas.", _, true);
-	Cvars.Weapon[CSS_Weapon_G3SG1]	= CreateConVar("xstats_points_weapon_g3sg1",	"5", "XStats: CSS - Points given when killing with G3SG1.", _, true);
-	Cvars.Weapon[CSS_Weapon_Galil]	= CreateConVar("xstats_points_weapon_galil",	"5", "XStats: CSS - Points given when killing with Galil.", _, true);
-	Cvars.Weapon[CSS_Weapon_M249]	= CreateConVar("xstats_points_weapon_m249",		"5", "XStats: CSS - Points given when killing with M249.", _, true);
-	Cvars.Weapon[CSS_Weapon_M4A1]	= CreateConVar("xstats_points_weapon_m4a1",		"5", "XStats: CSS - Points given when killing with M4a1.", _, true);
-	Cvars.Weapon[CSS_Weapon_Mac10]	= CreateConVar("xstats_points_weapon_mac10",	"5", "XStats: CSS - Points given when killing with Mac10.", _, true);
-	Cvars.Weapon[CSS_Weapon_P90]	= CreateConVar("xstats_points_weapon_p90",		"5", "XStats: CSS - Points given when killing with P90.", _, true);
-	Cvars.Weapon[CSS_Weapon_MP5]	= CreateConVar("xstats_points_weapon_mp5",		"5", "XStats: CSS - Points given when killing with MP5.", _, true);
-	Cvars.Weapon[CSS_Weapon_UMP45]	= CreateConVar("xstats_points_weapon_ump45",	"5", "XStats: CSS - Points given when killing with UMP45.", _, true);
-	Cvars.Weapon[CSS_Weapon_XM1014]	= CreateConVar("xstats_points_weapon_xm1014",	"5", "XStats: CSS - Points given when killing with XM1014.", _, true);
-	Cvars.Weapon[CSS_Weapon_M3]		= CreateConVar("xstats_points_weapon_m3",		"5", "XStats: CSS - Points given when killing with M3.", _, true);
-	Cvars.Weapon[CSS_Weapon_USP]	= CreateConVar("xstats_points_weapon_usp",		"5", "XStats: CSS - Points given when killing with P2000.", _, true);
-	Cvars.Weapon[CSS_Weapon_P228]	= CreateConVar("xstats_points_weapon_p250",		"5", "XStats: CSS - Points given when killing with P250.", _, true);
-	Cvars.Weapon[CSS_Weapon_SG550]	= CreateConVar("xstats_points_weapon_sg550",	"5", "XStats: CSS - Points given when killing with SG550.", _, true);
-	Cvars.Weapon[CSS_Weapon_SG552]	= CreateConVar("xstats_points_weapon_sg552",	"5", "XStats: CSS - Points given when killing with SG552.", _, true);
-	Cvars.Weapon[CSS_Weapon_Scout]	= CreateConVar("xstats_points_weapon_scout",	"5", "XStats: CSS - Points given when killing with Scout.", _, true);
-	Cvars.Weapon[CSS_Weapon_Knife]	= CreateConVar("xstats_points_weapon_knife",	"5", "XStats: CSS - Points given when killing with Knife.", _, true);
+	Cvars.CreateCSSWeapon(CSS_Weapon_Deagle, "xstats_points_weapon_deagle",	5, "Deagle");
+	Cvars.CreateCSSWeapon(CSS_Weapon_Glock, "xstats_points_weapon_glock", 5, "Glock");
+	Cvars.CreateCSSWeapon(CSS_Weapon_Ak47, "xstats_points_weapon_ak47", 5, "Ak47");
+	Cvars.CreateCSSWeapon(CSS_Weapon_Aug, "xstats_points_weapon_aug", 5, "AUG");
+	Cvars.CreateCSSWeapon(CSS_Weapon_AWP, "xstats_points_weapon_awp", 5, "AWP");
+	Cvars.CreateCSSWeapon(CSS_Weapon_Famas, "xstats_points_weapon_famas", 5, "FAMAS");
+	Cvars.CreateCSSWeapon(CSS_Weapon_G3SG1, "xstats_points_weapon_g3sg1", 5, "G3SG1");
+	Cvars.CreateCSSWeapon(CSS_Weapon_Galil, "xstats_points_weapon_galil", 5, "Galil");
+	Cvars.CreateCSSWeapon(CSS_Weapon_M249, "xstats_points_weapon_m249", 5, "M249");
+	Cvars.CreateCSSWeapon(CSS_Weapon_M4A1, "xstats_points_weapon_m4a1", 5, "M4A1");
+	Cvars.CreateCSSWeapon(CSS_Weapon_Mac10, "xstats_points_weapon_mac10", 5, "MAC10");
+	Cvars.CreateCSSWeapon(CSS_Weapon_P90, "xstats_points_weapon_p90", 5, "P90");
+	Cvars.CreateCSSWeapon(CSS_Weapon_MP5, "xstats_points_weapon_mp5", 5, "MP5");
+	Cvars.CreateCSSWeapon(CSS_Weapon_UMP45, "xstats_points_weapon_ump45", 5, "UMP45");
+	Cvars.CreateCSSWeapon(CSS_Weapon_XM1014, "xstats_points_weapon_xm1014", 5, "XM1014");
+	Cvars.CreateCSSWeapon(CSS_Weapon_M3, "xstats_points_weapon_m3", 5, "M3");
+	Cvars.CreateCSSWeapon(CSS_Weapon_USP, "xstats_points_weapon_usp", 5, "P2000");
+	Cvars.CreateCSSWeapon(CSS_Weapon_P228, "xstats_points_weapon_p250", 5, "P250");
+	Cvars.CreateCSSWeapon(CSS_Weapon_SG550, "xstats_points_weapon_sg550", 5, "SG550");
+	Cvars.CreateCSSWeapon(CSS_Weapon_SG552, "xstats_points_weapon_sg552", 5, "SG552");
+	Cvars.CreateCSSWeapon(CSS_Weapon_Scout, "xstats_points_weapon_scout", 5, "Scout");
+	Cvars.CreateCSSWeapon(CSS_Weapon_Knife, "xstats_points_weapon_knife", 5, "Knife");
 	
 	/* Events */
 	HookEventEx(EVENT_PLAYER_DEATH, Player_Death_CSS, EventHookMode_Pre);
 }
 
 stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats())
-		return;
+	if(!IsValidStats()) return;
 	
 	char weapon[64];
 	event.GetString(EVENT_STR_WEAPON, weapon, sizeof(weapon));
@@ -52,19 +51,15 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		return;
 
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(client))
-		return;
-	
-	if(IsFakeClient(victim) && !Cvars.AllowBots.BoolValue)
-		return;
-	
-	if(IsSamePlayers(client, victim) || IsSameTeam(client, victim))
-		return;
+	if(!Tklib_IsValidClient(client)) return;
+	if(IsFakeClient(victim) && !Cvars.AllowBots.BoolValue) return;
+	if(IsSamePlayers(client, victim) || IsSameTeam(client, victim)) return;
 	
 	Format(weapon, sizeof(weapon), "weapon_%s", weapon);
 	int defindex = CSS_GetWeaponDefindex(weapon);
 	
-	if(Cvars.Weapon[defindex] == null)	{
+	ConVar cvar = Cvars.GetWeaponCvar(defindex);
+	if(!cvar) {
 		XStats_DebugText(false, "weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", weapon, defindex);
 		return;
 	}
@@ -82,7 +77,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	
 	int assist = GetClientOfUserId(GetLatestAssister(victim, client));
 	event.SetInt("assister", assist);
-	int points = Cvars.Weapon[defindex].IntValue;
+	int points = cvar.IntValue;
 	bool midair = IsClientMidAir(client);
 	bool headshot = event.GetBool(EVENT_STR_HEADSHOT);
 	bool dominated = event.GetBool(EVENT_STR_DOMINATED);
@@ -99,22 +94,37 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	bool knifekill = (StrContains(weapon, "knife", false) != -1); /* Support custom plugins */
 	bool bombkill = (StrContains(weapon, "c4", false) != -1);
 	
-	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_CSS =====//");
-	XStats_DebugText(false, "client: %s (index %i, userid %i)", Player[client].Playername, client, Player[client].UserID);
-	XStats_DebugText(false, "victim: %s (index %i, userid %i)", Player[victim].Playername, victim, Player[victim].UserID);
-	XStats_DebugText(false, "assist: %s (index %i, userid %i)", Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist, Player[assist].UserID);
-	XStats_DebugText(false, "defindex: %i", defindex);
-	XStats_DebugText(false, "weapon: \"%s\"\n", weapon);
-	XStats_DebugText(false, "midair: %s", Bool[midair]),
-	XStats_DebugText(false, "headshot: %s", Bool[headshot]);
-	XStats_DebugText(false, "dominated: %s", Bool[dominated]);
-	XStats_DebugText(false, "revenge: %s", Bool[revenge]);
-	XStats_DebugText(false, "noscope: %s", Bool[noscope]);
-	XStats_DebugText(false, "thrusmoke: %s", Bool[thrusmoke]);
-	XStats_DebugText(false, "knifekill: %s", Bool[knifekill]);
-	XStats_DebugText(false, "grenadekill: %s", Bool[grenadekill]);
-	XStats_DebugText(false, "bombkill: %s\n", Bool[bombkill]);
-	XStats_DebugText(false, "Points: %i\n", points);
+	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_CSS =====//"
+	... "\nClient: %s (index %i, userid %i)"
+	... "\nVictim: %s (index %i, userid %i)"
+	... "\nAssist: %s (index %i, userid %i)"
+	... "\ndefindex: %i"
+	... "\nweapon: \"%s\"\n"
+	... "\nmidair: %s"
+	... "\nheadshot: %s"
+	... "\ndominated: %s"
+	... "\nrevenge: %s"
+	... "\nnoscope: %s"
+	... "\nthrusmoke: %s"
+	... "\nknifekill: %s"
+	... "\ngrenadekill: %s"
+	... "\nbombkill: %s\n"
+	... "\nPoints: %i\n"
+	, Player[client].Playername, client, Player[client].UserID
+	, Player[victim].Playername, victim, Player[victim].UserID
+	, Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist, Player[assist].UserID
+	, defindex
+	, weapon
+	, Bool[midair]
+	, Bool[headshot]
+	, Bool[dominated]
+	, Bool[revenge]
+	, Bool[noscope]
+	, Bool[thrusmoke]
+	, Bool[knifekill]
+	, Bool[grenadekill]
+	, Bool[bombkill]
+	, points);
 	
 	/* Kill msg stuff */
 	KillMsg[client].MidAirKill = midair;

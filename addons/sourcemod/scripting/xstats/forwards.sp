@@ -54,7 +54,7 @@ public void OnClientAuthorized(int client, const char[] auth) {
 			
 			if(results == null)	{
 				char error[256];
-				SQL_GetError(SQL, error, sizeof(error));
+				SQL.GetError(error, sizeof(error));
 				XStats_DebugText(true, "Updating player table into \"%s\" failed! (%s)", Global.playerlist, error);
 			}
 		}
@@ -68,7 +68,7 @@ public void OnClientAuthorized(int client, const char[] auth) {
 			
 			if(results == null) {
 				char error[256];
-				SQL_GetError(SQL, error, sizeof(error));
+				SQL.GetError(error, sizeof(error));
 				XStats_DebugText(true, "Inserting player table into \"%s\" failed! (%s)", Global.playerlist, error);
 			}
 		}
@@ -86,7 +86,7 @@ public void OnClientAuthorized(int client, const char[] auth) {
 		
 		if(results == null) {
 			char error[256];
-			SQL_GetError(SQL, error, sizeof(error));
+			SQL.GetError(error, sizeof(error));
 			XStats_DebugText(true, "Inserting player table into \"%s\" failed! (%s)", Global.weapons, error);
 		}
 	}
@@ -176,8 +176,7 @@ public void OnMapStart() {
 	
 	GetCurrentMap(Global.CurrentMap, sizeof(Global.CurrentMap));	
 	CreateTimer(60.0, MapLogTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	XStats_DebugText(false, "//===== XStats Debug Log: Map Log =====//");
-	XStats_DebugText(false, "Creating a minute long repeating timer for map \"%s\"\n", Global.CurrentMap);
+	XStats_DebugText(false, "//===== XStats Debug Log: Map Log =====//" ... "\nCreating a minute long repeating timer for map \"%s\"\n", Global.CurrentMap);
 }
 
 Action MapLogTimer(Handle timer) {
@@ -196,8 +195,7 @@ Action MapLogTimer(Handle timer) {
 	Format(query, sizeof(query), "select '%s' from `%s`", Global.CurrentMap, Global.maps_log);
 	SQL.Query(DBQuery_MapLog_1, query);
 	
-	XStats_DebugText(false, "//===== XStats Debug Log: Map Log =====//");
-	XStats_DebugText(false, "Checking if map \"%s\" exists on database table \"%s\"\n", Global.CurrentMap, Global.maps_log);
+	XStats_DebugText(false, "//===== XStats Debug Log: Map Log =====//" ... "\nChecking if map \"%s\" exists on database table \"%s\"\n", Global.CurrentMap, Global.maps_log);
 	return Plugin_Handled;
 }
 

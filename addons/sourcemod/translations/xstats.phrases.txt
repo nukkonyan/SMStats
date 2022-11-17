@@ -47,13 +47,13 @@
 	"Not Enough Players"
 	{
 		"#format"	"{1:i},{2:i}"
-		"en"		"Not enough players [{1}/{2}], disabling.."
+		"en"		"Not enough players ({1} out of required {2}), disabling.."
 	}
 	
 	"Enough Players"
 	{
 		"#format"	"{1:i},{2:i}"
-		"en"		"Enough Players [{1}/{2}], enabling.."
+		"en"		"Enough Players ({1} out of required {2}), enabling.."
 	}
 	
 	//================================//

@@ -7,14 +7,13 @@ void PrepareDatabase(bool PluginLoad = false)	{
 }
 
 Action Timer_PrepareDatabase(Handle timer) {
-	if(!SQL) /* If it's not null, we don't need to gather new connection since we already have one, prevent corruption. */
-		DatabaseEx.Connect(DBConnect, Xstats);
+	if(!SQL) DatabaseEx.Connect(DBConnect, Xstats); /* If it's not null, we don't need to gather new connection since we already have one, prevent corruption. */
 }
 
 void DBConnect(DatabaseEx database, const char[] error) {
 	if(database == null) {
 		delete database;
-		SetFailState("[XStats] Database connection failed! (%s)", error);
+		XStats_SetFailState("Database connection failed! (%s)", error);
 		return;
 	}
 	

@@ -1,77 +1,74 @@
 stock void TotalStatistics_TF2(int client)	{
-	char query[4096];
-	int len = 0;
-	
-	len += Format(query[len], sizeof(query)-len, "select "); /* We select the tables below */
-	len += Format(query[len], sizeof(query)-len, ", Points");
-	len += Format(query[len], sizeof(query)-len, ", PlayTime");
-	len += Format(query[len], sizeof(query)-len, ", Kills");
-	len += Format(query[len], sizeof(query)-len, ", Assists");
-	len += Format(query[len], sizeof(query)-len, ", Deaths");
-	len += Format(query[len], sizeof(query)-len, ", Suicides");
-	len += Format(query[len], sizeof(query)-len, ", MidAirKills");
-	len += Format(query[len], sizeof(query)-len, ", DamageDone");
-	len += Format(query[len], sizeof(query)-len, ", Dominations");
-	len += Format(query[len], sizeof(query)-len, ", Revenges");
-	len += Format(query[len], sizeof(query)-len, ", Headshots");
-	len += Format(query[len], sizeof(query)-len, ", Noscopes");
-	len += Format(query[len], sizeof(query)-len, ", Backstabs");
-	len += Format(query[len], sizeof(query)-len, ", Airshots");
-	len += Format(query[len], sizeof(query)-len, ", DeflectKills");
-	len += Format(query[len], sizeof(query)-len, ", GibKills");
-	len += Format(query[len], sizeof(query)-len, ", CritKills");
-	len += Format(query[len], sizeof(query)-len, ", TauntKills");
-	len += Format(query[len], sizeof(query)-len, ", TeleFrags");
-	len += Format(query[len], sizeof(query)-len, ", TotalBuildingsBuilt");
-	len += Format(query[len], sizeof(query)-len, ", MiniSentryGunsBuilt");
-	len += Format(query[len], sizeof(query)-len, ", SentryGunsBuilt");
-	len += Format(query[len], sizeof(query)-len, ", DispensersBuilt");
-	len += Format(query[len], sizeof(query)-len, ", TeleporterExitsBuilt");
-	len += Format(query[len], sizeof(query)-len, ", TeleporterEntrancesBuilt");
-	len += Format(query[len], sizeof(query)-len, ", SappersPlaced");
-	len += Format(query[len], sizeof(query)-len, ", TotalBuildingsDestroyed");
-	len += Format(query[len], sizeof(query)-len, ", MiniSentryGunsDestroyed");
-	len += Format(query[len], sizeof(query)-len, ", SentryGunsDestroyed");
-	len += Format(query[len], sizeof(query)-len, ", DispensersDestroyed");
-	len += Format(query[len], sizeof(query)-len, ", TeleporterExitsDestroyed");
-	len += Format(query[len], sizeof(query)-len, ", TeleporterEntrancesDestroyed");
-	len += Format(query[len], sizeof(query)-len, ", SappersDestroyed");
-	len += Format(query[len], sizeof(query)-len, ", Coated");
-	len += Format(query[len], sizeof(query)-len, ", Jarated");
-	len += Format(query[len], sizeof(query)-len, ", MadMilked");
-	len += Format(query[len], sizeof(query)-len, ", Extinguished");
-	len += Format(query[len], sizeof(query)-len, ", PointsCaptured");
-	len += Format(query[len], sizeof(query)-len, ", PointsDefended");
-	len += Format(query[len], sizeof(query)-len, ", FlagsPickedUp");
-	len += Format(query[len], sizeof(query)-len, ", FlagsCaptured");
-	len += Format(query[len], sizeof(query)-len, ", FlagsStolen");
-	len += Format(query[len], sizeof(query)-len, ", FlagsDefended");
-	len += Format(query[len], sizeof(query)-len, ", Ubercharged");
-	len += Format(query[len], sizeof(query)-len, ", SandvichesStolen");
-	len += Format(query[len], sizeof(query)-len, ", PlayerTeleported");
-	len += Format(query[len], sizeof(query)-len, ", TotalPlayersTeleported");
-	len += Format(query[len], sizeof(query)-len, ", StunnedPlayers");
-	len += Format(query[len], sizeof(query)-len, ", MoonShotStunnedPlayers");
-	len += Format(query[len], sizeof(query)-len, ", TotalMonoculusStunned");
-	len += Format(query[len], sizeof(query)-len, ", TotalMonoculusKilled");
-	len += Format(query[len], sizeof(query)-len, ", TotalMerasmusStunned");
-	len += Format(query[len], sizeof(query)-len, ", TotalMerasmusKilled");
-	len += Format(query[len], sizeof(query)-len, ", TotalKilledHHH");
-	len += Format(query[len], sizeof(query)-len, ", TanksDestroyed");
-	len += Format(query[len], sizeof(query)-len, ", SentryBustersKilled");
-	len += Format(query[len], sizeof(query)-len, ", PassBallsGotten");
-	len += Format(query[len], sizeof(query)-len, ", PassBallsScored");
-	len += Format(query[len], sizeof(query)-len, ", PassBallsDropped");
-	len += Format(query[len], sizeof(query)-len, ", PassBallsCatched");
-	len += Format(query[len], sizeof(query)-len, ", PassBallsStolen");
-	len += Format(query[len], sizeof(query)-len, ", PassBallsBlocked");
-	/* Prepare the query */
-	len += Format(query[len], sizeof(query)-len, "from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_TotalStatistics_TF2, query, client);
+	/* We select the tables below and prepare the query */
+	SQL.Query(DBQuery_TotalStatistics_TF2, "select " 
+	... "Points,"
+	... "PlayTime,"
+	... "Kills,"
+	... "Assists,"
+	... "Deaths,"
+	... "Suicides,"
+	... "MidAirKills,"
+	... "DamageDone,"
+	... "Dominations,"
+	... "Revenges,"
+	... "Headshots,"
+	... "Noscopes,"
+	... "Backstabs,"
+	... "Airshots,"
+	... "Deflects,"
+	... "Gibs,"
+	... "CritKills,"
+	... "MiniCritKills,"
+	... "TauntKills,"
+	... "TeleFrags,"
+	... "TotalBuildingsBuilt,"
+	... "MiniSentryGunsBuilt,"
+	... "SentryGunsBuilt,"
+	... "DispensersBuilt,"
+	... "TeleporterExitsBuilt,"
+	... "TeleporterEntrancesBuilt,"
+	... "SappersPlaced,"
+	... "TotalBuildingsDestroyed,"
+	... "MiniSentryGunsDestroyed,"
+	... "SentryGunsDestroyed,"
+	... "DispensersDestroyed,"
+	... "TeleporterExitsDestroyed,"
+	... "TeleporterEntrancesDestroyed,"
+	... "SappersDestroyed,"
+	... "Coated,"
+	... "Jarated,"
+	... "MadMilked,"
+	... "Extinguished,"
+	... "PointsCaptured,"
+	... "PointsDefended,"
+	... "FlagsPickedUp,"
+	... "FlagsCaptured,"
+	... "FlagsStolen,"
+	... "FlagsDefended,"
+	... "Ubercharged,"
+	... "SandvichesStolen,"
+	... "PlayerTeleported,"
+	... "TotalPlayersTeleported,"
+	... "StunnedPlayers,"
+	... "MoonShotStunnedPlayers,"
+	... "TotalMonoculusStunned,"
+	... "TotalMonoculusKilled,"
+	... "TotalMerasmusStunned,"
+	... "TotalMerasmusKilled,"
+	... "TotalKilledHHH,"
+	... "TanksDestroyed,"
+	... "SentryBustersKilled,"
+	... "PassBallsGotten,"
+	... "PassBallsScored,"
+	... "PassBallsDropped,"
+	... "PassBallsCatched,"
+	... "PassBallsStolen,"
+	... "PassBallsBlocked"
+	... " from `%s` where SteamID='%s' and ServerID='%i'", client, _, Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 }
 
-stock void DBQuery_TotalStatistics_TF2(Database database, DBResultSet results, const char[] error, int client)	{
-	if(results == null)	{
+void DBQuery_TotalStatistics_TF2(DatabaseEx database, DBResultSet results, const char[] error, int client) {
+	if(!results) {
 		CPrintToChat(client, "%s Unable to read the playerlist table.", Global.Prefix);
 		XStats_DebugText(false, "%s attempted to read their total statistics on the rank panel but failed to read the table from table \"%s\"",
 		Player[client].Playername, Global.playerlist);
@@ -83,8 +80,7 @@ stock void DBQuery_TotalStatistics_TF2(Database database, DBResultSet results, c
 		CPrintToChat(client, "%s Unable to fetch the playerlist table.", Global.Prefix);
 		XStats_DebugText(false, "%s attempted to read their total statistics on the rank panel but failed to fetch the table from table \"%s\"",
 		Player[client].Playername, Global.playerlist);
-		if(!StrEqual(error, NULL_STRING)) /* Incase an error is included. */
-			XStats_DebugText(false, "Error: %s", error);
+		if(IsValidString(error)) XStats_DebugText(false, "Error: %s", error); /* Incase an error is included. */
 		return;
 	}
 	
@@ -105,51 +101,52 @@ stock void DBQuery_TotalStatistics_TF2(Database database, DBResultSet results, c
 	TotalStats[client].Deflects = results.FetchInt(14);
 	TotalStats[client].Gibs = results.FetchInt(15);
 	TotalStats[client].Critkills = results.FetchInt(16);
-	TotalStats[client].Tauntkills = results.FetchInt(17);
-	TotalStats[client].Telefrags = results.FetchInt(18);
-	TotalStats[client].BuildingsBuilt = results.FetchInt(19);
-	TotalStats[client].MiniSentryGunsBuilt = results.FetchInt(20);
-	TotalStats[client].SentryGunsBuilt = results.FetchInt(21);
-	TotalStats[client].DispensersBuilt = results.FetchInt(22);
-	TotalStats[client].TeleporterExitsBuilt = results.FetchInt(23);
-	TotalStats[client].TeleporterEntrancesBuilt = results.FetchInt(24);
-	TotalStats[client].SappersPlaced = results.FetchInt(25);
-	TotalStats[client].BuildingsDestroyed = results.FetchInt(26);
-	TotalStats[client].MiniSentryGunsDestroyed = results.FetchInt(27);
-	TotalStats[client].SentryGunsDestroyed = results.FetchInt(28);
-	TotalStats[client].DispensersDestroyed = results.FetchInt(29);
-	TotalStats[client].TeleporterExitsDestroyed = results.FetchInt(30);
-	TotalStats[client].TeleporterEntrancesDestroyed = results.FetchInt(31);
-	TotalStats[client].SappersDestroyed = results.FetchInt(32);
-	TotalStats[client].Coated = results.FetchInt(33);
-	TotalStats[client].Jarated = results.FetchInt(34);
-	TotalStats[client].MadMilked = results.FetchInt(35);
-	TotalStats[client].Extinguished = results.FetchInt(36);
-	TotalStats[client].PointsCaptured = results.FetchInt(37);
-	TotalStats[client].PointsDefended = results.FetchInt(38);
-	TotalStats[client].FlagsPickedUp = results.FetchInt(39);
-	TotalStats[client].FlagsCaptured = results.FetchInt(40);
-	TotalStats[client].FlagsStolen = results.FetchInt(41);
-	TotalStats[client].FlagsDefended = results.FetchInt(42);
-	TotalStats[client].Ubercharged = results.FetchInt(43);
-	TotalStats[client].SandvichesStolen = results.FetchInt(44);
-	TotalStats[client].PlayerTeleported = results.FetchInt(45);
-	TotalStats[client].PlayersTeleported = results.FetchInt(46);
-	TotalStats[client].StunnedPlayers = results.FetchInt(47);
-	TotalStats[client].MoonShotStunnedPlayers = results.FetchInt(48);
-	TotalStats[client].StunnedMonoculus = results.FetchInt(49);
-	TotalStats[client].KilledMonoculus = results.FetchInt(50);
-	TotalStats[client].StunnedMerasmus = results.FetchInt(51);
-	TotalStats[client].KilledMerasmus = results.FetchInt(52);
-	TotalStats[client].KilledHHH = results.FetchInt(53);
-	TotalStats[client].TanksDestroyed = results.FetchInt(54);
-	TotalStats[client].SentryBustersKilled = results.FetchInt(55);
-	TotalStats[client].PassBallsGotten = results.FetchInt(56);
-	TotalStats[client].PassBallsScored = results.FetchInt(57);
-	TotalStats[client].PassBallsDropped = results.FetchInt(58);
-	TotalStats[client].PassBallsCatched = results.FetchInt(59);
-	TotalStats[client].PassBallsStolen = results.FetchInt(60);
-	TotalStats[client].PassBallsBlocked = results.FetchInt(61);
+	TotalStats[client].MiniCritkills = results.FetchInt(17);
+	TotalStats[client].Tauntkills = results.FetchInt(18);
+	TotalStats[client].Telefrags = results.FetchInt(19);
+	TotalStats[client].BuildingsBuilt = results.FetchInt(20);
+	TotalStats[client].MiniSentryGunsBuilt = results.FetchInt(21);
+	TotalStats[client].SentryGunsBuilt = results.FetchInt(22);
+	TotalStats[client].DispensersBuilt = results.FetchInt(23);
+	TotalStats[client].TeleporterExitsBuilt = results.FetchInt(24);
+	TotalStats[client].TeleporterEntrancesBuilt = results.FetchInt(25);
+	TotalStats[client].SappersPlaced = results.FetchInt(26);
+	TotalStats[client].BuildingsDestroyed = results.FetchInt(27);
+	TotalStats[client].MiniSentryGunsDestroyed = results.FetchInt(28);
+	TotalStats[client].SentryGunsDestroyed = results.FetchInt(29);
+	TotalStats[client].DispensersDestroyed = results.FetchInt(30);
+	TotalStats[client].TeleporterExitsDestroyed = results.FetchInt(31);
+	TotalStats[client].TeleporterEntrancesDestroyed = results.FetchInt(32);
+	TotalStats[client].SappersDestroyed = results.FetchInt(33);
+	TotalStats[client].Coated = results.FetchInt(34);
+	TotalStats[client].Jarated = results.FetchInt(35);
+	TotalStats[client].MadMilked = results.FetchInt(36);
+	TotalStats[client].Extinguished = results.FetchInt(37);
+	TotalStats[client].PointsCaptured = results.FetchInt(38);
+	TotalStats[client].PointsDefended = results.FetchInt(39);
+	TotalStats[client].FlagsPickedUp = results.FetchInt(40);
+	TotalStats[client].FlagsCaptured = results.FetchInt(41);
+	TotalStats[client].FlagsStolen = results.FetchInt(42);
+	TotalStats[client].FlagsDefended = results.FetchInt(43);
+	TotalStats[client].Ubercharged = results.FetchInt(44);
+	TotalStats[client].SandvichesStolen = results.FetchInt(45);
+	TotalStats[client].PlayerTeleported = results.FetchInt(46);
+	TotalStats[client].PlayersTeleported = results.FetchInt(47);
+	TotalStats[client].StunnedPlayers = results.FetchInt(48);
+	TotalStats[client].MoonShotStunnedPlayers = results.FetchInt(49);
+	TotalStats[client].StunnedMonoculus = results.FetchInt(50);
+	TotalStats[client].KilledMonoculus = results.FetchInt(51);
+	TotalStats[client].StunnedMerasmus = results.FetchInt(52);
+	TotalStats[client].KilledMerasmus = results.FetchInt(53);
+	TotalStats[client].KilledHHH = results.FetchInt(54);
+	TotalStats[client].TanksDestroyed = results.FetchInt(55);
+	TotalStats[client].SentryBustersKilled = results.FetchInt(56);
+	TotalStats[client].PassBallsGotten = results.FetchInt(57);
+	TotalStats[client].PassBallsScored = results.FetchInt(58);
+	TotalStats[client].PassBallsDropped = results.FetchInt(59);
+	TotalStats[client].PassBallsCatched = results.FetchInt(60);
+	TotalStats[client].PassBallsStolen = results.FetchInt(61);
+	TotalStats[client].PassBallsBlocked = results.FetchInt(62);
 	
 	RankPanel_Total_TF2(client, 1);
 }
@@ -180,6 +177,7 @@ void RankPanel_Total_TF2(int client, int page) {
 			panel.DrawText("%i Deflects", TotalStats[client].Deflects);
 			panel.DrawText("%i Gibs", TotalStats[client].Gibs);
 			panel.DrawText("%i Critkills", TotalStats[client].Critkills);
+			panel.DrawText("%i Mini-critkills", TotalStats[client].MiniCritkills);
 			panel.DrawText("%i Tauntkills", TotalStats[client].Tauntkills);
 			panel.DrawText("%i Telefrags", TotalStats[client].Telefrags);
 			panel.DrawText("%i Buildings built", TotalStats[client].BuildingsBuilt);
@@ -252,6 +250,6 @@ void RankPanel_Total_TF2(int client, int page) {
 	}
 	
 	panel.DrawItem("Exit");
-	panel.Send(client, Panel_TotalStatisticsCallback, MENU_TIME_FOREVER);
+	panel.Send(client, Panel_TotalStatisticsCallback);
 	StatsPanel[client].TotalPage = page;
 }

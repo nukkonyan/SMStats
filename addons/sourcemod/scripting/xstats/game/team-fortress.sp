@@ -408,6 +408,7 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 		CreateDataTimer(240.0, Timer_Player_BuiltObject, pack);
 		pack.WriteCell(client);
 		pack.WriteCell(type);
+		pack.Reset();
 	}
 }
 
@@ -499,6 +500,7 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 		CreateDataTimer(40.0, Timer_Player_DestroyedObject, pack);
 		pack.WriteCell(client);
 		pack.WriteCell(type);
+		pack.Reset();
 	}
 }
 
@@ -864,12 +866,12 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 	pack.WriteCell(client);
 	pack.WriteCell(victim);
 	pack.WriteCell(defindex);
+	pack.Reset();
 	RequestFrame(FramePlayerJarated, pack);
 	return Plugin_Continue;
 }
 
 void FramePlayerJarated(DataPack pack)	{
-	pack.Reset();
 	int client = pack.ReadCell();
 	int victim = pack.ReadCell();
 	int defindex = pack.ReadCell();
@@ -971,12 +973,12 @@ Action PlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int pl
 	DataPack pack = new DataPack();
 	pack.WriteCell(client);
 	pack.WriteCell(victim);
+	pack.Reset();
 	RequestFrame(FramePlayerExtinguished, pack);
 	return Plugin_Continue;
 }
 
 void FramePlayerExtinguished(DataPack pack)	{
-	pack.Reset();
 	int client = pack.ReadCell();
 	int victim = pack.ReadCell();
 	delete pack;
@@ -1020,14 +1022,12 @@ Action PlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int players
 
 /* Callbacks & Forwards */
 stock Action Timer_Player_BuiltObject(Handle timer, DataPack pack) {
-	pack.Reset();
 	int client = pack.ReadCell();
 	int type = pack.ReadCell();
 	//BuiltObject[client][type] = false;
 	SetStored(client, "builtobject_%i", false, type);
 }
 stock Action Timer_Player_DestroyedObject(Handle timer, DataPack pack) {
-	pack.Reset();
 	int client = pack.ReadCell();
 	int type = pack.ReadCell();
 	//DestroyedObject[client][type] = false;

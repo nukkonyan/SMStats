@@ -3,71 +3,71 @@
  */
 void PrepareGame_CSGO()	{
 	//Weapon cvars
-	Cvars.Weapon[CSGO_Weapon_Deagle]		= CreateConVar("xstats_points_weapon_deagle",	"5", "XStats: CS:GO - Points given when killing with Deagle.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Glock]			= CreateConVar("xstats_points_weapon_glock",	"5", "XStats: CS:GO - Points given when killing with Glock.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Ak47]			= CreateConVar("xstats_points_weapon_ak47",		"5", "XStats: CS:GO - Points given when killing with Ak47.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Aug]			= CreateConVar("xstats_points_weapon_aug",		"5", "XStats: CS:GO - Points given when killing with Aug.", _, true);
-	Cvars.Weapon[CSGO_Weapon_AWP]			= CreateConVar("xstats_points_weapon_awp",		"5", "XStats: CS:GO - Points given when killing with Awp.", _,true, 0.0);
-	Cvars.Weapon[CSGO_Weapon_Famas]			= CreateConVar("xstats_points_weapon_famas",	"5", "XStats: CS:GO - Points given when killing with Famas.", _, true);
-	Cvars.Weapon[CSGO_Weapon_G3SG1]			= CreateConVar("xstats_points_weapon_g3sg1",	"5", "XStats: CS:GO - Points given when killing with G3sg1.", _, true);
-	Cvars.Weapon[CSGO_Weapon_GalilAR]		= CreateConVar("xstats_points_weapon_galilar",	"5", "XStats: CS:GO - Points given when killing with Galilar.", _, true);
-	Cvars.Weapon[CSGO_Weapon_M249]			= CreateConVar("xstats_points_weapon_m249",		"5", "XStats: CS:GO - Points given when killing with M249.", _, true);
-	Cvars.Weapon[CSGO_Weapon_M4A4]			= CreateConVar("xstats_points_weapon_m4a4",		"5", "XStats: CS:GO - Points given when killing with M4a4.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Mac10]			= CreateConVar("xstats_points_weapon_mac10",	"5", "XStats: CS:GO - Points given when killing with Mac10.", _, true);
-	Cvars.Weapon[CSGO_Weapon_P90]			= CreateConVar("xstats_points_weapon_p90",		"5", "XStats: CS:GO - Points given when killing with P90.", _, true);
-	Cvars.Weapon[CSGO_Weapon_MP5]			= CreateConVar("xstats_points_weapon_mp5",		"5", "XStats: CS:GO - Points given when killing with MP5.", _, true);
-	Cvars.Weapon[CSGO_Weapon_UMP45]			= CreateConVar("xstats_points_weapon_ump45",	"5", "XStats: CS:GO - Points given when killing with UMP45.", _, true);
-	Cvars.Weapon[CSGO_Weapon_XM1014]		= CreateConVar("xstats_points_weapon_xm1014",	"5", "XStats: CS:GO - Points given when killing with XM1014.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Bizon]			= CreateConVar("xstats_points_weapon_bizon",	"5", "XStats: CS:GO - Points given when killing with Bizon.", _, true);
-	Cvars.Weapon[CSGO_Weapon_MAG7]			= CreateConVar("xstats_points_weapon_mag7",		"5", "XStats: CS:GO - Points given when killing with MAG-7", _, true);
-	Cvars.Weapon[CSGO_Weapon_Negev]			= CreateConVar("xstats_points_weapon_negev",	"5", "XStats: CS:GO - Points given when killing with Negev.", _, true);
-	Cvars.Weapon[CSGO_Weapon_SawedOff]		= CreateConVar("xstats_points_weapon_sawedoff",	"5", "XStats: CS:GO - Points given when killing with Sawed-Off.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Tec9]			= CreateConVar("xstats_points_weapon_tec9",		"5", "XStats: CS:GO - Points given when killing with Tec9.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Taser]			= CreateConVar("xstats_points_weapon_taser",	"5", "XStats: CS:GO - Points given when killing with Taser.", _, true);
-	Cvars.Weapon[CSGO_Weapon_P2000]			= CreateConVar("xstats_points_weapon_hkp2000",	"5", "XStats: CS:GO - Points given when killing with P2000.", _, true);
-	Cvars.Weapon[CSGO_Weapon_MP7]			= CreateConVar("xstats_points_weapon_mp7",		"5", "XStats: CS:GO - Points given when killing with MP7.", _, true);
-	Cvars.Weapon[CSGO_Weapon_MP9]			= CreateConVar("xstats_points_weapon_mp9",		"5", "XStats: CS:GO - Points given when killing with MP9.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Nova]			= CreateConVar("xstats_points_weapon_nova",		"5", "XStats: CS:GO - Points given when killing with Nova.", _, true);
-	Cvars.Weapon[CSGO_Weapon_P250]			= CreateConVar("xstats_points_weapon_p250",		"5", "XStats: CS:GO - Points given when killing with P250.", _, true);
-	Cvars.Weapon[CSGO_Weapon_Scar20]		= CreateConVar("xstats_points_weapon_scar20",	"5", "XStats: CS:GO - Points given when killing with Scar-20.", _, true);
-	Cvars.Weapon[CSGO_Weapon_SG556]			= CreateConVar("xstats_points_weapon_sg556",	"5", "XStats: CS:GO - Points given when killing with SG556.", _, true);
-	Cvars.Weapon[CSGO_Weapon_SSG08]			= CreateConVar("xstats_points_weapon_ssg08",	"5", "XStats: CS:GO - Points given when killing with Scout.", _, true);
-	Cvars.Weapon[CSGO_Knife_CT]				= CreateConVar("xstats_points_weapon_knife",	"5", "XStats: CS:GO - Points given when killing with Knife.", _, true);
-	Cvars.Weapon[CSGO_Knife_Gold]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Grenade_Flashbang]	= CreateConVar("xstats_points_weapon_flashbang",	"5", "XStats: CS:GO - Points given when killing with Flashbang.", _, true);
-	Cvars.Weapon[CSGO_Grenade_HEGrenade]	= CreateConVar("xstats_points_weapon_hegrenade",	"5", "XStats: CS:GO - Points given when killing with HE Grenade.", _, true);
-	Cvars.Weapon[CSGO_Grenade_SmokeGrenade]	= CreateConVar("xstats_points_weapon_smokegrenade",	"5", "XStats: CS:GO - Points given when killing with Smokegrenade", _, true);
-	Cvars.Weapon[CSGO_Grenade_Molotov]		= CreateConVar("xstats_points_weapon_molotov",		"5", "XStats: CS:GO - Points given when killing with Molotov.", _, true);
-	Cvars.Weapon[CSGO_Grenade_Decoy]		= CreateConVar("xstats_points_weapon_decoy",		"5", "XStats: CS:GO - Points given when killing with Decoy.", _, true);
-	Cvars.Weapon[CSGO_Grenade_Incendiary]	= CreateConVar("xstats_points_weapon_incendiary",	"5", "XStats: CS:GO - Points given when killing with Incendiary.", _, true);
-	Cvars.Weapon[CSGO_Grenade_TAGrenade]	= CreateConVar("xstats_points_weapon_tagrenade",	"5", "XStats: CS:GO - Points given when killing with Tactical Awareness Grenade. (lol)", _, true);
-	Cvars.Weapon[CSGO_Grenade_BreachCharge]	= CreateConVar("xstats_points_weapon_breachcharge",	"5", "XStats: CS:GO - Points given when killing with Breach Charge. (:D)", _, true);
-	Cvars.Weapon[CSGO_Weapon_C4]			= CreateConVar("xstats_points_weapon_c4",		"5", "Xstats: CS:GO - Points given when killing with C4.", _, true);
-	Cvars.Weapon[CSGO_Knife_T]				= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Weapon_M4A1_S]		= CreateConVar("xstats_points_weapon_m4a1_silencer",	"5", "XStats: CS:GO - Points given when killing with M4A1-S.", _, true);
-	Cvars.Weapon[CSGO_Weapon_USP_S]			= CreateConVar("xstats_points_weapon_usp_silencer",		"5", "XStats: CS:GO - Points given when killing with USP-S", _, true);
-	Cvars.Weapon[CSGO_Weapon_CZ75_A]		= CreateConVar("xstats_points_weapon_cz75a",			"5", "XStats: CS:GO - Points given when killing with CZ75-A", _, true);
-	Cvars.Weapon[CSGO_Weapon_Revolver]		= CreateConVar("xstats_points_weapon_revolver",			"5", "XStats: CS:GO - Points given when killing with Revolver.", _, true);
-	Cvars.Weapon[CSGO_Knife_Ghost]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Bayonet]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Classic]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Flip]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Gut]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Karambit]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_M9_Bayonet]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Huntsman]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Falchion]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Bowie]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Butterfly]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_ButtPlugs]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Paracord]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Survival]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Ursus]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Navaja]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Nomad]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Stiletto]		= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Talon]			= Cvars.Weapon[CSGO_Knife_CT];
-	Cvars.Weapon[CSGO_Knife_Skeleton]		= Cvars.Weapon[CSGO_Knife_CT];
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Deagle, "xstats_points_weapon_deagle", 10, "Deagle");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Glock, "xstats_points_weapon_glock", 10, "Glock");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Ak47, "xstats_points_weapon_ak47", 10, "Ak47");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Aug, "xstats_points_weapon_aug", 10, "AUG");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_AWP, "xstats_points_weapon_awp", 10, "AWP");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Famas, "xstats_points_weapon_famas",	10, "FAMAS");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_G3SG1, "xstats_points_weapon_g3sg1",	10, "G3SG1");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_GalilAR, "xstats_points_weapon_galilar",	10, "Galilar");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_M249, "xstats_points_weapon_m249", 10, "M249");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_M4A4, "xstats_points_weapon_m4a4", 10, "M4A4.");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Mac10, "xstats_points_weapon_mac10", 10, "MAC10");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_P90, "xstats_points_weapon_p90", 10, "P90");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_MP5, "xstats_points_weapon_mp5", 10, "MP5-SD");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_UMP45, "xstats_points_weapon_ump45", 10, "UMP45");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_XM1014, "xstats_points_weapon_xm1014", 10, "XM1014");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Bizon, "xstats_points_weapon_bizon", 10, "PP-Bizon");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_MAG7, "xstats_points_weapon_mag7", 10, "MAG-7");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Negev, "xstats_points_weapon_negev", 10, "Negev");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_SawedOff, "xstats_points_weapon_sawedoff", 10, "Sawed-Off");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Tec9, "xstats_points_weapon_tec9", 10, "Tec9");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Taser, "xstats_points_weapon_taser", 10, "Taser");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_P2000, "xstats_points_weapon_hkp2000", 10, "P2000.");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_MP7, "xstats_points_weapon_mp7", 10, "MP7");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_MP9, "xstats_points_weapon_mp9", 10, "MP9");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Nova, "xstats_points_weapon_nova", 10, "Nova");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_P250, "xstats_points_weapon_p250", 10, "P250");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Scar20, "xstats_points_weapon_scar20", 10, "Scar-20.");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_SG556, "xstats_points_weapon_sg556",	10, "SG556");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_SSG08, "xstats_points_weapon_ssg08",	10, "Scout");
+	Cvars.CreateCSGOWeapon(CSGO_Knife_CT, "xstats_points_weapon_knife",	10, "Knife");
+	Cvars.SameWeapon(CSGO_Knife_Gold, CSGO_Knife_CT);
+	Cvars.CreateCSGOWeapon(CSGO_Grenade_Flashbang, "xstats_points_weapon_flashbang", 10, "Flashbang.");
+	Cvars.CreateCSGOWeapon(CSGO_Grenade_HEGrenade, "xstats_points_weapon_hegrenade", 10, "HE Grenade.");
+	Cvars.CreateCSGOWeapon(CSGO_Grenade_SmokeGrenade, "xstats_points_weapon_smokegrenade", 10, "Smokegrenade");
+	Cvars.CreateCSGOWeapon(CSGO_Grenade_Molotov, "xstats_points_weapon_molotov", 10, "Molotov");
+	Cvars.CreateCSGOWeapon(CSGO_Grenade_Decoy, "xstats_points_weapon_decoy", 10, "Decoy");
+	Cvars.CreateCSGOWeapon(CSGO_Grenade_Incendiary, "xstats_points_weapon_incendiary", 10, "Incendiary");
+	Cvars.CreateCSGOWeapon(CSGO_Grenade_TAGrenade, "xstats_points_weapon_tagrenade", 10, "Tactical Awareness Grenade");
+	Cvars.CreateCSGOWeapon(CSGO_Grenade_BreachCharge, "xstats_points_weapon_breachcharge", 10, "Breach Charge");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_C4, "xstats_points_weapon_c4", 10, "C4 Bomb");
+	Cvars.SameWeapon(CSGO_Knife_T, CSGO_Knife_CT);
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_M4A1_S, "xstats_points_weapon_m4a1_silencer", 10, "M4A1-S");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_USP_S, "xstats_points_weapon_usp_silencer", 10, "USP-S");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_CZ75_A, "xstats_points_weapon_cz75a", 10, "CZ75-A");
+	Cvars.CreateCSGOWeapon(CSGO_Weapon_Revolver, "xstats_points_weapon_revolver", 10, "Revolver");
+	Cvars.SameWeapon(CSGO_Knife_Ghost, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Bayonet, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Classic, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Flip, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Gut, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Karambit, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_M9_Bayonet, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Huntsman, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Falchion, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Bowie, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Butterfly, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_ButtPlugs, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Paracord, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Survival, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Ursus, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Navaja, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Nomad, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Stiletto, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Talon, CSGO_Knife_CT);
+	Cvars.SameWeapon(CSGO_Knife_Skeleton, CSGO_Knife_CT);
 	
 	/* Events */
 	
@@ -82,9 +82,8 @@ void PrepareGame_CSGO()	{
 }
 
 /* Deaths */
-stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats())
-		return;
+stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroadcast) {
+	if(!IsValidStats()) return;
 	
 	char weapon[64];
 	event.GetString(EVENT_STR_WEAPON, weapon, sizeof(weapon));

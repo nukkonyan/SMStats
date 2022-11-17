@@ -12,6 +12,8 @@ void PrepareCvars() {
 	Cvars.AntiAbuse = CreateConVarBool("xstats_antiabuse", true, "XStats - Should abusing players be avoided to make sure the event was legit? (Noclipping, sv_cheats, etc)");
 	Cvars.Update = CreateConVarBool("xstats_update", true, "XStats - If updater is detected running and this value is enabled, auto-update is active.");
 	
+	//Cvars.Weapons = new ArrayList(64); //ConVar weapon array list.
+	
 	Cvars.PrefixCvar = CreateConVar("xstats_prefix", "{green}XStats", "XStats - Prefix to be used ingame texts.");
 	Cvars.PrefixCvar.AddChangeHook(PrefixCallback);
 	Cvars.PrefixCvar.GetString(Global.Prefix, sizeof(Global.Prefix));

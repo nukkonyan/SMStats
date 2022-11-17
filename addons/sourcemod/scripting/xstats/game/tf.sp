@@ -13,59 +13,59 @@ ConVar TF2_Collat;
  */
 void PrepareGame_TF2() {
 	//Weapon cvars
-	Cvars.CreateWeapon(0, "xstats_points_weapon_bat", 10, "XStats: TF2 - Points given when killing with Bat.");
-	Cvars.CreateWeapon(1, "xstats_points_weapon_bottle", 10, "XStats: TF2 - Points given when killing with Bottle.");
-	Cvars.CreateWeapon(2, "xstats_points_weapon_fireaxe", 10, "XStats: TF2 - Points given when killing with Fire Axe.");
-	Cvars.CreateWeapon(3, "xstats_points_weapon_kukri", 10, "XStats: TF2 - Points given when killing with Kukri.");
-	Cvars.CreateWeapon(4, "xstats_points_weapon_knife", 10, "XStats: TF2 - Points given when killing with Knife.");
-	Cvars.CreateWeapon(5, "xstats_points_weapon_fists", 10, "XStats: TF2 - Points given when killing with Fists");
-	Cvars.CreateWeapon(6, "xstats_points_weapon_shovel", 10, "XStats: TF2 - Points given when killing with Shovel.");
-	Cvars.CreateWeapon(7, "xstats_points_weapon_wrench", 10, "XStats: TF2 - Points given when killing with Wrench.");
-	Cvars.CreateWeapon(8, "xstats_points_weapon_bonesaw", 10, "XStats: TF2 - Points given when killing with Bonesaw.");
-	Cvars.CreateWeapon(9, "xstats_points_weapon_shotgun", 10, "XStats: TF2 - Points given when killing with Shotgun.");
+	Cvars.CreateTF2Weapon(0, "xstats_points_weapon_bat", 10, "Bat");
+	Cvars.CreateTF2Weapon(1, "xstats_points_weapon_bottle", 10, "Bottle");
+	Cvars.CreateTF2Weapon(2, "xstats_points_weapon_fireaxe", 10, "Fire Axe");
+	Cvars.CreateTF2Weapon(3, "xstats_points_weapon_kukri", 10, "Kukri");
+	Cvars.CreateTF2Weapon(4, "xstats_points_weapon_knife", 10, "Knife");
+	Cvars.CreateTF2Weapon(5, "xstats_points_weapon_fists", 10, "Fists");
+	Cvars.CreateTF2Weapon(6, "xstats_points_weapon_shovel", 10, "Shovel");
+	Cvars.CreateTF2Weapon(7, "xstats_points_weapon_wrench", 10, "Wrench");
+	Cvars.CreateTF2Weapon(8, "xstats_points_weapon_bonesaw", 10, "Bonesaw");
+	Cvars.CreateTF2Weapon(9, "xstats_points_weapon_shotgun", 10, "Shotgun");
 	Cvars.SameWeapon(10, 9); //Same Shotgun, different TFClass type.
 	Cvars.SameWeapon(11, 9); //Same Shotgun, different TFClass type.
 	Cvars.SameWeapon(12, 9); //Same Shotgun, different TFClass type.
-	Cvars.CreateWeapon(13, "xstats_points_weapon_scattergun", 10, "XStats: TF2 - Points given when killing with Scattergun.");
-	Cvars.CreateWeapon(14, "xstats_points_weapon_sniperrifle", 10, "XStats: TF2 - Points given when killing with Sniper Rifle.");
-	Cvars.CreateWeapon(15, "xstats_points_weapon_minigun", 10, "XStats: TF2 - Points given when killing with Minigun.");
-	Cvars.CreateWeapon(16, "xstats_points_weapon_smg", 10, "XStats: TF2 - Points given when killing with SMG.");
-	Cvars.CreateWeapon(17, "xstats_points_weapon_syringegun", 10, "XStats: TF2 - Points given when killing with Syringe Gun.");
-	Cvars.CreateWeapon(18, "xstats_points_weapon_rocketlauncher", 10, "XStats: TF2 - Points given when killing with Rocket Launcher.");
-	Cvars.CreateWeapon(19, "xstats_points_weapon_grenadelauncher", 10, "XStats: TF2 - Points given when killing with Grenade Launcher.");
-	Cvars.CreateWeapon(20, "xstats_points_weapon_stickybomblauncher", 10, "XStats: TF2 - Points given when killing with StickyBomb Launcher");
-	Cvars.CreateWeapon(21, "xstats_points_weapon_flamethrower", 10, "XStats: TF2 - Points given when killing with Flamethrower.");
-	Cvars.CreateWeapon(22, "xstats_points_weapon_pistol", 10, "XStats: TF2 - Points given when killing with Pistol.");
-	Cvars.SameWeapon(23, 22); //Same Pistol, different TFClass type.
-	Cvars.CreateWeapon(24, "xstats_points_weapon_revolver", 10, "XStats: TF2 - Points given when killing with Revolver.");
-	Cvars.CreateWeapon(36, "xstats_points_weapon_blutsauger", 10, "XStats: TF2 - Points given when killing with Blutsauger.");
-	Cvars.CreateWeapon(37, "xstats_points_weapon_ubersaw", 10, "XStats: TF2 - Points given when killing with Ubersaw.");
-	Cvars.CreateWeapon(38, "xstats_points_weapon_axtinguisher", 10, "XStats: TF2 - Points given when killing with Axtinguisher.");
-	Cvars.CreateWeapon(39, "xstats_points_weapon_flaregun", 10, "XStats: TF2 - Points given when killing with Flaregun.");
-	Cvars.CreateWeapon(40, "xstats_points_weapon_backburner", 10, "XStats: TF2 - Points given when killing with Backburner.");
-	Cvars.CreateWeapon(41, "xstats_points_weapon_natascha", 10, "XStats: TF2 - Points given when killing with Natascha.");
-	Cvars.CreateWeapon(43, "xstats_points_weapon_killerglovesofboxing", 10, "XStats: TF2 - Points given when killing with Killer Gloves Of Boxing");
-	Cvars.CreateWeapon(44, "xstats_points_weapon_sandman", 10, "XStats: TF2 - Points given when killing with Sandman.");
-	Cvars.CreateWeapon(45, "xstats_points_weapon_forceanature", 10, "XStats: TF2 - Points given when killing with Force-A-Nature");
-	Cvars.CreateWeapon(56, "xstats_points_weapon_huntsman", 10, "XStats: TF2 - Points given when killing with Huntsman.");
-	Cvars.CreateWeapon(61, "xstats_points_weapon_ambassador", 10, "XStats: TF2 - Points given when killing with Ambassador.");
-	Cvars.CreateWeapon(127, "xstats_points_weapon_directhit", 10, "XStats: TF2 - Points given when killing with Direct-Hit.");
-	Cvars.CreateWeapon(128, "xstats_points_weapon_equalizer", 10, "XStats: TF2 - Points given when killing with Equalizer.");
-	Cvars.CreateWeapon(130, "xstats_points_weapon_scottishresistance", 10, "XStats: TF2 - Points given when killing with Scottish Resistance.");
-	Cvars.CreateWeapon(131, "xstats_points_weapon_chargentarge", 10, "XStats: TF2 - Points given when killing with Charge n' Targe");
-	Cvars.CreateWeapon(132, "xstats_points_weapon_eyelander", 10, "XStats: TF2 - Points given when killing with Eyelander.");
-	Cvars.CreateWeapon(140, "xstats_points_weapon_wrangler", 10, "XStats: TF2 - Points given when killing with Wrangler.");
-	Cvars.CreateWeapon(141, "xstats_points_weapon_frontierjustice", 10, "XStats: TF2 - Points given when killing with Frontier Justice.");
-	Cvars.CreateWeapon(142, "xstats_points_weapon_gunslinger", 10, "XStats: TF2 - Points given when killing with gunslinger.");
-	Cvars.CreateWeapon(153, "xstats_points_weapon_homewrecker", 10, "XStats: TF2 - Points given when killing with homewrecker.");
-	Cvars.CreateWeapon(154, "xstats_points_weapon_paintrain", 10, "XStats: TF2 - Points given when killing with pain train.");
-	Cvars.CreateWeapon(155, "xstats_points_weapon_southernhospitality", 10, "XStats: TF2 - Points given when killing with southern hospitality.");
-	Cvars.CreateWeapon(160, "xstats_points_weapon_lugermorph", 10, "XStats: TF2 - Points given when killing with lugermorph");
-	Cvars.CreateWeapon(161, "xstats_points_weapon_bigkill", 10, "XStats: TF2 - Points given when killing with big kill.");
-	Cvars.CreateWeapon(169, "xstats_points_weapon_wrench", 10, "XStats: TF2 - Points given when killing with wrench.");
-	Cvars.CreateWeapon(171, "xstats_points_weapon_tribalmansshiv", 10, "XStats: TF2 - Points given when killing with tribalman's shiv.");
-	Cvars.CreateWeapon(172, "xstats_points_weapon_scotsmansskullcutter", 10, "XStats: TF2 - Points given when killing with scotsman's skullcutter.");
-	Cvars.CreateWeapon(173, "xstats_points_weapon_vitasaw", 10, "XStats: TF2 - Points given when killing with vita saw.");
+	Cvars.CreateTF2Weapon(13, "xstats_points_weapon_scattergun", 10, "Scattergun");
+	Cvars.CreateTF2Weapon(14, "xstats_points_weapon_sniperrifle", 10, "Sniper Rifle");
+	Cvars.CreateTF2Weapon(15, "xstats_points_weapon_minigun", 10, "Minigun");
+	Cvars.CreateTF2Weapon(16, "xstats_points_weapon_smg", 10, "SMG");
+	Cvars.CreateTF2Weapon(17, "xstats_points_weapon_syringegun", 10, "Syringe Gun");
+	Cvars.CreateTF2Weapon(18, "xstats_points_weapon_rocketlauncher", 10, "Rocket Launcher");
+	Cvars.CreateTF2Weapon(19, "xstats_points_weapon_grenadelauncher", 10, "Grenade Launcher");
+	Cvars.CreateTF2Weapon(20, "xstats_points_weapon_stickybomblauncher", 10, "StickyBomb Launcher");
+	Cvars.CreateTF2Weapon(21, "xstats_points_weapon_flamethrower", 10, "Flamethrower");
+	Cvars.CreateTF2Weapon(22, "xstats_points_weapon_pistol", 10, "Pistol");
+	Cvars.SameWeapon(23, 22); //Same Pistol, different TFWeaponType type.
+	Cvars.CreateTF2Weapon(24, "xstats_points_weapon_revolver", 10, "Revolver");
+	Cvars.CreateTF2Weapon(36, "xstats_points_weapon_blutsauger", 10, "Blutsauger");
+	Cvars.CreateTF2Weapon(37, "xstats_points_weapon_ubersaw", 10, "Ubersaw");
+	Cvars.CreateTF2Weapon(38, "xstats_points_weapon_axtinguisher", 10, "Axtinguisher");
+	Cvars.CreateTF2Weapon(39, "xstats_points_weapon_flaregun", 10, "Flaregun");
+	Cvars.CreateTF2Weapon(40, "xstats_points_weapon_backburner", 10, "Backburner");
+	Cvars.CreateTF2Weapon(41, "xstats_points_weapon_natascha", 10, "Natascha");
+	Cvars.CreateTF2Weapon(43, "xstats_points_weapon_killerglovesofboxing", 10, "Killer Gloves Of Boxing");
+	Cvars.CreateTF2Weapon(44, "xstats_points_weapon_sandman", 10, "Sandman.");
+	Cvars.CreateTF2Weapon(45, "xstats_points_weapon_forceanature", 10, "Force-A-Nature");
+	Cvars.CreateTF2Weapon(56, "xstats_points_weapon_huntsman", 10, "Huntsman");
+	Cvars.CreateTF2Weapon(61, "xstats_points_weapon_ambassador", 10, "Ambassador");
+	Cvars.CreateTF2Weapon(127, "xstats_points_weapon_directhit", 10, "Direct-Hit");
+	Cvars.CreateTF2Weapon(128, "xstats_points_weapon_equalizer", 10, "Equalizer");
+	Cvars.CreateTF2Weapon(130, "xstats_points_weapon_scottishresistance", 10, "Scottish Resistance.");
+	Cvars.CreateTF2Weapon(131, "xstats_points_weapon_chargentarge", 10, "Charge n' Targe");
+	Cvars.CreateTF2Weapon(132, "xstats_points_weapon_eyelander", 10, "Eyelander");
+	Cvars.CreateTF2Weapon(140, "xstats_points_weapon_wrangler", 10, "Wrangler");
+	Cvars.CreateTF2Weapon(141, "xstats_points_weapon_frontierjustice", 10, "Frontier Justice");
+	Cvars.CreateTF2Weapon(142, "xstats_points_weapon_gunslinger", 10, "Gunslinger");
+	Cvars.CreateTF2Weapon(153, "xstats_points_weapon_homewrecker", 10, "Homewrecker");
+	Cvars.CreateTF2Weapon(154, "xstats_points_weapon_paintrain", 10, "Pain Train");
+	Cvars.CreateTF2Weapon(155, "xstats_points_weapon_southernhospitality", 10, "Southern Hospitality");
+	Cvars.CreateTF2Weapon(160, "xstats_points_weapon_lugermorph", 10, "Lugermorph");
+	Cvars.CreateTF2Weapon(161, "xstats_points_weapon_bigkill", 10, "Big Kill");
+	Cvars.CreateTF2Weapon(169, "xstats_points_weapon_wrench", 10, "Wrench");
+	Cvars.CreateTF2Weapon(171, "xstats_points_weapon_tribalmansshiv", 10, "Tribalman's Shiv");
+	Cvars.CreateTF2Weapon(172, "xstats_points_weapon_scotsmansskullcutter", 10, "Scotsman's Skullcutter");
+	Cvars.CreateTF2Weapon(173, "xstats_points_weapon_vitasaw", 10, "Vita-Saw");
 	Cvars.SameWeapon(190, 0); //Same as default Bat, used for strange, renamed & skinned versions.
 	Cvars.SameWeapon(191, 1); //Same as default Bottle, used for strange, renamed & skinned versions.
 	Cvars.SameWeapon(192, 2); //Same as default Fire Axe, used for strange, renamed & skinned versions.
@@ -87,86 +87,86 @@ void PrepareGame_TF2() {
 	Cvars.SameWeapon(208, 21); //Same as default Flamethrower, used for australium, strange, renamed & skinned versions.
 	Cvars.SameWeapon(209, 22); //Same as default Pistol, used for strange, renamed & skinned versions.
 	Cvars.SameWeapon(210, 24); //Same as default Revolver, used for strange, renamed & skinned versions.
-	Cvars.CreateWeapon(214, "xstats_points_weapon_powerjack", 10, "Power Jack");
-	Cvars.CreateWeapon(215, "xstats_points_weapon_degreaser", 10, "Degreaser");
-	Cvars.CreateWeapon(220, "xstats_points_weapon_shortstop", 10, "Shortstop");
-	Cvars.CreateWeapon(221, "xstats_points_weapon_holymackerel", 10, "Holy Mackerel");
-	Cvars.CreateWeapon(224, "xstats_points_weapon_letranger", 10, "L'etranger");
-	Cvars.CreateWeapon(225, "xstats_points_weapon_eternalreward", 10, "Eternal Reward");
-	Cvars.CreateWeapon(228, "xstats_points_weapon_blackbox", 10, "Black Box");
-	Cvars.CreateWeapon(230, "xstats_points_weapon_sydneysleeper", 10, "Sydney Sleeper");
-	Cvars.CreateWeapon(232, "xstats_points_weapon_bushwacka", 10, "Bushwacka");
+	Cvars.CreateTF2Weapon(214, "xstats_points_weapon_powerjack", 10, "Power Jack");
+	Cvars.CreateTF2Weapon(215, "xstats_points_weapon_degreaser", 10, "Degreaser");
+	Cvars.CreateTF2Weapon(220, "xstats_points_weapon_shortstop", 10, "Shortstop");
+	Cvars.CreateTF2Weapon(221, "xstats_points_weapon_holymackerel", 10, "Holy Mackerel");
+	Cvars.CreateTF2Weapon(224, "xstats_points_weapon_letranger", 10, "L'etranger");
+	Cvars.CreateTF2Weapon(225, "xstats_points_weapon_eternalreward", 10, "Eternal Reward");
+	Cvars.CreateTF2Weapon(228, "xstats_points_weapon_blackbox", 10, "Black Box");
+	Cvars.CreateTF2Weapon(230, "xstats_points_weapon_sydneysleeper", 10, "Sydney Sleeper");
+	Cvars.CreateTF2Weapon(232, "xstats_points_weapon_bushwacka", 10, "Bushwacka");
 	Cvars.SameWeapon(237, 18); //Rocket Jumper.
-	Cvars.CreateWeapon(239, "xstats_points_weapon_goru", 10, "Gloves of Running Urgently");
-	Cvars.CreateWeapon(264, "xstats_points_weapon_fryingpan", 10, "Frying Pan");
+	Cvars.CreateTF2Weapon(239, "xstats_points_weapon_goru", 10, "Gloves of Running Urgently");
+	Cvars.CreateTF2Weapon(264, "xstats_points_weapon_fryingpan", 10, "Frying Pan");
 	Cvars.SameWeapon(265, 20);	//Sticky Jumper.
-	Cvars.CreateWeapon(266, "xstats_points_weapon_hhhh", 10, "Horseless Headless Horsemann's Headtaker");
+	Cvars.CreateTF2Weapon(266, "xstats_points_weapon_hhhh", 10, "Horseless Headless Horsemann's Headtaker");
 	Cvars.SameWeapon(294, 160);	//Same Lugermorph, different TFQuality type.
-	Cvars.CreateWeapon(298, "xstats_points_weapon_ironcurtain", 10, "Iron Curtain");
-	Cvars.CreateWeapon(304, "xstats_points_weapon_amputator", 10, "Amputator");
-	Cvars.CreateWeapon(305, "xstats_points_weapon_crusaderscrossbow", 10, "Crusader's Crossbow");
-	Cvars.CreateWeapon(307, "xstats_points_weapon_ullapoolcaber", 10, "Ullapool Caber");
-	Cvars.CreateWeapon(308, "xstats_points_weapon_lochnload", 10, "Loch-n-Load");
-	Cvars.CreateWeapon(310, "xstats_points_weapon_warriorsspirit", 10, "Warrior's Spirit");
-	Cvars.CreateWeapon(312, "xstats_points_weapon_brassbeast", 10, "Brass Beast");
-	Cvars.CreateWeapon(317, "xstats_points_weapon_candycane", 10, "Candy Cane");
-	Cvars.CreateWeapon(325, "xstats_points_weapon_bostonbasher", 10, "Boston Basher");
-	Cvars.CreateWeapon(326, "xstats_points_weapon_backscratcher", 10, "Back Scratcher");
-	Cvars.CreateWeapon(327, "xstats_points_weapon_claidheamhmor", 10, "Claidheamh Mór");
-	Cvars.CreateWeapon(329, "xstats_points_weapon_jag", 10, "Jag");
-	Cvars.CreateWeapon(331, "xstats_points_weapon_fistsofsteel", 10, "Fists Of Steel");
-	Cvars.CreateWeapon(348, "xstats_points_weapon_sharpenedvolcanofragment", 10, "Sharpened Volcano Fragment");
-	Cvars.CreateWeapon(349, "xstats_points_weapon_sunonastick", 10, "Sun-On-A-Stick");
-	Cvars.CreateWeapon(351, "xstats_points_weapon_detonator", 10, "Detonator");
-	Cvars.CreateWeapon(355, "xstats_points_weapon_fanowar", 10, "Fan O' War");
-	Cvars.CreateWeapon(356, "xstats_points_weapon_conniverskunai", 10, "Conniver's Kunai");
-	Cvars.CreateWeapon(357, "xstats_points_weapon_halfzatoichi", 10, "Half-Zatoichi");
-	Cvars.CreateWeapon(401, "xstats_points_weapon_shahanshah", 10, "Shahanshah");
-	Cvars.CreateWeapon(402, "xstats_points_weapon_bazaarbargain", 10, "Bazaar Bargain");
-	Cvars.CreateWeapon(404, "xstats_points_weapon_persainpersuader", 10, "Persain Pursuader");
-	Cvars.CreateWeapon(406, "xstats_points_weapon_splendidscreen", 10, "Splendid Screen");
-	Cvars.CreateWeapon(412, "xstats_points_weapon_overdose", 10, "Overdose");
-	Cvars.CreateWeapon(413, "xstats_points_weapon_solemnvow", 10, "Solmen Wov");
-	Cvars.CreateWeapon(414, "xstats_points_weapon_libertylauncher", 10, "Liberty Launcher");
-	Cvars.CreateWeapon(415, "xstats_points_weapon_reserveshooter", 10, "Reserve Shooter");
-	Cvars.CreateWeapon(416, "xstats_points_weapon_marketgardener", 10, "Market Gardener");
-	Cvars.CreateWeapon(423, "xstats_points_weapon_saxxy", 10, "Saxxy");
-	Cvars.CreateWeapon(424, "xstats_points_weapon_tomislav", 10, "Tomislav");
-	Cvars.CreateWeapon(425, "xstats_points_weapon_familybusiness", 10, "Family Business");
-	Cvars.CreateWeapon(426, "xstats_points_weapon_evictionnotice", 10, "Eviction Notice");
-	Cvars.CreateWeapon(441, "xstats_points_weapon_cowmangler5000", 10, "Cow Mangler 5000");
-	Cvars.CreateWeapon(442, "xstats_points_weapon_righteousbison", 10, "Righteous Bison");
-	Cvars.CreateWeapon(444, "xstats_points_weapon_mantreads", 10, "Mantreads");
-	Cvars.CreateWeapon(447, "xstats_points_weapon_disciplinaryaction", 10, "Disciplinary Action");
-	Cvars.CreateWeapon(448, "xstats_points_weapon_sodapopper", 10, "Soda Popper");
-	Cvars.CreateWeapon(449, "xstats_points_weapon_winger", 10, "Winger");
-	Cvars.CreateWeapon(450, "xstats_points_weapon_atomizer", 10, "Atomizer");
-	Cvars.CreateWeapon(452, "xstats_points_weapon_threeruneblade", 10, "Three Rune Blade");
-	Cvars.CreateWeapon(457, "xstats_points_weapon_postalpummeler", 10, "Postal Pummeler");
-	Cvars.CreateWeapon(460, "xstats_points_weapon_enforcer", 10, "Enforcer");
-	Cvars.CreateWeapon(461, "xstats_points_weapon_bigearner", 10, "Big Earner");
-	Cvars.CreateWeapon(466, "xstats_points_weapon_maul", 10, "Maul");
-	Cvars.CreateWeapon(474, "xstats_points_weapon_conscentiousobjector", 10, "Conscentious Objector");
-	Cvars.CreateWeapon(482, "xstats_points_weapon_nessiesnineiron", 10, "Nessie's Nine-Iron");
-	Cvars.CreateWeapon(513, "xstats_points_weapon_original", 10, "Original");
-	Cvars.CreateWeapon(525, "xstats_points_weapon_diamondback", 10, "Diamondback");
-	Cvars.CreateWeapon(526, "xstats_points_weapon_machina", 10, "Machina");
-	Cvars.CreateWeapon(527, "xstats_points_weapon_widowmaker", 10, "Widowmaker");
-	Cvars.CreateWeapon(528, "xstats_points_weapon_shortcircuit", 10, "Short Circuit");
-	Cvars.CreateWeapon(572, "xstats_points_weapon_unarmedcombat", 10, "Unarmed Combat");
-	Cvars.CreateWeapon(574, "xstats_points_weapon_wangaprick", 10, "Wanga Prick");
-	Cvars.CreateWeapon(587, "xstats_points_weapon_apocofists", 10, "Apoco Fists");
-	Cvars.CreateWeapon(588, "xstats_points_weapon_pomson6000", 10, "Pomson 6000");
-	Cvars.CreateWeapon(589, "xstats_points_weapon_eurekaeffect", 10, "Eureka Effect");
-	Cvars.CreateWeapon(593, "xstats_points_weapon_thirddegree", 10, "Third Degree");
-	Cvars.CreateWeapon(594, "xstats_points_weapon_phlogistinator", 10, "Phlogistinator.");
-	Cvars.CreateWeapon(595, "xstats_points_weapon_manmelter", 10, "Man Melter");
-	Cvars.CreateWeapon(609, "xstats_points_weapon_scottishhandshake", 10, "Scottish Handshake");
-	Cvars.CreateWeapon(638, "xstats_points_weapon_sharpdresser", 10, "Sharp Dresser");
-	Cvars.CreateWeapon(648, "xstats_points_weapon_wrapassassin", 10, "Wrap Assassin");
-	Cvars.CreateWeapon(649, "xstats_points_weapon_spycicle", 10, "Spycicle");
+	Cvars.CreateTF2Weapon(298, "xstats_points_weapon_ironcurtain", 10, "Iron Curtain");
+	Cvars.CreateTF2Weapon(304, "xstats_points_weapon_amputator", 10, "Amputator");
+	Cvars.CreateTF2Weapon(305, "xstats_points_weapon_crusaderscrossbow", 10, "Crusader's Crossbow");
+	Cvars.CreateTF2Weapon(307, "xstats_points_weapon_ullapoolcaber", 10, "Ullapool Caber");
+	Cvars.CreateTF2Weapon(308, "xstats_points_weapon_lochnload", 10, "Loch-n-Load");
+	Cvars.CreateTF2Weapon(310, "xstats_points_weapon_warriorsspirit", 10, "Warrior's Spirit");
+	Cvars.CreateTF2Weapon(312, "xstats_points_weapon_brassbeast", 10, "Brass Beast");
+	Cvars.CreateTF2Weapon(317, "xstats_points_weapon_candycane", 10, "Candy Cane");
+	Cvars.CreateTF2Weapon(325, "xstats_points_weapon_bostonbasher", 10, "Boston Basher");
+	Cvars.CreateTF2Weapon(326, "xstats_points_weapon_backscratcher", 10, "Back Scratcher");
+	Cvars.CreateTF2Weapon(327, "xstats_points_weapon_claidheamhmor", 10, "Claidheamh Mór");
+	Cvars.CreateTF2Weapon(329, "xstats_points_weapon_jag", 10, "Jag");
+	Cvars.CreateTF2Weapon(331, "xstats_points_weapon_fistsofsteel", 10, "Fists Of Steel");
+	Cvars.CreateTF2Weapon(348, "xstats_points_weapon_sharpenedvolcanofragment", 10, "Sharpened Volcano Fragment");
+	Cvars.CreateTF2Weapon(349, "xstats_points_weapon_sunonastick", 10, "Sun-On-A-Stick");
+	Cvars.CreateTF2Weapon(351, "xstats_points_weapon_detonator", 10, "Detonator");
+	Cvars.CreateTF2Weapon(355, "xstats_points_weapon_fanowar", 10, "Fan O' War");
+	Cvars.CreateTF2Weapon(356, "xstats_points_weapon_conniverskunai", 10, "Conniver's Kunai");
+	Cvars.CreateTF2Weapon(357, "xstats_points_weapon_halfzatoichi", 10, "Half-Zatoichi");
+	Cvars.CreateTF2Weapon(401, "xstats_points_weapon_shahanshah", 10, "Shahanshah");
+	Cvars.CreateTF2Weapon(402, "xstats_points_weapon_bazaarbargain", 10, "Bazaar Bargain");
+	Cvars.CreateTF2Weapon(404, "xstats_points_weapon_persainpersuader", 10, "Persain Pursuader");
+	Cvars.CreateTF2Weapon(406, "xstats_points_weapon_splendidscreen", 10, "Splendid Screen");
+	Cvars.CreateTF2Weapon(412, "xstats_points_weapon_overdose", 10, "Overdose");
+	Cvars.CreateTF2Weapon(413, "xstats_points_weapon_solemnvow", 10, "Solmen Wov");
+	Cvars.CreateTF2Weapon(414, "xstats_points_weapon_libertylauncher", 10, "Liberty Launcher");
+	Cvars.CreateTF2Weapon(415, "xstats_points_weapon_reserveshooter", 10, "Reserve Shooter");
+	Cvars.CreateTF2Weapon(416, "xstats_points_weapon_marketgardener", 10, "Market Gardener");
+	Cvars.CreateTF2Weapon(423, "xstats_points_weapon_saxxy", 10, "Saxxy");
+	Cvars.CreateTF2Weapon(424, "xstats_points_weapon_tomislav", 10, "Tomislav");
+	Cvars.CreateTF2Weapon(425, "xstats_points_weapon_familybusiness", 10, "Family Business");
+	Cvars.CreateTF2Weapon(426, "xstats_points_weapon_evictionnotice", 10, "Eviction Notice");
+	Cvars.CreateTF2Weapon(441, "xstats_points_weapon_cowmangler5000", 10, "Cow Mangler 5000");
+	Cvars.CreateTF2Weapon(442, "xstats_points_weapon_righteousbison", 10, "Righteous Bison");
+	Cvars.CreateTF2Weapon(444, "xstats_points_weapon_mantreads", 10, "Mantreads");
+	Cvars.CreateTF2Weapon(447, "xstats_points_weapon_disciplinaryaction", 10, "Disciplinary Action");
+	Cvars.CreateTF2Weapon(448, "xstats_points_weapon_sodapopper", 10, "Soda Popper");
+	Cvars.CreateTF2Weapon(449, "xstats_points_weapon_winger", 10, "Winger");
+	Cvars.CreateTF2Weapon(450, "xstats_points_weapon_atomizer", 10, "Atomizer");
+	Cvars.CreateTF2Weapon(452, "xstats_points_weapon_threeruneblade", 10, "Three Rune Blade");
+	Cvars.CreateTF2Weapon(457, "xstats_points_weapon_postalpummeler", 10, "Postal Pummeler");
+	Cvars.CreateTF2Weapon(460, "xstats_points_weapon_enforcer", 10, "Enforcer");
+	Cvars.CreateTF2Weapon(461, "xstats_points_weapon_bigearner", 10, "Big Earner");
+	Cvars.CreateTF2Weapon(466, "xstats_points_weapon_maul", 10, "Maul");
+	Cvars.CreateTF2Weapon(474, "xstats_points_weapon_conscentiousobjector", 10, "Conscentious Objector");
+	Cvars.CreateTF2Weapon(482, "xstats_points_weapon_nessiesnineiron", 10, "Nessie's Nine-Iron");
+	Cvars.CreateTF2Weapon(513, "xstats_points_weapon_original", 10, "Original");
+	Cvars.CreateTF2Weapon(525, "xstats_points_weapon_diamondback", 10, "Diamondback");
+	Cvars.CreateTF2Weapon(526, "xstats_points_weapon_machina", 10, "Machina");
+	Cvars.CreateTF2Weapon(527, "xstats_points_weapon_widowmaker", 10, "Widowmaker");
+	Cvars.CreateTF2Weapon(528, "xstats_points_weapon_shortcircuit", 10, "Short Circuit");
+	Cvars.CreateTF2Weapon(572, "xstats_points_weapon_unarmedcombat", 10, "Unarmed Combat");
+	Cvars.CreateTF2Weapon(574, "xstats_points_weapon_wangaprick", 10, "Wanga Prick");
+	Cvars.CreateTF2Weapon(587, "xstats_points_weapon_apocofists", 10, "Apoco Fists");
+	Cvars.CreateTF2Weapon(588, "xstats_points_weapon_pomson6000", 10, "Pomson 6000");
+	Cvars.CreateTF2Weapon(589, "xstats_points_weapon_eurekaeffect", 10, "Eureka Effect");
+	Cvars.CreateTF2Weapon(593, "xstats_points_weapon_thirddegree", 10, "Third Degree");
+	Cvars.CreateTF2Weapon(594, "xstats_points_weapon_phlogistinator", 10, "Phlogistinator.");
+	Cvars.CreateTF2Weapon(595, "xstats_points_weapon_manmelter", 10, "Man Melter");
+	Cvars.CreateTF2Weapon(609, "xstats_points_weapon_scottishhandshake", 10, "Scottish Handshake");
+	Cvars.CreateTF2Weapon(638, "xstats_points_weapon_sharpdresser", 10, "Sharp Dresser");
+	Cvars.CreateTF2Weapon(648, "xstats_points_weapon_wrapassassin", 10, "Wrap Assassin");
+	Cvars.CreateTF2Weapon(649, "xstats_points_weapon_spycicle", 10, "Spycicle");
 	Cvars.SameWeapon(654, 15); //Festive Minigun.
-	Cvars.CreateWeapon(656, "xstats_points_weapon_holidaypunch", 10, "Holiday Punch");
+	Cvars.CreateTF2Weapon(656, "xstats_points_weapon_holidaypunch", 10, "Holiday Punch");
 	Cvars.SameWeapon(658, 18); //Festive Rocket Launcher.
 	Cvars.SameWeapon(659, 21); //Festive Flamethrower.
 	Cvars.SameWeapon(660, 0); //Festive Bat.
@@ -175,15 +175,15 @@ void PrepareGame_TF2() {
 	Cvars.SameWeapon(664, 14); //Festive Sniper Rifle.
 	Cvars.SameWeapon(665, 4); //Festive Knife.
 	Cvars.SameWeapon(669, 13); //Festive Scattergun.
-	Cvars.CreateWeapon(727, "xstats_points_weapon_blackrose", 10, "Blackrose");
-	Cvars.CreateWeapon(739, "xstats_points_weapon_lollichop", 10, "Lollichop");
-	Cvars.CreateWeapon(740, "xstats_points_weapon_scorchshot", 10, "Scorch Shot");
-	Cvars.CreateWeapon(741, "xstats_points_weapon_rainblower", 10, "Rainblower");
-	Cvars.CreateWeapon(751, "xstats_points_weapon_cleanerscarbine", 10, "Cleaner's Carbine");
-	Cvars.CreateWeapon(752, "xstats_points_weapon_hitmansheatmaker", 10, "Hitman's Heatmaker");
-	Cvars.CreateWeapon(772, "xstats_points_weapon_babyfacesblaster", 10, "Baby Face's Blaster");
-	Cvars.CreateWeapon(773, "xstats_points_weapon_prettyboyspocketpistol", 10, "Pretty Boy's Pocket Pistol");
-	Cvars.CreateWeapon(775, "xstats_points_weapon_escapeplan", 10, "Escape Plan");
+	Cvars.CreateTF2Weapon(727, "xstats_points_weapon_blackrose", 10, "Blackrose");
+	Cvars.CreateTF2Weapon(739, "xstats_points_weapon_lollichop", 10, "Lollichop");
+	Cvars.CreateTF2Weapon(740, "xstats_points_weapon_scorchshot", 10, "Scorch Shot");
+	Cvars.CreateTF2Weapon(741, "xstats_points_weapon_rainblower", 10, "Rainblower");
+	Cvars.CreateTF2Weapon(751, "xstats_points_weapon_cleanerscarbine", 10, "Cleaner's Carbine");
+	Cvars.CreateTF2Weapon(752, "xstats_points_weapon_hitmansheatmaker", 10, "Hitman's Heatmaker");
+	Cvars.CreateTF2Weapon(772, "xstats_points_weapon_babyfacesblaster", 10, "Baby Face's Blaster");
+	Cvars.CreateTF2Weapon(773, "xstats_points_weapon_prettyboyspocketpistol", 10, "Pretty Boy's Pocket Pistol");
+	Cvars.CreateTF2Weapon(775, "xstats_points_weapon_escapeplan", 10, "Escape Plan");
 	Cvars.SameWeapon(792, 14); //Default Sniper Rifle.			Silver Botkiller Mk. I.
 	Cvars.SameWeapon(793, 15); //Default Minigun.				Silver Botkiller Mk. I.
 	Cvars.SameWeapon(795, 7); //Default Wrench.					Silver Botkiller Mk. I.
@@ -198,15 +198,15 @@ void PrepareGame_TF2() {
 	Cvars.SameWeapon(807, 21); //Default Flamethrower.			Gold Botkiller Mk. I.
 	Cvars.SameWeapon(808, 13); //Default Scattergun.			Gold Botkiller Mk. I.
 	Cvars.SameWeapon(809, 18); //Default Rocket Launcher.		Gold Botkiller Mk. I.
-	Cvars.CreateWeapon(811, "xstats_points_weapon_huolongheater", 10, "Huo-Long Heater");
-	Cvars.CreateWeapon(812, "xstats_points_weapon_flyingguillotine", 10, "Flying Guillotine");
-	Cvars.CreateWeapon(813, "xstats_points_weapon_neonannihilator", 10, "Neon Annihilator");
+	Cvars.CreateTF2Weapon(811, "xstats_points_weapon_huolongheater", 10, "Huo-Long Heater");
+	Cvars.CreateTF2Weapon(812, "xstats_points_weapon_flyingguillotine", 10, "Flying Guillotine");
+	Cvars.CreateTF2Weapon(813, "xstats_points_weapon_neonannihilator", 10, "Neon Annihilator");
 	Cvars.SameWeapon(832, 811); //Genuine Huo-Long Heater.
 	Cvars.SameWeapon(833, 812); //Genuine Flying Guillotine.
 	Cvars.SameWeapon(834, 813); //Genuine Neon Annihilator.
 	Cvars.SameWeapon(850, 15); //Deflector (MvM Minigun used by Giant Deflector Heavies.)
-	Cvars.CreateWeapon(851, "xstats_points_weapon_awperhand", 10, "AWPer Hand");
-	Cvars.CreateWeapon(880, "xstats_points_weapon_freedomstaff", 10, "Freedom Staff");
+	Cvars.CreateTF2Weapon(851, "xstats_points_weapon_awperhand", 10, "AWPer Hand");
+	Cvars.CreateTF2Weapon(880, "xstats_points_weapon_freedomstaff", 10, "Freedom Staff");
 	Cvars.SameWeapon(881, 14); //Default Sniper Rifle.			Rust Botkiller Mk. I.
 	Cvars.SameWeapon(882, 15); //Default Minigun.				Rust Botkiller Mk. I.
 	Cvars.SameWeapon(884, 7); //Default Wrench.					Rust Botkiller Mk. I.
@@ -235,8 +235,8 @@ void PrepareGame_TF2() {
 	Cvars.SameWeapon(914, 21); //Default Flamethrower.			Diamond Botkiller Mk. I.
 	Cvars.SameWeapon(915, 13); //Default Scattergun.			Diamond Botkiller Mk. I.
 	Cvars.SameWeapon(916, 18); //Default Rocket Launcher.		Diamond Botkiller Mk. I.
-	Cvars.CreateWeapon(939, "xstats_points_weapon_batouttahell", 10, "Bat Outta Hell");
-	Cvars.CreateWeapon(954, "xstats_points_weapon_memorymaker",	10, "Memory Maker");
+	Cvars.CreateTF2Weapon(939, "xstats_points_weapon_batouttahell", 10, "Bat Outta Hell");
+	Cvars.CreateTF2Weapon(954, "xstats_points_weapon_memorymaker",	10, "Memory Maker");
 	Cvars.SameWeapon(957, 14); //Default Sniper Rifle.			Silver Botkiller Mk. II.
 	Cvars.SameWeapon(958, 15); //Default Minigun.				Silver Botkiller Mk. II.
 	Cvars.SameWeapon(960, 7); //Default Wrench.					Silver Botkiller Mk. II.
@@ -251,8 +251,8 @@ void PrepareGame_TF2() {
 	Cvars.SameWeapon(972, 21); //Default Flamethrower.			Gold Botkiller Mk. II.
 	Cvars.SameWeapon(973, 13); //Default Scattergun.			Gold Botkiller Mk. II.
 	Cvars.SameWeapon(974, 18); //Default Rocket Launcher.		Gold Botkiller Mk. II.
-	Cvars.CreateWeapon(996, "xstats_points_weapon_loosecannon", 10, "Loose Cannon");
-	Cvars.CreateWeapon(997, "xstats_points_weapon_rescueranger", 10, "Rescue Ranger");
+	Cvars.CreateTF2Weapon(996, "xstats_points_weapon_loosecannon", 10, "Loose Cannon");
+	Cvars.CreateTF2Weapon(997, "xstats_points_weapon_rescueranger", 10, "Rescue Ranger");
 	Cvars.SameWeapon(999, 221); //Festive Holy Mackerel.
 	Cvars.SameWeapon(1000, 38); //Festive Axtinguisher.
 	Cvars.SameWeapon(1003, 37); //Festive Ubersaw.
@@ -260,7 +260,7 @@ void PrepareGame_TF2() {
 	Cvars.SameWeapon(1005, 56); //Festive Huntsman.
 	Cvars.SameWeapon(1006, 61); //Festive Ambassador.
 	Cvars.SameWeapon(1007, 19); //Festive Grenade Launcher.
-	Cvars.CreateWeapon(1013, "xstats_points_weapon_hamshank", 10, "Ham Shank");
+	Cvars.CreateTF2Weapon(1013, "xstats_points_weapon_hamshank", 10, "Ham Shank");
 	Cvars.SameWeapon(1071, 264);//Golden Frying Pan.
 	Cvars.SameWeapon(1078, 45);	//Festive Force-A-Nature.
 	Cvars.SameWeapon(1079, 305);//Festive Crusader's Crossbow.
@@ -268,25 +268,25 @@ void PrepareGame_TF2() {
 	Cvars.SameWeapon(1082, 132);//Festive Eyelander.
 	Cvars.SameWeapon(1084, 239);//Festive Gloves of Running Urgently.
 	Cvars.SameWeapon(1085, 228);//Festive Black Box.
-	Cvars.CreateWeapon(1092, "xstats_points_weapon_fortifiedcompound", 10, "Fortified Compound");
-	Cvars.CreateWeapon(1098, "xstats_points_weapon_classic", 10, "Classic");
-	Cvars.CreateWeapon(1099, "xstats_points_weapon_tideturner", 10, "Tide Turner");
-	Cvars.CreateWeapon(1100, "xstats_points_weapon_breadbite", 10, "Bread Bite");
-	Cvars.CreateWeapon(1103, "xstats_points_weapon_backscatter", 10, "Back Scatter");
-	Cvars.CreateWeapon(1104, "xstats_points_weapon_airstrike", 10, "Air Strike");
-	Cvars.CreateWeapon(1123, "xstats_points_weapon_necrosmasher", 10, "Necro Smasher");
-	Cvars.CreateWeapon(1127, "xstats_points_weapon_crossingguard", 10, "Crossing Guard");
+	Cvars.CreateTF2Weapon(1092, "xstats_points_weapon_fortifiedcompound", 10, "Fortified Compound");
+	Cvars.CreateTF2Weapon(1098, "xstats_points_weapon_classic", 10, "Classic");
+	Cvars.CreateTF2Weapon(1099, "xstats_points_weapon_tideturner", 10, "Tide Turner");
+	Cvars.CreateTF2Weapon(1100, "xstats_points_weapon_breadbite", 10, "Bread Bite");
+	Cvars.CreateTF2Weapon(1103, "xstats_points_weapon_backscatter", 10, "Back Scatter");
+	Cvars.CreateTF2Weapon(1104, "xstats_points_weapon_airstrike", 10, "Air Strike");
+	Cvars.CreateTF2Weapon(1123, "xstats_points_weapon_necrosmasher", 10, "Necro Smasher");
+	Cvars.CreateTF2Weapon(1127, "xstats_points_weapon_crossingguard", 10, "Crossing Guard");
 	Cvars.SameWeapon(1141, 9); //Festive Shotgun.
 	Cvars.SameWeapon(1142, 24); //Festive Revolver.
 	Cvars.SameWeapon(1144, 131); //Festive Chargin' Targe.
 	Cvars.SameWeapon(1146, 40); //Festive Backburner.
 	Cvars.SameWeapon(1149, 16); //Festive SMG.
-	Cvars.CreateWeapon(1150, "xstats_points_weapon_quickebomblauncher",	10, "Quickiebomb Launcher");
-	Cvars.CreateWeapon(1151, "xstats_points_weapon_ironbomber", 10, "Iron Bomber");
-	Cvars.CreateWeapon(1153, "xstats_points_weapon_panicattack", 10, "Panic Attack");
-	Cvars.CreateWeapon(1178, "xstats_points_weapon_dragonsfury", 10, "Dragon's Fury");
-	Cvars.CreateWeapon(1179, "xstats_points_weapon_thermalthruster", 10, "Thermal Thruster");
-	Cvars.CreateWeapon(1181, "xstats_points_weapon_hothand", 10, "Hot Hand");
+	Cvars.CreateTF2Weapon(1150, "xstats_points_weapon_quickebomblauncher",	10, "Quickiebomb Launcher");
+	Cvars.CreateTF2Weapon(1151, "xstats_points_weapon_ironbomber", 10, "Iron Bomber");
+	Cvars.CreateTF2Weapon(1153, "xstats_points_weapon_panicattack", 10, "Panic Attack");
+	Cvars.CreateTF2Weapon(1178, "xstats_points_weapon_dragonsfury", 10, "Dragon's Fury");
+	Cvars.CreateTF2Weapon(1179, "xstats_points_weapon_thermalthruster", 10, "Thermal Thruster");
+	Cvars.CreateTF2Weapon(1181, "xstats_points_weapon_hothand", 10, "Hot Hand");
 	Cvars.SameWeapon(1184, 239);	//Gloves of Running Urgently. (Used by MvM Robots.)
 	Cvars.SameWeapon(15000, 14);	//Skinned Sniper Rifle.			Night Owl.
 	Cvars.SameWeapon(15001, 16);	//Skinned SMG.					Woodsy Widowmaker.
@@ -440,12 +440,12 @@ void PrepareGame_TF2() {
 	Cvars.SameWeapon(19015, 14);	//TF2Items Give Weapon: Beta Sniper Rifle 1.
 	Cvars.SameWeapon(19016, 18);	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 2.
 	Cvars.SameWeapon(19017, 18);	//TF2Items Give Weapon: Beta Pocket Rocket Launcher Variant 3.
-	Cvars.CreateWeapon(30474, "xstats_points_weapon_nostromonapalmer", 10, "Nostromo Napalmer");
-	Cvars.CreateWeapon(30665, "xstats_points_weapon_shootingstar", 10, "Shooting star");
-	Cvars.CreateWeapon(30666, "xstats_points_weapon_capper", 10, "C.A.P.P.E.R");
-	Cvars.CreateWeapon(30667, "xstats_points_weapon_batsaber", 10, "Batsaber");
-	Cvars.CreateWeapon(30668, "xstats_points_weapon_gigarcounter", 10, "Gigar Counter");
-	Cvars.CreateWeapon(30758, "xstats_points_weapon_prinnymachete", 10, "Prinny Machete");	
+	Cvars.CreateTF2Weapon(30474, "xstats_points_weapon_nostromonapalmer", 10, "Nostromo Napalmer");
+	Cvars.CreateTF2Weapon(30665, "xstats_points_weapon_shootingstar", 10, "Shooting star");
+	Cvars.CreateTF2Weapon(30666, "xstats_points_weapon_capper", 10, "C.A.P.P.E.R");
+	Cvars.CreateTF2Weapon(30667, "xstats_points_weapon_batsaber", 10, "Batsaber");
+	Cvars.CreateTF2Weapon(30668, "xstats_points_weapon_gigarcounter", 10, "Gigar Counter");
+	Cvars.CreateTF2Weapon(30758, "xstats_points_weapon_prinnymachete", 10, "Prinny Machete");	
 	
 	/* Other */
 	TF2_Collat = CreateConVar("xstats_points_collateralkill", "2", "XStats: TF2 - Extra points given when pulling a collateral kill.", _, true);
@@ -583,11 +583,24 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 		"Collector's"
 	};
 	
-	char query[512];
-	Format(query, sizeof(query), "insert into `%s`"
-	... "(ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)"
-	... "values"
-	... "('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f')"
+	SQL.QueryEx(DBQuery_Callback, "insert into `%s` ("
+	... "ServerID,"
+	... "SteamID,"
+	... "QualityID,"
+	... "Quality,"
+	... "MethodID,"
+	... "Method,"
+	... "DefinitionIndex,"
+	... "Wear"
+	... ") values ("
+	... "'%i',"
+	... "'%s',"
+	... "'%i',"
+	... "'%s',"
+	... "'%i',"
+	... "'%s',"
+	... "'%i',"
+	... "'%f')"
 	, Global.item_found
 	, Cvars.ServerID.IntValue
 	, Player[client].Playername
@@ -598,9 +611,11 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 	, method_name[method]
 	, defindex
 	, wear);
-	SQL.Query(DBQuery_Callback, query);
 	
-	XStats_DebugText(false, "Inserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear) with values ('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f') onto %s"
+	XStats_DebugText(false, "Inserting (ServerID, SteamID, QualityID, Quality, MethodID, Method, DefinitionIndex, Wear)"
+	... "with values"
+	... "('%i', '%s', '%i', '%s', '%i', '%s', '%i', '%f')"
+	... "onto %s"
 	, Cvars.ServerID.IntValue
 	, Player[client].SteamID
 	, quality
@@ -623,7 +638,6 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		return;
 	}
 	
-	
 	/* Get the values early for lowest delay. */
 	
 	char weapon[96];
@@ -631,7 +645,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	if(StrEqual(weapon, "player") || StrEqual(weapon, "world")) {
 	//if(customkill & TF_CUSTOM_SUICIDE) { TF_CUSTOM_SUICIDE is broken, applied on any kill event :|
-		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//" ... "Detected invalid killer (suicide), ignoring to prevent issues..\n");
+		XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//" ... "\nDetected invalid killer (suicide), ignoring to prevent issues..\n");
 		return;	
 	}
 	
@@ -672,8 +686,6 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	, midair = IsClientMidAir(client)
 	, airshot = (GetClientFlags(victim) == 258);
 	
-	OnDeathRankPanel(client);
-	
 	/*	Backup death flags checks incase example attacker
 		and assister gets domination or revenge at the same time. */
 	if(deathflags & TF_DEATHFLAG_KILLERDOMINATION) {
@@ -700,7 +712,6 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	if(customkill & TF_CUSTOM_PENETRATE_MY_TEAM) XStats_DebugText(false, "Penetrated through teammate.");
 	if(customkill & TF_CUSTOM_PENETRATE_HEADSHOT) XStats_DebugText(false, "Penetrated headshot.");
 	if(customkill & TF_CUSTOM_PENETRATE_ALL_PLAYERS) XStats_DebugText(false, "Penetrated through all players.");
-	
 	
 	event.SetBool("dominated", dominated);
 	event.SetBool("dominated_assister", dominated_assister);
@@ -768,16 +779,17 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	event.SetInt(EVENT_STR_WEAPON_DEF_INDEX, defindex);
 	
 	/* Make sure the weapon definition index exists on the array */
-	if(Cvars.Weapon[defindex] == null)	{
-		XStats_DebugText(false, "weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", weapon, defindex);
+	ConVar cvar = Cvars.GetWeaponCvar(defindex);
+	if(!cvar) {
+		PrintToServer("[XStats: TF2] Weapon \"%s\" (%i defindex) has invalid cvar handle, stopping event from further errors.", weapon, defindex);
 		return;
 	}
 	
 	/* Make sure to continue if the points are valid. */
-	switch(TF2_GetBuildingType(inflictor))	{
+	switch(TF2_GetBuildingType(inflictor)) {
 		case TFBuilding_Sentrygun: if((points = TF2_SentryKill.IntValue) < 1) return;
 		case TFBuilding_MiniSentry:	if((points = TF2_MiniSentryKill.IntValue) < 1) return;
-		default: if((points = Cvars.Weapon[defindex].IntValue) < 1) return;
+		default: if((points = cvar.IntValue) < 1) return;
 	}
 	
 	/* The database query upload ("bat" -> "weapon_bat") */
@@ -786,18 +798,18 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	/* Debug */
 	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//"
-	... "client %s (index %i)"
-	... "victim %s (index %i)"
-	... "assist %s (index %i)"
-	... "inflictor %i\n"
-	... "weapon \"%s\""
-	... "defindex %i"
-	... "customkill %i"
-	... "deathflags %i"
-	... "penetrated %i\n"
-	... "crit type %i [%s]\n"
-	... "Midair %s\n"
-	... "Points %i\n"
+	... "\nClient %s (index %i)"
+	... "\nVictim %s (index %i)"
+	... "\nAssist %s (index %i)"
+	... "\ninflictor %i\n"
+	... "\nweapon \"%s\""
+	... "\ndefindex %i"
+	... "\ncustomkill %i"
+	... "\ndeathflags %i"
+	... "\npenetrated %i\n"
+	... "\ncrit type %i [%s]\n"
+	... "\nMidair %s\n"
+	... "\nPoints %i\n"
 	, Player[client].Playername, client
 	, Player[victim].Playername, victim
 	, Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist
@@ -822,51 +834,37 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	KillMsg[client].CollateralKill = collateral;
 	KillMsg[client].TauntKill = tauntkill;
 	
-	char query[1024];
+	//char query[1024];
 	TF2_ClientKillVictim(client, victim);
 	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
 	
 	//There was an assist.
 	if(AssistedKill(assist, client, victim)) {
-		if(dominated_assister) {
-			Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
-			Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
-			SQL.Query(DBQuery_Callback, query);
-		}
-		
-		if(revenge_assister) {
-			Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
-			Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
-			SQL.Query(DBQuery_Callback, query);
-		}
+		if(dominated_assister) SQL.QueryEx(DBQuery_Callback, "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
+		if(revenge_assister) SQL.QueryEx(DBQuery_Callback, "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 	}
 	
 	//Make sure to not query updates on a bot, the database wouldn't be happy about that.
 	VictimDied(victim);
 		
 	Session[client].Kills++;
-	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_Callback, query);
 		
 	//If the inflictor entity is a building.
 	switch(TF2_IsEntityBuilding(inflictor))	{
 		case true: {
 			switch(TF2_GetBuildingType(inflictor)) {
-				case TFBuilding_Dispenser: XStats_DebugText(false, "\nBuilding: Dispenser (?!)");
+				case TFBuilding_Dispenser: XStats_DebugText(false, "Building: Dispenser (?!)");
 				case TFBuilding_Sentrygun:	{
 					Session[client].MiniSentrykills++;
-					Format(query, sizeof(query), "update `%s` set SentryKills = SentryKills+1 where SteamID='%s' and ServerID='%i'",
-					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-					SQL.Query(DBQuery_Callback, query);
-					XStats_DebugText(false, "Building: Sentry\n");
+					SQL.QueryEx(DBQuery_Callback, "update `%s` set SentryKills = SentryKills+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+					XStats_DebugText(false, "Building: Sentry");
 				}
 				case TFBuilding_MiniSentry:	{
 					Session[client].Sentrykills++;
-					Format(query, sizeof(query), "update `%s` set MiniSentryKills = MiniSentryKills+1 where SteamID='%s' and ServerID='%i'",
-					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-					SQL.Query(DBQuery_Callback, query);
-					XStats_DebugText(false, "Building: Mini-Sentry\n");
+					SQL.QueryEx(DBQuery_Callback, "update `%s` set MiniSentryKills = MiniSentryKills+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+					XStats_DebugText(false, "Building: Mini-Sentry");
 				}
 			}
 		}
@@ -876,15 +874,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 					Session[client].Telefrags++;
 					points += TF2_TeleFrag.IntValue;
 					Session[client].AddPoints(TF2_TeleFrag.IntValue);
-					Format(query, sizeof(query), "update `%s` set Telefrags = Telefrags+1 where SteamID='%s' and ServerID='%i'",
-					Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-					SQL.Query(DBQuery_Callback, query);
-					XStats_DebugText(false, "Telefrag\n");
+					SQL.QueryEx(DBQuery_Callback, "update `%s` set Telefrags = Telefrags+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+					XStats_DebugText(false, "Telefrag");
 				}
 				case false:	{
-					Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'",
-					Global.weapons, fix_weapon, fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
-					SQL.Query(DBQuery_Callback, query);
+					SQL.QueryEx(DBQuery_Callback, "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'", Global.weapons, fix_weapon, fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
 					XStats_DebugText(false, "Updating kill for weapon \"%s\" (Definition index %i) for %s", fix_weapon, defindex, Player[client].Playername);
 				}
 			}
@@ -893,108 +887,81 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	
 	if(headshot) {
 		Session[client].Headshots++;
-		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Headshot\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Headshot");
 	}
 		
 	if(backstab) {
 		Session[client].Backstabs++;
-		Format(query, sizeof(query), "update `%s` set Backstabs = Backstabs+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Backstab\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Backstabs = Backstabs+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Backstab");
 	}
 		
 	if(dominated) {
 		Session[client].Dominations++;
-		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Dominated\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Dominated");
 	}
 		
 	if(revenge) {
 		Session[client].Revenges++;
-		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Revenge\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Revenge");
 	}
 		
 	if(noscope) {
 		Session[client].Noscopes++;
-		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Noscope\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Noscope");
 	}
 		
 	if(tauntkill) {
 		Session[client].Tauntkills++;
-		Format(query, sizeof(query), "update `%s` set TauntKills = TauntKills+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Tauntkill\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set TauntKills = TauntKills+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Tauntkill");
 	}
 	
 	if(deflectkill) {
 		Session[client].Deflects++;
-		Format(query, sizeof(query), "update `%s` set Deflects = Deflects+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Deflectkill\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Deflects = Deflects+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Deflectkill");
 	}
 	
 	if(gibkill) {
 		Session[client].Gibs++;
-		Format(query, sizeof(query), "update `%s` set Gibs = Gibs+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Gibkill\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Gibs = Gibs+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Gibkill");
 	}
 	
 	if(airshot) {
 		Session[client].Airshots++;
-		Format(query, sizeof(query), "update `%s` set Airshots = Airshots+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "Airshot\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Airshots = Airshots+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "Airshot");
 	}
 	
 	if(collateral) {
 		Session[client].Collaterals++;
-		Format(query, sizeof(query), "update `%s` set Collaterals = Collaterals+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Collaterals = Collaterals+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		if(TF2_Collat.IntValue > 0) points += TF2_Collat.IntValue;
-		XStats_DebugText(false, "Collateral\n");
+		XStats_DebugText(false, "Collateral");
 	}
 	
 	if(midair) {
 		Session[client].MidAirKills++;
-		Format(query, sizeof(query), "update `%s` set MidAirKills = MidAirKills+1 where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
-		XStats_DebugText(false, "MidAir Kill\n");
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set MidAirKills = MidAirKills+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		XStats_DebugText(false, "MidAir Kill");
 	}
 		
 	switch(view_as<TFCritType>(crits)) {
 		case TFCritType_Minicrit: {
 			Session[client].MiniCritkills++;
-			Format(query, sizeof(query), "update `%s` set MiniCritKills = MiniCritKills+1 where SteamID='%s' and ServerID='%i'",
-			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-			SQL.Query(DBQuery_Callback, query);
-			XStats_DebugText(false, "Mini-Crit\n");
+			SQL.QueryEx(DBQuery_Callback, "update `%s` set MiniCritKills = MiniCritKills+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+			XStats_DebugText(false, "Mini-Crit");
 		}
 		case TFCritType_Crit: {
 			Session[client].Critkills++;
-			Format(query, sizeof(query), "update `%s` set CritKills = CritKills+1 where SteamID='%s' and ServerID='%i'",
-			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-			SQL.Query(DBQuery_Callback, query);
-			XStats_DebugText(false, "Crit\n");
+			SQL.QueryEx(DBQuery_Callback, "update `%s` set CritKills = CritKills+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+			XStats_DebugText(false, "Crit");
 		}
 	}
 	
@@ -1002,24 +969,45 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		Session[client].AddPoints(points);
 		XStats_DebugText(false, "Processing kill message..\n");
 		
-		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query);
+		SQL.QueryEx(DBQuery_Callback, "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'", Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 		
 		PrepareKillMessage(client, victim, points);
 	}
-		
+	
+	OnDeathRankPanel(client);
+	
 	if(!IsFakeClient(victim)) {
 		char log[2048];
-		int len = 0;
-		len += Format(log[len], sizeof(log)-len, "insert into `%s`", Global.kill_log);
-		len += Format(log[len], sizeof(log)-len, "(ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType)");
-		len += Format(log[len], sizeof(log)-len, "values");
-		len += Format(log[len], sizeof(log)-len, "('%i', '%i', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i', '%i')",
-		Cvars.ServerID.IntValue, GetTime(), Player[client].SteamID, Player[victim].SteamID, Player[assist].SteamID, fix_weapon, headshot, backstab, noscope, midair, crits);
+		Format(log, sizeof(log), "insert into `%s`"
+		... "(ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType)"
+		... "values"
+		... "('%i', '%i', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i', '%i')"
+		, Global.kill_log
+		, Cvars.ServerID.IntValue
+		, GetTime()
+		, Player[client].SteamID
+		, Player[victim].SteamID
+		, Player[assist].SteamID
+		, fix_weapon
+		, headshot
+		, backstab
+		, noscope
+		, midair
+		, crits);
 		SQL.Query(DBQuery_Kill_Log, log);
 		
-		XStats_DebugText(false, "Inserting (ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType) values ('%i', '%i', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i', '%i') into %s",
-		Cvars.ServerID.IntValue, GetTime(), Player[client].SteamID, Player[victim].SteamID, Player[assist].SteamID, fix_weapon, headshot, backstab, noscope, midair, crits, Global.kill_log);
+		XStats_DebugText(false, "Inserting (ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType) values ('%i', '%i', '%s', '%s', '%s', '%s', '%i', '%i', '%i', '%i', '%i') into %s"
+		, Cvars.ServerID.IntValue
+		, GetTime()
+		, Player[client].SteamID
+		, Player[victim].SteamID
+		, Player[assist].SteamID
+		, fix_weapon
+		, headshot
+		, backstab
+		, noscope
+		, midair
+		, crits
+		, Global.kill_log);
 	}
 }

@@ -80,7 +80,7 @@ Action RankPanel(int client, int args=-1) {
 /**
  *	Rank panel callback.
  */
-stock int RankPanelCallback(Menu panel, MenuAction action, int client, int selection) {
+stock void RankPanelCallback(MenuEx panel, MenuAction action, int client, int selection) {
 	switch(selection)	{
 		/**
 		 * 1: Panel info.
@@ -232,7 +232,7 @@ stock void RankPanel_TotalStatistics(int client) {
 /**
  *	Rank panel callback.
  */
-stock int RankPanelCallback2(Menu panel, MenuAction action, int client, int selection) {
+stock void RankPanelCallback2(MenuEx panel, MenuAction action, int client, int selection) {
 	switch(selection) {
 		/**
 		 * 1: Session.
@@ -260,7 +260,7 @@ stock void RankPanel_TotalPage(int client, int page) {
 	}
 }
 
-stock int Panel_TotalStatisticsCallback(Menu menu, MenuAction action, int client, int selection) {
+stock void Panel_TotalStatisticsCallback(MenuEx menu, MenuAction action, int client, int selection) {
 	int page;
 	switch((page = StatsPanel[client].TotalPage)) {
 		case 1:	{

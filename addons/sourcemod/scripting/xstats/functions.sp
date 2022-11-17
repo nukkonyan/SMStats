@@ -294,8 +294,8 @@ stock void UpdateLastConnectedState(const char[] auth) {
 		return;
 	}
 	
-	SQL.QueryEx(DBQuery_Callback, "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'", _, _, Global.playerlist, GetTime(), auth, Cvars.ServerID.IntValue);
-	SQL.QueryEx(DBQuery_Callback, "update `%s` set LastConnectedServerID='%i' where SteamID='%s'", _, _, Global.playerlist, Cvars.ServerID.IntValue, auth);
+	SQL.Query(DBQuery_Callback, "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'", _, _, Global.playerlist, GetTime(), auth, Cvars.ServerID.IntValue);
+	SQL.Query(DBQuery_Callback, "update `%s` set LastConnectedServerID='%i' where SteamID='%s'", _, _, Global.playerlist, Cvars.ServerID.IntValue, auth);
 }
 
 /**
@@ -351,63 +351,59 @@ stock void DBQuery_RemoveOldPlayers_2(Database database, DBResultSet results, co
 /**
  *	Callback query for death events.
  */
-stock void DBQuery_Callback(Database database, DBResultSet results, const char[] error, any data)	{
+stock void DBQuery_Callback(DatabaseEx database, DBResultSet results, const char[] error) {
 	if(!results) XStats_DebugText(true, "Updating table \"%s\" failed! (%s)", Global.playerlist, error);
 }
 
 /**
  *	Callback query for kill log.
  */
-stock void DBQuery_Kill_Log(Database database, DBResultSet results, const char[] error, any data)	{
+stock void DBQuery_Kill_Log(DatabaseEx database, DBResultSet results, const char[] error) {
 	if(!results) XStats_DebugText(true, "Adding kill log event to \"%s\" failed! (%s)", Global.kill_log, error);
 }
 
 /**
  *	Callback query for playtimer.
  */
-stock void DBQuery_IntervalPlayTimer(Database database, DBResultSet results, const char[] error, int client)	{
-	if(!IsClientConnected(client))
-		return;
-	
+stock void DBQuery_IntervalPlayTimer(DatabaseEx database, DBResultSet results, const char[] error, int client) {
+	if(!IsClientConnected(client)) return;
 	if(!results) XStats_DebugText(true, "Updating playtime by 1 minute for client index %i to \"%s\" failed! (%s)", client, Global.playerlist, error);
 }
 
 /**
  *	Callback query for database query insertions.
  */
-stock void DBQuery_DB(Database database, DBResultSet results, const char[] error, int data)	{
-	if(!results) XStats_DebugText(true, "Creating query for database table id %i failed! (%s)", data, error);
+stock void DBQuery_DB(Database database, DBResultSet results, const char[] error, int id) {
+	if(!results) XStats_DebugText(true, "Creating query for database table id %i failed! (%s)", id, error);
 }
 
 /**
  *	Callback for the panel.
  */
-stock int PanelCallback(Menu menu, MenuAction action, int client, int selection) {}
+stock void PanelCallback(MenuEx menu, MenuAction action, int client, int selection) {}
 
 /**
  *	Check active players.
  */
 stock void CheckActivePlayers()	{
 	int needed = Cvars.MinimumPlayers.IntValue;
-	int players = GetClientCountEx(!Cvars.ServerID.IntValue);
-	//PrintToServer("Players: [%i/%i]", players, needed);
+	int players = GetClientCountEx(!Cvars.AllowBots.BoolValue);
+	XStats_DebugText(false, "CheckActivePlayers: %i players out of required %i", players, needed);
 	
 	switch(Global.RankActive) {
 		case true: {
-			if(needed > players) {
+			if(players < needed) {
 				Global.RankActive = false;
 				
 				CPrintToChatAll("%s %t", Global.Prefix, "Not Enough Players", players, needed);
-				XStats_DebugText(false, "Not enough players [%i/%i], disabling..", players, needed);
+				XStats_DebugText(false, "Not enough players (%i out of %i), disabling..", players, needed);
 			}
 		}
 		case false: {
-			if(needed <= players) {
-				if(Global.RoundActive) {
-					Global.RankActive = true;
-					CPrintToChatAll("%s %t", Global.Prefix, "Enough Players", players, needed);
-					XStats_DebugText(false, "Enough players [%i/%i], enabling..", players, needed);
-				}
+			if(players >= needed && Global.RoundActive) {
+				Global.RankActive = true;
+				CPrintToChatAll("%s %t", Global.Prefix, "Enough Players", players, needed);
+				XStats_DebugText(false, "Enough players (%i out of %i), enabling..", players, needed);
 			}
 		}
 	}
@@ -443,8 +439,8 @@ stock bool IsValidAbuse(int client=0) {
  *	@param	client	The users index.
  */
 stock bool CS_IsClientInsideSmoke(int client) {
-	int ent = 0;
-	while((ent = FindEntityByClassname(ent, "env_particlesmokegrenade")) != -1)	{ if(GetEntityDistance(ent, client) <= 3.0) return true; }
+	Entity ent = Entity_Empty;
+	while((ent = Entity.FindByClassname("env_particlesmokegrenade")) != Entity_Invalid) if(ent.GetDistance(client) <= 3.0) return true;
 	return false;
 }
 
@@ -563,10 +559,8 @@ stock bool AssistedKill(int assist, int client, int victim) {
 stock void VictimDied(int victim) {
 	if(!Tklib_IsValidClient(victim, true)) return;
 	
-	char query[512];
-	Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set Deaths = Deaths+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[victim].SteamID, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_Callback, query);
 	XStats_DebugText(false, "Updating death count for %s", Player[victim].Playername);
 	
 	int points;
@@ -583,9 +577,8 @@ stock void VictimDied(int victim) {
 	Session[victim].RemovePoints(points);
 	CPrintToChat(victim, "%s %t", Global.Prefix, "Death Kill Event", Player[victim].Name, victim_points, points);
 	
-	Format(query, sizeof(query), "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set Points = Points-%i where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, points, Player[victim].SteamID, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_Callback, query);
 	XStats_DebugText(false, "Updating points for %s due to dying", Player[victim].Playername);
 }
 
@@ -648,18 +641,19 @@ stock void RoundEnded()	{
 stock Action CheckPlayersPluginStart(Handle timer) {
 	if(!SQL) return Plugin_Handled;
 	
-	XStats_DebugText(false, "//===== XStats Debug Log: CheckPlayersPluginStart =====//\n");
+	XStats_DebugText(false, "//== XStats Debug Log: CheckPlayersPluginStart ==//\n");
 	
-	DBResultSet results;
+	//SQL.Lock();
+	//DBResultSet results;
 	
-	TargetLoop(client) {
+	TargetLoopEx(client) {
 		/* Bots needs a name too, right? */
 		if(Tklib_IsValidClient(client, false, false, false)) {
 			GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
 			GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 		}
 		
-		/* Only gather the steamid from the players */
+		//Only gather the steamid from the players
 		if(!Tklib_IsValidClient(client, true, false, false)) continue;
 		
 		GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
@@ -668,45 +662,41 @@ stock Action CheckPlayersPluginStart(Handle timer) {
 		GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 		if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 		
-		results = SQL.Query2("select * from `%s` where SteamID = '%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-		XStats_DebugText(false, "Checking if player %s exists on the playerlist table in the database", Player[client].Playername);
-		switch(results != null && results.RowCount != 0) {
-			// Player exists
-			case true: {
-				XStats_DebugText(false, "Found player %s in \"%s\" at ServerID %i, initializing forwards OnClientPutInServer..",
-				Player[client].Playername, Global.playerlist, Cvars.ServerID.IntValue);
-				XStats_DebugText(false, "Points: %i\nPositioned: %i\n", (Player[client].Points = GetClientPoints(Player[client].SteamID)), (Player[client].Position = GetClientPosition(Player[client].SteamID)));
-				
-				OnClientPutInServer(client);
-			}
-			
-			// Player wasn't found.
-			case false:	{
-				char temp_playername[64];
-				temp_playername = Player[client].Playername;
-				TrimString(temp_playername);
-				SQL.Escape(temp_playername, temp_playername, sizeof(temp_playername));
-				
-				results = SQL.Query2("insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
-				Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
-				XStats_DebugText(false, "Failed to find player %s on playerlist table, inserting new query directly onto database.", Player[client].Playername);
-				if(results != null) OnClientPutInServer(client);
-			}
-		}
-		
-		// weapons table.
-		results = SQL.Query2("select * from `%s` where SteamID = '%s'",
-		Global.weapons, Player[client].SteamID);
-		XStats_DebugText(false, "Checking if player %s exists on weapons table in the database", Player[client].Playername);
-		if(!results || results != null && results.RowCount == 0)	{
-			results = SQL.Query2("insert into `%s` (SteamID, ServerID) values ('%s', '%i')",
-			Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
-			XStats_DebugText(false, "Failed to find player %s on weapons table, inserting new query directly onto database.", Player[client].Playername);
-		}
+		SQL.QueryEx2(DBQuery_CheckPlayer, "select * from `%s` where SteamID = '%s' and ServerID='%i'",
+		client, Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	}
 	
-	delete results;
 	return Plugin_Handled;
+}
+
+void DBQuery_CheckPlayer(DatabaseEx database, DBResultSet results, const char[] error, int client) {
+	switch(results && results.RowCount != 0) {
+		// Player exists
+		case true: {
+			XStats_DebugText(false, "Found player %s in \"%s\" at ServerID %i, initializing forwards OnClientPutInServer..",
+			Player[client].Playername, Global.playerlist, Cvars.ServerID.IntValue);
+			Player[client].Points = GetClientPoints(Player[client].SteamID);
+			Player[client].Position = GetClientPosition(Player[client].SteamID);
+			
+			OnClientPutInServer(client);
+		}
+		
+		// Player wasn't found.
+		case false: {
+			char temp_playername[64];
+			temp_playername = Player[client].Playername;
+			TrimString(temp_playername);
+			database.Escape(temp_playername, temp_playername, sizeof(temp_playername));
+			
+			database.QueryEx2(DBQuery_CheckPlayer_Callback, "insert into `%s` (SteamID, Playername, IP, ServerID) values ('%s', '%s', '%s', '%i')",
+			client, Global.playerlist, Player[client].SteamID, temp_playername, Player[client].IP, Cvars.ServerID.IntValue);
+		}
+	}
+}
+
+void DBQuery_CheckPlayer_Callback(DatabaseEx database, DBResultSet results, const char[] error, int client) {
+	XStats_DebugText(false, "Failed to find player %s on playerlist table, inserting new query directly onto database.", Player[client].Playername);
+	if(results) OnClientPutInServer(client);
 }
 
 /**
@@ -716,10 +706,10 @@ stock Action CheckPlayersPluginStart(Handle timer) {
  *	@param	victim	The victim who died.
  *	@param	points	The points the client was given
  */
-stock void PrepareKillMessage(int client, int victim, int points)	{
+stock void PrepareKillMessage(int client, int victim, int points) {
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
-	char buffer[128];
+	char buffer[196];
 	
 	/* Lë ol' messy code but has to be it. */
 	
@@ -1011,6 +1001,7 @@ stock void PrepareKillMessage(int client, int victim, int points)	{
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
 	}
+	
 	switch(IsValidString(buffer)) {
 		case true: CPrintToChat(client, "%s %t", Global.Prefix, "Special Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name, buffer);
 		case false: CPrintToChat(client, "%s %t", Global.Prefix, "Default Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name);
@@ -1073,21 +1064,19 @@ stock void XStats_SetFailState(const char[] reason, any ...) {
 	
 	char format[256];
 	VFormat(format, sizeof(format), reason, 2);
-	SetFailState(format);
+	SetFailState("[XStats] : %s", format);
 }
 
 /* Update the total damage done. */
 stock void UpdateDamage(int client)	{
-	char query[192];
-	Format(query, sizeof(query), "select DamageDone from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_UpdateDamage, query, client, DBPrio_Low);
+	SQL.Query(DBQuery_UpdateDamage, "select DamageDone from `%s` where SteamID='%s' and ServerID='%i'", client, DBPrio_Low,
+	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 }
 
 void DBQuery_UpdateDamage(Database database, DBResultSet results, const char[] error, int client) {
 	if(results != null && results.FetchRow()) {
-		char query[192];
-		Format(query, sizeof(query), "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'",
-		Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue);
-		SQL.Query(DBQuery_Callback, query, _, DBPrio_Low); /* Low priority to lower chances of lag spikes */
+		/* Low priority to lower chances of lag spikes */
+		SQL.Query(DBQuery_Callback, "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'", _, DBPrio_Low,
+		Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue); 
 	}
 }
