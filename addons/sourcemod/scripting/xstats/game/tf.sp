@@ -685,13 +685,14 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	|| customkill == 13)
 	, telefrag = StrEqual(weapon, "telefrag")
 	, midair = IsClientMidAir(client)
-	, airshot = false/*(GetClientFlags(victim) == 258)*/;
+	, airshot = (GetClientFlags(victim) == 258);
 	
-	if(GetEntityFlags(victim) & FL_FLY)
-	{
+	/*
+	if(GetEntityFlags(victim) & FL_FLY) {
 		airshot = true;
 		XStats_DebugText(false, "Airshot");
 	}
+	*/
 	
 	/*	Backup death flags checks incase example attacker
 		and assister gets domination or revenge at the same time. */
@@ -716,9 +717,9 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		XStats_DebugText(false, "Gibkill");
 	}
 	//if(customkill & TF_CUSTOM_TELEFRAG) telefrag = true;
-	if(customkill & TF_CUSTOM_PENETRATE_MY_TEAM) XStats_DebugText(false, "Penetrated through teammate.");
-	if(customkill & TF_CUSTOM_PENETRATE_HEADSHOT) XStats_DebugText(false, "Penetrated headshot.");
-	if(customkill & TF_CUSTOM_PENETRATE_ALL_PLAYERS) XStats_DebugText(false, "Penetrated through all players.");
+	//if(customkill & TF_CUSTOM_PENETRATE_MY_TEAM) XStats_DebugText(false, "Penetrated through teammate.");
+	//if(customkill & TF_CUSTOM_PENETRATE_HEADSHOT) XStats_DebugText(false, "Penetrated headshot.");
+	//if(customkill & TF_CUSTOM_PENETRATE_ALL_PLAYERS) XStats_DebugText(false, "Penetrated through all players.");
 	
 	event.SetBool("dominated", dominated);
 	event.SetBool("dominated_assister", dominated_assister);
@@ -804,7 +805,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	if(!telefrag) TF2_FixWeaponClassname(client, fix_weapon, sizeof(fix_weapon), defindex, weapon);
 	
 	/* Debug */
-	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_TF2 =====//"
+	XStats_DebugText(false, "//===== Player_Death_TF2 =====//"
 	... "\nClient %s (index %i)"
 	... "\nVictim %s (index %i)"
 	... "\nAssist %s (index %i)"
@@ -813,10 +814,10 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	... "\ndefindex %i"
 	... "\ncustomkill %i"
 	... "\ndeathflags %i"
-	... "\npenetrated %i\n"
+	... "\npenetrated %i"
 	... "\ncrit type %i [%s]"
 	... "\nMidair %s"
-	... "\nPoints %i"
+	... "\nPoints %i\n"
 	, Player[client].Playername, client
 	, Player[victim].Playername, victim
 	, Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist
@@ -848,11 +849,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	if(AssistedKill(assist, client, victim)) {
 		if(dominated_assister) {
 			Session[assist].Dominations++;
-			SQL.QueryEx(DBQuery_Callback, "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
+			SQL.QueryEx(DBQuery_Callback, "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID = %i", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 		}
 		if(revenge_assister) {
 			Session[assist].Revenges++;
-			SQL.QueryEx(DBQuery_Callback, "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
+			SQL.QueryEx(DBQuery_Callback, "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID = %i", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 		}
 	}
 	
@@ -870,7 +871,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	switch(TF2_IsEntityBuilding(inflictor))	{
 		case true: {
 			switch(TF2_GetBuildingType(inflictor)) {
-				case TFBuilding_Dispenser: XStats_DebugText(false, "Building: Dispenser (?!)");
+				case TFBuilding_Dispenser: XStats_DebugText(false, "Building: Dispenser lvl %i (?!)", TF2_GetBuildingLevel(inflictor));
 				case TFBuilding_Sentrygun:	{
 					Session[client].Sentrykills++;
 					len += Format(query[len], sizeof(query)-len, ", SentryKills = SentryKills+1");
@@ -908,7 +909,6 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 					Session[client].Telefrags++;
 					points += TF2_TeleFrag.IntValue;
 					Session[client].AddPoints(TF2_TeleFrag.IntValue);
-					//SQL.QueryEx(DBQuery_Callback, "update `%s` set Telefrags = Telefrags+1 where SteamID='%s' and ServerID='%i'", Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 					len += Format(query[len], sizeof(query)-len, ", Telefrags = Telefrags+1");
 					XStats_DebugText(false, "Telefrag");
 				}

@@ -98,7 +98,7 @@ stock void GetClientPosition(const char[] auth, int[] list) {
 	list[0] = position;
 	list[1] = points;
 	
-	XStats_DebugText(false, "GetClientPosition was fired for \"%s\", returning %i", auth, position);
+	XStats_DebugText(false, "GetClientPosition was fired for \"%s\" (%i pos, %i points)", auth, position, points);
 }
 
 /**
@@ -116,7 +116,7 @@ stock int GetTablePlayerCount() {
 		SQL.Unlock();
 	}
 	
-	XStats_DebugText(false, "GetTablePlayerCount was fired, returning %i", playercount);
+	XStats_DebugText(false, "GetTablePlayerCount was fired (%i)", playercount);
 	return playercount;
 }
 
@@ -648,13 +648,14 @@ stock void RoundStarted() {
 	}
 	
 	switch(Global.WarmupActive) {
-		case true: XStats_DebugText(false, "Warmup Round Started");
+		case true: {
+			XStats_DebugText(false, "Warmup Round Started");
+			if(Global.RoundActive) {
+				CPrintToChatAll("%s %t", Global.Prefix, "Round Start Warmup");
+				return;
+			}
+		}
 		case false: XStats_DebugText(false, "Round Started");
-	}
-	
-	if(Global.RoundActive && Global.WarmupActive) {
-		CPrintToChatAll("%s %t", Global.Prefix, "Round Start Warmup");
-		return;
 	}
 	
 	if(Cvars.DisableAfterWin.BoolValue) {
@@ -678,12 +679,14 @@ stock void RoundEnded()	{
 			
 	switch(Global.WarmupActive)	{
 		case true: XStats_DebugText(false, "Warmup Round Ended");
-		case false: XStats_DebugText(false, "Round Ended");
-	}
-	
-	if(!Global.WarmupActive && Cvars.DisableAfterWin.BoolValue)	{
-		Global.RankActive = false;
-		CPrintToChatAll("%s %t", Global.Prefix, "Round End");
+		case false: {
+			XStats_DebugText(false, "Round Ended");
+			
+			if(Cvars.DisableAfterWin.BoolValue)	{
+				Global.RankActive = false;
+				CPrintToChatAll("%s %t", Global.Prefix, "Round End");
+			}
+		}
 	}
 	
 	if(Cvars.RemoveOldPlayers.IntValue >= 1) RemoveOldConnectedPlayers(Cvars.RemoveOldPlayers.IntValue);
@@ -694,7 +697,7 @@ stock void RoundEnded()	{
 stock Action CheckPlayersPluginStart(Handle timer) {
 	if(!SQL) return Plugin_Handled;
 	
-	XStats_DebugText(false, "//== XStats Debug Log: CheckPlayersPluginStart ==//\n");
+	XStats_DebugText(false, "//===== CheckPlayersPluginStart =====//\n");
 	
 	TargetLoopEx(client) {
 		/* Bots needs a name too, right? */

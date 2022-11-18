@@ -1051,7 +1051,7 @@ public void TF2_OnWaitingForPlayersEnd()	{ WarmupActive = false; }
 stock void TF2_ClientKillVictim(int client, int victim)	{
 	if(IsValidAbuse(client)) return;
 	
-	XStats_DebugText(false, "//== XStats Debug Log: TF2_ClientKillVictim ==//");
+	XStats_DebugText(false, "//===== TF2_ClientKillVictim =====\\");
 	
 	TFClassType type = TF2_GetPlayerClass(victim);
 	if(type < TFClass_Scout) {
