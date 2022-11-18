@@ -141,150 +141,6 @@ stock int GetClientPlayTime(const char[] auth) {
 }
 
 /**
- *	Clears the players sessions.
- *
- *	@param	client	The users index.
- */
-stock void ClearSessions(int client) {
-	/* Core */
-	Session[client].PlayTime = 0;
-	Session[client].Points = 0;
-	Session[client].Kills = 0;
-	Session[client].Deaths = 0;
-	Session[client].Suicides = 0;
-	Session[client].Assists = 0;
-	Session[client].DamageDone = 0;
-	
-	/* Generic */
-	Session[client].Dominations = 0;
-	Session[client].Revenges = 0;
-	Session[client].Airshots = 0;
-	Session[client].Headshots = 0;
-	Session[client].Noscopes = 0;
-	Session[client].Collaterals = 0;
-	Session[client].MidAirKills = 0;
-	Session[client].GrenadeKills = 0;
-	
-	/* TF2 */
-	Session[client].ScoutKills = 0;
-	Session[client].SoldierKills = 0;
-	Session[client].PyroKills = 0;
-	Session[client].DemoKills = 0;
-	Session[client].HeavyKills = 0;
-	Session[client].EngieKills = 0;
-	Session[client].MedicKills = 0;
-	Session[client].SniperKills = 0;
-	Session[client].SpyKills = 0;
-	Session[client].CivilianKills = 0; /* TF2 Classic */
-	
-	Session[client].ScoutDeaths = 0;
-	Session[client].SoldierDeaths = 0;
-	Session[client].PyroDeaths = 0;
-	Session[client].DemoDeaths = 0;
-	Session[client].HeavyDeaths = 0;
-	Session[client].EngieDeaths = 0;
-	Session[client].MedicDeaths = 0;
-	Session[client].SniperDeaths = 0;
-	Session[client].SpyDeaths = 0;
-	Session[client].CivilianDeaths = 0; /* TF2 Classic */
-	
-	Session[client].Backstabs = 0;
-	Session[client].Tauntkills = 0;
-	Session[client].Gibs = 0;
-	Session[client].Deflects = 0;
-	Session[client].Ubercharged = 0;
-	Session[client].SandvichesStolen = 0;
-	Session[client].Coated = 0;
-	Session[client].Extinguished = 0;
-	Session[client].Telefrags = 0;
-	
-	Session[client].Sentrykills = 0;
-	Session[client].MiniSentrykills = 0;
-	Session[client].SentryLVL1Kills = 0;
-	Session[client].SentryLVL2Kills = 0;
-	Session[client].SentryLVL3Kills = 0;
-	
-	Session[client].MiniCritkills = 0;
-	Session[client].Critkills = 0;
-	
-	Session[client].PointsCaptured = 0;
-	Session[client].PointsDefended = 0;
-	
-	Session[client].FlagsStolen = 0;
-	Session[client].FlagsPickedUp = 0;
-	Session[client].FlagsCaptured = 0;
-	Session[client].FlagsDefended = 0;
-	Session[client].FlagsDropped = 0;
-	
-	Session[client].PassBallsGotten = 0;
-	Session[client].PassBallsScored = 0;
-	Session[client].PassBallsDropped = 0;
-	Session[client].PassBallsCatched = 0;
-	Session[client].PassBallsStolen = 0;
-	Session[client].PassBallsBlocked = 0;
-	
-	Session[client].BuildingsBuilt = 0;
-	Session[client].SentryGunsBuilt = 0;
-	Session[client].DispensersBuilt = 0;
-	Session[client].MiniSentryGunsBuilt = 0;
-	Session[client].TeleporterEntrancesBuilt = 0;
-	Session[client].TeleporterExitsBuilt = 0;
-	Session[client].TeleportersBuilt = 0;
-	Session[client].SappersPlaced = 0;
-	
-	Session[client].TotalBuildingsDestroyed = 0;
-	Session[client].BuildingsDestroyed = 0;
-	Session[client].SentryGunsDestroyed = 0;
-	Session[client].DispensersDestroyed = 0;
-	Session[client].MiniSentryGunsDestroyed = 0;
-	Session[client].TeleporterEntrancesDestroyed = 0;
-	Session[client].TeleporterExitsDestroyed = 0;
-	Session[client].TeleportersDestroyed = 0;
-	Session[client].SappersDestroyed = 0;
-	
-	Session[client].PlayerTeleported = 0;
-	Session[client].PlayersTeleported = 0;
-	
-	Session[client].StunnedPlayers = 0;
-	Session[client].MoonShotStunnedPlayers = 0;
-	
-	Session[client].KilledHHH = 0;
-	Session[client].KilledMonoculus = 0;
-	Session[client].KilledMerasmus = 0;
-	Session[client].KilledSkeletonKing = 0;
-	
-	Session[client].StunnedMonoculus = 0;
-	Session[client].StunnedMerasmus = 0;
-	
-	Session[client].MadMilked = 0;
-	Session[client].Jarated = 0;
-	Session[client].Ignited = 0;
-	
-	/* TF2 MvM */
-	Session[client].TanksDestroyed = 0;
-	Session[client].SentryBustersKilled = 0;
-	Session[client].BombsResetted = 0;
-	
-	/* CS:GO */
-	Session[client].BlindKills = 0;
-	Session[client].SmokeKills = 0;
-	Session[client].Wipes = 0;
-	Session[client].ChickenKills = 0;
-	
-	/* Counter-Strike Overall */
-	Session[client].MVPs = 0;
-	Session[client].BombsPlanted = 0;
-	Session[client].BombsDefused = 0;
-	Session[client].BombsExploded = 0;
-	Session[client].BombKills = 0;
-	Session[client].MoneySpent = 0;
-	Session[client].FlashedOpponents = 0;
-	Session[client].KnifeKills = 0;
-	Session[client].HostagesRescued = 0;
-	Session[client].HostagesKilled = 0;
-}
-
-/**
  *	Returns the Ratio. This desperately needs to be completely recoded with working 1.00 ratio.
  *
  *	@param	count1	The first count to check.
@@ -697,17 +553,26 @@ stock void RoundEnded()	{
 stock Action CheckPlayersPluginStart(Handle timer) {
 	if(!SQL) return Plugin_Handled;
 	
-	XStats_DebugText(false, "//===== CheckPlayersPluginStart =====//\n");
+	int[] l = new int[MaxPlayers+1];
+	int x = 0;
 	
 	TargetLoopEx(client) {
 		/* Bots needs a name too, right? */
-		if(Tklib_IsValidClient(client, false, false, false)) {
-			GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
-			GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
+		if(Tklib_IsValidClient(client)) {
+			if(IsFakeClient(client)) {
+				GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
+				GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
+				continue;
+			}
 		}
 		
-		//Only gather the steamid from the players
-		if(!Tklib_IsValidClient(client, true, false, false)) continue;
+		if(Tklib_IsValidClient(client, true, false, false)) l[x++] = client;
+	}
+	
+	if(x > 0) XStats_DebugText(false, "//===== CheckPlayersPluginStart =====\\");
+	
+	for(int i = 0; i < x; i++) {
+		int client = l[i];
 		
 		GetClientAuth(client, Player[client].SteamID, sizeof(Player[].SteamID));
 		GetClientIP(client, Player[client].IP, sizeof(Player[].IP));
@@ -715,18 +580,21 @@ stock Action CheckPlayersPluginStart(Handle timer) {
 		GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 		if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Format(Player[client].Country, sizeof(Player[].Country), "Unknown Country");
 		
-		SQL.QueryEx2(DBQuery_CheckPlayer, "select * from `%s` where SteamID = '%s' and ServerID='%i'",
+		SQL.QueryEx2(DBQuery_CheckPlayer, "select * from `%s` where SteamID = '%s' and ServerID = %i",
 		client, Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+		
+		SQL.QueryEx2(DBQuery_CheckWeapon, "select * from `%s` where SteamID = '%s' and ServerID = %i",
+		client, Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
 	}
 	
 	return Plugin_Handled;
 }
 
-void DBQuery_CheckPlayer(DatabaseEx db, DBResultSet r, const char[] error, int client) {
-	switch(r != null && r.RowCount != 0) {
+stock void DBQuery_CheckPlayer(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+	switch(r != null && r.RowCount > 0) {
 		// Player exists
 		case true: {
-			XStats_DebugText(false, "Found player %s in \"%s\" at ServerID %i, initializing forwards OnClientPutInServer..",
+			XStats_DebugText(false, "[XStats:CheckPlayersPluginStart::CheckPlayer] Found player %s in playerlist table %s at ServerID %i, initializing forward OnClientPutInServer..",
 			Player[client].Playername, Global.playerlist, Cvars.ServerID.IntValue);
 			
 			OnClientPutInServer(client);
@@ -734,10 +602,13 @@ void DBQuery_CheckPlayer(DatabaseEx db, DBResultSet r, const char[] error, int c
 		
 		// Player wasn't found.
 		case false: {
-			XStats_DebugText(false, "Failed to find player %s on playerlist table, inserting new query directly onto database.", Player[client].Playername);
+			XStats_DebugText(false, "[XStats:CheckPlayersPluginStart::CheckPlayer] Failed to find player %s on playerlist table %s at ServerID %i, inserting new query onto database."
+			, Player[client].Playername
+			, Global.playerlist
+			, Cvars.ServerID.IntValue);
 			
-			db.QueryEx2(DBQuery_CheckPlayer_Callback, "insert into `%s` (SteamID, IPAddress, ServerID) values ('%s', '%s', '%i')",
-			client
+			db.QueryEx2(DBQuery_CheckPlayer_Callback, "insert into `%s` (SteamID, IPAddress, ServerID) values ('%s', '%s', %i)"
+			, client
 			, Global.playerlist
 			, Player[client].SteamID
 			, Player[client].IP
@@ -746,10 +617,38 @@ void DBQuery_CheckPlayer(DatabaseEx db, DBResultSet r, const char[] error, int c
 	}
 }
 
-void DBQuery_CheckPlayer_Callback(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+stock void DBQuery_CheckPlayer_Callback(DatabaseEx db, DBResultSet r, const char[] error, int client) {
 	switch(r != null) {
 		case true: OnClientPutInServer(client);
-		case false: XStats_DebugText(false, "Failed inserting %s into player table %s (%s)", Player[client].Playername, Global.playerlist, error);
+		case false: XStats_DebugText(false, "[XStats:CheckPlayersPluginStart::CheckPlayer] Failed inserting %s into player table %s at ServerID %i (%s)"
+		, Player[client].Playername
+		, Global.playerlist
+		, Cvars.ServerID.IntValue
+		, error);
+	}
+}
+
+stock void DBQuery_CheckWeapon(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+	if(!(r != null && r.RowCount > 0)) {
+		XStats_DebugText(false, "[XStats:CheckPlayersPluginStart::CheckWeapon] Failed to find player %s on weapons table %s at ServerID %i, inserting new query onto database."
+		, Player[client].Playername
+		, Global.weapons
+		, Cvars.ServerID.IntValue);
+		
+		db.QueryEx(DBQuery_CheckWeapon_Callback, "insert into `%s` (SteamID, ServerID) values ('%s', %i)"
+		, Global.weapons
+		, Player[client].SteamID
+		, Cvars.ServerID.IntValue);
+	}
+}
+
+stock void DBQuery_CheckWeapon_Callback(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+	if(!r) {
+		XStats_DebugText(false, "[XStats:CheckPlayersPluginStart::CheckWeapon] Failed inserting %s into weapons table %s at ServerID %i (%s)"
+		, Player[client].Playername
+		, Global.weapons
+		, Cvars.ServerID.IntValue
+		, error);
 	}
 }
 

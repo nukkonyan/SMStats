@@ -46,4 +46,4 @@ Team Fortress 2.
 ```
 
 ## Info
-Webpanel is in the works, being developed by [Teamkiller324](https://steamcommunity.com/id/Teamkiller324) and [Antonio](https://steamcommunity.com/profiles/76561198156703435)
+Webpanel is yet to be made

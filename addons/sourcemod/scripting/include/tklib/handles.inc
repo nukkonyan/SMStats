@@ -1039,7 +1039,7 @@ stock ConVar CreateConVarBool(const char[] name, bool defaultValue, const char[]
 stock ConVar CreateConVarInt(const char[] name, int defaultValue, const char[] description, int flags=0, bool hasMin=false, int min=0, bool hasMax=false, int max=0) {
 	char index[16];
 	IntToString(defaultValue, index, sizeof(index));
-	return CreateConVar(name, index, description, flags, true, float(min), true, float(max));
+	return CreateConVar(name, index, description, flags, hasMin, IntToFloat(min), hasMax, IntToFloat(max));
 }
 
 /**

@@ -350,13 +350,6 @@ stock void GetNameFromColourTag(const char[] source, char[] colour, int maxlen) 
 }
 
 /**
- *	Converts an integer into a floating point.
- *
- *	@param	value	The integer to convert.
- */
-stock float IntToFloat(int value) { char str[16]; IntToString(value, str, sizeof(str)); return StringToFloat(str); }
-
-/**
  *	Returns the servers ip.
  *
  *	@param	ip		The servers ip address.
@@ -474,3 +467,10 @@ stock any GetRandomAny(any any1, any any2) { return GetRandomInt(any1, any2); }
 stock bool IsUpdaterAvailable()	{ return LibraryExists("updater"); }
 
 #endif
+
+/**
+ *	Converts an integer into a floating point.
+ *
+ *	@param	value	The integer to convert.
+ */
+stock float IntToFloat(int value) { char str[16]; IntToString(value, str, sizeof(str)); return StringToFloat(str); }

@@ -39,11 +39,13 @@ public void OnClientAuthorized(int client, const char[] auth) {
 	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Player[client].Country = "unknown country";
 	
 	SQL.QueryEx2(DBQuery_OnClientAuthorized, "select * from `%s` where SteamID = '%s' and ServerID = %i", client, Global.playerlist, auth, Cvars.ServerID.IntValue);
+	
+	SQL.QueryEx2(DBQuery_OnClientAuthorized_2, "select * from `%s` where SteamID = '%s' and ServerID = %i", client, Global.weapons, auth, Cvars.ServerID.IntValue);
 }
 
 void DBQuery_OnClientAuthorized(DatabaseEx db, DBResultSet r, const char[] error, int client) {
 	if(!db) {
-		XStats_DebugText(false, "Tried retrieving player table but database connection is invalid!", error);
+		XStats_DebugText(false, "[XStats::OnClientAuthorized()] Tried retrieving player table but database connection is invalid!", error);
 		return;
 	}
 	
@@ -58,7 +60,7 @@ void DBQuery_OnClientAuthorized(DatabaseEx db, DBResultSet r, const char[] error
 			, Cvars.ServerID.IntValue);
 			
 			// Avoid showing ip due to privacy
-			XStats_DebugText(false, "Updating table \"%s\"\nSteamID \"%s\" (ServerID %i)",
+			XStats_DebugText(false, "[XStats::OnClientAuthorized()] Updating table %s (SteamID '%s', ServerID %i)",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		}
 		// Player wasn't found, adding..
@@ -70,7 +72,7 @@ void DBQuery_OnClientAuthorized(DatabaseEx db, DBResultSet r, const char[] error
 			, Player[client].SteamID
 			, Cvars.ServerID.IntValue);
 			
-			XStats_DebugText(false, "Inserting into table \"%s\" \nSteamID \"%s\" (ServerID %i)",
+			XStats_DebugText(false, "[XStats::OnClientAuthorized()] Inserting into playerlist table %s (SteamID '%s', ServerID %i)",
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		}
 	}
@@ -78,7 +80,29 @@ void DBQuery_OnClientAuthorized(DatabaseEx db, DBResultSet r, const char[] error
 
 void DBQuery_OnClientAuthorized_Callback(DatabaseEx db, DBResultSet r, const char[] error, bool u) {
 	char T[][] = {"Update","Inserting"},I[][] = {"on","into"};
-	if(!r) XStats_DebugText(true, "[XStats::OnClientAuthorized()] %s player table %s \"%s\" failed! (%s)", T[u], I[u], Global.playerlist, error);
+	if(!r) XStats_DebugText(true, "[XStats::OnClientAuthorized()] %s playerlist table %s \"%s\" failed! (%s)", T[u], I[u], Global.playerlist, error);
+}
+
+void DBQuery_OnClientAuthorized_2(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+	if(!db) {
+		XStats_DebugText(false, "[XStats::OnClientAuthorized()] Tried retrieving weapons table but database connection is invalid!", error);
+		return;
+	}
+	
+	if(!r) {
+		// Player was found
+		db.QueryEx(DBQuery_OnClientAuthorized_2_Callback, "insert into `%s` (SteamID, ServerID) values ('%s', '%i')"
+		, Global.weapons
+		, Player[client].SteamID
+		, Cvars.ServerID.IntValue);
+		
+		XStats_DebugText(false, "[XStats::OnClientAuthorized()] Inserting into weapons table %s (SteamID '%s', ServerID %i)",
+		Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
+	}
+}
+
+void DBQuery_OnClientAuthorized_2_Callback(DatabaseEx db, DBResultSet r, const char[] error) {
+	if(!r) XStats_DebugText(true, "[XStats::OnClientAuthorized()] Inserting weapons table %s %s failed! (%s)", Global.weapons, error);
 }
 
 public void OnClientPutInServer(int client) {
@@ -89,7 +113,8 @@ public void OnClientPutInServer(int client) {
 	Player[client].InvCallback = new StringMapEx();
 	
 	/* Session */
-	ClearSessions(client);
+	Session[client].Clear();
+	TotalStats[client].Clear();
 	
 	/* Experimental Assister */
 	SDKHook(client, SDKHook_OnTakeDamage, Assister_OnTakeDamage);
@@ -107,9 +132,20 @@ public void OnClientPutInServer(int client) {
 	Player[client].UserID = GetClientUserId(client);
 	Player[client].AccountID = GetSteamAccountID(client);
 	
-	CPrintToChatAll("%s %t", Global.Prefix, "Player Connected", Player[client].Name, Player[client].Position, Player[client].Points, Player[client].Country);
-	XStats_DebugText(false, "%s (Pos #%i, %i points) has connected from %s",
-	Player[client].Playername, Player[client].Position, Player[client].Points, Player[client].Country);
+	CPrintToChatAll("%s %t"
+	, Global.Prefix
+	, "Player Connected"
+	, Player[client].Name
+	, Player[client].Position
+	, Player[client].Points
+	, Player[client].Country);
+	
+	XStats_DebugText(false
+	, "%s (Pos #%i, %i points) has connected from %s"
+	, Player[client].Playername
+	, Player[client].Position
+	, Player[client].Points
+	, Player[client].Country);
 	
 	if(Player[client].Position <= 10 && IsValidString(Sound[0].path)) EmitSoundToAll(Sound[0].path);
 	else if(IsValidString(Sound[1].path)) EmitSoundToAll(Sound[1].path);
@@ -138,7 +174,7 @@ Action IntervalPlayTimer(Handle timer, int client) {
 	, Global.playerlist
 	, Player[client].SteamID
 	, Cvars.ServerID.IntValue);
-	XStats_DebugText(false, "Updating playtime by adding additional minute for %s", Player[client].Playername);
+	XStats_DebugText(false, "Updating playtime %s with an additional minute", Player[client].Playername);
 	return Plugin_Handled;
 }
 

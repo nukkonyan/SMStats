@@ -71,7 +71,9 @@ public void OnPluginStart()	{
 	LoadTranslations("xstats.phrases");
 	
 	CPrintToChatAll("{orange}XStats version {lightgreen}%s {orange}loaded", Version);
-	
-	/* Incase the plugin were launched manually or perhaps started (?)*/
+}
+
+public void OnAllPluginsLoaded() {
+	/* Incase the plugin were launched manually or perhaps started or updated (?)*/
 	CreateTimer(2.5, CheckPlayersPluginStart);
 }

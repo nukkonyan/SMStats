@@ -19,21 +19,23 @@ stock void TotalStatistics_TF2(int client)	{
 	... "Gibs,"
 	... "CritKills,"
 	... "MiniCritKills,"
-	... "TauntKills,"
+	... "Tauntkills,"
 	... "TeleFrags,"
-	... "TotalBuildingsBuilt,"
+	... "BuildingsBuilt,"
 	... "MiniSentryGunsBuilt,"
 	... "SentryGunsBuilt,"
 	... "DispensersBuilt,"
 	... "TeleporterExitsBuilt,"
 	... "TeleporterEntrancesBuilt,"
+	... "TeleportersBuilt,"
 	... "SappersPlaced,"
-	... "TotalBuildingsDestroyed,"
+	... "BuildingsDestroyed,"
 	... "MiniSentryGunsDestroyed,"
 	... "SentryGunsDestroyed,"
 	... "DispensersDestroyed,"
 	... "TeleporterExitsDestroyed,"
 	... "TeleporterEntrancesDestroyed,"
+	... "TeleportersDestroyed,"
 	... "SappersDestroyed,"
 	... "Coated,"
 	... "Jarated,"
@@ -47,15 +49,15 @@ stock void TotalStatistics_TF2(int client)	{
 	... "FlagsDefended,"
 	... "Ubercharged,"
 	... "SandvichesStolen,"
-	... "PlayerTeleported,"
-	... "TotalPlayersTeleported,"
+	... "Teleported,"
+	... "PlayersTeleported,"
 	... "StunnedPlayers,"
 	... "MoonShotStunnedPlayers,"
-	... "TotalMonoculusStunned,"
-	... "TotalMonoculusKilled,"
-	... "TotalMerasmusStunned,"
-	... "TotalMerasmusKilled,"
-	... "TotalKilledHHH,"
+	... "MonoculusStunned,"
+	... "MonoculusKilled,"
+	... "MerasmusStunned,"
+	... "MerasmusKilled,"
+	... "KilledHHH,"
 	... "TanksDestroyed,"
 	... "SentryBustersKilled,"
 	... "PassBallsGotten,"
@@ -110,43 +112,45 @@ void DBQuery_TotalStatistics_TF2(DatabaseEx database, DBResultSet results, const
 	TotalStats[client].DispensersBuilt = results.FetchInt(23);
 	TotalStats[client].TeleporterExitsBuilt = results.FetchInt(24);
 	TotalStats[client].TeleporterEntrancesBuilt = results.FetchInt(25);
-	TotalStats[client].SappersPlaced = results.FetchInt(26);
-	TotalStats[client].BuildingsDestroyed = results.FetchInt(27);
-	TotalStats[client].MiniSentryGunsDestroyed = results.FetchInt(28);
-	TotalStats[client].SentryGunsDestroyed = results.FetchInt(29);
-	TotalStats[client].DispensersDestroyed = results.FetchInt(30);
-	TotalStats[client].TeleporterExitsDestroyed = results.FetchInt(31);
-	TotalStats[client].TeleporterEntrancesDestroyed = results.FetchInt(32);
-	TotalStats[client].SappersDestroyed = results.FetchInt(33);
-	TotalStats[client].Coated = results.FetchInt(34);
-	TotalStats[client].Jarated = results.FetchInt(35);
-	TotalStats[client].MadMilked = results.FetchInt(36);
-	TotalStats[client].Extinguished = results.FetchInt(37);
-	TotalStats[client].PointsCaptured = results.FetchInt(38);
-	TotalStats[client].PointsDefended = results.FetchInt(39);
-	TotalStats[client].FlagsPickedUp = results.FetchInt(40);
-	TotalStats[client].FlagsCaptured = results.FetchInt(41);
-	TotalStats[client].FlagsStolen = results.FetchInt(42);
-	TotalStats[client].FlagsDefended = results.FetchInt(43);
-	TotalStats[client].Ubercharged = results.FetchInt(44);
-	TotalStats[client].SandvichesStolen = results.FetchInt(45);
-	TotalStats[client].PlayerTeleported = results.FetchInt(46);
-	TotalStats[client].PlayersTeleported = results.FetchInt(47);
-	TotalStats[client].StunnedPlayers = results.FetchInt(48);
-	TotalStats[client].MoonShotStunnedPlayers = results.FetchInt(49);
-	TotalStats[client].StunnedMonoculus = results.FetchInt(50);
-	TotalStats[client].KilledMonoculus = results.FetchInt(51);
-	TotalStats[client].StunnedMerasmus = results.FetchInt(52);
-	TotalStats[client].KilledMerasmus = results.FetchInt(53);
-	TotalStats[client].KilledHHH = results.FetchInt(54);
-	TotalStats[client].TanksDestroyed = results.FetchInt(55);
-	TotalStats[client].SentryBustersKilled = results.FetchInt(56);
-	TotalStats[client].PassBallsGotten = results.FetchInt(57);
-	TotalStats[client].PassBallsScored = results.FetchInt(58);
-	TotalStats[client].PassBallsDropped = results.FetchInt(59);
-	TotalStats[client].PassBallsCatched = results.FetchInt(60);
-	TotalStats[client].PassBallsStolen = results.FetchInt(61);
-	TotalStats[client].PassBallsBlocked = results.FetchInt(62);
+	TotalStats[client].TeleportersBuilt = results.FetchInt(26);
+	TotalStats[client].SappersPlaced = results.FetchInt(27);
+	TotalStats[client].BuildingsDestroyed = results.FetchInt(28);
+	TotalStats[client].MiniSentryGunsDestroyed = results.FetchInt(29);
+	TotalStats[client].SentryGunsDestroyed = results.FetchInt(30);
+	TotalStats[client].DispensersDestroyed = results.FetchInt(31);
+	TotalStats[client].TeleporterExitsDestroyed = results.FetchInt(32);
+	TotalStats[client].TeleporterEntrancesDestroyed = results.FetchInt(33);
+	TotalStats[client].TeleportersDestroyed = results.FetchInt(34);
+	TotalStats[client].SappersDestroyed = results.FetchInt(35);
+	TotalStats[client].Coated = results.FetchInt(36);
+	TotalStats[client].Jarated = results.FetchInt(37);
+	TotalStats[client].MadMilked = results.FetchInt(38);
+	TotalStats[client].Extinguished = results.FetchInt(39);
+	TotalStats[client].PointsCaptured = results.FetchInt(40);
+	TotalStats[client].PointsDefended = results.FetchInt(41);
+	TotalStats[client].FlagsPickedUp = results.FetchInt(42);
+	TotalStats[client].FlagsCaptured = results.FetchInt(43);
+	TotalStats[client].FlagsStolen = results.FetchInt(44);
+	TotalStats[client].FlagsDefended = results.FetchInt(45);
+	TotalStats[client].Ubercharged = results.FetchInt(46);
+	TotalStats[client].SandvichesStolen = results.FetchInt(47);
+	TotalStats[client].PlayerTeleported = results.FetchInt(48);
+	TotalStats[client].PlayersTeleported = results.FetchInt(49);
+	TotalStats[client].StunnedPlayers = results.FetchInt(50);
+	TotalStats[client].MoonShotStunnedPlayers = results.FetchInt(51);
+	TotalStats[client].StunnedMonoculus = results.FetchInt(52);
+	TotalStats[client].KilledMonoculus = results.FetchInt(53);
+	TotalStats[client].StunnedMerasmus = results.FetchInt(54);
+	TotalStats[client].KilledMerasmus = results.FetchInt(55);
+	TotalStats[client].KilledHHH = results.FetchInt(56);
+	TotalStats[client].TanksDestroyed = results.FetchInt(57);
+	TotalStats[client].SentryBustersKilled = results.FetchInt(58);
+	TotalStats[client].PassBallsGotten = results.FetchInt(59);
+	TotalStats[client].PassBallsScored = results.FetchInt(60);
+	TotalStats[client].PassBallsDropped = results.FetchInt(61);
+	TotalStats[client].PassBallsCatched = results.FetchInt(62);
+	TotalStats[client].PassBallsStolen = results.FetchInt(63);
+	TotalStats[client].PassBallsBlocked = results.FetchInt(64);
 	
 	RankPanel_Total_TF2(client, 1);
 }
@@ -194,12 +198,14 @@ void RankPanel_Total_TF2(int client, int page) {
 			panel.DrawText("%i Dispensers built", TotalStats[client].DispensersBuilt);
 			panel.DrawText("%i Teleporter exits built", TotalStats[client].TeleporterExitsBuilt);
 			panel.DrawText("%i Teleporter entrances built", TotalStats[client].TeleporterEntrancesBuilt);
+			panel.DrawText("%i Teleporters built", TotalStats[client].TeleportersBuilt);
 			panel.DrawText("%i Sappers placed", TotalStats[client].SappersPlaced);
 			panel.DrawText("%i Mini-Sentryguns destroyed", TotalStats[client].MiniSentryGunsBuilt);
 			panel.DrawText("%i Sentryguns destroyed", TotalStats[client].SentryGunsDestroyed);
 			panel.DrawText("%i Dispensers destroyed", TotalStats[client].DispensersBuilt);
 			panel.DrawText("%i Teleporter exits destroyed", TotalStats[client].TeleporterExitsDestroyed);
 			panel.DrawText("%i Teleporter entrances destroyed", TotalStats[client].TeleporterEntrancesDestroyed);
+			panel.DrawText("%i Teleporters destroyed", TotalStats[client].TeleportersDestroyed);
 			panel.DrawText("%i Sappers destroyed", TotalStats[client].SappersDestroyed);
 			panel.DrawText("%i Coated", TotalStats[client].Coated);
 			panel.DrawText("%i Jarated", TotalStats[client].Jarated);
