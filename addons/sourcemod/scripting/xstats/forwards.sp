@@ -127,8 +127,6 @@ Action IntervalPlayTimer(Handle timer, int client) {
 		return Plugin_Handled;
 	}
 	
-	XStats_DebugText(false, "//===== Updating players total ingame minutes =====//");
-	
 	if(!SQL) {
 		XStats_DebugText(false, "Tried updating player ingame total for %s time but database is invalid (Is the database actually connected?), ignoring..", Player[client].Playername);
 		return Plugin_Handled;
@@ -140,7 +138,7 @@ Action IntervalPlayTimer(Handle timer, int client) {
 	, Global.playerlist
 	, Player[client].SteamID
 	, Cvars.ServerID.IntValue);
-	XStats_DebugText(false, "Updating playtime by adding additional minute for %s [%i Points]", Player[client].Playername, Player[client].Points);
+	XStats_DebugText(false, "Updating playtime by adding additional minute for %s", Player[client].Playername);
 	return Plugin_Handled;
 }
 
@@ -158,7 +156,7 @@ public void OnMapStart() {
 	
 	GetCurrentMap(Global.CurrentMap, sizeof(Global.CurrentMap));	
 	CreateTimer(60.0, MapLogTimer, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
-	XStats_DebugText(false, "//===== Map Log =====//" ... "\nCreating a minute long repeating timer for map \"%s\"\n", Global.CurrentMap);
+	XStats_DebugText(false, "[XStats:Map Log] Creating a minute long repeating timer for map \"%s\"\n", Global.CurrentMap);
 }
 
 Action MapLogTimer(Handle timer) {
@@ -175,7 +173,7 @@ Action MapLogTimer(Handle timer) {
 	/* Check if map exists in database table */
 	SQL.QueryEx(DBQuery_MapLog_1, "select '%s' from `%s`", Global.CurrentMap, Global.maps_log);
 	
-	XStats_DebugText(false, "//===== Map Log =====//" ... "\nChecking if map \"%s\" exists on database table \"%s\"\n", Global.CurrentMap, Global.maps_log);
+	XStats_DebugText(false, "[XStats:Map Log] Checking if map \"%s\" exists on database table \"%s\"\n", Global.CurrentMap, Global.maps_log);
 	return Plugin_Handled;
 }
 
@@ -188,12 +186,12 @@ void DBQuery_MapLog_1(DatabaseEx db, DBResultSet r, const char[] error) {
 			, Global.CurrentMap
 			, Cvars.ServerID.IntValue);
 			
-			XStats_DebugText(false, "Map was found, updating the playtime for \"%s\" by adding additional minute on database table \"%s\"\n", Global.CurrentMap, Global.maps_log);
+			XStats_DebugText(false, "[XStats:Map Log] Map was found, updating the playtime for \"%s\" by adding additional minute on database table \"%s\"\n", Global.CurrentMap, Global.maps_log);
 		}
 		/* Map was not found, lets add it */
 		case false: {
 			db.QueryEx(DBQuery_MapLog_2, "insert into `%s` (MapName) values ('%s')", Global.maps_log, Global.CurrentMap);
-			XStats_DebugText(false, "Map \"%s\" not found on database, inserting it..\n", Global.CurrentMap);
+			XStats_DebugText(false, "[XStats:Map Log] Map \"%s\" not found on database, inserting it..\n", Global.CurrentMap);
 		}
 	}
 }
@@ -205,14 +203,14 @@ void DBQuery_MapLog_2(DatabaseEx db, DBResultSet r, const char[] error) {
 			, Global.maps_log
 			, Global.CurrentMap
 			, Cvars.ServerID.IntValue);
-			XStats_DebugText(false, "Updating the playtime on the added map by adding additional minute\n");
+			XStats_DebugText(false, "[XStats:Map Log] Updating the playtime on the added map by adding additional minute\n");
 		}
-		case false: XStats_DebugText(true, "Map Log Updater failed inserting! (%s)", error);
+		case false: XStats_DebugText(true, "[XStats:Map Log] Map Log Updater failed inserting! (%s)", error);
 	}
 }
 
 void DBQuery_MapLog_3(DatabaseEx db, DBResultSet r, const char[] error) {
-	if(!r) XStats_DebugText(true, "Map Log Updater failed updating! (%s)", error);
+	if(!r) XStats_DebugText(true, "[XStats:Map Log] Map Log Updater failed updating! (%s)", error);
 }
 
 public void OnEntityCreated(int entity, const char[] classname) { OnEntityCreated_CounterStrike(entity, classname); }
