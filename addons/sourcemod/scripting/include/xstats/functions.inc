@@ -165,8 +165,13 @@ enum struct XStatsSession {
 	int Coated;
 	int Extinguished;
 	int Telefrags;
+	
 	int Sentrykills;
 	int MiniSentrykills;
+	int SentryLVL1Kills;
+	int SentryLVL2Kills;
+	int SentryLVL3Kills;
+	
 	int MiniCritkills;
 	int Critkills;
 	
@@ -192,7 +197,9 @@ enum struct XStatsSession {
 	int MiniSentryGunsBuilt;
 	int TeleporterEntrancesBuilt;
 	int TeleporterExitsBuilt;
+	int TeleportersBuilt;
 	int SappersPlaced;
+	
 	int TotalBuildingsDestroyed;
 	int BuildingsDestroyed;
 	int SentryGunsDestroyed;
@@ -200,6 +207,7 @@ enum struct XStatsSession {
 	int MiniSentryGunsDestroyed;
 	int TeleporterEntrancesDestroyed;
 	int TeleporterExitsDestroyed;
+	int TeleportersDestroyed;
 	int SappersDestroyed;
 	
 	int PlayerTeleported;
@@ -322,11 +330,8 @@ enum struct XStatsCvars {
 	ConVar Weapon[MaxTF2WeaponDefinitionIndex+1000]; //Temporary
 	//ArrayList Weapons;
 	
-	void CreateTF2Weapon(int defindex, const char[] cvarname, int value, const char[] description)
+	void CreateTF2Weapon(int defindex, const char[] cvarname, int points, const char[] description)
 	{
-		char dummy[16];
-		IntToString(value, dummy, sizeof(dummy));
-		
 		int maxlen = StrLen(description)+96;
 		char[] desc = new char[maxlen];
 		Format(desc, maxlen, "XStats: TF2 - Points given when killing with %s.", desc);
@@ -334,31 +339,25 @@ enum struct XStatsCvars {
 		//I use constructed cvar instead of ArrayList or StringMap due to errors about invalid indexes.
 		//ConVar cvar = CreateConVar(cvarname, dummy, description, _, true);
 		//this.Weapons.Set(defindex, cvar);
-		this.Weapon[defindex] = CreateConVar(cvarname, dummy, desc, _, true);
+		this.Weapon[defindex] = CreateConVarInt(cvarname, points, desc, _, true);
 	}
 	
-	void CreateCSSWeapon(int defindex, const char[] cvarname, int value, char[] description)
+	void CreateCSSWeapon(int defindex, const char[] cvarname, int points, char[] description)
 	{
-		char dummy[16];
-		IntToString(value, dummy, sizeof(dummy));
-		
 		int maxlen = StrLen(description)+96;
 		char[] desc = new char[maxlen];
 		Format(desc, maxlen, "XStats: CSS - Points given when killing with %s.", desc);
 		
-		this.Weapon[defindex] = CreateConVar(cvarname, dummy, desc, _, true);
+		this.Weapon[defindex] = CreateConVarInt(cvarname, points, desc, _, true);
 	}
 	
-	void CreateCSGOWeapon(int defindex, const char[] cvarname, int value, char[] description)
+	void CreateCSGOWeapon(int defindex, const char[] cvarname, int points, char[] description)
 	{
-		char dummy[16];
-		IntToString(value, dummy, sizeof(dummy));
-		
 		int maxlen = StrLen(description)+96;
 		char[] desc = new char[maxlen];
 		Format(desc, maxlen, "XStats: CS:GO - Points given when killing with %s.", desc);
 		
-		this.Weapon[defindex] = CreateConVar(cvarname, dummy, desc, _, true);
+		this.Weapon[defindex] = CreateConVarInt(cvarname, points, desc, _, true);
 	}
 	
 	void SameWeapon(int defindex1, int defindex2)

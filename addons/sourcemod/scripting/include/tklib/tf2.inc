@@ -557,6 +557,8 @@ enum TFFlag {
 	TFFlag_Carrier = 5
 }
 
+const int MaxTF2TFFlags = 6;
+
 //TF Slots
 enum TFSlot {
 	TFSlot_Invalid = -1,
@@ -573,11 +575,16 @@ enum TFSlot {
 	TFSlot_Slot11 = 10
 }
 
+const int MaxTF2Slots = 5;
+const int MaxTF2SlotsEx = 11;
+
 enum TFCritType {
 	TFCritType_None = 0,
 	TFCritType_Minicrit = 1,
 	TFCritType_Crit = 2
 }
+
+const int MaxTF2CritTypes = 3;
 
 enum TFBuilding	{
 	TFBuilding_Invalid = -1,
@@ -588,6 +595,8 @@ enum TFBuilding	{
 	TFBuilding_MiniSentry = 4,
 	TFBuilding_Sapper = 5
 }
+
+const int MaxTF2Buildings = 6;
 
 enum TFQuality {
 	TFQuality_Invalid = -1,
@@ -609,6 +618,8 @@ enum TFQuality {
 	TFQuality_Skins = 15
 }
 
+const int MaxTF2Qualities = 16;
+
 /* Look up "item_found" event */
 enum TFMethod {
 	TFFound_Achieved = -1,
@@ -622,6 +633,8 @@ enum TFMethod {
 	TFFound_WrappedGift = 10
 }
 
+const int MaxTF2Methods = 11;
+
 enum TFGameType	{
 	TFGameType_Unknown = 0,
 	TFGameType_CTF = 1,
@@ -633,12 +646,16 @@ enum TFGameType	{
 	TFGameType_PassBall = 7
 }
 
+const int MaxTF2GameTypes = 8;
+
 /* See event "halloween_boss_killed" for more info */
 enum {
 	TFBoss_Killed_HHH = 1,
 	TFBoss_Killed_Monoculus = 2,
 	TFBoss_Killed_Merasmus = 3
 }
+
+const int MaxTF2TFBosses = 4;
 
 // Achievement id's
 enum {
@@ -869,6 +886,8 @@ enum {
 	TF2Attr_Festivized = 2053,
 	TF2Attr_ItemDropWave = 3018,
 }
+
+const int MaxTF2Attributes = 3019;
 
 #define	TFTeam(%1) view_as<TFTeam>(%1)
 #define	TFFlag(%1) view_as<TFFlag>(%1)

@@ -1013,16 +1013,34 @@ methodmap DatabaseEx < Handle {
  *	@param	defaultValue	The default boolean value of new convar.
  *	@param	description		Optional description of the convar.
  *	@param	flags			Optional bitstring of flags determining how the convar should be handled. See FCVAR_* constants for more details.
- *	@param	hasMin			Optional boolean that determines if the convar has a minimum value.
- *	@param	min				Minimum floating point value that the convar can have if hasMin is true.
- *	@param	hasMax			Optional boolean that determines if the convar has a maximum value.
- *	@param	max				Maximum floating point value that the convar can have if hasMax is true.
  *
- *	@return					A handle to the newly created convar. If the convar already exists, a handle to it will still be returned.
+ *	@return	A handle to the newly created convar. If the convar already exists, a handle to it will still be returned.
  *
- *	@error               Convar name is blank or is the same as an existing console command.
+ *	@error	Convar name is blank or is the same as an existing console command.
  */
 stock ConVar CreateConVarBool(const char[] name, bool defaultValue, const char[] description, int flags=0) { return CreateConVar(name, defaultValue ? "1":"0", description, flags, true, 0.0, true, 1.0); }
+
+/**
+ *	Creates a new console integer variable.
+ *
+ *	@param	name			Name of new convar.
+ *	@param	defaultValue	The default integer value of new convar.
+ *	@param	description		Optional description of the convar.
+ *	@param	flags			Optional bitstring of flags determining how the convar should be handled. See FCVAR_* constants for more details.
+ *	@param	hasMin			Optional boolean that determines if the convar has a minimum value.
+ *	@param	min				Minimum integer value that the convar can have if hasMin is true.
+ *	@param	hasMax			Optional boolean that determines if the convar has a maximum value.
+ *	@param	max				Maximum integer value that the convar can have if hasMax is true.
+ *
+ *	@return	A handle to the newly created convar. If the convar already exists, a handle to it will still be returned.
+ *
+ *	@error	Convar name is blank or is the same as an existing console command.
+ */
+stock ConVar CreateConVarInt(const char[] name, int defaultValue, const char[] description, int flags=0, bool hasMin=false, int min=0, bool hasMax=false, int max=0) {
+	char index[16];
+	IntToString(defaultValue, index, sizeof(index));
+	return CreateConVar(name, index, description, flags, true, float(min), true, float(max));
+}
 
 /**
  *	Adds ConVar flag(s).
