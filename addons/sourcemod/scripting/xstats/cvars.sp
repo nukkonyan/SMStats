@@ -14,7 +14,7 @@ void PrepareCvars() {
 	
 	//Cvars.Weapons = new ArrayList(64); //ConVar weapon array list.
 	
-	Cvars.PrefixCvar = CreateConVar("xstats_prefix", "{green}XStats", "XStats - Prefix to be used ingame texts.");
+	Cvars.PrefixCvar = CreateConVar("xstats_prefix", "{green}XStats", "XStats - Prefix to be used ingame texts.", FCVAR_NOTIFY);
 	Cvars.PrefixCvar.AddChangeHook(PrefixCallback);
 	Cvars.PrefixCvar.GetString(Global.Prefix, sizeof(Global.Prefix));
 	Format(Global.Prefix, sizeof(Global.Prefix), "%s{default}", Global.Prefix);
