@@ -127,13 +127,13 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	, points);
 	
 	/* Kill msg stuff */
-	KillMsg[client].MidAirKill = midair;
-	KillMsg[client].SmokeKill = thrusmoke;
-	KillMsg[client].HeadshotKill = headshot;
-	KillMsg[client].NoscopeKill = noscope;
-	KillMsg[client].GrenadeKill = grenadekill;
-	KillMsg[client].BombKill = bombkill;
-	KillMsg[client].BlindedKill = attackerblind;
+	Player[client].KillMsg.MidAirKill = midair;
+	Player[client].KillMsg.SmokeKill = thrusmoke;
+	Player[client].KillMsg.HeadshotKill = headshot;
+	Player[client].KillMsg.NoscopeKill = noscope;
+	Player[client].KillMsg.GrenadeKill = grenadekill;
+	Player[client].KillMsg.BombKill = bombkill;
+	Player[client].KillMsg.BlindedKill = attackerblind;
 	
 	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
 	AssistedKill(assist, client, victim);
@@ -141,7 +141,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	
 	char query[1024];
 	
-	Session[client].Kills++;
+	Player[client].Session.Kills++;
 	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID = '%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	SQL.Query(DBQuery_Callback, query);
@@ -151,7 +151,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	SQL.Query(DBQuery_Callback, query);
 	
 	if(headshot) {
-		Session[client].Headshots++;
+		Player[client].Session.Headshots++;
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID = '%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -160,7 +160,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	if(dominated) {
-		Session[client].Dominations++;
+		Player[client].Session.Dominations++;
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID = '%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -169,7 +169,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	if(revenge) {
-		Session[client].Revenges++;
+		Player[client].Session.Revenges++;
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID = '%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -178,7 +178,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	if(noscope) {
-		Session[client].Noscopes++;
+		Player[client].Session.Noscopes++;
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID = '%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -187,7 +187,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	if(midair) {
-		Session[client].MidAirKills++;
+		Player[client].Session.MidAirKills++;
 		Format(query, sizeof(query), "update `%s` set MidAirKills = MidAirKills+1 where SteamID='%s' and ServerID = '%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -196,7 +196,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	if(knifekill) {
-		Session[client].KnifeKills++;
+		Player[client].Session.KnifeKills++;
 		Format(query, sizeof(query), "update `%s` set KnifeKills = KnifeKills+1 where SteamID='%s' and ServerID = '%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -205,21 +205,21 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	if(grenadekill) {
-		Session[client].GrenadeKills++;
+		Player[client].Session.GrenadeKills++;
 		Format(query, sizeof(query), "update `%s` set GrenadeKills = GrenadeKills+1 where SteamID='%s' and ServerID = '%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
 	}
 	
 	if(bombkill) {
-		Session[client].BombKills++;
+		Player[client].Session.BombKills++;
 		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID = '%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
 	}
 	
 	if(points > 0) {
-		Session[client].AddPoints(points);
+		Player[client].Session.AddPoints(points);
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID = '%s' and ServerID = '%i'",
 		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);

@@ -5,6 +5,14 @@ void PrepareEvents() {
 	HookEventEx(EVENT_PLAYER_CHANGENAME, UploadStuff);
 	HookEventEx(EVENT_PLAYER_DISCONNECT, Disconnected, EventHookMode_Pre);
 	
+	/* Experimental Assister n' Damage Done */
+	// Used over OnTakeDamage via SDKHook since it outputs incorrect damage.
+	// Expecting more games to take advantage via player_hurt.
+	// Event located in assister.sp
+	switch(GetEngineVersion()) {
+		case Engine_TF2, Engine_CSS, Engine_CSGO: HookEventEx(EVENT_PLAYER_HURT, Assister_PlayerHurt);
+	}
+	
 	/* Rounds */
 	HookEventEx(EVENT_ROUND_END, Rounds);
 	HookEventEx(EVENT_ROUND_START, Rounds);
@@ -25,7 +33,7 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
 	
 	OnDeathRankPanel(client);
 	
-	Session[client].Suicides++;
+	Player[client].Session.Suicides++;
 	SQL.QueryEx(DBQuery_Callback, "update `%s` set Suicides = Suicides+1 where SteamID='%s' and ServerID = %i",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	PrepareOnSuicideForward(client);

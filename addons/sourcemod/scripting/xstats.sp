@@ -38,10 +38,6 @@ XStatsConnectSound Sound[2];
 
 /* Session */
 XStatsPlayer Player[MaxPlayers+1];
-XStatsPanel StatsPanel[MaxPlayers+1];
-XStatsSession Session[MaxPlayers+1];
-XStatsSession TotalStats[MaxPlayers+1];
-XStatsKillMsg KillMsg[MaxPlayers+1];
 
 /* Includes. */
 #include "xstats/cvars.sp" /* Console variables */

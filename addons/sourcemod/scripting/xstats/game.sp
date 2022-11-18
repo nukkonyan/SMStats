@@ -20,21 +20,20 @@
 /**
  *	Initialize the database.
  */
-void Games_DatabaseConnected()	{
+void Games_DatabaseConnected() {
 	File file;
 	char path[256], query[16177], table[512];
 	int len = 0;
 	
 	BuildPath(Path_SM, path, sizeof(path), "configs/xstats/%s.xstats", Global.playerlist);
-	switch((file = OpenFile(path, "r")) != null)	{
-		case true:	{
+	switch((file = OpenFile(path, "r")) != null) {
+		case true: {
 			while(!file.EndOfFile() && file.ReadLine(table, sizeof(table)))	{
 				ReplaceString(table, sizeof(table), "\n", "");
 				ReplaceString(table, sizeof(table), "\r", "");
 				ReplaceString(table, sizeof(table), "\t", "");
 				
 				len += Format(query[len], sizeof(query)-len, table);
-				//PrintToServer("[%i] %s", len, table);
 			}
 			
 			SQL.Query(DBQuery_CreateTables, query, 1);
@@ -42,7 +41,7 @@ void Games_DatabaseConnected()	{
 		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for players statistical tracking.) (Did you install it correctly?.)", Global.logprefix, Global.playerlist);
 	}
 	
-	query = NULL_STRING;
+	query = "";
 	len = 0;
 	
 	BuildPath(Path_SM, path, sizeof(path), "configs/xstats/%s.xstats", Global.kill_log);
@@ -54,7 +53,6 @@ void Games_DatabaseConnected()	{
 				ReplaceString(table, sizeof(table), "\t", "");
 				
 				len += Format(query[len], sizeof(query)-len, table);
-				//PrintToServer("[%i] %s", len, table);
 			}
 			
 			SQL.Query(DBQuery_CreateTables, query, 2);
@@ -62,7 +60,7 @@ void Games_DatabaseConnected()	{
 		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking kills.) (Did you install it correctly?.)", Global.logprefix, Global.kill_log);
 	}
 	
-	query = NULL_STRING;
+	query = "";
 	len = 0;
 	
 	switch(Global.Game)	{
@@ -76,7 +74,6 @@ void Games_DatabaseConnected()	{
 						ReplaceString(table, sizeof(table), "\t", "");
 						
 						len += Format(query[len], sizeof(query)-len, table);
-						//PrintToServer("[%i] %s", len, table);
 					}
 					
 					SQL.Query(DBQuery_CreateTables, query, 3);
@@ -86,7 +83,7 @@ void Games_DatabaseConnected()	{
 		}
 	}
 	
-	query = NULL_STRING;
+	query = "";
 	len = 0;
 	
 	BuildPath(Path_SM, path, sizeof(path), "configs/xstats/%s.xstats", Global.maps_log);
@@ -98,7 +95,6 @@ void Games_DatabaseConnected()	{
 				ReplaceString(table, sizeof(table), "\t", "");
 				
 				len += Format(query[len], sizeof(query)-len, table);
-				//PrintToServer("[%i] %s", len, table);
 			}
 			
 			SQL.Query(DBQuery_CreateTables, query, 4);
@@ -106,7 +102,7 @@ void Games_DatabaseConnected()	{
 		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking maps.) (Did you install it correctly?.)", Global.logprefix, Global.maps_log);
 	}
 	
-	query = NULL_STRING;
+	query = "";
 	len = 0;
 	
 	BuildPath(Path_SM, path, sizeof(path), "configs/xstats/%s.xstats", Global.weapons);
@@ -118,7 +114,6 @@ void Games_DatabaseConnected()	{
 				ReplaceString(table, sizeof(table), "\t", "");
 				
 				len += Format(query[len], sizeof(query)-len, table);
-				//PrintToServer("[%i] %s", len, table);
 			}
 			
 			SQL.Query(DBQuery_CreateTables, query, 5);
@@ -126,7 +121,7 @@ void Games_DatabaseConnected()	{
 		case false: XStats_SetFailState("%s Failed loading database file \"/configs/xstats/%s.xstats\" (Required for tracking weapon kills.) (Did you install it correctly?.)", Global.logprefix, Global.weapons);
 	}
 	
-	query = NULL_STRING;
+	query = "";
 	len = 0;
 	
 	BuildPath(Path_SM, path, sizeof(path), "configs/xstats/%s.xstats", Global.achievements);
@@ -138,7 +133,6 @@ void Games_DatabaseConnected()	{
 				ReplaceString(table, sizeof(table), "\t", "");
 				
 				len += Format(query[len], sizeof(query)-len, table);
-				//PrintToServer("[%i] %s", len, table);
 			}
 			
 			SQL.Query(DBQuery_CreateTables, query, 6);
@@ -149,7 +143,7 @@ void Games_DatabaseConnected()	{
 	delete file;
 }
 
-void DBQuery_CreateTables(Database database, DBResultSet results, const char[] error, int queryid)	{
+void DBQuery_CreateTables(DatabaseEx db, DBResultSet r, const char[] error, int queryid)	{
 	char table_name[64];
 	switch(queryid)	{
 		case 1: table_name = Global.playerlist;
@@ -160,7 +154,7 @@ void DBQuery_CreateTables(Database database, DBResultSet results, const char[] e
 		case 6: table_name = Global.achievements;
 	}
 	
-	switch(results == null)	{
+	switch(!r) {
 		case true: XStats_DebugText(true, "%s Failed to insert database table \"%s\". \n%s \n\nMake sure the database connection is available or file is correct.", Global.logprefix, table_name, error);
 		case false: XStats_DebugText(false, "%s Inserted database table %s", Global.logprefix, table_name);
 	}
@@ -297,7 +291,7 @@ void PrepareGame()	{
 			Global.achievements = "achievements_contagion";
 		}
 		case Game_HL2DM:	{
-			Global.logprefix = "[XStats Half-Life 2 Deathmatch]";
+			Global.logprefix = "[XStats Half-Life 2: Deathmatch]";
 			Global.playerlist = "playerlist_hl2dm";
 			Global.kill_log = "kill_log_hl2dm";
 			Global.maps_log = "maps_log_hl2dm";

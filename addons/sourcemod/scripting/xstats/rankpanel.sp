@@ -41,7 +41,7 @@ Action RankPanel(int client, int args=-1) {
 	float kdr = GetRatio(kills, deaths);
 	
 	delete results;	
-	StatsPanel[client].Main = true;
+	Player[client].StatsPanel.Main = true;
 	
 	PanelEx panel = new PanelEx();
 	panel.DrawItem("XStats Panel");
@@ -49,14 +49,14 @@ Action RankPanel(int client, int args=-1) {
 	panel.DrawText("Positioned #%i out of %i players", Player[client].Position, players);
 	panel.DrawSpace();
 	panel.DrawItem("Current Session");
-	panel.DrawText("%i Points", Session[client].Points);
-	panel.DrawText("%i Minutes played", Session[client].PlayTime);
-	panel.DrawText("%i Kills", Session[client].Kills);
-	panel.DrawText("%i Assists", Session[client].Assists);
-	panel.DrawText("%i Deaths", Session[client].Deaths);
-	panel.DrawText("%i Suicides", Session[client].Suicides);
-	panel.DrawText("%i Damage dealt", Session[client].DamageDone);
-	panel.DrawText("KDR: %.2f", GetRatio(Session[client].Kills, Session[client].Deaths));
+	panel.DrawText("%i Points", Player[client].Session.Points);
+	panel.DrawText("%i Minutes played", Player[client].Session.PlayTime);
+	panel.DrawText("%i Kills", Player[client].Session.Kills);
+	panel.DrawText("%i Assists", Player[client].Session.Assists);
+	panel.DrawText("%i Deaths", Player[client].Session.Deaths);
+	panel.DrawText("%i Suicides", Player[client].Session.Suicides);
+	panel.DrawText("%i Damage dealt", Player[client].Session.DamageDone);
+	panel.DrawText("KDR: %.2f", GetRatio(Player[client].Session.Kills, Player[client].Session.Deaths));
 	panel.DrawSpace();
 	panel.DrawItem("Total Statistics");
 	panel.DrawText("%i Points", points);
@@ -93,20 +93,20 @@ stock void RankPanelCallback(MenuEx panel, MenuAction action, int client, int se
 		case 1: XStatsCmd(client);
 		case 2:	{
 			RankPanel_CurrentSession(client);
-			StatsPanel[client].Main = false;
-			StatsPanel[client].Session = false;
-			StatsPanel[client].TotalPage = 0;
+			Player[client].StatsPanel.Main = false;
+			Player[client].StatsPanel.Session = false;
+			Player[client].StatsPanel.TotalPage = 0;
 		}
 		case 3:	{
 			RankPanel_TotalStatistics(client);
-			StatsPanel[client].Main = false;
-			StatsPanel[client].Session = false;
-			StatsPanel[client].TotalPage = 0;
+			Player[client].StatsPanel.Main = false;
+			Player[client].StatsPanel.Session = false;
+			Player[client].StatsPanel.TotalPage = 0;
 		}
 		case 4:	{
-			StatsPanel[client].Main = false;
-			StatsPanel[client].Session = false;
-			StatsPanel[client].TotalPage = 0;
+			Player[client].StatsPanel.Main = false;
+			Player[client].StatsPanel.Session = false;
+			Player[client].StatsPanel.TotalPage = 0;
 		}
 	}
 }
@@ -117,95 +117,95 @@ stock void RankPanel_CurrentSession(int client)	{
 	panel.DrawItem("XStats Panel: Current Session");
 	
 	/* Insert the generic ones first */
-	panel.DrawText("%i Points", Session[client].Points);
-	panel.DrawText("%i Minutes played", Session[client].PlayTime);
-	panel.DrawText("%i Kills", Session[client].Kills);
-	panel.DrawText("%i Assists", Session[client].Assists);
-	panel.DrawText("%i Deaths", Session[client].Deaths);
-	panel.DrawText("%i Suicides", Session[client].Suicides);
-	panel.DrawText("%i Mid-air kills", Session[client].MidAirKills);
-	panel.DrawText("%i Damage dealt", Session[client].DamageDone);
-	panel.DrawText("KDR: %.2f", GetRatio(Session[client].Kills, Session[client].Deaths));
+	panel.DrawText("%i Points", Player[client].Session.Points);
+	panel.DrawText("%i Minutes played", Player[client].Session.PlayTime);
+	panel.DrawText("%i Kills", Player[client].Session.Kills);
+	panel.DrawText("%i Assists", Player[client].Session.Assists);
+	panel.DrawText("%i Deaths", Player[client].Session.Deaths);
+	panel.DrawText("%i Suicides", Player[client].Session.Suicides);
+	panel.DrawText("%i Mid-air kills", Player[client].Session.MidAirKills);
+	panel.DrawText("%i Damage dealt", Player[client].Session.DamageDone);
+	panel.DrawText("KDR: %.2f", GetRatio(Player[client].Session.Kills, Player[client].Session.Deaths));
 	panel.DrawSpace();
 	
 	switch(Global.Game)	{
 		case Game_TF2, Game_TF2V: {
 			panel.DrawItem("TF Stats");
-			panel.DrawText("%i Dominations", Session[client].Dominations);
-			panel.DrawText("%i Revenges", Session[client].Revenges);
-			panel.DrawText("%i Headshots", Session[client].Headshots);
-			panel.DrawText("%i Noscopes", Session[client].Noscopes);
-			panel.DrawText("%i Backstabs", Session[client].Backstabs);
-			panel.DrawText("%i Airshots", Session[client].Airshots);
-			panel.DrawText("%i Deflects", Session[client].Deflects);
-			panel.DrawText("%i Gibs", Session[client].Gibs);
-			panel.DrawText("%i Critkills", Session[client].Critkills);
-			panel.DrawText("%i Tauntkills", Session[client].Tauntkills);
-			panel.DrawText("%i Tele Frags", Session[client].Telefrags);
-			panel.DrawText("%i Buildings built", Session[client].BuildingsBuilt);
-			panel.DrawText("%i Buildings destroyed", Session[client].BuildingsDestroyed);
-			panel.DrawText("%i Sappers placed", Session[client].SappersPlaced);
-			panel.DrawText("%i Sappers destroyed", Session[client].SappersDestroyed);
-			panel.DrawText("%i Coated with milk", Session[client].MadMilked);
-			panel.DrawText("%i Coated with jar", Session[client].Jarated);
-			panel.DrawText("%i Extinguished", Session[client].Extinguished);
-			panel.DrawText("%i Ignited", Session[client].Ignited);
+			panel.DrawText("%i Dominations", Player[client].Session.Dominations);
+			panel.DrawText("%i Revenges", Player[client].Session.Revenges);
+			panel.DrawText("%i Headshots", Player[client].Session.Headshots);
+			panel.DrawText("%i Noscopes", Player[client].Session.Noscopes);
+			panel.DrawText("%i Backstabs", Player[client].Session.Backstabs);
+			panel.DrawText("%i Airshots", Player[client].Session.Airshots);
+			panel.DrawText("%i Deflects", Player[client].Session.Deflects);
+			panel.DrawText("%i Gibs", Player[client].Session.Gibs);
+			panel.DrawText("%i Critkills", Player[client].Session.Critkills);
+			panel.DrawText("%i Tauntkills", Player[client].Session.Tauntkills);
+			panel.DrawText("%i Telefrags", Player[client].Session.Telefrags);
+			panel.DrawText("%i Buildings built", Player[client].Session.BuildingsBuilt);
+			panel.DrawText("%i Buildings destroyed", Player[client].Session.BuildingsDestroyed);
+			panel.DrawText("%i Sappers placed", Player[client].Session.SappersPlaced);
+			panel.DrawText("%i Sappers destroyed", Player[client].Session.SappersDestroyed);
+			panel.DrawText("%i Coated with milk", Player[client].Session.MadMilked);
+			panel.DrawText("%i Coated with jar", Player[client].Session.Jarated);
+			panel.DrawText("%i Extinguished", Player[client].Session.Extinguished);
+			panel.DrawText("%i Ignited", Player[client].Session.Ignited);
 			if(TF2_IsMvMGameMode())	{
-				panel.DrawText("%i Sentry busters killed", Session[client].SentryBustersKilled);
-				panel.DrawText("%i Times you've resetted the bomb.", Session[client].BombsResetted);
-				panel.DrawText("%i Tanks destroyed", Session[client].TanksDestroyed);
+				panel.DrawText("%i Sentry busters killed", Player[client].Session.SentryBustersKilled);
+				panel.DrawText("%i Times you've resetted the bomb.", Player[client].Session.BombsResetted);
+				panel.DrawText("%i Tanks destroyed", Player[client].Session.TanksDestroyed);
 			}
 		}
 		case Game_TF2C:	{
 			panel.DrawItem("TF Stats");
-			panel.DrawText("%i Dominations", Session[client].Dominations);
-			panel.DrawText("%i Revenges", Session[client].Revenges);
-			panel.DrawText("%i Headshots", Session[client].Headshots);
-			panel.DrawText("%i Noscopes", Session[client].Noscopes);
-			panel.DrawText("%i Backstabs", Session[client].Backstabs);
-			panel.DrawText("%i Airshots", Session[client].Airshots);
-			panel.DrawText("%i Deflects", Session[client].Deflects);
-			panel.DrawText("%i Gibs", Session[client].Gibs);
-			panel.DrawText("%i Critkills", Session[client].Critkills);
-			panel.DrawText("%i Tauntkills", Session[client].Tauntkills);
-			panel.DrawText("%i Telefrags", Session[client].Telefrags);
-			panel.DrawText("%i Buildings built", Session[client].BuildingsBuilt);
-			panel.DrawText("%i Buildings destroyed", Session[client].BuildingsDestroyed);
-			panel.DrawText("%i Sappers placed", Session[client].SappersPlaced);
-			panel.DrawText("%i Sappers destroyed", Session[client].SappersDestroyed);
-			panel.DrawText("%i Extinguished", Session[client].Extinguished);
-			panel.DrawText("%i Ignited", Session[client].Ignited);
+			panel.DrawText("%i Dominations", Player[client].Session.Dominations);
+			panel.DrawText("%i Revenges", Player[client].Session.Revenges);
+			panel.DrawText("%i Headshots", Player[client].Session.Headshots);
+			panel.DrawText("%i Noscopes", Player[client].Session.Noscopes);
+			panel.DrawText("%i Backstabs", Player[client].Session.Backstabs);
+			panel.DrawText("%i Airshots", Player[client].Session.Airshots);
+			panel.DrawText("%i Deflects", Player[client].Session.Deflects);
+			panel.DrawText("%i Gibs", Player[client].Session.Gibs);
+			panel.DrawText("%i Critkills", Player[client].Session.Critkills);
+			panel.DrawText("%i Tauntkills", Player[client].Session.Tauntkills);
+			panel.DrawText("%i Telefrags", Player[client].Session.Telefrags);
+			panel.DrawText("%i Buildings built", Player[client].Session.BuildingsBuilt);
+			panel.DrawText("%i Buildings destroyed", Player[client].Session.BuildingsDestroyed);
+			panel.DrawText("%i Sappers placed", Player[client].Session.SappersPlaced);
+			panel.DrawText("%i Sappers destroyed", Player[client].Session.SappersDestroyed);
+			panel.DrawText("%i Extinguished", Player[client].Session.Extinguished);
+			panel.DrawText("%i Ignited", Player[client].Session.Ignited);
 		}
 		case Game_TF2OP:	{
 			panel.DrawItem("TF Stats");
-			panel.DrawText("%i Dominations", Session[client].Dominations);
-			panel.DrawText("%i Revenges", Session[client].Revenges);
-			panel.DrawText("%i Headshots", Session[client].Headshots);
-			panel.DrawText("%i Noscopes", Session[client].Noscopes);
-			panel.DrawText("%i Backstabs", Session[client].Backstabs);
-			panel.DrawText("%i Airshots", Session[client].Airshots);
-			panel.DrawText("%i Deflects", Session[client].Deflects);
-			panel.DrawText("%i Gibs", Session[client].Gibs);
-			panel.DrawText("%i Critkills", Session[client].Critkills);
-			panel.DrawText("%i Tauntkills", Session[client].Tauntkills);
-			panel.DrawText("%i Telefrags", Session[client].Telefrags);
-			panel.DrawText("%i Buildings built", Session[client].BuildingsBuilt);
-			panel.DrawText("%i Buildings destroyed", Session[client].BuildingsDestroyed);
-			panel.DrawText("%i Sappers placed", Session[client].SappersPlaced);
-			panel.DrawText("%i Sappers destroyed", Session[client].SappersDestroyed);
-			panel.DrawText("%i Extinguished", Session[client].Extinguished);
-			panel.DrawText("%i Ignited", Session[client].Ignited);
+			panel.DrawText("%i Dominations", Player[client].Session.Dominations);
+			panel.DrawText("%i Revenges", Player[client].Session.Revenges);
+			panel.DrawText("%i Headshots", Player[client].Session.Headshots);
+			panel.DrawText("%i Noscopes", Player[client].Session.Noscopes);
+			panel.DrawText("%i Backstabs", Player[client].Session.Backstabs);
+			panel.DrawText("%i Airshots", Player[client].Session.Airshots);
+			panel.DrawText("%i Deflects", Player[client].Session.Deflects);
+			panel.DrawText("%i Gibs", Player[client].Session.Gibs);
+			panel.DrawText("%i Critkills", Player[client].Session.Critkills);
+			panel.DrawText("%i Tauntkills", Player[client].Session.Tauntkills);
+			panel.DrawText("%i Telefrags", Player[client].Session.Telefrags);
+			panel.DrawText("%i Buildings built", Player[client].Session.BuildingsBuilt);
+			panel.DrawText("%i Buildings destroyed", Player[client].Session.BuildingsDestroyed);
+			panel.DrawText("%i Sappers placed", Player[client].Session.SappersPlaced);
+			panel.DrawText("%i Sappers destroyed", Player[client].Session.SappersDestroyed);
+			panel.DrawText("%i Extinguished", Player[client].Session.Extinguished);
+			panel.DrawText("%i Ignited", Player[client].Session.Ignited);
 		}
 		case Game_CSS, Game_CSPromod, Game_CSGO, Game_CSCO:	{
 			panel.DrawItem("CS Stats");
-			panel.DrawText("%i Dominations", Session[client].Dominations);
-			panel.DrawText("%i Revenges", Session[client].Revenges);
-			panel.DrawText("%i Headshots", Session[client].Headshots);
-			panel.DrawText("%i Noscopes", Session[client].Noscopes);
-			panel.DrawText("%i Through smoke kills", Session[client].SmokeKills);
-			panel.DrawText("%i Blinded kills", Session[client].BlindKills);
-			panel.DrawText("%i Grenade kills", Session[client].GrenadeKills);
-			panel.DrawText("%i Money spent", Session[client].MoneySpent);
+			panel.DrawText("%i Dominations", Player[client].Session.Dominations);
+			panel.DrawText("%i Revenges", Player[client].Session.Revenges);
+			panel.DrawText("%i Headshots", Player[client].Session.Headshots);
+			panel.DrawText("%i Noscopes", Player[client].Session.Noscopes);
+			panel.DrawText("%i Through smoke kills", Player[client].Session.SmokeKills);
+			panel.DrawText("%i Blinded kills", Player[client].Session.BlindKills);
+			panel.DrawText("%i Grenade kills", Player[client].Session.GrenadeKills);
+			panel.DrawText("%i Money spent", Player[client].Session.MoneySpent);
 		}
 	}
 	
@@ -214,7 +214,7 @@ stock void RankPanel_CurrentSession(int client)	{
 	panel.DrawItem("Exit");
 	panel.Send(client, RankPanelCallback2, MENU_TIME_FOREVER);
 	
-	StatsPanel[client].Session = true;
+	Player[client].StatsPanel.Session = true;
 }
 
 /* Total Statistics */
@@ -243,17 +243,17 @@ stock void RankPanelCallback2(MenuEx panel, MenuAction action, int client, int s
 		 * 4. Exit.
 		 */
 		case 3:	RankPanel(client);
-		case 4: StatsPanel[client].Session = false;
+		case 4: Player[client].StatsPanel.Session = false;
 	}
 }
 
 stock void OnDeathRankPanel(int client) {
-	if(StatsPanel[client].Main)
+	if(Player[client].StatsPanel.Main)
 		RankPanel(client);
-	else if(StatsPanel[client].Session)
+	else if(Player[client].StatsPanel.Session)
 		RankPanel_CurrentSession(client);
-	else if(StatsPanel[client].TotalPage > 0)
-		RankPanel_TotalPage(client, StatsPanel[client].TotalPage);
+	else if(Player[client].StatsPanel.TotalPage > 0)
+		RankPanel_TotalPage(client, Player[client].StatsPanel.TotalPage);
 }
 
 stock void RankPanel_TotalPage(int client, int page) {
@@ -264,7 +264,7 @@ stock void RankPanel_TotalPage(int client, int page) {
 
 stock void Panel_TotalStatisticsCallback(MenuEx menu, MenuAction action, int client, int selection) {
 	int page;
-	switch((page = StatsPanel[client].TotalPage)) {
+	switch((page = Player[client].StatsPanel.TotalPage)) {
 		case 1:	{
 			/**
 			 * 1: Panel info.
@@ -279,9 +279,9 @@ stock void Panel_TotalStatisticsCallback(MenuEx menu, MenuAction action, int cli
 				case 3:	RankPanel(client);
 				case 4: RankPanel_TotalPage(client, page+1);
 				case 5:	{
-					StatsPanel[client].Main = false;
-					StatsPanel[client].Session = false;
-					StatsPanel[client].TotalPage = 0;
+					Player[client].StatsPanel.Main = false;
+					Player[client].StatsPanel.Session = false;
+					Player[client].StatsPanel.TotalPage = 0;
 				}
 			}
 		}
@@ -298,9 +298,9 @@ stock void Panel_TotalStatisticsCallback(MenuEx menu, MenuAction action, int cli
 				case 2: RankPanel_TotalPage(client, page-1);
 				case 3:	RankPanel_TotalPage(client, page+1);
 				case 4:	{
-					StatsPanel[client].Main = false;
-					StatsPanel[client].Session = false;
-					StatsPanel[client].TotalPage = 0;
+					Player[client].StatsPanel.Main = false;
+					Player[client].StatsPanel.Session = false;
+					Player[client].StatsPanel.TotalPage = 0;
 				}
 			}
 		}
@@ -317,9 +317,9 @@ stock void Panel_TotalStatisticsCallback(MenuEx menu, MenuAction action, int cli
 				case 2: RankPanel_TotalPage(client, page-1);
 				case 3:	RankPanel_TotalPage(client, page+1);
 				case 4:	{
-					StatsPanel[client].Main = false;
-					StatsPanel[client].Session = false;
-					StatsPanel[client].TotalPage = 0;
+					Player[client].StatsPanel.Main = false;
+					Player[client].StatsPanel.Session = false;
+					Player[client].StatsPanel.TotalPage = 0;
 				}
 			}
 		}
@@ -334,9 +334,9 @@ stock void Panel_TotalStatisticsCallback(MenuEx menu, MenuAction action, int cli
 				case 1: RankPanel_Total_TF2(client, page);
 				case 2:	RankPanel_Total_TF2(client, page-1);
 				case 3: {
-					StatsPanel[client].Main = false;
-					StatsPanel[client].Session = false;
-					StatsPanel[client].TotalPage = 0;
+					Player[client].StatsPanel.Main = false;
+					Player[client].StatsPanel.Session = false;
+					Player[client].StatsPanel.TotalPage = 0;
 				}
 			}
 		}

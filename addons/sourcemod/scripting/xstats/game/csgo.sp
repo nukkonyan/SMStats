@@ -170,39 +170,55 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	int points = Cvars.Weapon[defindex].IntValue;
 	
 	/* Debug */
-	XStats_DebugText(false, "//===== XStats Debug Log: Player_Death_CSGO =====//");
-	XStats_DebugText(false, "client: %s (index %i, userid %i)", Player[client].Playername, client, Player[client].UserID);
-	XStats_DebugText(false, "victim: %s (index %i, userid %i)", Player[victim].Playername, victim, Player[victim].UserID);
-	XStats_DebugText(false, "assist: %s (index %i, userid %i)", Tklib_IsValidClient(assist) ? Player[assist].Playername : "No assister", assist, Player[assist].UserID);
-	XStats_DebugText(false, "defindex: %i", defindex);
-	XStats_DebugText(false, "weapon: \"%s\"\n", weapon);
-	XStats_DebugText(false, "midair: %s", Bool[midair]);
-	XStats_DebugText(false, "headshot: %s", Bool[headshot]);
-	XStats_DebugText(false, "dominated: %s", Bool[dominated]);
-	XStats_DebugText(false, "revenge: %s", Bool[revenge]);
-	XStats_DebugText(false, "noscope: %s", Bool[noscope]);
-	XStats_DebugText(false, "thrusmoke: %s", Bool[thrusmoke]);
-	XStats_DebugText(false, "attackerblind: %s", Bool[attackerblind]);
-	XStats_DebugText(false, "grenadekill: %s", Bool[grenadekill]);
-	XStats_DebugText(false, "bombkill: %s\n", Bool[bombkill]);
-	XStats_DebugText(false, "Points %i\n", points);
+	XStats_DebugText(false, "//===== Player_Death_CSGO =====\\"
+	... "\nClient: %s (index %i, userid %i)"
+	... "\nVictim: %s (index %i, userid %i)"
+	... "\nAssist: %s (index %i, userid %i)"
+	... "\ndefindex: %i"
+	... "\nweapon: %s"
+	... "\nmidair: %s"
+	... "\nheadshot: %s"
+	... "\ndominated: %s"
+	... "\nrevenge: %s"
+	... "\nnoscope: %s"
+	... "\nthrusmoke: %s"
+	... "\nattackerblind: %s"
+	... "\ngrenadekill: %s"
+	... "\nbombkill: %s"
+	... "Points %i\n"
+	, Player[client].Playername, client, Player[client].UserID
+	, Player[victim].Playername, victim, Player[victim].UserID
+	, Tklib_IsValidClient(assist) ? Player[assist].Playername : "No assister", assist, Player[assist].UserID
+	, defindex
+	, weapon
+	, Bool[midair]
+	, Bool[headshot]
+	, Bool[dominated]
+	, Bool[revenge]
+	, Bool[noscope]
+	, Bool[thrusmoke]
+	, Bool[attackerblind]
+	, Bool[grenadekill]
+	, Bool[bombkill]
+	, points);
 	
 	/* Kill msg stuff */
-	KillMsg[client].MidAirKill = midair;
-	KillMsg[client].SmokeKill = thrusmoke;
-	KillMsg[client].HeadshotKill = headshot;
-	KillMsg[client].NoscopeKill = noscope;
-	KillMsg[client].GrenadeKill = grenadekill;
-	KillMsg[client].BombKill = bombkill;
-	KillMsg[client].BlindedKill = attackerblind;
+	Player[client].KillMsg.MidAirKill = midair;
+	Player[client].KillMsg.SmokeKill = thrusmoke;
+	Player[client].KillMsg.HeadshotKill = headshot;
+	Player[client].KillMsg.NoscopeKill = noscope;
+	Player[client].KillMsg.GrenadeKill = grenadekill;
+	Player[client].KillMsg.BombKill = bombkill;
+	Player[client].KillMsg.BlindedKill = attackerblind;
 	
 	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
 	AssistedKill(assist, client, victim);
 	VictimDied(victim);
 	
 	char query[1024];
+	//int len = 0;
 	
-	Session[client].Kills++;
+	Player[client].Session.Kills++;
 	Format(query, sizeof(query), "update `%s` set Kills = Kills+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	SQL.Query(DBQuery_Callback, query);
@@ -212,7 +228,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	SQL.Query(DBQuery_Callback, query);
 	
 	if(headshot) {
-		Session[client].Headshots++;
+		Player[client].Session.Headshots++;
 		Format(query, sizeof(query), "update `%s` set Headshots = Headshots+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -221,7 +237,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	}
 	
 	if(dominated) {
-		Session[client].Dominations++;
+		Player[client].Session.Dominations++;
 		Format(query, sizeof(query), "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -230,7 +246,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	}
 		
 	if(revenge)	{
-		Session[client].Revenges++;
+		Player[client].Session.Revenges++;
 		Format(query, sizeof(query), "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -239,7 +255,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	}
 	
 	if(noscope) {
-		Session[client].Noscopes++;
+		Player[client].Session.Noscopes++;
 		Format(query, sizeof(query), "update `%s` set Noscopes = Noscopes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -248,7 +264,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	}
 	
 	if(thrusmoke) {
-		Session[client].SmokeKills++;
+		Player[client].Session.SmokeKills++;
 		Format(query, sizeof(query), "update `%s` set ThruSmokes = ThruSmokes+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -257,7 +273,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	}
 	
 	if(knifekill) {
-		Session[client].KnifeKills++;
+		Player[client].Session.KnifeKills++;
 		Format(query, sizeof(query), "update `%s` set KnifeKills = KnifeKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -266,7 +282,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	}
 	
 	if(grenadekill) {
-		Session[client].GrenadeKills++;
+		Player[client].Session.GrenadeKills++;
 		Format(query, sizeof(query), "update `%s` set GrenadeKills = GrenadeKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -275,7 +291,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	}
 	
 	if(bombkill) {
-		Session[client].BombKills++;
+		Player[client].Session.BombKills++;
 		Format(query, sizeof(query), "update `%s` set BombKills = BombKills+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -284,7 +300,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 	}
 	
 	if(points > 0) {
-		Session[client].AddPoints(points);
+		Player[client].Session.AddPoints(points);
 		Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
@@ -330,8 +346,7 @@ stock void Other_Death_CSGO(Event event, const char[] event_name, bool dontBroad
 	bool attackerblind = event.GetBool("attackerblind");
 	
 	/* Chicken Kill */
-	if(StrEqual(classname, "chicken", false))
-		Session[client].ChickenKills++;
+	if(StrEqual(classname, "chicken", false)) Player[client].Session.ChickenKills++;
 	
 	XStats_DebugText(false, "//===== XStats Debug Log: Other_Death_CSGO =====//");
 	XStats_DebugText(false, "Client: %N", client);

@@ -483,8 +483,8 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 		if(Tklib_IsValidClient(client, true) && !IsValidAbuse(client) && TF2_GetClientTeam(client) == TFTeam_Red)	{
 			count++;
 			
-			Session[client].AddPoints(points);
-			Session[client].TanksDestroyed++;
+			Player[client].Session.AddPoints(points);
+			Player[client].Session.TanksDestroyed++;
 			
 			char query[512];
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TanksDestroyed = TanksDestroyed+1 where SteamID='%s' and ServerID='%i'",
@@ -517,8 +517,8 @@ stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool do
 	int points = TF2_MvM[1].IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
-	Session[client].SentryBustersKilled++;
-	Session[client].AddPoints(points);
+	Player[client].Session.SentryBustersKilled++;
+	Player[client].Session.AddPoints(points);
 	CPrintToChat(client, "%s %t", Global.Prefix, "MvM Kill Sentry Buster", Player[client].Name, Player[client].Points, points);
 	
 	char query[512];
@@ -536,8 +536,8 @@ stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool d
 	int points = TF2_MvM[2].IntValue;
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
-	Session[client].BombsResetted++;
-	Session[client].AddPoints(points);
+	Player[client].Session.BombsResetted++;
+	Player[client].Session.AddPoints(points);
 	CPrintToChat(client, "%s %t", Global.Prefix, "MvM Player Reset Bomb", Player[client].Name, Player[client].Points, points);
 	
 	char query[512];
@@ -832,15 +832,15 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	, points);
 	
 	/* Kill msg stuff */
-	KillMsg[client].MidAirKill = midair;
-	KillMsg[client].HeadshotKill = headshot;
-	KillMsg[client].NoscopeKill = noscope;
-	KillMsg[client].BackstabKill = backstab;
-	KillMsg[client].AirshotKill = airshot;
-	KillMsg[client].DeflectKill = deflectkill;
-	KillMsg[client].TeleFragKill = telefrag;
-	KillMsg[client].CollateralKill = collateral;
-	KillMsg[client].TauntKill = tauntkill;
+	Player[client].KillMsg.MidAirKill = midair;
+	Player[client].KillMsg.HeadshotKill = headshot;
+	Player[client].KillMsg.NoscopeKill = noscope;
+	Player[client].KillMsg.BackstabKill = backstab;
+	Player[client].KillMsg.AirshotKill = airshot;
+	Player[client].KillMsg.DeflectKill = deflectkill;
+	Player[client].KillMsg.TeleFragKill = telefrag;
+	Player[client].KillMsg.CollateralKill = collateral;
+	Player[client].KillMsg.TauntKill = tauntkill;
 	
 	TF2_ClientKillVictim(client, victim);
 	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
@@ -848,11 +848,11 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	//There was an assist.
 	if(AssistedKill(assist, client, victim)) {
 		if(dominated_assister) {
-			Session[assist].Dominations++;
+			Player[assist].Session.Dominations++;
 			SQL.QueryEx(DBQuery_Callback, "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID = %i", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 		}
 		if(revenge_assister) {
-			Session[assist].Revenges++;
+			Player[assist].Session.Revenges++;
 			SQL.QueryEx(DBQuery_Callback, "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID = %i", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 		}
 	}
@@ -864,7 +864,7 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	char query[512];
 	int len = 0;
 	
-	Session[client].Kills++;
+	Player[client].Session.Kills++;
 	len += Format(query[len], sizeof(query)-len, "update `%s` set Kills = Kills+1", Global.playerlist);
 	
 	//If the inflictor entity is a building.
@@ -873,32 +873,32 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			switch(TF2_GetBuildingType(inflictor)) {
 				case TFBuilding_Dispenser: XStats_DebugText(false, "Building: Dispenser lvl %i (?!)", TF2_GetBuildingLevel(inflictor));
 				case TFBuilding_Sentrygun:	{
-					Session[client].Sentrykills++;
-					len += Format(query[len], sizeof(query)-len, ", SentryKills = SentryKills+1");
+					Player[client].Session.Sentrykills++;
+					len += QueryFormat(query[len], sizeof(query)-len, "SentryKills");
 					
 					int level = TF2_GetBuildingLevel(inflictor);
 					switch(level) {
 						case 1: {
-							Session[client].SentryLVL1Kills++;
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL1Kills = SentryLVL1Kills+1");
+							Player[client].Session.SentryLVL1Kills++;
+							len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL1Kills");
 						}
 						
 						case 2: {
-							Session[client].SentryLVL2Kills++;
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL2Kills = SentryLVL2Kills+1");
+							Player[client].Session.SentryLVL2Kills++;
+							len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL2Kills");
 						}
 						
 						case 3: {
-							Session[client].SentryLVL3Kills++;
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL3Kills = SentryLVL3Kills+1");
+							Player[client].Session.SentryLVL3Kills++;
+							len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL3Kills");
 						}
 					}
 					
 					XStats_DebugText(false, "Building: Sentry lvl %i", level);
 				}
 				case TFBuilding_MiniSentry:	{
-					Session[client].MiniSentrykills++;
-					len += Format(query[len], sizeof(query)-len, ", MiniSentryKills = MiniSentryKills+1");
+					Player[client].Session.MiniSentrykills++;
+					len += QueryFormat(query[len], sizeof(query)-len, "MiniSentryKills");
 					XStats_DebugText(false, "Building: Mini-Sentry");
 				}
 			}
@@ -906,10 +906,10 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 		case false: {
 			switch(telefrag) {
 				case true: {
-					Session[client].Telefrags++;
+					Player[client].Session.Telefrags++;
 					points += TF2_TeleFrag.IntValue;
-					Session[client].AddPoints(TF2_TeleFrag.IntValue);
-					len += Format(query[len], sizeof(query)-len, ", Telefrags = Telefrags+1");
+					Player[client].Session.AddPoints(TF2_TeleFrag.IntValue);
+					len += QueryFormat(query[len], sizeof(query)-len, "Telefrags");
 					XStats_DebugText(false, "Telefrag");
 				}
 				case false: SQL.QueryEx(DBQuery_Callback, "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'", Global.weapons, fix_weapon, fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -918,94 +918,94 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	if(headshot) {
-		Session[client].Headshots++;
-		len += Format(query[len], sizeof(query)-len, ", Headshots = Headshots+1");
+		Player[client].Session.Headshots++;
+		len += QueryFormat(query[len], sizeof(query)-len, "Headshots");
 		XStats_DebugText(false, "Headshot");
 	}
-		
+	
 	if(backstab) {
-		Session[client].Backstabs++;
-		len += Format(query[len], sizeof(query)-len, ", Backstabs = Backstab+1");
+		Player[client].Session.Backstabs++;
+		len += QueryFormat(query[len], sizeof(query)-len, "Backstabs");
 		XStats_DebugText(false, "Backstab");
 	}
 		
 	if(dominated) {
-		Session[client].Dominations++;
-		len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+1");
+		Player[client].Session.Dominations++;
+		len += QueryFormat(query[len], sizeof(query)-len, "Dominations");
 		XStats_DebugText(false, "Dominated");
 	}
 		
 	if(revenge) {
-		Session[client].Revenges++;
-		len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+1");
+		Player[client].Session.Revenges++;
+		len += QueryFormat(query[len], sizeof(query)-len, "Revenges");
 		XStats_DebugText(false, "Revenge");
 	}
 		
 	if(noscope) {
-		Session[client].Noscopes++;
-		len += Format(query[len], sizeof(query)-len, ", Noscopes = Noscopes+1");
+		Player[client].Session.Noscopes++;
+		len += QueryFormat(query[len], sizeof(query)-len, "Noscopes");
 		XStats_DebugText(false, "Noscope");
 	}
 		
 	if(tauntkill) {
-		Session[client].Tauntkills++;
-		len += Format(query[len], sizeof(query)-len, ", TauntKills = TauntKills+1");
+		Player[client].Session.Tauntkills++;
+		len += QueryFormat(query[len], sizeof(query)-len, "TauntKills");
 		XStats_DebugText(false, "Tauntkill");
 	}
 	
 	if(deflectkill) {
-		Session[client].Deflects++;
-		len += Format(query[len], sizeof(query)-len, ", Deflects = Deflects+1");
+		Player[client].Session.Deflects++;
+		len += QueryFormat(query[len], sizeof(query)-len, "Deflects");
 		XStats_DebugText(false, "Deflectkill");
 	}
 	
 	if(gibkill) {
-		Session[client].Gibs++;
-		len += Format(query[len], sizeof(query)-len, ", Gibs = Gibs+1");
+		Player[client].Session.Gibs++;
+		len += QueryFormat(query[len], sizeof(query)-len, "Gibs");
 		XStats_DebugText(false, "Gibkill");
 	}
 	
 	if(airshot) {
-		Session[client].Airshots++;
-		len += Format(query[len], sizeof(query)-len, ", Airshots = Airshots+1");
+		Player[client].Session.Airshots++;
+		len += Format(query[len], sizeof(query)-len, "Airshots");
 		XStats_DebugText(false, "Airshot");
 	}
 	
 	if(collateral) {
-		Session[client].Collaterals++;
-		len += Format(query[len], sizeof(query)-len, ", Collaterals = Collaterlas+1");
+		Player[client].Session.Collaterals++;
+		len += QueryFormat(query[len], sizeof(query)-len, "Collaterals");
 		if(TF2_Collat.IntValue > 0) points += TF2_Collat.IntValue;
 		XStats_DebugText(false, "Collateral");
 	}
 	
 	if(midair) {
-		Session[client].MidAirKills++;
-		len += Format(query[len], sizeof(query)-len, ", MidAirKills = MidAirKills+1");
+		Player[client].Session.MidAirKills++;
+		len += QueryFormat(query[len], sizeof(query)-len, "MidAirKills");
 		XStats_DebugText(false, "MidAir Kill");
 	}
 		
-	switch(view_as<TFCritType>(crits)) {
+	switch(TFCritType(crits)) {
 		case TFCritType_Minicrit: {
-			Session[client].MiniCritkills++;
-			len += Format(query[len], sizeof(query)-len, ", MiniCritKills = MiniCritKills+1");
+			Player[client].Session.MiniCritkills++;
+			len += QueryFormat(query[len], sizeof(query)-len, "MiniCritKills");
 			XStats_DebugText(false, "Mini-Crit");
 		}
 		case TFCritType_Crit: {
-			Session[client].Critkills++;
-			len += Format(query[len], sizeof(query)-len, ", CritKills = CritKills+1");
+			Player[client].Session.Critkills++;
+			len += QueryFormat(query[len], sizeof(query)-len, "CritKills");
 			XStats_DebugText(false, "Crit");
 		}
 	}
 	
 	if(points > 0) {
-		Session[client].AddPoints(points);
+		Player[client].Session.AddPoints(points);
 		XStats_DebugText(false, "Processing kill message..\n");
 		
-		len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+		len += QueryFormat(query[len], sizeof(query)-len, "Points", _, points);
 		PrepareKillMessage(client, victim, points);
 	}
 	
-	len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", Player[client].SteamID, Cvars.ServerID.IntValue);
+	len += QueryFormatFinal(query[len], sizeof(query)-len, Player[client].SteamID);
 	SQL.Query(DBQuery_Callback, query);
 	
 	OnDeathRankPanel(client);

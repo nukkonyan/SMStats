@@ -427,7 +427,7 @@ stock bool AssistedKill(int assist, int client, int victim) {
 	if(!Tklib_IsValidClient(assist, true)) return false;
 	
 	char query[256];
-	Session[assist].Assists++;
+	Player[client].Session.Assists++;
 	Format(query, sizeof(query), "update `%s` set Assists = Assists+1 where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
 	SQL.Query(DBQuery_Callback, query);
@@ -467,7 +467,7 @@ void VictimDied(int victim) {
 	if(points < 1) return;
 	
 	Player[victim].Points = GetClientPoints(Player[victim].SteamID);
-	Session[victim].RemovePoints(points);
+	Player[victim].Session.RemovePoints(points);
 	CPrintToChat(victim, "%s %t", Global.Prefix, "Death Kill Event", Player[victim].Name, Player[victim].Points, points);
 	
 	XStats_DebugText(false, "Updating points for %s due to dying", Player[victim].Playername);
@@ -667,12 +667,12 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 	/* Lë ol' messy code but has to be it. */
 	
 	/* Deflect kill */
-	if(KillMsg[client].DeflectKill)
+	if(Player[client].KillMsg.DeflectKill)
 	{
 		/* Airshot deflect kill */
-		if(KillMsg[client].AirshotKill)
+		if(Player[client].KillMsg.AirshotKill)
 		{
-			switch(KillMsg[client].HeadshotKill)
+			switch(Player[client].KillMsg.HeadshotKill)
 			{
 				/* Headshot airshot deflect kill */
 				case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[6], Kill_Type[7]);
@@ -682,7 +682,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		}
 		else
 		{
-			switch(KillMsg[client].HeadshotKill)
+			switch(Player[client].KillMsg.HeadshotKill)
 			{
 				/* Headshot deflect kill */
 				case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[7]);
@@ -692,9 +692,9 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		}
 	}
 	/* Collateral */
-	else if(KillMsg[client].CollateralKill)
+	else if(Player[client].KillMsg.CollateralKill)
 	{
-		switch(KillMsg[client].HeadshotKill)
+		switch(Player[client].KillMsg.HeadshotKill)
 		{
 			/* Headshot collateral kill */
 			case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[10]);
@@ -703,12 +703,12 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		}
 	}
 	/* Airshot kill */
-	else if(KillMsg[client].AirshotKill)
+	else if(Player[client].KillMsg.AirshotKill)
 	{
 		/* Mid air airshot kill */
-		if(KillMsg[client].MidAirKill)
+		if(Player[client].KillMsg.MidAirKill)
 		{
-			switch(KillMsg[client].HeadshotKill)
+			switch(Player[client].KillMsg.HeadshotKill)
 			{
 				/* Mid air airshot headshot kill */
 				case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[6], Kill_Type[0]);
@@ -719,7 +719,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		/* Airshot kill */
 		else
 		{
-			switch(KillMsg[client].HeadshotKill)
+			switch(Player[client].KillMsg.HeadshotKill)
 			{
 				/* Airshot headshot kill */
 				case true: Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[3], Kill_Type[6]);
@@ -729,9 +729,9 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		}
 	}
 	/* Backstab kill */
-	else if(KillMsg[client].BackstabKill)
+	else if(Player[client].KillMsg.BackstabKill)
 	{
-		switch(KillMsg[client].MidAirKill)
+		switch(Player[client].KillMsg.MidAirKill)
 		{
 			/* Mid air backstab kill */
 			case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[5], Kill_Type[0]);
@@ -739,18 +739,18 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		}
 	}
 	/* Noscope kill */
-	else if(KillMsg[client].NoscopeKill)
+	else if(Player[client].KillMsg.NoscopeKill)
 	{
 		/* Noscope headshot kill */
-		if(KillMsg[client].HeadshotKill)
+		if(Player[client].KillMsg.HeadshotKill)
 		{
 			/* Noscope headshot kill through smoke */
-			if(KillMsg[client].SmokeKill)
+			if(Player[client].KillMsg.SmokeKill)
 			{
 				/* Noscope headshot through smoke whilst blinded */
-				if(KillMsg[client].BlindedKill)
+				if(Player[client].KillMsg.BlindedKill)
 				{
-					switch(KillMsg[client].MidAirKill)
+					switch(Player[client].KillMsg.MidAirKill)
 					{
 						/* Mid air noscope headshot kill through smoke whilst blinded */
 						case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
@@ -761,7 +761,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 				/* Noscope headshot kill through smoke */
 				else
 				{
-					switch(KillMsg[client].MidAirKill)
+					switch(Player[client].KillMsg.MidAirKill)
 					{
 						/* Mid air noscope headshot kill through smoke */
 						case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[0]);
@@ -773,7 +773,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 			/* Noscope headshot kill */
 			else
 			{
-				switch(KillMsg[client].MidAirKill)
+				switch(Player[client].KillMsg.MidAirKill)
 				{
 					/* Mid air noscope headshot */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[2], Kill_Type[0]);
@@ -784,12 +784,12 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 			}
 		}
 		/* Mid air noscope kill */
-		else if(KillMsg[client].MidAirKill)
+		else if(Player[client].KillMsg.MidAirKill)
 		{
 			/* Mid air noscope kill through smoke */
-			if(KillMsg[client].SmokeKill)
+			if(Player[client].KillMsg.SmokeKill)
 			{
-				switch(KillMsg[client].BlindedKill)
+				switch(Player[client].KillMsg.BlindedKill)
 				{
 					/* Mid air noscope kill through smoke whilst blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
@@ -800,7 +800,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 			/* Mid air headshot kill */
 			else
 			{
-				switch(KillMsg[client].BlindedKill)
+				switch(Player[client].KillMsg.BlindedKill)
 				{
 					/* Mid air noscope headshot kill while blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[2], Kill_Type[13], Kill_Type[0]);
@@ -813,9 +813,9 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		else
 		{
 			/* Noscope kill through smoke */
-			if(KillMsg[client].SmokeKill)
+			if(Player[client].KillMsg.SmokeKill)
 			{
-				switch(KillMsg[client].BlindedKill)
+				switch(Player[client].KillMsg.BlindedKill)
 				{
 					/* Noscope kill through smoke while blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[4], Kill_Type[1], Kill_Type[13]);
@@ -826,7 +826,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 			/* Noscope kill */
 			else
 			{
-				switch(KillMsg[client].BlindedKill)
+				switch(Player[client].KillMsg.BlindedKill)
 				{
 					/* Noscope kill whilst blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[4], Kill_Type[13]);
@@ -837,15 +837,15 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		}
 	}
 	/* Headshot kill */
-	else if(KillMsg[client].HeadshotKill)
+	else if(Player[client].KillMsg.HeadshotKill)
 	{
 		/* Headshot kill through smoke */
-		if(KillMsg[client].SmokeKill)
+		if(Player[client].KillMsg.SmokeKill)
 		{
 			/* Headshot through smoke whilst blinded */
-			if(KillMsg[client].BlindedKill)
+			if(Player[client].KillMsg.BlindedKill)
 			{
-				switch(KillMsg[client].MidAirKill)
+				switch(Player[client].KillMsg.MidAirKill)
 				{
 					/* Mid air headshot kill through smoke whilst blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
@@ -856,7 +856,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 			/* Headshot kill through smoke */
 			else
 			{
-				switch(KillMsg[client].MidAirKill)
+				switch(Player[client].KillMsg.MidAirKill)
 				{
 					/* Mid air headshot kill through smoke */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[0]);
@@ -866,12 +866,12 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 			}
 		}
 		/* Mid air headshot kill */
-		else if(KillMsg[client].MidAirKill)
+		else if(Player[client].KillMsg.MidAirKill)
 		{
 			/* Mid air headshot kill through smoke */
-			if(KillMsg[client].SmokeKill)
+			if(Player[client].KillMsg.SmokeKill)
 			{
-				switch(KillMsg[client].BlindedKill)
+				switch(Player[client].KillMsg.BlindedKill)
 				{
 					/* Mid air headshot kill through smoke whilst blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13], Kill_Type[0]);
@@ -882,7 +882,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 			/* Mid air headshot kill */
 			else
 			{
-				switch(KillMsg[client].BlindedKill)
+				switch(Player[client].KillMsg.BlindedKill)
 				{
 					/* Mid air eadshot kill while blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[13], Kill_Type[0]);
@@ -895,9 +895,9 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		else
 		{
 			/* Headshot kill through smoke */
-			if(KillMsg[client].SmokeKill)
+			if(Player[client].KillMsg.SmokeKill)
 			{
-				switch(KillMsg[client].BlindedKill)
+				switch(Player[client].KillMsg.BlindedKill)
 				{
 					/* Headshot kill through smoke while blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default} %t{default}", Kill_Type[3], Kill_Type[1], Kill_Type[13]);
@@ -908,7 +908,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 			/* Headshot kill */
 			else
 			{
-				switch(KillMsg[client].BlindedKill)
+				switch(Player[client].KillMsg.BlindedKill)
 				{
 					/* Headshot kill whilst blinded */
 					case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[3], Kill_Type[13]);
@@ -919,29 +919,29 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		}
 	}
 	/* Telefrag */
-	else if(KillMsg[client].TeleFragKill)
+	else if(Player[client].KillMsg.TeleFragKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[8]);
 	}
 	/* Taunt Kill */
-	else if(KillMsg[client].TauntKill)
+	else if(Player[client].KillMsg.TauntKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[9]);
 	}
 	/* Grenade Frag */
-	else if(KillMsg[client].GrenadeKill)
+	else if(Player[client].KillMsg.GrenadeKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[11]);
 	}
 	/* Bomb Kill */
-	else if(KillMsg[client].BombKill)
+	else if(Player[client].KillMsg.BombKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[12]);
 	}
 	/* Blinded Kill */
-	else if(KillMsg[client].BlindedKill)
+	else if(Player[client].KillMsg.BlindedKill)
 	{
-		switch(KillMsg[client].MidAirKill)
+		switch(Player[client].KillMsg.MidAirKill)
 		{
 			/* Mid air blinded kill */
 			case true: Format(buffer, sizeof(buffer), "%t{default} %t{default}", Kill_Type[13], Kill_Type[0]);
@@ -950,7 +950,7 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		}
 	}
 	/* Mid air kill */
-	else if(KillMsg[client].MidAirKill)
+	else if(Player[client].KillMsg.MidAirKill)
 	{
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
 	}
@@ -1022,14 +1022,34 @@ stock void XStats_SetFailState(const char[] reason, any ...) {
 
 /* Update the total damage done. */
 stock void UpdateDamage(int client)	{
-	SQL.Query(DBQuery_UpdateDamage, "select DamageDone from `%s` where SteamID='%s' and ServerID='%i'", client, DBPrio_Low,
-	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+	SQL.Query(DBQuery_UpdateDamage, "select DamageDone from `%s` where SteamID='%s' and ServerID = %i"
+	, client
+	, DBPrio_Low
+	, Global.playerlist
+	, Player[client].SteamID
+	, Cvars.ServerID.IntValue);
 }
 
-void DBQuery_UpdateDamage(Database database, DBResultSet results, const char[] error, int client) {
-	if(results != null && results.FetchRow()) {
+void DBQuery_UpdateDamage(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+	if(r != null && r.FetchRow()) {
 		/* Low priority to lower chances of lag spikes */
-		SQL.Query(DBQuery_Callback, "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID='%i'", _, DBPrio_Low,
-		Global.playerlist, Session[client].DamageDone, Player[client].SteamID, Cvars.ServerID.IntValue); 
+		db.Query(DBQuery_Callback, "alter table `%s` update DamageDone = DamageDone + %i where SteamID='%s' and ServerID = %i"
+		, _
+		, DBPrio_Low
+		, Global.playerlist
+		, Player[client].Session.DamageDone
+		, Player[client].SteamID
+		, Cvars.ServerID.IntValue); 
 	}
+}
+
+//
+
+stock int QueryFormat(char[] buffer, int maxlength, const char[] name, bool increment = true, int val = 1) {
+	char type[][] = {"-","+"};
+	return Format(buffer, maxlength, ", %s = %s %s %i", name, name, type[increment], val);
+}
+
+stock int QueryFormatFinal(char[] buffer, int maxlength, char[] steamid) {
+	return Format(buffer, maxlength, " where SteamID = '%s' and ServerID = %i", steamid, Cvars.ServerID.IntValue);
 }

@@ -61,13 +61,13 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(StrEqual(event_name, EVENT_BOMB_PLANTED) && CS_GetClientTeam(client) == CSTeam_T)	{
 		m_hLastBombPlanter = client;
 		
-		Session[client].BombsPlanted++;
+		Player[client].Session.BombsPlanted++;
 		Format(query, sizeof(query), "update `%s` set BombsPlanted = BombsPlanted+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
 		
 		if((points = BombEvent[0].IntValue) > 0)	{
-			Session[client].AddPoints(points);
+			Player[client].Session.AddPoints(points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", Global.playerlist, points, Player[client].SteamID);
 			SQL.Query(DBQuery_Callback, query);
 			
@@ -78,13 +78,13 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(StrEqual(event_name, EVENT_BOMB_DEFUSED) && CS_GetClientTeam(client) == CSTeam_CT)	{
 		m_hLastBombDefuser = client;
 		
-		Session[client].BombsDefused++;
+		Player[client].Session.BombsDefused++;
 		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
 		
 		if((points = BombEvent[1].IntValue) > 0)	{
-			Session[client].AddPoints(points);
+			Player[client].Session.AddPoints(points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", Global.playerlist, points, Player[client].SteamID);
 			SQL.Query(DBQuery_Callback, query);
 			
@@ -93,13 +93,13 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 	}
 		
 	if(StrEqual(event_name, EVENT_BOMB_EXPLODED) && CS_GetClientTeam(client) == CSTeam_T)	{
-		Session[client].BombsExploded++;
+		Player[client].Session.BombsExploded++;
 		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID='%s' and ServerID='%i'",
 		Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
 		
 		if((points = BombEvent[2].IntValue) > 0)	{
-			Session[client].AddPoints(points);
+			Player[client].Session.AddPoints(points);
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i where SteamID='%s'", Global.playerlist, points, Player[client].SteamID);
 			SQL.Query(DBQuery_Callback, query);
 			
@@ -110,21 +110,21 @@ stock void CS_Bombs(Event event, const char[] event_name, bool dontBroadcast)	{
 
 /* Hostages */
 stock void CS_Hostages(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats())
-		return;
+	if(!IsValidStats()) return;
 	
 	int client = GetClientOfUserId(event.GetInt("userid"));
-	if(!Tklib_IsValidClient(client, true))
-		return;
+	if(!Tklib_IsValidClient(client, true)) return;
 	
 	char query[512];
 	int points = 0;
 	
-	if(StrEqual(event_name, EVENT_HOSTAGE_RESCUED))	{
-		Session[client].HostagesRescued++;
+	Player[client].Points = GetClientPoints(Player[client].SteamID);
+	
+	if(StrEqual(event_name, EVENT_HOSTAGE_RESCUED)) {
+		Player[client].Session.HostagesRescued++;
 		
-		if((points = HostageEvent[0].IntValue) > 0)	{	
-			CPrintToChat(client, "Hostage Rescued", Player[client].Name, GetClientPoints(Player[client].SteamID), points);
+		if((points = HostageEvent[0].IntValue) > 0)	{
+			CPrintToChat(client, "%s %t", Global.Prefix, "Hostage Rescued", Player[client].Name, Player[client].Points, points);
 			
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, HostagesRescued = HostagesRescued+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -132,11 +132,11 @@ stock void CS_Hostages(Event event, const char[] event_name, bool dontBroadcast)
 		}
 	}
 	
-	if(StrEqual(event_name, EVENT_HOSTAGE_KILLED))	{
-		Session[client].HostagesRescued++;
+	if(StrEqual(event_name, EVENT_HOSTAGE_KILLED)) {
+		Player[client].Session.HostagesRescued++;
 		
 		if((points = HostageEvent[1].IntValue) > 0)	{
-			CPrintToChat(client, "Hostage Killed", Player[client].Name, GetClientPoints(Player[client].SteamID), points);
+			CPrintToChat(client, "%s %t", Global.Prefix, "Hostage Killed", Player[client].Name, Player[client].Points, points);
 			
 			Format(query, sizeof(query), "update `%s` set Points = Points+%i, HostagesKilled = HostagesKilled+1 where SteamID='%s' and ServerID='%i'",
 			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
@@ -147,15 +147,12 @@ stock void CS_Hostages(Event event, const char[] event_name, bool dontBroadcast)
 
 /* Flashed */
 stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!IsValidStats())
-		return;
+	if(!IsValidStats()) return;
 	
 	int victim = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
-	if(!Tklib_IsValidClient(victim))
-		return;
+	if(!Tklib_IsValidClient(victim)) return;
 	
-	if(IsFakeClient(victim) && !Cvars.ServerID.IntValue)
-		return;
+	if(IsFakeClient(victim) && !Cvars.AllowBots.BoolValue) return;
 	
 	if(!IsFakeClient(victim))	{
 		float m_flFlashDuration = GetEntPropFloatEx(victim, Prop_Send, "m_flFlashDuration");
@@ -166,24 +163,20 @@ stock void CS_Flashed(Event event, const char[] event_name, bool dontBroadcast)	
 	
 	int client;
 	switch(Global.Game)	{
-		case Game_CSS, Game_CSPromod:
-			client = (m_hLastFlashBangGrenade = client) ? client : 0;
-		case Game_CSGO, Game_CSCO:
-			client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
+		case Game_CSS, Game_CSPromod: client = (m_hLastFlashBangGrenade = client) ? client : 0;
+		case Game_CSGO, Game_CSCO: client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	}
 	
-	if(!Tklib_IsValidClient(client, true))
-		return;
+	if(!Tklib_IsValidClient(client, true)) return;
+	if(IsSameTeam(victim, client) || IsSamePlayers(victim, client)) return;
 	
-	if(IsSameTeam(victim, client) || IsSamePlayers(victim, client))
-		return;
+	XStats_DebugText(false, "//===== CS_Flashed =====\\"
+	... "\nClient: %i (%N)"
+	... "\nVictim: %i (%N)\n"
+	, client, client
+	, victim, victim);
 	
-	XStats_DebugText(false, "//===== CS_Flashed =====//");
-	XStats_DebugText(false, "Client: %i (%N)", client, client);
-	XStats_DebugText(false, "Victim: %i (%N)", victim, victim);
-	XStats_DebugText(false, " ");
-	
-	Session[client].FlashedOpponents++;
+	Player[client].Session.FlashedOpponents++;
 	
 	char query[512];
 	Format(query, sizeof(query), "update `%s` set FlashedOpponents = FlashedOpponents+1 where SteamID='%s' and ServerID='%i'",
@@ -237,7 +230,7 @@ stock Action Timer_OnBuyCommand(Handle timer, DataPack pack)	{
 	}
 	
 	int price = CS_GetPriceFromWeapon(weapon);
-	Session[client].MoneySpent = Session[client].MoneySpent;
+	Player[client].Session.MoneySpent += price;
 	
 	char query[256];
 	Format(query, sizeof(query), "update `%s` set MoneySpent = MoneySpent+%i where SteamID='%i' and ServerID='%i'",
