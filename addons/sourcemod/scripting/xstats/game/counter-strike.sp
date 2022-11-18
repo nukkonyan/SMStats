@@ -1,20 +1,20 @@
 /**
  *	Functions.
  */
-ConVar	BombEvent[3];
-ConVar	HostageEvent[2];
+ConVar BombEvent[3]
+, HostageEvent[2];
 
 /* Custom network props */
 stock int m_hLastFlashBangGrenade = 0;
 stock int m_hLastHeGrenade = 0;
 stock int m_hLastSmokeGrenade = 0;
-stock int m_hLastFirebombGrenade[MaxPlayers+1] = -1;
-stock int m_hLastGrenade[MaxPlayers+1] = -1;
+stock int m_hLastFirebombGrenade[MaxPlayers+1] = {-1, ...};
+stock int m_hLastGrenade[MaxPlayers+1] = {-1, ...};
 
 stock int m_hLastBombPlanter = 0;
 stock int m_hLastBombDefuser = 0;
 
-stock bool m_bIsFlashed[MaxPlayers+1] = false;
+stock bool m_bIsFlashed[MaxPlayers+1] = {false, ...};
 
 void PrepareGame_CounterStrike() {
 	/* Bomb events */

@@ -68,8 +68,7 @@ Action Timer_UploadStuff(Handle timer, int client)	{
  *	since otherwise we get double disconnect messages.
  */
 stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast)	{
-	if(!Cvars.PluginActive.BoolValue || !Cvars.ConnectMsg.BoolValue)
-		return;
+	if(!Cvars.PluginActive.BoolValue || !Cvars.ConnectMsg.BoolValue) return;
 	
 	event.BroadcastDisabled = true;	
 	
@@ -83,35 +82,42 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 	event.GetString(EVENT_STR_REASON, reason, sizeof(reason));
 	if(IsFakeClient(client) && Cvars.AllowBots.BoolValue) CPrintToChatAll("%s BOT %s was removed {grey}(%s)", Global.Prefix, Player[client].Name, reason);
 	if(!Tklib_IsValidClient(client, true)) return;
-	for(int i = 1; i < MaxClients; i++) PlayerDamaged[i][client] = 0;
+	TargetLoopEx(i) PlayerDamaged[i][client] = 0;
 	
 	if(Cvars.ConnectMsg.BoolValue) {
-		Player[client].Points = GetClientPoints(Player[client].SteamID);
-		Player[client].Position = GetClientPosition(Player[client].SteamID);
+		int list[2];
+		GetClientPosition(Player[client].SteamID, list);
+		Player[client].Position = list[0];
+		Player[client].Points = list[1];
 		CPrintToChatAll("%s %t", Global.Prefix, "Player Disconnected", Player[client].Name, Player[client].Position, Player[client].Points, Player[client].Country, reason);
 		XStats_DebugText(false, "%s (Pos #%i, %i points) has disconnected from %s", Player[client].Playername, Player[client].Position, Player[client].Points, Player[client].Country);
 		
-		UpdateLastConnectedState(Player[client].SteamID);
+		//UpdateLastConnectedState(Player[client].SteamID);
 	}
 	
+	/* Unused for now
+	if(SQL != null)
+	{
+		OnDisconnectQueries(client);
+	}
+	*/
+	
 	/* Clear the steamid. */
-	Player[client].SteamID = NULL_STRING;
+	Player[client].SteamID = "";
 }
 
 stock void Rounds(Event event, const char[] event_name, bool dontBroadcast)	{
-	XStats_DebugText(false, "//===== Rounds =====//");
-	XStats_DebugText(false, "\"%s\" Was fired\n", event_name);
+	XStats_DebugText(false, "//===== Rounds =====//" ... "\n%s\" Was fired\n", event_name);
 	
-	DataPack pack = new DataPack();
+	DataPack pack;
+	CreateDataTimer(0.1, Timer_Rounds, pack);
 	pack.WriteString(event_name);
-	CreateTimer(0.1, Timer_Rounds, pack);
+	pack.Reset();
 }
 
 stock Action Timer_Rounds(Handle timer, DataPack pack)	{
-	pack.Reset();
 	char event_name[64];
 	pack.ReadString(event_name, sizeof(event_name));
-	delete pack;
 	
 	(StrEqual(event_name, EVENT_ROUND_END)
 	|| StrEqual(event_name, EVENT_TEAMPLAY_ROUND_WIN)

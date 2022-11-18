@@ -6,7 +6,7 @@ Action RankPanel(int client, int args=-1) {
 	}
 	
 	SQL.Lock();
-	DBResultSet results = SQL.Query2("select Points, PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
+	DBResultSet results = SQL.Query2("select PlayTime, Kills, Assists, Deaths, Suicides, DamageDone from `%s` where SteamID='%s' and ServerID='%i'",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 	
 	if(!results) {
@@ -27,15 +27,17 @@ Action RankPanel(int client, int args=-1) {
 	
 	SQL.Unlock();
 	
-	Player[client].Position = GetClientPosition(Player[client].SteamID);
+	int list[2];
+	GetClientPosition(Player[client].SteamID, list);
+	Player[client].Position = list[0];
 	int players = GetTablePlayerCount();
-	int points = results.FetchInt(0);
-	int playtime = results.FetchInt(1);
-	int kills = results.FetchInt(2);
-	int assists = results.FetchInt(3);
-	int deaths = results.FetchInt(4);
-	int suicides = results.FetchInt(5);
-	int damagedone = results.FetchInt(6);
+	int points = list[1];
+	int playtime = results.FetchInt(0);
+	int kills = results.FetchInt(1);
+	int assists = results.FetchInt(2);
+	int deaths = results.FetchInt(3);
+	int suicides = results.FetchInt(4);
+	int damagedone = results.FetchInt(5);
 	float kdr = GetRatio(kills, deaths);
 	
 	delete results;	

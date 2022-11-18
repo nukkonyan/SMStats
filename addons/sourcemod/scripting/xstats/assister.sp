@@ -1,5 +1,5 @@
 /* For experimental assister function. */
-int PlayerDamaged[MAXPLAYERS][MAXPLAYERS];
+int PlayerDamaged[MaxPlayers+1][MaxPlayers+1];
 
 Action Assister_OnTakeDamage(int victim, int &client, int &inflictor, float &damage, int &damagetype)	{
 	if(Tklib_IsValidClient(victim) && Tklib_IsValidClient(client, true) && !IsSameTeam(victim, client))	{

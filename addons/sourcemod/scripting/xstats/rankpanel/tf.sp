@@ -1,6 +1,6 @@
 stock void TotalStatistics_TF2(int client)	{
 	/* We select the tables below and prepare the query */
-	SQL.Query(DBQuery_TotalStatistics_TF2, "select " 
+	SQL.QueryEx2(DBQuery_TotalStatistics_TF2, "select " 
 	... "Points,"
 	... "PlayTime,"
 	... "Kills,"
@@ -64,7 +64,7 @@ stock void TotalStatistics_TF2(int client)	{
 	... "PassBallsCatched,"
 	... "PassBallsStolen,"
 	... "PassBallsBlocked"
-	... " from `%s` where SteamID='%s' and ServerID='%i'", client, _, Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
+	... " from `%s` where SteamID='%s' and ServerID='%i'", client, Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 }
 
 void DBQuery_TotalStatistics_TF2(DatabaseEx database, DBResultSet results, const char[] error, int client) {

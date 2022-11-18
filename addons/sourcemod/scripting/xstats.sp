@@ -7,8 +7,27 @@
 #pragma tabsize 0
 
 /* XStats is a multi-game statistical tracking plugin, influenced by gameMe & HLStatsX. */
-#define Version "0.01a_02e"
+#define Version "1.0.0.0a"
 SetPluginInfo("XStats - Statistical Multi-Tracker", _tklib_author, "XStats - Track kills, maps, kill events, achievements, etc.", Version, _tklib_author_url)
+
+/**
+ *	TODO List
+ *
+ *	> 0: (Yes i count from 0)
+ *		→ Make database queries pre-disconnect instead of every kill event, etc to lower database quering all the time.
+ *		  Just to make sure the server doesn't 'hiccup' most of the time for the most fresh experience.
+ *		  You just don't want some random server hiccups when you're in example clutch situation or during a fight.
+ *		  Basically make it an all-in-one simple query.
+ *
+ *	> 1:
+ *		→ Make sure the GetClientPosition() function properly retrieves the correct position.
+ *		  Currrently has flaw of outputting same position of users having same points.
+ *
+ *	> 2:
+ *		→ Make Session be saved via SQLIte (Local sql database connection)
+ *		  This is to make sure the session is saved, after potential update is found and installed.
+ *		  Just for the session to be not lost.
+ */
 
 /* Core */
 DatabaseEx SQL;
