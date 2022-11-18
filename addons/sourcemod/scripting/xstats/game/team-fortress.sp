@@ -1051,8 +1051,6 @@ public void TF2_OnWaitingForPlayersEnd()	{ WarmupActive = false; }
 stock void TF2_ClientKillVictim(int client, int victim)	{
 	if(IsValidAbuse(client)) return;
 	
-	XStats_DebugText(false, "//===== TF2_ClientKillVictim =====\\");
-	
 	TFClassType type = TF2_GetPlayerClass(victim);
 	if(type < TFClass_Scout) {
 		XStats_DebugText(false, "Tried updating for invalid class id %i from %s, ignoring..\n", type, Player[victim].Playername);
@@ -1098,11 +1096,9 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 		case TFClass_Civilian: Session[client].CivilianKills++; /* TF2 Classic */
 	}
 	
-	char query[512];
-	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
 	Global.playerlist, class_kills[type], class_kills[type], Player[client].SteamID, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_Callback, query);
-	XStats_DebugText(false, "Updating %s kills for %s (\"%s\")\n", TF2_ClassTypeName[type], Player[client].Playername, class_kills[type]);
+	XStats_DebugText(false, "Updating %s kills for %s (\"%s\")", TF2_ClassTypeName[type], Player[client].Playername, class_kills[type]);
 	
 	if(IsFakeClient(victim)) return; // Continue only if it's not a bot.
 	
@@ -1119,8 +1115,7 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 		case TFClass_Civilian: Session[victim].CivilianDeaths++; /* TF2 Classic */
 	}
 	
-	Format(query, sizeof(query), "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%s'",
 	Global.playerlist, class_deaths[type], class_deaths[type], Player[victim].SteamID, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_Callback, query);
 	XStats_DebugText(false, "Updating %s deaths for %s (\"%s\")\n", TF2_ClassTypeName[type], Player[victim].Playername, class_deaths[type]);
 }
