@@ -25,11 +25,9 @@ stock void Suicide(Event event, const char[] event_name, bool dontBroadcast)	{
 	
 	OnDeathRankPanel(client);
 	
-	char query[256];
 	Session[client].Suicides++;
-	Format(query, sizeof(query), "update `%s` set Suicides = Suicides+1 where SteamID='%s' and ServerID='%i'",
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set Suicides = Suicides+1 where SteamID='%s' and ServerID = %i",
 	Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_Callback, query);
 	PrepareOnSuicideForward(client);
 }
 

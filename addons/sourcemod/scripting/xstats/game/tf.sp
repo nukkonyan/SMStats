@@ -872,12 +872,31 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 			switch(TF2_GetBuildingType(inflictor)) {
 				case TFBuilding_Dispenser: XStats_DebugText(false, "Building: Dispenser (?!)");
 				case TFBuilding_Sentrygun:	{
-					Session[client].MiniSentrykills++;
+					Session[client].Sentrykills++;
 					len += Format(query[len], sizeof(query)-len, ", SentryKills = SentryKills+1");
-					XStats_DebugText(false, "Building: Sentry");
+					
+					int level = TF2_GetBuildingLevel(inflictor);
+					switch(level) {
+						case 1: {
+							Session[client].SentryLVL1Kills++;
+							len += Format(query[len], sizeof(query)-len, ", SentryLVL1Kills = SentryLVL1Kills+1");
+						}
+						
+						case 2: {
+							Session[client].SentryLVL2Kills++;
+							len += Format(query[len], sizeof(query)-len, ", SentryLVL2Kills = SentryLVL2Kills+1");
+						}
+						
+						case 3: {
+							Session[client].SentryLVL3Kills++;
+							len += Format(query[len], sizeof(query)-len, ", SentryLVL3Kills = SentryLVL3Kills+1");
+						}
+					}
+					
+					XStats_DebugText(false, "Building: Sentry lvl %i", level);
 				}
 				case TFBuilding_MiniSentry:	{
-					Session[client].Sentrykills++;
+					Session[client].MiniSentrykills++;
 					len += Format(query[len], sizeof(query)-len, ", MiniSentryKills = MiniSentryKills+1");
 					XStats_DebugText(false, "Building: Mini-Sentry");
 				}

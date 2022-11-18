@@ -5,9 +5,9 @@
  *	@param	weapon			The string to copy to.
  *	@param	maxlen			The maximum length of the string.
  *	@param	weapon_defindex	The weapon definition index to read.
- *	@param	format			The weapon classname to read.
+ *	@param	classname		The weapon classname to read.
  */
-int TF2_FixWeaponClassname(int client, char[] weapon, int maxlen, int weapon_defindex, const char[] format)	{
+int TF2_FixWeaponClassname(int client, char[] weapon, int maxlen, int weapon_defindex, const char[] classname) {
 	TFClassType class = TF2_GetPlayerClass(client);
 	
 	switch(weapon_defindex)	{
@@ -465,6 +465,11 @@ int TF2_FixWeaponClassname(int client, char[] weapon, int maxlen, int weapon_def
 			}
 		}
 		
-		default: Format(weapon, maxlen, format);
+		default: {
+			if(StrEqual(classname, "obj_sentrygun1", false)) strcopy(weapon, maxlen, "tf_sentrygun_lvl1");
+			else if(StrEqual(classname, "obj_sentrygun2", false)) strcopy(weapon, maxlen, "tf_sentrygun_lvl2");
+			else if(StrEqual(classname, "obj_sentrygun3", false)) strcopy(weapon, maxlen, "tf_sentrygun_lvl3");
+			else strcopy(weapon, maxlen, classname);
+		}
 	}
 }

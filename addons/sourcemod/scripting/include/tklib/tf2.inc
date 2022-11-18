@@ -1185,7 +1185,7 @@ stock bool TF2_RemovePlayerWeaponSlot(int client, TFSlot slot) {
  *
  *	@error	If the entity is invalid, this returns false.
  */
-stock bool TF2_IsEntityBuilding(int building) { return GetEntPropBool(building, Prop_Send, "m_bBuilding"); }
+stock bool TF2_IsEntityBuilding(int building) { return HasEntPropEx(building, Prop_Send, "m_bBuilding"); }
 
 /**
  *	Returns if the entity is a mini-building.
@@ -1194,7 +1194,7 @@ stock bool TF2_IsEntityBuilding(int building) { return GetEntPropBool(building, 
  *
  *	@error	If the entity is invalid, this returns false.
  */
-stock bool TF2_IsEntityMiniBuilding(int building) { return GetEntPropBool(building, Prop_Send, "m_bMiniBuilding"); }
+stock bool TF2_IsEntityMiniBuilding(int building) { return HasEntPropEx(building, Prop_Send, "m_bMiniBuilding"); }
 
 /**
  *	Returns the buildings builder.
