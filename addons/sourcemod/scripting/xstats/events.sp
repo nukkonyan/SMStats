@@ -92,7 +92,7 @@ stock void Disconnected(Event event, const char[] event_name, bool dontBroadcast
 		CPrintToChatAll("%s %t", Global.Prefix, "Player Disconnected", Player[client].Name, Player[client].Position, Player[client].Points, Player[client].Country, reason);
 		XStats_DebugText(false, "%s (Pos #%i, %i points) has disconnected from %s", Player[client].Playername, Player[client].Position, Player[client].Points, Player[client].Country);
 		
-		//UpdateLastConnectedState(Player[client].SteamID);
+		UpdateLastConnectedState(Player[client].SteamID);
 	}
 	
 	/* Unused for now

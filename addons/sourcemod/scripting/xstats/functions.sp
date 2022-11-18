@@ -55,20 +55,17 @@ stock int GetClientPoints(const char[] auth) {
  *					list[0] = Position.
  *					list[1] = Points.
  */
-stock void GetClientPosition(const char[] auth, int[] list)
-{
+stock void GetClientPosition(const char[] auth, int[] list) {
 	int position = 0
 	, points = 0;
 	
-	if(SQL != null)
-	{
+	if(SQL != null) {
 		SQL.Lock();
 		
 		char error[256];
 		DBResultSet results = SQL.Query2("select Points from `%s` where SteamID='%s' and ServerID='%i'", Global.playerlist, auth, Cvars.ServerID.IntValue);
 		
-		if(!results)
-		{
+		if(!results) {
 			SQL.GetError(error, sizeof(error));
 			delete results;
 			SQL.Unlock();
@@ -77,14 +74,12 @@ stock void GetClientPosition(const char[] auth, int[] list)
 			return;
 		}
 		
-		if(results.FetchRow())
-		{
+		if(results.FetchRow()) {
 			points = results.FetchInt(0);
 			
 			results = SQL.Query2("select count(*) from `%s` where Points >= '%i' and ServerID='%i'", Global.playerlist, points, Cvars.ServerID.IntValue);
 			
-			if(!results)
-			{
+			if(!results) {
 				SQL.GetError(error, sizeof(error));
 				delete results;
 				SQL.Unlock();
@@ -93,10 +88,7 @@ stock void GetClientPosition(const char[] auth, int[] list)
 				return;
 			}
 			
-			if(results.FetchRow())
-			{
-				position = results.FetchInt(0);
-			}
+			if(results.FetchRow()) position = results.FetchInt(0);
 		}
 		
 		delete results;
@@ -345,8 +337,7 @@ stock void UpdateLastConnectedState(const char[] auth) {
 		return;
 	}
 	
-	SQL.Query(DBQuery_Callback, "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'", _, _, Global.playerlist, GetTime(), auth, Cvars.ServerID.IntValue);
-	SQL.Query(DBQuery_Callback, "update `%s` set LastConnectedServerID='%i' where SteamID='%s'", _, _, Global.playerlist, Cvars.ServerID.IntValue, auth);
+	SQL.QueryEx(DBQuery_Callback, "update `%s` set LastConnected='%i' where SteamID='%s' and ServerID='%i'", Global.playerlist, GetTime(), auth, Cvars.ServerID.IntValue);
 }
 
 /**
@@ -601,7 +592,7 @@ stock bool AssistedKill(int assist, int client, int victim) {
 }
 
 /**
- *	Victim died.
+ *	Victim died. (Obviously lol)
  *
  *	@param	victim	The victims user index.
  *
@@ -626,6 +617,13 @@ void VictimDied(int victim) {
 	XStats_DebugText(false, "Updating points for %s due to dying", Player[victim].Playername);
 }
 
+/**
+ *	Retrieves the death penality points.
+ *
+ *	@param	victim	The users index.
+ *
+ *	@error	If the game is tf2 and class is invalid, this returns 0.
+ */
 int GetDeathPoints(int victim) {
 	int points;
 	switch(Global.Game) {
@@ -698,9 +696,6 @@ stock Action CheckPlayersPluginStart(Handle timer) {
 	
 	XStats_DebugText(false, "//== XStats Debug Log: CheckPlayersPluginStart ==//\n");
 	
-	//SQL.Lock();
-	//DBResultSet results;
-	
 	TargetLoopEx(client) {
 		/* Bots needs a name too, right? */
 		if(Tklib_IsValidClient(client, false, false, false)) {
@@ -724,13 +719,10 @@ stock Action CheckPlayersPluginStart(Handle timer) {
 	return Plugin_Handled;
 }
 
-void DBQuery_CheckPlayer(DatabaseEx db, DBResultSet r, const char[] error, int client)
-{
-	switch(r != null && r.RowCount != 0)
-	{
+void DBQuery_CheckPlayer(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+	switch(r != null && r.RowCount != 0) {
 		// Player exists
-		case true:
-		{
+		case true: {
 			XStats_DebugText(false, "Found player %s in \"%s\" at ServerID %i, initializing forwards OnClientPutInServer..",
 			Player[client].Playername, Global.playerlist, Cvars.ServerID.IntValue);
 			
@@ -738,8 +730,7 @@ void DBQuery_CheckPlayer(DatabaseEx db, DBResultSet r, const char[] error, int c
 		}
 		
 		// Player wasn't found.
-		case false:
-		{
+		case false: {
 			XStats_DebugText(false, "Failed to find player %s on playerlist table, inserting new query directly onto database.", Player[client].Playername);
 			
 			db.QueryEx2(DBQuery_CheckPlayer_Callback, "insert into `%s` (SteamID, IPAddress, ServerID) values ('%s', '%s', '%i')",
@@ -752,10 +743,8 @@ void DBQuery_CheckPlayer(DatabaseEx db, DBResultSet r, const char[] error, int c
 	}
 }
 
-void DBQuery_CheckPlayer_Callback(DatabaseEx db, DBResultSet r, const char[] error, int client)
-{
-	switch(r != null)
-	{
+void DBQuery_CheckPlayer_Callback(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+	switch(r != null) {
 		case true: OnClientPutInServer(client);
 		case false: XStats_DebugText(false, "Failed inserting %s into player table %s (%s)", Player[client].Playername, Global.playerlist, error);
 	}

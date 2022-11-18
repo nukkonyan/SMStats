@@ -62,7 +62,6 @@ stock void OnDisconnectQueries(int client)
 			len += Format(query[len], sizeof(query)-len, "update `%s` set ", Global.playerlist);
 			len += Format(query[len], sizeof(query)-len, "Points = Points = %i,", Points);
 			len += Format(query[len], sizeof(query)-len, "LastConnected = %i,", LastConnected); //Could easily be done using while() in php retrieving the latest unix timestamp of them all.
-			len += Format(query[len], sizeof(query)-len, "LastConnectedServerID = %i,", Cvars.ServerID.IntValue); //Gonna be deleted soon.
 			len += Format(query[len], sizeof(query)-len, "PlayTime = PlayTime + %i,", Session[client].PlayTime);
 			len += Format(query[len], sizeof(query)-len, "IPAddress = '%s',", Player[client].IP);
 			len += Format(query[len], sizeof(query)-len, "Kills = Kills + %i,", Session[client].Kills);

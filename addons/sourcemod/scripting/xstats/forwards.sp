@@ -27,8 +27,7 @@ stock void PrepareForwards() {
 }
 
 //OnClientConnect() could be used..
-public void OnClientAuthorized(int client, const char[] auth)
-{
+public void OnClientAuthorized(int client, const char[] auth) {
 	GetClientNameEx(client, Player[client].Playername, sizeof(Player[].Playername));
 	GetClientNameTeamString(client, Player[client].Name, sizeof(Player[].Name));
 	
@@ -39,78 +38,18 @@ public void OnClientAuthorized(int client, const char[] auth)
 	Format(Player[client].SteamID, sizeof(Player[].SteamID), auth);
 	if(!GeoipCountry(Player[client].IP, Player[client].Country, sizeof(Player[].Country))) Player[client].Country = "unknown country";
 	
-	/*
-	SQL.Lock();
-	DBResultSet results = SQL.Query2("select * from `%s` where SteamID='%s'", Global.playerlist, auth);
-	switch(results != null && results.RowCount != 0) {
-		// Player was found
-		case true: {
-			results = SQL.Query2("update `%s` set IPAddress = '%s' where SteamID='%s' and ServerID='%i'",
-			Global.playerlist, Player[client].IP, Player[client].SteamID, Cvars.ServerID.IntValue);
-			
-			// Avoid showing ip due to privacy
-			XStats_DebugText(false, "Updating table \"%s\"\nSteamID \"%s\" (ServerID %i)",
-			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-			
-			if(results == null)	{
-				char error[256];
-				SQL.GetError(error, sizeof(error));
-				XStats_DebugText(true, "Updating player table into \"%s\" failed! (%s)", Global.playerlist, error);
-			}
-		}
-		// Player wasn't found, adding..
-		case false: {
-			results = SQL.Query2("insert into `%s` (SteamID, IPAddress, ServerID) values ('%s', '%s', '%i')",
-			Global.playerlist, Player[client].SteamID, Player[client].IP, Cvars.ServerID.IntValue);
-			
-			XStats_DebugText(false, "Inserting into table \"%s\" \nSteamID \"%s\" (ServerID %i)",
-			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
-			
-			if(results == null) {
-				char error[256];
-				SQL.GetError(error, sizeof(error));
-				XStats_DebugText(true, "Inserting player table into \"%s\" failed! (%s)", Global.playerlist, error);
-			}
-		}
-	}
-	
-	results = SQL.Query2("select * from `%s` where SteamID='%s'", Global.weapons, auth);
-	
-	// Player wasn't found, adding..
-	if(results == null || results != null && results.RowCount == 0) {
-		results = SQL.Query2("insert into `%s` (SteamID, ServerID) values ('%s', '%i')",
-		Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
-		
-		XStats_DebugText(false, "Inserting into table \"%s\" \nSteamID \"%s\" (ServerID %i)",
-		Global.weapons, Player[client].SteamID, Cvars.ServerID.IntValue);
-		
-		if(results == null) {
-			char error[256];
-			SQL.GetError(error, sizeof(error));
-			XStats_DebugText(true, "Inserting player table into \"%s\" failed! (%s)", Global.weapons, error);
-		}
-	}
-	
-	delete results;
-	SQL.Unlock();
-	*/
-	
 	SQL.QueryEx2(DBQuery_OnClientAuthorized, "select * from `%s` where SteamID = '%s'", client, Global.playerlist, auth);
 }
 
-void DBQuery_OnClientAuthorized(DatabaseEx db, DBResultSet r, const char[] error, int client)
-{
-	if(!db)
-	{
+void DBQuery_OnClientAuthorized(DatabaseEx db, DBResultSet r, const char[] error, int client) {
+	if(!db) {
 		XStats_DebugText(false, "Tried retrieving player table but database connection is invalid!", error);
 		return;
 	}
 	
-	switch(r != null && r.RowCount != 0)
-	{
+	switch(r != null && r.RowCount != 0) {
 		// Player was found
-		case true:
-		{
+		case true: {
 			db.QueryEx2(DBQuery_OnClientAuthorized_Callback, "update `%s` set IPAddress = '%s' where SteamID='%s' and ServerID='%i'"
 			, true
 			, Global.playerlist
@@ -123,8 +62,7 @@ void DBQuery_OnClientAuthorized(DatabaseEx db, DBResultSet r, const char[] error
 			Global.playerlist, Player[client].SteamID, Cvars.ServerID.IntValue);
 		}
 		// Player wasn't found, adding..
-		case false:
-		{
+		case false: {
 			db.QueryEx2(DBQuery_OnClientAuthorized_Callback, "insert into `%s` (IPAddress, SteamID, ServerID) values ('%s', '%s', '%i')"
 			, false
 			, Global.playerlist
@@ -138,14 +76,12 @@ void DBQuery_OnClientAuthorized(DatabaseEx db, DBResultSet r, const char[] error
 	}
 }
 
-void DBQuery_OnClientAuthorized_Callback(DatabaseEx db, DBResultSet r, const char[] error, bool u)
-{
+void DBQuery_OnClientAuthorized_Callback(DatabaseEx db, DBResultSet r, const char[] error, bool u) {
 	char T[][] = {"Update","Inserting"},I[][] = {"on","into"};
 	if(!r) XStats_DebugText(true, "[XStats:OnClientAuthorized] %s player table %s \"%s\" failed! (%s)", T[u], I[u], Global.playerlist, error);
 }
 
-public void OnClientPutInServer(int client)
-{
+public void OnClientPutInServer(int client) {
 	if(!Cvars.PluginActive.BoolValue) return;
 	if(!Tklib_IsValidClient(client, true, _, false)) return;
 	

@@ -4,7 +4,6 @@ create table if not exists `playerlist_tf2`
 	`ServerID` int(16) not null default '1',
 	`Points` int(8) not null default '1000',
 	`LastConnected` int(8) not null default '0',
-	`LastConnectedServerID` int(8) not null default '1',
 	`PlayTime` int(8) not null default '0',
 	`SteamID` varchar(64) not null default '',
 	`IPAddress` varchar(64) not null default '',
