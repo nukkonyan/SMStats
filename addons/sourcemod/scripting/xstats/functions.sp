@@ -337,8 +337,8 @@ stock bool IsValidAbuse(int client=0) {
  *	@param	client	The users index.
  */
 stock bool CS_IsClientInsideSmoke(int client) {
-	Entity ent = Entity_Empty;
-	while((ent = Entity.FindByClassname("env_particlesmokegrenade")) != Entity_Invalid) if(ent.GetDistance(client) <= 3.0) return true;
+	Entity ent = Entity_NULL;
+	EntityWhileLoop(ent, "env_particlesmokegrenade") if(ent.GetDistance(client) <= 3.0) return true;
 	return false;
 }
 

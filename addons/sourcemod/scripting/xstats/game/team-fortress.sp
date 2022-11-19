@@ -334,7 +334,7 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 		"Object Event Type 1", /* Placing */
 		"Object Event Type 2", /* Destroying */
 	}, object_name[64], type_name[64];
-	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
+	Format(object_name, sizeof(object_name), "%t{default}", building_name[building]);
 	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[0]);
 	
 	char query[512];
@@ -428,7 +428,7 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 		"Object Event Type 1", /* Placing */
 		"Object Event Type 2", /* Destroying */
 	}, object_name[64], type_name[64];
-	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
+	Format(object_name, sizeof(object_name), "%t{default}", building_name[building]);
 	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[2]);
 	
 	char query[512];
