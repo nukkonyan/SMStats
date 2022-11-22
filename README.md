@@ -1,6 +1,6 @@
 ![xstats_2](https://user-images.githubusercontent.com/49116354/149617872-cbbd0be2-2bd6-45ee-95f4-e6f990285d4a.png)
 
-``Currently being re-built from scratch with a huge optimization. (All-in-one and Updater support.) At the moment in early development stages.``
+``Currently in early development stages.``
 
 ## Note: plugin is currently in development phase, errors are to be expected.
 
