@@ -33,8 +33,8 @@ int TF2_FixWeaponClassname(int client, char[] weapon, int maxlen, int weapon_def
 		case 19: strcopy(weapon, maxlen, "tf_weapon_grenadelauncher");		//The Grenade Launcher.
 		case 20: strcopy(weapon, maxlen, "tf_weapon_stickybomblauncher");	//The StickyBomb Launcher.
 		case 21: strcopy(weapon, maxlen, "tf_weapon_flamethrower");			//The Flamethrower.
-		case 22: strcopy(weapon, maxlen, "tf_weapon_pistol_engineer");		//The Pistol, Class: Engineer.
-		case 23: strcopy(weapon, maxlen, "tf_weapon_pistol_scout");			//The Pistol, Class: Scout.
+		case 22: strcopy(weapon, maxlen, "tf_weapon_pistol_scout");			//The Pistol, Class: Scout.
+		case 23: strcopy(weapon, maxlen, "tf_weapon_pistol_engineer");		//The Pistol, Class: Engineer.
 		case 24: strcopy(weapon, maxlen, "tf_weapon_revolver");				//The Revolver.
 		case 36: strcopy(weapon, maxlen, "tf_weapon_blutsauger");			//The Blutsauger.
 		case 37: strcopy(weapon, maxlen, "tf_weapon_ubersaw");				//The Ubersaw.
