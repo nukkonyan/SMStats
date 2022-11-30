@@ -29,7 +29,12 @@ SetPluginInfo("XStats - Statistical Multi-Tracker", _tklib_author, "XStats - Tra
  *		  Just for the session to be not lost.
  *
  *	> 3:
- *		→ Make kill events merged as one if multiple kills were made at the same frame.
+ *		→ Make kill events merged as one if multiple kills were made at the same frame as example.
+ *		→ Currently getting implemented, but will get updated to properly output messages correctly.
+ *
+ *	> 4:
+ *		→ Make the GetKDR() function to actually output a correct K-D-R (Kill-Death-Ratio)
+ *		→ Some assistance will be greatly appreciated getting this part done.
  */
 
 /* Core */

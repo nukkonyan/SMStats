@@ -8,8 +8,7 @@ ConVar TF2_MvM[25];
  */
 ConVar TF2_Collat;
 
-enum struct TF2KillInfo
-{
+enum struct TF2KillInfo {
 	int client;
 	int victim;
 	int assist;
@@ -22,6 +21,7 @@ enum struct TF2KillInfo
 	int penetrated;
 	int crits;
 	int time;
+	int points;
 	
 	bool headshot;
 	bool backstab;
@@ -38,8 +38,6 @@ enum struct TF2KillInfo
 	bool telefrag;
 	bool midair;
 	bool airshot;
-	
-	int points;
 }
 
 /**
@@ -875,20 +873,50 @@ void Player_Death_TF2(Event event, const char[] event_name, bool dontBroadcast)	
 	Global.OnKillFrame.PushArray(Info);
 }
 
-void OnGameFrame_TF2()
-{
-	TF2KillInfo Info;
-	integer Count = Global.OnKillFrame.Length;
+void OnGameFrame_TF2() {	
+	integer Count = 0;
 	
-	for(int i = 0; i < Count; i++)
-	{
-		Global.OnKillFrame.GetArray(i, Info);
-	}
-	
-	Global.OnKillFrame.Clear();
-	
-	if(Count > 0)
-	{
+	if((Count = Global.OnKillFrame.Length) > 0) {
+		TF2KillInfo Info;
+		
+		integer[] list = new integer[Count];
+		
+		for(integer i = 0; i < Count; i++) {
+			Global.OnKillFrame.GetArray(i, Info);
+			list[i] = Info.victim;
+		}
+		
+		Global.OnKillFrame.Clear();
+		
+		char dummy[512];
+		
+		if(Count == 1) {
+			int target = list[0];
+			Format(dummy, sizeof(dummy), Player[target].Name);
+		}
+		else if(Count > 1 && Count <= 5) {
+			int target = -1;
+			
+			for(int i = 0; i < Count-1; i++) {
+				target = list[i];
+				
+				if(dummy[0] != '\0') {
+					Format(dummy, sizeof(dummy), "%s, ", dummy);
+				}
+				
+				Format(dummy, sizeof(dummy), "%s%s", dummy, Player[target].Name);
+			}
+			
+			Format(dummy, sizeof(dummy), "%s %t %s", dummy, "And", Player[target+1].Name);
+			// Doesn't 100% correctly output the "and last player" but you most likely get what it's supposed to do.
+			// Will get fixed sometime soon.
+		}
+		else {
+			int target = list[0]; //They're all same team (assuming), a smarter check will most likely be used sometime.
+			TFTeam team = TF2_GetClientTeam(target);
+			Format(dummy, sizeof(dummy), "%s%t{default}", TF2_TeamColour[team], "Multiple Targets");
+		}
+		
 		int client = Info.client;
 		int victim = Info.victim;
 		int assist = Info.assist;
@@ -903,7 +931,7 @@ void OnGameFrame_TF2()
 		bool headshot = Info.headshot;
 		bool backstab = Info.backstab;
 		bool noscope = Info.noscope;
-		//bool bleedkill = Info.bleedkill;
+		bool bleedkill = Info.bleedkill;
 		bool dominated = Info.dominated;
 		bool dominated_assister = Info.dominated_assister;
 		bool revenge = Info.revenge;
@@ -931,6 +959,7 @@ void OnGameFrame_TF2()
 		... "\npenetrated %i"
 		... "\ncrit type %i [%s]"
 		... "\nMidair %s"
+		... "\nBleedkill %s"
 		... "\nPoints %i\n"
 		, Count
 		, Player[client].Playername, client
@@ -943,7 +972,8 @@ void OnGameFrame_TF2()
 		, deathflags
 		, penetrated
 		, crits, TF2_CritTypeName[crits]
-		, Bool[midair]
+		, YesNo[midair]
+		, YesNo[bleedkill]
 		, points);
 		
 		/* Kill msg stuff */
@@ -1117,7 +1147,7 @@ void OnGameFrame_TF2()
 			XStats_DebugText(false, "Processing kill message..\n");
 			
 			len += QueryFormat(query[len], sizeof(query)-len, "Points", _, points);
-			PrepareKillMessage(client, victim, points, Count);
+			PrepareKillMessage(client, dummy, points, Count);
 		}
 		
 		len += QueryFormatFinal(query[len], sizeof(query)-len, Player[client].SteamID);

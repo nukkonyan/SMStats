@@ -659,7 +659,7 @@ stock void DBQuery_CheckWeapon_Callback(DatabaseEx db, DBResultSet r, const char
  *	@param	victim	The victim who died.
  *	@param	points	The points the client was given
  */
-stock void PrepareKillMessage(int client, int victim, int points, int count=1) {
+stock void PrepareKillMessage(int client, const char[] victim, int points, int count=1) {
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
 	char buffer[196];
@@ -965,7 +965,7 @@ stock void PrepareKillMessage(int client, int victim, int points, int count=1) {
 		, Player[client].Name
 		, Player[client].Points
 		, points
-		, Player[victim].Name
+		, victim
 		, buffer
 		, (count > 1) ? str_counter : "");
 		
@@ -975,7 +975,7 @@ stock void PrepareKillMessage(int client, int victim, int points, int count=1) {
 		, Player[client].Name
 		, Player[client].Points
 		, points
-		, Player[victim].Name
+		, victim
 		, (count > 1) ? str_counter : "");
 	}
 }

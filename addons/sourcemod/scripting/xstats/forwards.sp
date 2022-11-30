@@ -261,7 +261,8 @@ public void OnGameFrame()
 	{
 		case Game_TF2:
 		{
-			OnGameFrame_TF2();
+			OnGameFrame_TF2(); //Team Fortress 2 specifically.
+			OnGameFrame_TF(); //Team Fortress overall.
 		}
 	}
 }

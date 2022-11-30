@@ -224,7 +224,7 @@ stock void Player_Death_CSS(Event event, const char[] event_name, bool dontBroad
 		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
 		
-		PrepareKillMessage(client, victim, points);
+		//PrepareKillMessage(client, victim, points); Will be updated very soon.
 	}
 	
 	if(!IsFakeClient(victim)) {

@@ -22,9 +22,9 @@ void PrepareCvars() {
 	Cvars.MinimumPlayers.AddChangeHook(PlayerCvarUpdated);
 	Cvars.AllowBots.AddChangeHook(PlayerCvarUpdated);
 	
-	if(GetEngineVersion() != Engine_TF2) Cvars.Death = CreateConVar("xstats_points_death", "5", "XStats - Points to remove from the player who died.", _, true);
+	if(GetEngineVersion() != Engine_TF2) Cvars.Death = CreateConVarInt("xstats_points_death", 5, "XStats - Points to remove from the player who died.", _, true);
 	
-	Cvars.AssistKill = CreateConVar("xstats_points_assist",	"3", "XStats - Points to give the assister.", _, true);
+	Cvars.AssistKill = CreateConVarInt("xstats_points_assist", 3, "XStats - Points to give the assister.", _, true);
 }
 
 void VersionChanged(ConVar cvar, const char[] oldvalue, const char[] newvalue) { if(!StrEqual(newvalue, Version)) cvar.SetString(Version); }

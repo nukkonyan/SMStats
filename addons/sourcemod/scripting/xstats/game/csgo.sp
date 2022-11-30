@@ -305,7 +305,7 @@ stock void Player_Death_CSGO(Event event, const char[] event_name, bool dontBroa
 		Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
 		SQL.Query(DBQuery_Callback, query);
 		
-		PrepareKillMessage(client, victim, points);
+		//PrepareKillMessage(client, victim, points); Will be updated very soon.
 		
 		if(!IsFakeClient(victim)) {
 			char log[2048];

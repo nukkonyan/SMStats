@@ -35,7 +35,30 @@ ConVar TF2_SentryKill
 , TF2_TeleFrag
 , TF2_Stunned;
 
+enum struct TFEventGenericInfo {
+	int client;
+	int victim;
+	int defindex;
+	int points;
+}
+
+enum struct TFEventBuildingInfo {
+	int client;
+	int victim;
+	int assist;
+	int defindex;
+	int points;
+}
+
+//ArrayList g_OnBuildingFrame;
+//ArrayList g_OnExtinguishFrame;
+ArrayList g_OnJarFrame;
+
 void PrepareGame_TeamFortress()	{
+	//g_OnBuildingFrame = new ArrayList(sizeof(TFEventBuildingInfo));
+	//g_OnExtinguishFrame = new ArrayList(sizeof(TFEventGenericInfo));
+	g_OnJarFrame = new ArrayList(sizeof(TFEventGenericInfo));
+	
 	/* Buildings */
 	TF2_SentryKill = CreateConVarInt("xstats_points_sentrykill", 5, "Xstats: TF2 - Points given when killing with Sentry gun.", _, true);
 	TF2_MiniSentryKill = CreateConVarInt("xstats_points_minisentrykill", 5, "Xstats: TF2 - Points given when killing with Mini-Sentry gun.", _, true);
@@ -836,89 +859,14 @@ Action PlayerJarated(UserMsg msg_id, BfRead bf, const int[] players, int players
 	if(!Tklib_IsValidClient(victim)) return Plugin_Handled;
 	if(IsFakeClient(victim) && !Cvars.AllowBots.BoolValue) return Plugin_Handled;
 	
-	DataPack pack = new DataPack();
-	pack.WriteCell(client);
-	pack.WriteCell(victim);
-	pack.WriteCell(defindex);
-	pack.Reset();
-	RequestFrame(FramePlayerJarated, pack);
+	TFEventGenericInfo Info;
+	Info.client = client;
+	Info.victim = victim;
+	Info.defindex = defindex;
+	
+	g_OnJarFrame.PushArray(Info);
+	
 	return Plugin_Continue;
-}
-
-void FramePlayerJarated(DataPack pack)	{
-	int client = pack.ReadCell();
-	int victim = pack.ReadCell();
-	int defindex = pack.ReadCell();
-	delete pack;
-	
-	int points = 0;
-	Player[client].Points = GetClientPoints(Player[client].SteamID);
-	Player[client].Session.Coated++;
-		
-	char query[512];
-	switch(defindex) {
-		/* Madmilk & Mutated Milk */
-		case 222, 1121:	{
-			//if(MadMilked[client]) return;
-			if(HasStored(client, "madmilked")) return;
-			
-			points = TF2_MadMilked.IntValue;
-			Player[client].Session.MadMilked++;
-			Player[client].Session.AddPoints(points);
-			CPrintToChat(client, "%s %t", Global.Prefix, "Player Coated Milk", Player[client].Name, Player[client].Points, points, Player[victim].Name);
-			
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, MadMilked = MadMilked+1 where SteamID='%s' and ServerID='%i'",
-			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-			SQL.Query(DBQuery_Callback, query);
-			
-			//MadMilked[client] = true;
-			SetStored(client, "madmilked", true);
-			CreateTimer(0.50, Timer_PlayerMadMilked, client);
-		}
-		/* Jarate & The Self-Aware Beauty Mark */
-		case 58, 1105: {
-			//if(Jarated[client]) return;
-			if(HasStored(client, "jarated")) return;
-			
-			points = TF2_Jarated.IntValue;
-			Player[client].Session.Jarated++;
-			Player[client].Session.AddPoints(points);
-			CPrintToChat(client, "%s %t", Global.Prefix, "Player Coated Jar", Player[client].Name, Player[client].Points, points, Player[victim].Name);
-			
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
-			Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-			SQL.Query(DBQuery_Callback, query);
-			
-			//Jarated[client] = true;
-			SetStored(client, "jarated", true);
-			CreateTimer(0.50, Timer_PlayerJarated, client);
-		}
-		/* Incase the player was coated with piss via Sydney Sleeper. */
-		default: {
-			if(Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex == 230 && !HasStored(client, "jarated")) {
-				points = TF2_Jarated.IntValue;
-				Player[client].Session.Jarated++;
-				Player[client].Session.AddPoints(points);
-				CPrintToChat(client, "%s %t", Global.Prefix, "Player Coated Jar", Player[client].Name, Player[client].Points, points, Player[victim].Name);
-				
-				Format(query, sizeof(query), "update `%s` set Points = Points+%i, Jarated = Jarated+1 where SteamID='%s' and ServerID='%i'",
-				Global.playerlist, points, Player[client].SteamID, Cvars.ServerID.IntValue);
-				SQL.Query(DBQuery_Callback, query);
-				
-				//Jarated[client] = true;
-				SetStored(client, "jarated", true);
-				CreateTimer(0.50, Timer_PlayerJarated, client);
-			}
-		}
-	}
-	
-	XStats_DebugText(false, "//===== PlayerJarated =====\\"
-	... "\nClient: %s (index %i)"
-	... "\nVictim: %s (index %i)"
-	... "\nDefindex: %i\n"
-	, Player[client].Playername, client
-	, Player[victim].Playername, victim
-	, defindex);
 }
 
 //float Extinguished_Timer = 10.0;
@@ -1116,4 +1064,154 @@ stock void TF2_ClientKillVictim(int client, int victim)	{
 	SQL.QueryEx(DBQuery_Callback, "update `%s` set %s = %s+1 where SteamID='%s' and ServerID = %i",
 	Global.playerlist, class_deaths[type], class_deaths[type], Player[victim].SteamID, Cvars.ServerID.IntValue);
 	XStats_DebugText(false, "Updating %s deaths for %s (\"%s\")\n", TF2_ClassTypeName[type], Player[victim].Playername, class_deaths[type]);
+}
+
+void OnGameFrame_TF() {
+	integer Count = 0;
+	
+	if((Count = g_OnJarFrame.Length) > 0) {
+		TFEventGenericInfo Info;
+		
+		integer[] list = new integer[Count];
+		
+		for(integer i = 0; i < Count; i++) {
+			g_OnJarFrame.GetArray(i, Info);	
+			list[i] = Info.victim;
+		}
+		
+		g_OnJarFrame.Clear();
+		
+		char dummy[512];
+		
+		if(Count == 1) {
+			int target = list[0];
+			Format(dummy, sizeof(dummy), Player[target].Name);
+		}
+		else if(Count > 1 && Count <= 5) {
+			int target = -1;
+			
+			for(int i = 0; i < Count-1; i++) {
+				target = list[i];
+				
+				if(dummy[0] != '\0') {
+					Format(dummy, sizeof(dummy), "%s, ", dummy);
+				}
+				
+				Format(dummy, sizeof(dummy), "%s%s", dummy, Player[target].Name);
+			}
+			
+			Format(dummy, sizeof(dummy), "%s %t %s", dummy, "And", Player[target+1].Name);
+		}
+		else {
+			int target = list[0]; //They're all same team.
+			TFTeam team = TF2_GetClientTeam(target);
+			Format(dummy, sizeof(dummy), "%s%t{default}", TF2_TeamColour[team], "Multiple Targets");
+		}
+		
+		int client = Info.client;
+		int victim = Info.victim;
+		int defindex = Info.defindex;
+		
+		int points = 0;
+		Player[client].Points = GetClientPoints(Player[client].SteamID);
+		Player[client].Session.Coated += Count;
+		
+		char str_count[64];
+		Format(str_count, sizeof(str_count), " (x%i)", Count);
+			
+		switch(defindex) {
+			/* Madmilk & Mutated Milk */
+			case 222, 1121:	{
+				//if(MadMilked[client]) return;
+				if(HasStored(client, "madmilked")) return;
+				
+				points = TF2_MadMilked.IntValue*Count;
+				Player[client].Session.MadMilked += Count;
+				Player[client].Session.AddPoints(points);
+				CPrintToChat(client, "%s %t"
+				, Global.Prefix
+				, "Player Coated Milk"
+				, Player[client].Name
+				, Player[client].Points
+				, points
+				, dummy
+				, (Count > 1) ? str_count : "");
+				
+				SQL.QueryEx(DBQuery_Callback, "update `%s` set Points = Points+%i, MadMilked = MadMilked+%i where SteamID='%s' and ServerID='%i'"
+				, Global.playerlist
+				, points
+				, Count
+				, Player[client].SteamID
+				, Cvars.ServerID.IntValue);
+				
+				//MadMilked[client] = true;
+				SetStored(client, "madmilked", true);
+				CreateTimer(0.50, Timer_PlayerMadMilked, client);
+			}
+			/* Jarate & The Self-Aware Beauty Mark */
+			case 58, 1105: {
+				//if(Jarated[client]) return;
+				if(HasStored(client, "jarated")) return;
+				
+				points = TF2_Jarated.IntValue*Count;
+				Player[client].Session.Jarated += Count;
+				Player[client].Session.AddPoints(points);
+				CPrintToChat(client, "%s %t%s"
+				, Global.Prefix
+				, "Player Coated Jar"
+				, Player[client].Name
+				, Player[client].Points
+				, points
+				, dummy
+				, (Count > 1) ? str_count : "");
+				
+				SQL.QueryEx(DBQuery_Callback, "update `%s` set Points = Points+%i, Jarated = Jarated+%i where SteamID='%s' and ServerID='%i'"
+				, Global.playerlist
+				, points
+				, Count
+				, Player[client].SteamID
+				, Cvars.ServerID.IntValue);
+				
+				//Jarated[client] = true;
+				SetStored(client, "jarated", true);
+				CreateTimer(0.50, Timer_PlayerJarated, client);
+			}
+			/* Incase the player was coated with piss via Sydney Sleeper. */
+			default: {
+				if(Ent(TF2_GetPlayerWeaponSlot(client, TFSlot_Primary)).DefinitionIndex == 230 && !HasStored(client, "jarated")) {
+					points = TF2_Jarated.IntValue*Count;
+					Player[client].Session.Jarated += Count;
+					Player[client].Session.AddPoints(points);
+					CPrintToChat(client, "%s %t%s"
+					, Global.Prefix
+					, "Player Coated Jar"
+					, Player[client].Name
+					, Player[client].Points
+					, points
+					, dummy
+					, (Count > 1) ? str_count : "");
+					
+					SQL.QueryEx(DBQuery_Callback, "update `%s` set Points = Points+%i, Jarated = Jarated+%i where SteamID='%s' and ServerID='%i'",
+					Global.playerlist
+					, points
+					, Count
+					, Player[client].SteamID
+					, Cvars.ServerID.IntValue);
+					
+					//Jarated[client] = true;
+					SetStored(client, "jarated", true);
+					CreateTimer(0.50, Timer_PlayerJarated, client);
+				}
+			}
+		}
+		
+		XStats_DebugText(false, "//===== PlayerJarated x%i =====\\"
+		... "\nClient: %s (index %i)"
+		... "\nVictim: %s (index %i)"
+		... "\nDefindex: %i\n"
+		, Count
+		, Player[client].Playername, client
+		, Player[victim].Playername, victim
+		, defindex);
+	}
 }
