@@ -8,10 +8,46 @@ ConVar TF2_MvM[25];
  */
 ConVar TF2_Collat;
 
+enum struct TF2KillInfo
+{
+	int client;
+	int victim;
+	int assist;
+	int inflictor;
+	char weapon[128];
+	char fix_weapon[128];
+	int defindex;
+	int customkill;
+	int deathflags;
+	int penetrated;
+	int crits;
+	int time;
+	
+	bool headshot;
+	bool backstab;
+	bool noscope;
+	bool bleedkill;
+	bool dominated;
+	bool dominated_assister;
+	bool revenge;
+	bool revenge_assister;
+	bool gibkill;
+	bool collateral;
+	bool deflectkill;
+	bool tauntkill;
+	bool telefrag;
+	bool midair;
+	bool airshot;
+	
+	int points;
+}
+
 /**
  *	Initialize: Team Fortress 2.
  */
 void PrepareGame_TF2() {
+	Global.OnKillFrame = new ArrayList(sizeof(TF2KillInfo));
+	
 	//Weapon cvars
 	Cvars.CreateTF2Weapon(0, "xstats_points_weapon_bat", 10, "Bat");
 	Cvars.CreateTF2Weapon(1, "xstats_points_weapon_bottle", 10, "Bottle");
@@ -473,7 +509,7 @@ void PrepareGame_TF2() {
 }
 
 /* MvM */
-stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, bool dontBroadcast) {
+void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, bool dontBroadcast) {
 	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[0].IntValue < 1) return;
 	
 	int points = TF2_MvM[0].IntValue;
@@ -499,7 +535,7 @@ stock void MvM_Tank_Destroyed_By_Players(Event event, const char[] event_name, b
 /*	Need to use "player_death" event since "mvm_sentrybuster_killed"
 	doesn't offer a killer userid/entity index
 	but the sentry buster entity itself only. */
-stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
+void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[1].IntValue < 1) return;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
 	if(!Tklib_IsValidClient(client, true)) return;
@@ -527,7 +563,7 @@ stock void MvM_Sentrybuster_Killed(Event event, const char[] event_name, bool do
 	SQL.Query(DBQuery_Callback, query);
 }
 
-stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool dontBroadcast)	{
+void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats() || !TF2_IsMvMGameMode() || TF2_MvM[2].IntValue < 1) return;
 	int client = GetClientOfUserId(event.GetInt(EVENT_STR_PLAYER));
 	if(!Tklib_IsValidClient(client, true)) return;
@@ -547,7 +583,7 @@ stock void MvM_Bomb_Reset_By_Player(Event event, const char[] event_name, bool d
 }
 
 /* Item found */
-stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
+void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!Cvars.ServerID.IntValue) return;
 	if(event.GetBool("isfake"))	return; //Item is fake, this event bool doesn't exist in the game in general but you can force this event and use this.
 	
@@ -628,7 +664,7 @@ stock void Item_Found_TF2(Event event, const char[] event_name, bool dontBroadca
 }
 
 /* Deaths */
-stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
+void Player_Death_TF2(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats() || TF2_IsMvMGameMode()) return;
 	
 	//It's a fake death.
@@ -675,8 +711,8 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	, revenge_assister = false
 	, gibkill = false
 	, collateral = (penetrated > 0)
-	, deflectkill = (StrContainsEx(weapon, "deflect", false) || StrContainsEx(weapon, "reflect"))
-	, tauntkill = (StrContainsEx(weapon, "taunt", false)
+	, deflectkill = (StrContainsEx(weapon, "deflect") || StrContainsEx(weapon, "reflect"))
+	, tauntkill = (StrContainsEx(weapon, "taunt")
 	/* Rainblower tauntkill */
 	|| (StrEqual(weapon, "armageddon", false))
 	/* Thermal thruster taunt kill */
@@ -801,263 +837,343 @@ stock void Player_Death_TF2(Event event, const char[] event_name, bool dontBroad
 	}
 	
 	/* The database query upload ("bat" -> "tf_weapon_bat") */
-	char fix_weapon[96];
+	char fix_weapon[128];
 	if(!telefrag) TF2_FixWeaponClassname(client, fix_weapon, sizeof(fix_weapon), defindex, weapon);
 	
-	/* Debug */
-	XStats_DebugText(false, "//===== Player_Death_TF2 =====//"
-	... "\nClient %s (index %i)"
-	... "\nVictim %s (index %i)"
-	... "\nAssist %s (index %i)"
-	... "\ninflictor %i"
-	... "\nweapon \"%s\""
-	... "\ndefindex %i"
-	... "\ncustomkill %i"
-	... "\ndeathflags %i"
-	... "\npenetrated %i"
-	... "\ncrit type %i [%s]"
-	... "\nMidair %s"
-	... "\nPoints %i\n"
-	, Player[client].Playername, client
-	, Player[victim].Playername, victim
-	, Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist
-	, inflictor
-	, fix_weapon
-	, defindex
-	, customkill
-	, deathflags
-	, penetrated
-	, crits, TF2_CritTypeName[crits]
-	, Bool[midair]
-	, points);
+	TF2KillInfo Info;
+	Info.client = client;
+	Info.victim = victim;
+	Info.assist = assist;
+	Info.inflictor = inflictor;
+	Info.fix_weapon = fix_weapon;
+	Info.weapon = weapon;
+	Info.defindex = defindex;
+	Info.customkill = customkill;
+	Info.deathflags = deathflags;
+	Info.penetrated = penetrated;
+	Info.crits = crits;
+	Info.time = time;
 	
-	/* Kill msg stuff */
-	Player[client].KillMsg.MidAirKill = midair;
-	Player[client].KillMsg.HeadshotKill = headshot;
-	Player[client].KillMsg.NoscopeKill = noscope;
-	Player[client].KillMsg.BackstabKill = backstab;
-	Player[client].KillMsg.AirshotKill = airshot;
-	Player[client].KillMsg.DeflectKill = deflectkill;
-	Player[client].KillMsg.TeleFragKill = telefrag;
-	Player[client].KillMsg.CollateralKill = collateral;
-	Player[client].KillMsg.TauntKill = tauntkill;
+	Info.headshot = headshot;
+	Info.backstab = backstab;
+	Info.noscope = noscope;
+	Info.bleedkill = bleedkill;
+	Info.dominated = dominated;
+	Info.dominated_assister = dominated_assister;
+	Info.revenge = revenge;
+	Info.revenge_assister = revenge_assister;
+	Info.gibkill = gibkill;
+	Info.collateral = collateral;
+	Info.deflectkill = deflectkill;
+	Info.tauntkill = tauntkill;
+	Info.telefrag = telefrag;
+	Info.midair = midair;
+	Info.airshot = airshot;
 	
-	TF2_ClientKillVictim(client, victim);
-	PrepareOnDeathForward(client, victim, assist, weapon, defindex);
+	Info.points = points;
 	
-	//There was an assist.
-	if(AssistedKill(assist, client, victim)) {
-		if(dominated_assister) {
-			Player[assist].Session.Dominations++;
-			SQL.QueryEx(DBQuery_Callback, "update `%s` set Dominations = Dominations+1 where SteamID='%s' and ServerID = %i", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
-		}
-		if(revenge_assister) {
-			Player[assist].Session.Revenges++;
-			SQL.QueryEx(DBQuery_Callback, "update `%s` set Revenges = Revenges+1 where SteamID='%s' and ServerID = %i", Global.playerlist, Player[assist].SteamID, Cvars.ServerID.IntValue);
-		}
+	Global.OnKillFrame.PushArray(Info);
+}
+
+void OnGameFrame_TF2()
+{
+	TF2KillInfo Info;
+	integer Count = Global.OnKillFrame.Length;
+	
+	for(int i = 0; i < Count; i++)
+	{
+		Global.OnKillFrame.GetArray(i, Info);
 	}
 	
-	//Make sure to not query updates on a bot, the database wouldn't be happy about that.
-	VictimDied(victim);
+	Global.OnKillFrame.Clear();
 	
-	//Smarter system.
-	char query[512];
-	int len = 0;
-	
-	Player[client].Session.Kills++;
-	len += Format(query[len], sizeof(query)-len, "update `%s` set Kills = Kills+1", Global.playerlist);
-	
-	//If the inflictor entity is a building.
-	switch(TF2_IsEntityBuilding(inflictor))	{
-		case true: {
-			switch(TF2_GetBuildingType(inflictor)) {
-				case TFBuilding_Dispenser: XStats_DebugText(false, "Building: Dispenser lvl %i (?!)", TF2_GetBuildingLevel(inflictor));
-				case TFBuilding_Sentrygun:	{
-					Player[client].Session.Sentrykills++;
-					len += QueryFormat(query[len], sizeof(query)-len, "SentryKills");
-					
-					int level = TF2_GetBuildingLevel(inflictor);
-					switch(level) {
-						case 1: {
-							Player[client].Session.SentryLVL1Kills++;
-							len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL1Kills");
-						}
-						
-						case 2: {
-							Player[client].Session.SentryLVL2Kills++;
-							len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL2Kills");
-						}
-						
-						case 3: {
-							Player[client].Session.SentryLVL3Kills++;
-							len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL3Kills");
-						}
-					}
-					
-					XStats_DebugText(false, "Building: Sentry lvl %i", level);
-				}
-				case TFBuilding_MiniSentry:	{
-					Player[client].Session.MiniSentrykills++;
-					len += QueryFormat(query[len], sizeof(query)-len, "MiniSentryKills");
-					XStats_DebugText(false, "Building: Mini-Sentry");
-				}
-			}
-		}
-		case false: {
-			switch(telefrag) {
-				case true: {
-					Player[client].Session.Telefrags++;
-					points += TF2_TeleFrag.IntValue;
-					Player[client].Session.AddPoints(TF2_TeleFrag.IntValue);
-					len += QueryFormat(query[len], sizeof(query)-len, "Telefrags");
-					XStats_DebugText(false, "Telefrag");
-				}
-				case false: SQL.QueryEx(DBQuery_Callback, "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'", Global.weapons, fix_weapon, fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
-			}
-		}
-	}
-	
-	if(headshot) {
-		Player[client].Session.Headshots++;
-		len += QueryFormat(query[len], sizeof(query)-len, "Headshots");
-		XStats_DebugText(false, "Headshot");
-	}
-	
-	if(backstab) {
-		Player[client].Session.Backstabs++;
-		len += QueryFormat(query[len], sizeof(query)-len, "Backstabs");
-		XStats_DebugText(false, "Backstab");
-	}
+	if(Count > 0)
+	{
+		int client = Info.client;
+		int victim = Info.victim;
+		int assist = Info.assist;
+		int inflictor = Info.inflictor;
+		int defindex = Info.defindex;
+		int customkill = Info.customkill;
+		int deathflags = Info.deathflags;
+		int penetrated = Info.penetrated;
+		int crits = Info.crits;
+		int time = Info.time;
 		
-	if(dominated) {
-		Player[client].Session.Dominations++;
-		len += QueryFormat(query[len], sizeof(query)-len, "Dominations");
-		XStats_DebugText(false, "Dominated");
-	}
+		bool headshot = Info.headshot;
+		bool backstab = Info.backstab;
+		bool noscope = Info.noscope;
+		//bool bleedkill = Info.bleedkill;
+		bool dominated = Info.dominated;
+		bool dominated_assister = Info.dominated_assister;
+		bool revenge = Info.revenge;
+		bool revenge_assister = Info.revenge_assister;
+		bool gibkill = Info.gibkill;
+		bool collateral = Info.collateral;
+		bool deflectkill = Info.deflectkill;
+		bool tauntkill = Info.tauntkill;
+		bool telefrag = Info.telefrag;
+		bool midair = Info.midair;
+		bool airshot = Info.airshot;
 		
-	if(revenge) {
-		Player[client].Session.Revenges++;
-		len += QueryFormat(query[len], sizeof(query)-len, "Revenges");
-		XStats_DebugText(false, "Revenge");
-	}
+		int points = Info.points*Count;
 		
-	if(noscope) {
-		Player[client].Session.Noscopes++;
-		len += QueryFormat(query[len], sizeof(query)-len, "Noscopes");
-		XStats_DebugText(false, "Noscope");
-	}
-		
-	if(tauntkill) {
-		Player[client].Session.Tauntkills++;
-		len += QueryFormat(query[len], sizeof(query)-len, "TauntKills");
-		XStats_DebugText(false, "Tauntkill");
-	}
-	
-	if(deflectkill) {
-		Player[client].Session.Deflects++;
-		len += QueryFormat(query[len], sizeof(query)-len, "Deflects");
-		XStats_DebugText(false, "Deflectkill");
-	}
-	
-	if(gibkill) {
-		Player[client].Session.Gibs++;
-		len += QueryFormat(query[len], sizeof(query)-len, "Gibs");
-		XStats_DebugText(false, "Gibkill");
-	}
-	
-	if(airshot) {
-		Player[client].Session.Airshots++;
-		len += Format(query[len], sizeof(query)-len, "Airshots");
-		XStats_DebugText(false, "Airshot");
-	}
-	
-	if(collateral) {
-		Player[client].Session.Collaterals++;
-		len += QueryFormat(query[len], sizeof(query)-len, "Collaterals");
-		if(TF2_Collat.IntValue > 0) points += TF2_Collat.IntValue;
-		XStats_DebugText(false, "Collateral");
-	}
-	
-	if(midair) {
-		Player[client].Session.MidAirKills++;
-		len += QueryFormat(query[len], sizeof(query)-len, "MidAirKills");
-		XStats_DebugText(false, "MidAir Kill");
-	}
-		
-	switch(TFCritType(crits)) {
-		case TFCritType_Minicrit: {
-			Player[client].Session.MiniCritkills++;
-			len += QueryFormat(query[len], sizeof(query)-len, "MiniCritKills");
-			XStats_DebugText(false, "Mini-Crit");
-		}
-		case TFCritType_Crit: {
-			Player[client].Session.Critkills++;
-			len += QueryFormat(query[len], sizeof(query)-len, "CritKills");
-			XStats_DebugText(false, "Crit");
-		}
-	}
-	
-	if(points > 0) {
-		Player[client].Session.AddPoints(points);
-		XStats_DebugText(false, "Processing kill message..\n");
-		
-		len += QueryFormat(query[len], sizeof(query)-len, "Points", _, points);
-		PrepareKillMessage(client, victim, points);
-	}
-	
-	len += QueryFormatFinal(query[len], sizeof(query)-len, Player[client].SteamID);
-	SQL.Query(DBQuery_Callback, query);
-	
-	OnDeathRankPanel(client);
-	
-	if(!IsFakeClient(victim)) {
-		char log[320];
-		Format(log, sizeof(log), "insert into `%s`"
-		... "(ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType)"
-		... "values"
-		... "(%i, %i, '%s', '%s', '%s', '%s', %i, %i, %i, %i, %i)"
-		, Global.kill_log
-		, Cvars.ServerID.IntValue
-		, time
-		, Player[client].SteamID
-		, Player[victim].SteamID
-		, Player[assist].SteamID
-		, fix_weapon
-		, headshot
-		, backstab
-		, noscope
-		, midair
-		, crits);
-		SQL.Query(DBQuery_Kill_Log, log);
-		
-		// Testing the string length, no need for unneccessarily big amount of memory bytes, just a waste of memory usage otherwise.
-		// Hangs around 259-270-ish
-		//PrintToServer("String length log : %i", StrLen(log)); 
-		
-		XStats_DebugText(false, "//===== Kill Log TF2 =====\\"
-		... "\nInserting kill log onto table %s ..."
-		... "\nServerID: %i"
-		... "\nTime: %i"
-		... "\nSteamID: %s"
-		... "\nSteamID_Victim: %s"
-		... "\nSteamID_Assist: %s"
-		... "\nWeapon: %s"
-		... "\nHeadshot: %s"
-		... "\nBackstab: %s"
-		... "\nNoscope: %s"
-		... "\nMidair: %s"
-		... "\nCritType: %s\n"
-		, Global.kill_log
-		, Cvars.ServerID.IntValue
-		, time
-		, Player[client].SteamID
-		, Player[victim].SteamID
-		, !Tklib_IsValidClient(assist) ? "No assister" : Player[assist].SteamID
-		, fix_weapon
-		, Bool[headshot]
-		, Bool[backstab]
-		, Bool[noscope]
+		/* Debug */
+		XStats_DebugText(false, "//===== Player_Death_TF2 x%i =====//"
+		... "\nClient %s (index %i)"
+		... "\nVictim %s (index %i)"
+		... "\nAssist %s (index %i)"
+		... "\ninflictor %i"
+		... "\nweapon \"%s\""
+		... "\ndefindex %i"
+		... "\ncustomkill %i"
+		... "\ndeathflags %i"
+		... "\npenetrated %i"
+		... "\ncrit type %i [%s]"
+		... "\nMidair %s"
+		... "\nPoints %i\n"
+		, Count
+		, Player[client].Playername, client
+		, Player[victim].Playername, victim
+		, Tklib_IsValidClient(assist) ? Player[assist].Playername : "no assister", assist
+		, inflictor
+		, Info.fix_weapon
+		, defindex
+		, customkill
+		, deathflags
+		, penetrated
+		, crits, TF2_CritTypeName[crits]
 		, Bool[midair]
-		, TF2_CritTypeName[crits]);
+		, points);
+		
+		/* Kill msg stuff */
+		Player[client].KillMsg.MidAirKill = midair;
+		Player[client].KillMsg.HeadshotKill = headshot;
+		Player[client].KillMsg.NoscopeKill = noscope;
+		Player[client].KillMsg.BackstabKill = backstab;
+		Player[client].KillMsg.AirshotKill = airshot;
+		Player[client].KillMsg.DeflectKill = deflectkill;
+		Player[client].KillMsg.TeleFragKill = telefrag;
+		Player[client].KillMsg.CollateralKill = collateral;
+		Player[client].KillMsg.TauntKill = tauntkill;
+		
+		TF2_ClientKillVictim(client, victim);
+		PrepareOnDeathForward(client, victim, assist, Info.weapon, defindex);
+		
+		//There was an assist.
+		if(AssistedKill(assist, client, victim)) {
+			if(dominated_assister) {
+				Player[assist].Session.Dominations++;
+				SQL.QueryEx(DBQuery_Callback, "update `%s` set Dominations = Dominations+%i where SteamID='%s' and ServerID = %i", Global.playerlist, Count, Player[assist].SteamID, Cvars.ServerID.IntValue);
+			}
+			if(revenge_assister) {
+				Player[assist].Session.Revenges++;
+				SQL.QueryEx(DBQuery_Callback, "update `%s` set Revenges = Revenges+%i where SteamID='%s' and ServerID = %i", Global.playerlist, Count, Player[assist].SteamID, Cvars.ServerID.IntValue);
+			}
+		}
+		
+		//Make sure to not query updates on a bot, the database wouldn't be happy about that.
+		VictimDied(victim);
+		
+		//Smarter system.
+		char query[512];
+		int len = 0;
+		
+		Player[client].Session.Kills++;
+		len += Format(query[len], sizeof(query)-len, "update `%s` set Kills = Kills+%i", Global.playerlist, Count);
+		
+		//If the inflictor entity is a building.
+		switch(TF2_IsEntityBuilding(inflictor))	{
+			case true: {
+				switch(TF2_GetBuildingType(inflictor)) {
+					case TFBuilding_Dispenser: XStats_DebugText(false, "Building: Dispenser lvl %i (?!)", TF2_GetBuildingLevel(inflictor));
+					case TFBuilding_Sentrygun:	{
+						Player[client].Session.Sentrykills++;
+						len += QueryFormat(query[len], sizeof(query)-len, "SentryKills");
+						
+						int level = TF2_GetBuildingLevel(inflictor);
+						switch(level) {
+							case 1: {
+								Player[client].Session.SentryLVL1Kills++;
+								len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL1Kills");
+							}
+							
+							case 2: {
+								Player[client].Session.SentryLVL2Kills++;
+								len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL2Kills");
+							}
+							
+							case 3: {
+								Player[client].Session.SentryLVL3Kills++;
+								len += QueryFormat(query[len], sizeof(query)-len, "SentryLVL3Kills");
+							}
+						}
+						
+						XStats_DebugText(false, "Building: Sentry lvl %i", level);
+					}
+					case TFBuilding_MiniSentry:	{
+						Player[client].Session.MiniSentrykills++;
+						len += QueryFormat(query[len], sizeof(query)-len, "MiniSentryKills");
+						XStats_DebugText(false, "Building: Mini-Sentry");
+					}
+				}
+			}
+			case false: {
+				switch(telefrag) {
+					case true: {
+						Player[client].Session.Telefrags++;
+						points += TF2_TeleFrag.IntValue;
+						Player[client].Session.AddPoints(TF2_TeleFrag.IntValue);
+						len += QueryFormat(query[len], sizeof(query)-len, "Telefrags");
+						XStats_DebugText(false, "Telefrag");
+					}
+					case false: SQL.QueryEx(DBQuery_Callback, "update `%s` set %s = %s+1 where SteamID='%s' and ServerID='%i'", Global.weapons, Info.fix_weapon, Info.fix_weapon, Player[client].SteamID, Cvars.ServerID.IntValue);
+				}
+			}
+		}
+			
+		if(headshot) {
+			Player[client].Session.Headshots++;
+			len += QueryFormat(query[len], sizeof(query)-len, "Headshots", true, Count);
+			XStats_DebugText(false, "Headshot");
+		}
+		
+		if(backstab) {
+			Player[client].Session.Backstabs++;
+			len += QueryFormat(query[len], sizeof(query)-len, "Backstabs", true, Count);
+			XStats_DebugText(false, "Backstab");
+		}
+		
+		if(dominated) {
+			Player[client].Session.Dominations++;
+			len += QueryFormat(query[len], sizeof(query)-len, "Dominations", true, Count);
+			XStats_DebugText(false, "Dominated");
+		}
+			
+		if(revenge) {
+			Player[client].Session.Revenges++;
+			len += QueryFormat(query[len], sizeof(query)-len, "Revenges", true, Count);
+			XStats_DebugText(false, "Revenge");
+		}
+			
+		if(noscope) {
+			Player[client].Session.Noscopes++;
+			len += QueryFormat(query[len], sizeof(query)-len, "Noscopes", true, Count);
+			XStats_DebugText(false, "Noscope");
+		}
+			
+		if(tauntkill) {
+			Player[client].Session.Tauntkills++;
+			len += QueryFormat(query[len], sizeof(query)-len, "TauntKills", true, Count);
+			XStats_DebugText(false, "Tauntkill");
+		}
+		
+		if(deflectkill) {
+			Player[client].Session.Deflects++;
+			len += QueryFormat(query[len], sizeof(query)-len, "Deflects", true, Count);
+			XStats_DebugText(false, "Deflectkill");
+		}
+		
+		if(gibkill) {
+			Player[client].Session.Gibs++;
+			len += QueryFormat(query[len], sizeof(query)-len, "Gibs", true, Count);
+			XStats_DebugText(false, "Gibkill");
+		}
+		
+		if(airshot) {
+			Player[client].Session.Airshots++;
+			len += Format(query[len], sizeof(query)-len, "Airshots", true, Count);
+			XStats_DebugText(false, "Airshot");
+		}
+		
+		if(collateral) {
+			Player[client].Session.Collaterals++;
+			len += QueryFormat(query[len], sizeof(query)-len, "Collaterals", true, Count);
+			if(TF2_Collat.IntValue > 0) points += TF2_Collat.IntValue;
+			XStats_DebugText(false, "Collateral");
+		}
+		
+		if(midair) {
+			Player[client].Session.MidAirKills++;
+			len += QueryFormat(query[len], sizeof(query)-len, "MidAirKills", true, Count);
+			XStats_DebugText(false, "MidAir Kill");
+		}
+		
+		switch(TFCritType(crits)) {
+			case TFCritType_Minicrit: {
+				Player[client].Session.MiniCritkills++;
+				len += QueryFormat(query[len], sizeof(query)-len, "MiniCritKills", true, Count);
+				XStats_DebugText(false, "Mini-Crit");
+			}
+			case TFCritType_Crit: {
+				Player[client].Session.Critkills++;
+				len += QueryFormat(query[len], sizeof(query)-len, "CritKills", true, Count);
+				XStats_DebugText(false, "Crit");
+			}
+		}
+		
+		if(points > 0) {
+			Player[client].Session.AddPoints(points);
+			XStats_DebugText(false, "Processing kill message..\n");
+			
+			len += QueryFormat(query[len], sizeof(query)-len, "Points", _, points);
+			PrepareKillMessage(client, victim, points, Count);
+		}
+		
+		len += QueryFormatFinal(query[len], sizeof(query)-len, Player[client].SteamID);
+		SQL.Query(DBQuery_Callback, query);
+		
+		OnDeathRankPanel(client);
+		
+		if(!IsFakeClient(victim)) {
+			char log[320];
+			Format(log, sizeof(log), "insert into `%s`"
+			... "(ServerID, Time, SteamID, SteamID_Victim, SteamID_Assist, Weapon, Headshot, Backstab, Noscope, Midair, CritType)"
+			... "values"
+			... "(%i, %i, '%s', '%s', '%s', '%s', %i, %i, %i, %i, %i)"
+			, Global.kill_log
+			, Cvars.ServerID.IntValue
+			, time
+			, Player[client].SteamID
+			, Player[victim].SteamID
+			, Player[assist].SteamID
+			, Info.fix_weapon
+			, headshot
+			, backstab
+			, noscope
+			, midair
+			, crits);
+			SQL.Query(DBQuery_Kill_Log, log);
+			
+			// Testing the string length, no need for unneccessarily big amount of memory bytes, just a waste of memory usage otherwise.
+			// Hangs around 259-270-ish
+			//PrintToServer("String length log : %i", StrLen(log)); 
+			
+			XStats_DebugText(false, "//===== Kill Log TF2 =====\\"
+			... "\nInserting kill log onto table %s ..."
+			... "\nServerID: %i"
+			... "\nTime: %i"
+			... "\nSteamID: %s"
+			... "\nSteamID_Victim: %s"
+			... "\nSteamID_Assist: %s"
+			... "\nWeapon: %s"
+			... "\nHeadshot: %s"
+			... "\nBackstab: %s"
+			... "\nNoscope: %s"
+			... "\nMidair: %s"
+			... "\nCritType: %s\n"
+			, Global.kill_log
+			, Cvars.ServerID.IntValue
+			, time
+			, Player[client].SteamID
+			, Player[victim].SteamID
+			, !Tklib_IsValidClient(assist) ? "No assister" : Player[assist].SteamID
+			, Info.fix_weapon
+			, Bool[headshot]
+			, Bool[backstab]
+			, Bool[noscope]
+			, Bool[midair]
+			, TF2_CritTypeName[crits]);
+		}
 	}
 }

@@ -237,7 +237,7 @@ void DBQuery_MapLog_1(DatabaseEx db, DBResultSet r, const char[] error) {
 void DBQuery_MapLog_2(DatabaseEx db, DBResultSet r, const char[] error) {
 	switch(r != null) {
 		case true: {
-			db.QueryEx(DBQuery_MapLog_2, "update `%s` set PlayTime = PlayTime+1 where MapName = '%s' and ServerID = %i"
+			db.QueryEx(DBQuery_MapLog_3, "update `%s` set PlayTime = PlayTime+1 where MapName = '%s' and ServerID = %i"
 			, Global.maps_log
 			, Global.CurrentMap
 			, Cvars.ServerID.IntValue);
@@ -254,3 +254,14 @@ void DBQuery_MapLog_3(DatabaseEx db, DBResultSet r, const char[] error) {
 public void OnEntityCreated(int entity, const char[] classname) { OnEntityCreated_CounterStrike(entity, classname); }
 public void OnConfigsExecuted() { CheckActivePlayers(); } /* Check active players */
 public void OnPluginEnd() { XStats_DebugText(false, "Ending.."); }
+
+public void OnGameFrame()
+{
+	switch(IdentifyGame())
+	{
+		case Game_TF2:
+		{
+			OnGameFrame_TF2();
+		}
+	}
+}

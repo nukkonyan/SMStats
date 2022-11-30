@@ -659,7 +659,7 @@ stock void DBQuery_CheckWeapon_Callback(DatabaseEx db, DBResultSet r, const char
  *	@param	victim	The victim who died.
  *	@param	points	The points the client was given
  */
-stock void PrepareKillMessage(int client, int victim, int points) {
+stock void PrepareKillMessage(int client, int victim, int points, int count=1) {
 	Player[client].Points = GetClientPoints(Player[client].SteamID);
 	
 	char buffer[196];
@@ -955,9 +955,28 @@ stock void PrepareKillMessage(int client, int victim, int points) {
 		Format(buffer, sizeof(buffer), "%t{default}", Kill_Type[0]);
 	}
 	
+	char str_counter[64];
+	Format(str_counter, sizeof(str_counter), " (x%i)", count);
+	
 	switch(IsValidString(buffer)) {
-		case true: CPrintToChat(client, "%s %t", Global.Prefix, "Special Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name, buffer);
-		case false: CPrintToChat(client, "%s %t", Global.Prefix, "Default Kill Event", Player[client].Name, Player[client].Points, points, Player[victim].Name);
+		case true: CPrintToChat(client, "%s %t%s"
+		, Global.Prefix
+		, "Special Kill Event"
+		, Player[client].Name
+		, Player[client].Points
+		, points
+		, Player[victim].Name
+		, buffer
+		, (count > 1) ? str_counter : "");
+		
+		case false: CPrintToChat(client, "%s %t%s"
+		, Global.Prefix
+		, "Default Kill Event"
+		, Player[client].Name
+		, Player[client].Points
+		, points
+		, Player[victim].Name
+		, (count > 1) ? str_counter : "");
 	}
 }
 

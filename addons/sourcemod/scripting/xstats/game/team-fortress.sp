@@ -317,9 +317,8 @@ stock void Teamplay_Flag_Event(Event event, const char[] event_name, bool dontBr
 stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats()) return;
 	int points = 0
-	, client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID))
-	, type = event.GetInt(EVENT_STR_INDEX);
-	TFBuilding building = TF2_GetBuildingType(type);
+	, client = GetClientOfUserId(event.GetInt(EVENT_STR_USERID));
+	TFBuilding type = TF2_GetBuildingType(event.GetInt(EVENT_STR_INDEX));
 	if(!Tklib_IsValidClient(client, true) || IsValidAbuse(client)) return;
 	
 	char building_name[][] = {
@@ -334,14 +333,14 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 		"Object Event Type 1", /* Placing */
 		"Object Event Type 2", /* Destroying */
 	}, object_name[64], type_name[64];
-	Format(object_name, sizeof(object_name), "%t{default}", building_name[building]);
-	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[0]);
+	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
+	Format(type_name, sizeof(type_name), "%t{default}", type == TFBuilding_Sapper ? event_type[1] : event_type[0]);
 	
 	char query[512];
 	int len = 0;
 	len += Format(query[len], sizeof(query)-len, "update `%s` set ", Global.playerlist);
 	
-	switch(building) {
+	switch(type) {
 		case TFBuilding_Sentrygun: {
 			Player[client].Session.SentryGunsBuilt++;
 			Player[client].Session.BuildingsBuilt++;
@@ -411,9 +410,8 @@ stock void Player_BuiltObject(Event event, const char[] event_name, bool dontBro
 stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroadcast)	{
 	if(!IsValidStats()) return;
 	int points = 0
-	, client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER))
-	, type = event.GetInt(EVENT_STR_INDEX);
-	TFBuilding building = TF2_GetBuildingType(type);
+	, client = GetClientOfUserId(event.GetInt(EVENT_STR_ATTACKER));
+	TFBuilding type = TF2_GetBuildingType(event.GetInt(EVENT_STR_INDEX));
 	if(!Tklib_IsValidClient(client, true) || IsValidAbuse(client)) return;
 	
 	char building_name[][] = {
@@ -428,14 +426,14 @@ stock void Object_Destroyed(Event event, const char[] event_name, bool dontBroad
 		"Object Event Type 1", /* Placing */
 		"Object Event Type 2", /* Destroying */
 	}, object_name[64], type_name[64];
-	Format(object_name, sizeof(object_name), "%t{default}", building_name[building]);
-	Format(type_name, sizeof(type_name), "%t{default}", building == TFBuilding_Sapper ? event_type[1] : event_type[2]);
+	Format(object_name, sizeof(object_name), "%t{default}", building_name[type]);
+	Format(type_name, sizeof(type_name), "%t{default}", type == TFBuilding_Sapper ? event_type[1] : event_type[2]);
 	
 	char query[512];
 	int len = 0;
 	len += Format(query[len], sizeof(query)-len, "update `%s` set ", Global.playerlist);
 	
-	switch(building) {
+	switch(type) {
 		case TFBuilding_Sentrygun: {
 			Player[client].Session.SentryGunsDestroyed++;
 			Player[client].Session.BuildingsDestroyed++;

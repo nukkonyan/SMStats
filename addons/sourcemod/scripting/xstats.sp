@@ -27,6 +27,9 @@ SetPluginInfo("XStats - Statistical Multi-Tracker", _tklib_author, "XStats - Tra
  *		→ Make Session be saved via SQLIte (Local sql database connection)
  *		  This is to make sure the session is saved, after potential update is found and installed.
  *		  Just for the session to be not lost.
+ *
+ *	> 3:
+ *		→ Make kill events merged as one if multiple kills were made at the same frame.
  */
 
 /* Core */

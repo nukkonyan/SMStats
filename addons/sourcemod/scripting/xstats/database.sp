@@ -1,6 +1,5 @@
 void PrepareDatabase(bool PluginLoad = false) {
-	if(!DatabaseEx.CheckConfig("xstats"))
-		XStats_DebugText(true, "FATAL ERROR 404 DATABASE_NOT_CONFIGURED: \"xstats\" was not found in the /configs/databases.cfg file, make sure you've entered it and correctly, must be matching \"xstats\" or else it'll fail.");
+	if(!DatabaseEx.CheckConfig("xstats")) SetFailState("[XStats] FATAL ERROR 404 DATABASE_NOT_CONFIGURED: \"xstats\" was not found in the /configs/databases.cfg file, make sure you've entered it and correctly, must be matching \"xstats\" or else it'll fail.");
 	
 	/* Avoid double-connections. */
 	CreateTimer(PluginLoad ? 0.0 : 0.5, Timer_PrepareDatabase);

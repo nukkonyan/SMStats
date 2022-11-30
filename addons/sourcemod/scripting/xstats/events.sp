@@ -117,13 +117,15 @@ stock void Rounds(Event event, const char[] event_name, bool dontBroadcast)	{
 	
 	DataPack pack;
 	CreateDataTimer(0.1, Timer_Rounds, pack);
+	pack.WriteCell(StrLen(event_name));
 	pack.WriteString(event_name);
 	pack.Reset();
 }
 
 stock Action Timer_Rounds(Handle timer, DataPack pack)	{
-	char event_name[64];
-	pack.ReadString(event_name, sizeof(event_name));
+	int maxlen = pack.ReadCell();
+	char[] event_name = new char[maxlen];
+	pack.ReadString(event_name, maxlen);
 	
 	(StrEqual(event_name, EVENT_ROUND_END)
 	|| StrEqual(event_name, EVENT_TEAMPLAY_ROUND_WIN)
