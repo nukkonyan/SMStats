@@ -1,6 +1,6 @@
 ![xstats_2](https://user-images.githubusercontent.com/49116354/149617872-cbbd0be2-2bd6-45ee-95f4-e6f990285d4a.png)
 
-### Currently in active re-writing process scratch with better code-base and much more efficient SQL code as ``SM Stats``
+### Currently in active re-writing process from scratch with better code-base and much more efficient SQL code as ``SM Stats``
 
 ``Currently in early development stages.``
 
