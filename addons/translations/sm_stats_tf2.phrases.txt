@@ -1,0 +1,263 @@
+"Phrases"
+{
+	//===================//
+	// Capture Points.
+	//===================//
+	"#SMStats_CaptureEvent_Type0" //Captured the point.
+	{
+		"en" "{green}Capturing Point"
+	}	
+	"#SMStats_CaptureEvent_Type1" //Defended the point.
+	{
+		"en" "{green}Defending Point"
+	}
+	"#SMStats_CaptureEvent_Default" 
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {4}"
+	}
+
+	//===================//
+	// Capture-The-Flag.
+	//===================//
+	"#SMStats_FlagEvent_Type0" //Picked up opponents intelligence.
+	{
+		"en" "{green}Picking Up Intelligence"
+	}
+	"#SMStats_FlagEvent_Type1" //Stole the opponents intelligence.
+	{
+		"en" "{green}Stealing Intelligence"
+	}
+	"#SMStats_FlagEvent_Type2" //Captured the opponents intelligence.
+	{
+		"en" "{green}Capturing Opponents Intelligence"
+	}
+	"#SMStats_FlagEvent_Type3" //Defended the opponnents intelligence.
+	{
+		"en" "{green}Defending Team Intelligence"
+	}
+	"#SMStats_FlagEvent_Type4" //Dropped the opponents intelligence.
+	{
+		"en" "{green}Dropping Opponents Intelligence"
+	}
+	"#SMStats_FlagEvent0" //Earned points on intelligence event.
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {4}"
+	}
+	"#SMStats_FlagEvent1" //Lost points on intelligence event.
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Lost {3} points for {4}"
+	}
+
+	//===================//
+	// Buildings / Objects.
+	//===================//
+	"#SMStats_Object_Type0" //Sentrygun.
+	{
+		"en" "{orange}Sentry Gun"
+
+		"jp" "{orange}セントリーガン"
+	}
+	"#SMStats_Object_Type1" //Dispenser.
+	{
+		"en" "{orange}Dispenser"
+
+		"jp" "{orange}ディスペンサー"
+	}
+	"#SMStats_Object_Type2" //Teleporter Entrance.
+	{
+		"en" "{orange}Teleporter Entrance"
+
+		"jp" "{orange}テレポーターの入り口"
+	}
+	"#SMStats_Object_Type3" //Teleporter Exit.
+	{
+		"en" "{orange}Teleporter Exit"
+
+		"jp" "{orange}テレポーターの出口"
+	}
+	"#SMStats_Object_Type4" //Mini-Sentrygun.
+	{
+		"en" "{orange}Mini-Sentry Gun"
+
+		"jp" "{orange}ミニセントリーガン"
+	}
+	"#SMStats_Object_Type5" //Sapper.
+	{
+		"en" "{orange}Sapper"
+
+		"jp" "{orange}サッパー"
+	}
+	"#SMStats_ObjectEvent_Type0" //Object was placed.
+	{
+		"en" "{green}Placing"
+	}	
+	"#SMStats_ObjectEvent_Type1" //Object was destroyed.
+	{
+		"en" "{green}Destroying"
+	}
+	"#SMStats_ObjectEvent_Default" //Object event.
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en" "{1} ({2}) Earned {3} points for {4} {5}"
+	}
+
+	//===================//
+	// Pass Ball Mode.
+	//===================//
+	"#SMStats_PassBall_GrabNeutralBall"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Grabbing {default}neutral ball"
+	}
+	"#SMStats_PassBall_ScoreBall"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Scoring {default}ball"
+	}
+	"#SMStats_PassBall_DropBall"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Lost {3} points for {green}Dropping {default}the ball"
+	}
+
+	"#SMStats_PassBall_CatchBall_Scenario0"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Catching the ball"
+	}
+	"#SMStats_PassBall_CatchBall_Scenario1"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Catching {default}the ball from {4}"
+	}
+
+	"#SMStats_PassBall_StealBall_Scenario0"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Stealing the ball"
+	}
+	"#SMStats_PassBall_StealBall_Scenario1"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Stealing {default}the ball from {4}"
+	}
+
+	"#SMStats_PassBall_BlockBall_Scenario0"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Blocking the ball"
+	}
+	"#SMStats_PassBall_BlockBall_Scenario1"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {green}Blocking {default}the ball from {4}"
+	}
+
+	//===================//
+	// Halloween.
+	//===================//
+	"#SMStats_HalloweenBoss_Type1" //Horseless Headless Horsemann.
+	{
+		"en"		"{purple}Horseless Headless Horsemann"
+	}
+	"#SMStats_HalloweenBoss_Type2" //Monoculus.
+	{
+		"en"		"{purple}Monoculus"
+	}
+	"#SMStats_HalloweenBoss_Type3" //Merasmus.
+	{
+		"en"		"{lightgreen}Merasmus"
+	}
+	"#SMStats_HalloweenBoss_Type4" //Skeleton King.
+	{
+		"en"		"{lightgreen}Skeleton King"
+	}
+	"#SMStats_FragEvent_HalloweenBoss" //Killed boss.
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for eliminating {4}"
+	}
+	"#SMStats_HalloweenBoss_StunEvent" //Stunned boss.
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for stunning {4}"
+	}
+
+	//===================//
+	// Mann Vs. Machines.
+	//===================//
+	"#SMStats_MvM_TeamDestroyedTank"
+	{
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {2} points for destroying the {cyan}Tank{default}"
+	}
+	"#SMStats_MvM_Player_FragRobot"
+	{
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for fragging a {cyan}Robot{default}"
+	}
+	"#SMStats_MvM_Player_FragSentryBuster"
+	{
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for fragging {cyan}Sentry Buster{default}"
+	}
+	"#SMStats_MvM_Player_ResetBomb"
+	{
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for resetting the bomb"
+	}
+
+	//===================//
+	// Other.
+	//===================//
+	"#SMStats_Player_Ubercharged"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for übercharging {4}"
+	}
+	"#SMStats_Player_UsedTeleporter"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for {4} using your teleporter"
+	}
+	"#SMStats_Player_StealSandvich_Scenario0"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for stealing sandvich belonging to {4}"
+	}
+	"#SMStats_Player_StealSandvich_Scenario1"
+	{
+		"#format"	"{1:s},{2:i},{3:i}"
+		"en"		"{1} ({2}) Earned {3} points for stealing sandvich"
+	}
+	"#SMStats_Player_StunScenario0"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for stunning {4} with a {green}Moon Shot{default}"
+	}
+	"#SMStats_Player_StunScenario1"
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for stunning {4}"
+	}
+	
+	"#SMStats_Player_CoatedPiss" //Pissed opponent.
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for coating {4} with piss"
+	}
+	"#SMStats_Player_CoatedMilk" //Milked opponent.
+	{
+		"#format"	"{1:s},{2:i},{3:i},{4:s}"
+		"en"		"{1} ({2}) Earned {3} points for coating {4} with milk"
+	}
+	
+	"#SMStats_Player_Extinguished" // extinguished
+	{
+		"#format" "{1:s},{2:i},{3:s},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for extinguishing {4}"
+	}
+}

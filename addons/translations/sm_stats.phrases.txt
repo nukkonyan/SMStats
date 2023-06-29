@@ -1,0 +1,273 @@
+"Phrases"
+{
+	//================================//
+	// Connected.
+	//================================//
+	"#SMStats_Player_Connected"
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} (Pos #{2}, {3} points) has connected from {4}."
+
+		"jp" "{1}（立{2}場、{3}ポイント） が{orange}{4}{default}からを接続しました。"
+		"sv" "{1} (Pos #{2}, {3} poäng) har anslutit sig ifrån {4}."
+	}
+	"#SMStats_Player_Disconnected"
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en" "{1} (Pos #{2}, {3} points) has disconnected from {4}. {grey}({5})"
+		
+		"jp" "{1}（立{2}場、{3}ポイント） が{orange}{4}{default}からを接続を解除しました。 {grey}（{5}）"
+		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat ifrån {4}. {grey}({5})"
+	}
+
+	//================================//
+	// Menu.
+	//================================//
+	"#SMStats_Menu_Playername"
+	{
+		"#format" "{1:N}"
+		"en" "Playername: {1}"
+
+		"jp" "プレイヤーの名前： {1}"
+		"sv" "Spelarnamn: {1}"
+	}
+	"#SMStats_Menu_Positioned"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Positioned #{1} out of {2} players."
+
+		"sv" "Positionerad #{1} utav {2} spelare."
+	}
+	
+	//================================//
+	// Updater.
+	//================================//
+	"#SMStats_UpdateFound"
+	{
+		"en" "New {lightgreen}Update {default}was found, restarting.."
+
+		"sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
+	}
+	"#SMStats_UpdateFinished"
+	{
+		"#format" "{1:s}"
+		"en" "New {lightgreen}Update {orange}Version {1} {default}has been loaded."
+
+		"sv" "Ny {lightgreen}Uppdatering {orange}Version {1} {default}har laddats."
+	}
+	
+	//================================//
+	// Rounds.
+	//================================//
+	"#SMStats_RoundStart"
+	{
+		"en" "Round Start: Tracking enabled."
+
+		"sv" "Rundstart: Spårning aktiverad."
+	}
+	"#SMStats_RoundStart_Warmup"
+	{
+		"en" "Round Start: Warmup/Waiting for players detected, ignoring statistical tracking."
+
+		"sv" "Rundstart: Uppvärmning/Väntar på spelare upptäckt, ignorerar statistiskt spårning."
+	}
+	"#SMStats_RoundEnd"
+	{
+		"en" "Round End: Tracking disabled"
+
+		"sv" "Rundstart: Spårning inaktiverad."
+	}
+	"#SMStats_NotEnoughPlayers"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Not enough players ({1} out of required {2}), disabling.."
+
+		"sv" "Inte tillräckligt med spelare ({1} utav krävande {2}), inaktiverar.."
+	}
+	"#SMStats_EnoughPlayers"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Enough Players ({1} out of required {2}), enabling.."
+
+		"sv" "Tillräckligt med spelare ({1} utav krävande {2}), aktiverar.."
+	}
+	
+	//================================//
+	// Translations.
+	//================================//
+	"#SMStats_MultipleTargets"
+	{
+		"en" "Multiple targets"
+
+		"dk" "Flere mål"
+		"sv" "Flera mål"
+		"jp" "複数のターゲット"
+		"no" "Flere mål"
+	}
+	"#SMStats_MultipleObjects"
+	{
+		"en" "Multiple objects"
+
+		"dk" "Flere objekt"
+		"sv" "Flera objekt"
+		"jp" "複数のオブジェクト"
+		"no" "Flere objekt"
+	}
+	"#SMStats_And"
+	{
+		"en" " and "
+		"de" " und "
+		"dk" " og "
+		"jp" "と"
+		"no" " og "
+		"nl" " en "
+		"ru" " и "
+		"sv" " och "
+	}
+	"#SMStats_Comma"
+	{
+		"en" ", "
+		"jp" "、"
+	}
+	"#SMStats_Counter"
+	{
+		"#format" "{1:i}"
+		"en" " ({1})"
+
+		"jp" " （{1}）"
+	}
+	
+	//================================//
+	// Frag Event.
+	//================================//
+	
+	//Kill event types. Will automatically merge with one and another if needed.
+	"#SMStats_FragEvent_Type0" //Mid Air.
+	{
+		"en" "whilst {green}Mid Air"
+
+		"sv" "medans {green}I Luften"
+		"jp" "whilst {green}Mid Air{default}で"
+	}
+	"#SMStats_FragEvent_Type1" //Noscope
+	{
+		"en" "{green}Through Smoke"
+
+		"sv" "{green}Genom Rök"
+		"jp" "{green}Through Smoke{default}で"
+	}
+	"#SMStats_FragEvent_Type2" //Noscope headshot
+	{
+		"en" "with a {green}Noscope Headshot"
+
+		"sv" "med en {green}Noscope Huvudskott"
+		"jp" "{green}Noscopeヘッドショット{default}で"
+	}
+	"#SMStats_FragEvent_Type3" //Headshot.
+	{
+		"en" "with a {green}Headshot"
+
+		"jp" "{green}ヘッドショット{default}で"
+		"sv" "med ett {green}Huvudskott"
+	}
+	"#SMStats_FragEvent_Type4" //Noscope.
+	{
+		"en" "with a {green}Noscope"
+
+		"jp" "{green}ノスコープ{default}で"
+	}
+	"#SMStats_FragEvent_Type5" //Backstab.
+	{
+		"en" "with a {green}Backstab"
+
+		"jp" "{green}バックスタッブ{default}で"
+	}
+	"#SMStats_FragEvent_Type6" //Airshot.
+	{
+		"en" "{green}Airshot"
+
+		"jp" "{green}エアーショット{default}で"
+		"sv" "{green}Luftskott"
+	}
+	"#SMStats_FragEvent_Type7" //Deflect frag.
+	{
+		"en" "{green}Deflect Frag"
+
+		"jp" "{green}Deflectフラグ{default}で"
+	}
+	"#SMStats_FragEvent_Type8" //Teleport frag.
+	{
+		"en" "with a {green}Telefrag"
+
+		"jp" "{green}Telefrag{default}で"
+		"sv" "med en {green}Telefrag"
+	}
+	"#SMStats_FragEvent_Type9" //Taunt frag.
+	{
+		"en" "with a {green}Taunt Frag"
+
+		"jp" "{green}Tauntfrag{default}で"
+		"sv" "med en {green}Hån Frag"
+	}
+	"#SMStats_FragEvent_Type10" //Collateral.
+	{
+		"en" "with a {green}Collateral"
+
+		"jp" "{green}Collateral{default}で"
+		"sv" "med en {green}Collateral"
+	}
+	"#SMStats_FragEvent_Type11" //Grenade frag.
+	{
+		"en" "with a {green}Grenade Frag"
+
+		"jp" "{green}Grenade Frag{default}で"
+		"sv" "med en {green}Granat Frag"
+	}
+	"#SMStats_FragEvent_Type12" //Bomb/C4 frag.
+	{
+		"en" "with a {green}Bomb Frag"
+
+		"jp" "{green}ボムFrag{default}で"
+		"sv" "med en {green}Bomb Frag"
+	}
+	"#SMStats_FragEvent_Type13" //Blinded frag.
+	{
+		"en" "while {green}Blinded"
+
+		"jp" "その間{green}Blinded"
+		"sv" "medans {green}Bländad"
+	}
+	
+	//Kill events
+	"#SMStats_FragEvent_Assisted" //Assist
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en" "{1} ({2}) Earned {3} points for assisting {4} in fragging {5}."
+
+		"sv" "{1} ({2}) Tjänade {3} poäng för att assistera {4} genom att fragga {5}."
+	}	
+	"#SMStats_FragEvent_Death" //Death.
+	{
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Lost {3} points for dying."
+
+		"sv" "{1} ({2}) Förlorade {3} poäng för att dö."
+	}
+	
+	"#SMStats_FragEvent_Special" //Special kill event.
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en" "{1} ({2}) Earned {3} points in fragging {4} {5}."
+
+		"sv" "{1} ({2}) Tjänade {3} poäng genom att fragga {4} {5}."
+		"jp" "{1}（{2}） {5}フラッギング{4}で{3}ポイントを獲得しました。"
+	}
+	"#SMStats_FragEvent_Default" //Default kill event.
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points in fragging {4}."
+
+		"sv" "{1} ({2}) Tjänade {3} poäng genom att fragga {4}."
+		"jp" "{1} （{2}） フラッギング{4}で{3}ポイントを獲得しました。"
+	}
+}

@@ -1,0 +1,21 @@
+"Phrases"
+{
+	//================================//
+	// Bomb events.
+	//================================//
+	"#SMStats_Bomb_Planted"
+	{
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for planting the bomb"
+	}
+	"#SMStats_Bomb_Defused"
+	{
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for defusing the bomb"
+	}
+	"#SMStats_Bomb_Exploded"
+	{
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for bomb exploding and winning the round"
+	}
+}
