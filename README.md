@@ -1,5 +1,5 @@
-### Currently in active re-writing process from scratch with better code-base and much more efficient SQL code as ``SM Stats`` with full extended translation support.
-### The new code is more efficienc and impacts less on server performance.
+Currently in active re-writing process from scratch with better code-base and much more efficient SQL code as ``SM Stats`` with full extended translation support.
+The new code is more efficient and impacts less on server performance.
 
 ### ``SM Stats`` or ``SourceMod Stats`` is a statistical tracking plugin that tracks frags, events, achievements and offers player connection/disconnection messages, player connect sounds, full translation support and more likely to come.
 
