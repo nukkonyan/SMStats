@@ -61,7 +61,7 @@
 #include <tf2_stocks>
 
 // updater
-#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/updater/SMStats_TF2.txt"
+#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
 #include "sm_stats/updater.sp"
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)

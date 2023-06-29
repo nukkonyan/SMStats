@@ -1,0 +1,25 @@
+"Updater"
+{
+	"Information"
+	{
+		"Version"
+		{
+			"Latest" "1.0.0"
+		}
+		
+		"Notes"	"More info @ https://github.com/Teamkiller324/SMStats"
+		"Notes"	"Initial github release."
+	}
+	
+	"Files"
+	{
+		"Patch"
+		{
+			"Plugin"	"Path_SM/plugins/sm_stats.smx"
+			"Plugin"	"Path_SM/translations/sm_stats_tf2.phrases.txt"
+		}
+		
+		"Plugin"	"Path_SM/plugins/sm_stats_tf2.smx"
+		"Plugin"	"Path_SM/translations/sm_stats_tf2.phrases.txt"
+	}
+}
