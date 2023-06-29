@@ -21,5 +21,8 @@
 		
 		"Plugin"	"Path_SM/plugins/sm_stats_tf2.smx"
 		"Plugin"	"Path_SM/translations/sm_stats_tf2.phrases.txt"
+		
+		"Plugin"	"Path_SM/configs/xstats/playerlist_tf2.xstats"
+		"Plugin"	"Path_SM/configs/xstats/weapons_tf2.xstats"
 	}
 }
