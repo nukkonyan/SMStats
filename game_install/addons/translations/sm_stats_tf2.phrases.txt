@@ -1,5 +1,285 @@
 "Phrases"
 {
+	//================================//
+	// Menu.
+	//================================//
+	"#SMStats_MenuInfo_Dominations"
+	{
+		"#format" "{1:i}"
+		"en" "Dominations : {1}"
+	}
+	"#SMStats_MenuInfo_Revenges"
+	{
+		"#format" "{1:i}"
+		"en" "Revenges : {1}"
+	}
+	"#SMStats_MenuInfo_Airshots"
+	{
+		"#format" "{1:i}"
+		"en" "Airshots : {1}"
+	}
+	"#SMStats_MenuInfo_Headshots"
+	{
+		"#format" "{1:i}"
+		"en" "Headshots : {1}"
+	}
+	"#SMStats_MenuInfo_Noscopes"
+	{
+		"#format" "{1:i}"
+		"en" "Noscopes : {1}"
+	}
+	"#SMStats_MenuInfo_Backstabs"
+	{
+		"#format" "{1:i}"
+		"en" "Backstabs : {1}"
+	}
+	"#SMStats_MenuInfo_TauntFrags"
+	{
+		"#format" "{1:i}"
+		"en" "Taunt frags : {1}"
+	}
+	"#SMStats_MenuInfo_GibFrags"
+	{
+		"#format" "{1:i}"
+		"en" "Gib frags : {1}"
+	}
+	"#SMStats_MenuInfo_DeflectFrags"
+	{
+		"#format" "{1:i}"
+		"en" "Deflect frags : {1}"
+	}
+	"#SMStats_MenuInfo_TeleFrags"
+	{
+		"#format" "{1:i}"
+		"en" "Tele frags : {1}"
+	}
+	"#SMStats_MenuInfo_Collaterals"
+	{
+		"#format" "{1:i}"
+		"en" "Collaterals : {1}"
+	}
+	"#SMStats_MenuInfo_MidAirFrags"
+	{
+		"#format" "{1:i}"
+		"en" "Mid Air frags : {1}"
+	}
+	"#SMStats_MenuInfo_CritFrags"
+	{
+		"#format" "{1:i}"
+		"en" "Critical frags : {1}"
+	}
+	"#SMStats_MenuInfo_MiniCritFrags"
+	{
+		"#format" "{1:i}"
+		"en" "Mini-Crit frags : {1}"
+	}
+
+	"#SMStats_MenuInfo_Scout"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Scout : {1} Frags / {2} Deaths"
+	}
+	"#SMStats_MenuInfo_Soldier"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Soldier : {1} Frags / {2} Deaths"
+	}
+	"#SMStats_MenuInfo_Pyro"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Pyro : {1} Frags / {2} Deaths"
+	}
+	"#SMStats_MenuInfo_Demoman"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Demoman : {1} Frags / {2} Deaths"
+	}
+	"#SMStats_MenuInfo_Heavy"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Heavy : {1} Frags / {2} Deaths"
+	}
+	"#SMStats_MenuInfo_Engineer"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Engineer : {1} Frags / {2} Deaths"
+	}
+	"#SMStats_MenuInfo_Medic"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Medic : {1} Frags / {2} Deaths"
+	}
+	"#SMStats_MenuInfo_Sniper"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Sniper : {1} Frags / {2} Deaths"
+	}
+	"#SMStats_MenuInfo_Spy"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Spy : {1} Frags / {2} Deaths"
+	}
+
+	"#SMStats_MenuInfo_Buildings"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Buildings : {1} Placed / {2} Destroyed"
+	}
+	"#SMStats_MenuInfo_Dispenser"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Dispenser : {1} Placed / {2} Destroyed"
+	}
+	"#SMStats_MenuInfo_SentryGun"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Sentry Gun : {1} Placed / {2} Destroyed"
+	}
+	"#SMStats_MenuInfo_TeleporterEntrance"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Teleporter Entrance : {1} Placed / {2} Destroyed"
+	}
+	"#SMStats_MenuInfo_TeleporterExit"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Teleporter Exit : {1} Placed / {2} Destroyed"
+	}
+	"#SMStats_MenuInfo_MiniSentryGun"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Mini-Sentry Gun : {1} Placed / {2} Destroyed"
+	}
+	"#SMStats_MenuInfo_Sapper"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Sapper : {1} Placed / {2} Destroyed"
+	}
+
+	"#SMStats_MenuInfo_CP_Captured"
+	{
+		"#format" "{1:i}"
+		"en" "Capture Points captured : {1}"
+	}
+	"#SMStats_MenuInfo_CP_Defended"
+	{
+		"#format" "{1:i}"
+		"en" "Capture Points defended : {1}"
+	}
+	"#SMStats_MenuInfo_CTF_Stolen"
+	{
+		"#format" "{1:i}"
+		"en" "Flag-Intelligence stolen : {1}"
+	}
+	"#SMStats_MenuInfo_CTF_PickedUp"
+	{
+		"#format" "{1:i}"
+		"en" "Flag-Intelligence picked up : {1}"
+	}
+	"#SMStats_MenuInfo_CTF_Captured"
+	{
+		"#format" "{1:i}"
+		"en" "Flag-Intelligence captured : {1}"
+	}
+	"#SMStats_MenuInfo_CTF_Defended"
+	{
+		"#format" "{1:i}"
+		"en" "Flag-Intelligence defended : {1}"
+	}
+	"#SMStats_MenuInfo_CTF_Dropped"
+	{
+		"#format" "{1:i}"
+		"en" "Flag-Intelligence dropped : {1}"
+	}
+
+	"#SMStats_MenuInfo_TeleportersUsed"
+	{
+		"#format" "{1:i}"
+		"en" "Teleporters used : {1}"
+	}
+	"#SMStats_MenuInfo_PlayersTeleported"
+	{
+		"#format" "{1:i}"
+		"en" "Players teleported : {1}"
+	}
+	"#SMStats_MenuInfo_PlayersTeleported"
+	{
+		"#format" "{1:i}"
+		"en" "Players teleported : {1}"
+	}
+	"#SMStats_MenuInfo_CoatedMilk"
+	{
+		"#format" "{1:i}"
+		"en" "Players coated with milk : {1}"
+	}
+	"#SMStats_MenuInfo_CoatedPiss"
+	{
+		"#format" "{1:i}"
+		"en" "Players coated with piss : {1}"
+	}
+	"#SMStats_MenuInfo_Coated"
+	{
+		"#format" "{1:i}"
+		"en" "Players coated : {1}"
+	}
+	"#SMStats_MenuInfo_Extinguished"
+	{
+		"#format" "{1:i}"
+		"en" "Players extinguished : {1}"
+	}
+	"#SMStats_MenuInfo_Ignited"
+	{
+		"#format" "{1:i}"
+		"en" "Players ignited : {1}"
+	}
+	"#SMStats_MenuInfo_Ubercharged"
+	{
+		"#format" "{1:i}"
+		"en" "Übercharged : {1}"
+	}
+	"#SMStats_MenuInfo_SandvichesStolen"
+	{
+		"#format" "{1:i}"
+		"en" "Sandviches stolen : {1}"
+	}
+
+	"#SMStats_MenuInfo_HWN_Monoculus"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Monoculus : {1} Fragged / {2} Stunned"
+	}
+	"#SMStats_MenuInfo_HWN_Merasmus"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Merasmus : {1} Fragged / {2} Stunned"
+	}
+	"#SMStats_MenuInfo_HWN_HHH"
+	{
+		"#format" "{1:i}"
+		"en" "Horseless Headless Horsemann fragged : {1}"
+	}
+	"#SMStats_MenuInfo_HWN_SkeletonKing"
+	{
+		"#format" "{1:i}"
+		"en" "Skeleton Kings fragged : {1}"
+	}
+
+	"#SMStats_MenuInfo_MvM_TanksDestroyed"
+	{
+		"#format" "{1:i}"
+		"en" "Tanks destroyed : {1}"
+	}
+	"#SMStats_MenuInfo_MvM_SentryBustersFragged"
+	{
+		"#format" "{1:i}"
+		"en" "Sentry Busters fragged : {1}"
+	}
+	"#SMStats_MenuInfo_MvM_BombsResetted"
+	{
+		"#format" "{1:i}"
+		"en" "Bombs resetted : {1}"
+	}
+
 	//===================//
 	// Capture Points.
 	//===================//

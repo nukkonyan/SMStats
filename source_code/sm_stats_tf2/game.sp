@@ -494,10 +494,11 @@ enum struct TF2_GameInfo
 			delete this.aExtEvent;
 		}
 		
-		for(TFBuilding obj = TFBuilding_Sentrygun; obj <= TFBuilding_Sapper; obj++)
+		for(int i = 0; i <= 6; i++)
 		{
-			this.bObjectPlaced[obj] = false;		
-			this.bObjectDestroyed[obj] = false;
+			this.bObjectPlaced[i] = false;		
+			this.bObjectDestroyed[i] = false;
+			this.bPassBallEvent[i] = false;
 		}
 		
 		this.bUbercharged = false;
@@ -1138,13 +1139,7 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	if(!TF2_IsMvMGameMode())
-	{
-		return;
-	}
-	
-	int points = 0;
-	if((points = g_PointCaptured.IntValue) < 1)
+	if(TF2_IsMvMGameMode())
 	{
 		return;
 	}
@@ -1168,26 +1163,31 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 			continue;
 		}
 		
-		char phrase[64];
-		Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_CaptureEvent_Type0", client);
-		
 		g_Player[client].session[Stats_PointsCaptured]++;
-		g_Player[client].session[Stats_Points] += points;
-		g_Player[client].points += points;
 		
-		CPrintToChat(client, "%s %T"
-		, g_ChatTag
-		, "#SMStats_CaptureEvent_Default", client
-		, g_Player[client].name
-		, g_Player[client].points
-		, points
-		, phrase
-		, cpname);
-		
-		char query[256];
-		Format(query, sizeof(query), "update `%s` set Points = Points+%i, PointsCaptured = PointsCaptured+1 where SteamID = '%s' and ServerID = %i"
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
-		txn.AddQuery(query, query_error_uniqueid_CP_OnCapturedPoint);
+		int points = 0;
+		if((points = g_PointCaptured.IntValue) > 0)
+		{
+			char phrase[64];
+			Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_CaptureEvent_Type0", client);
+			
+			CPrintToChat(client, "%s %T"
+			, g_ChatTag
+			, "#SMStats_CaptureEvent_Default", client
+			, g_Player[client].name
+			, g_Player[client].points
+			, points
+			, phrase
+			, cpname);
+			
+			char query[256];
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, PointsCaptured = PointsCaptured+1 where SteamID = '%s' and ServerID = %i"
+			, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			txn.AddQuery(query, query_error_uniqueid_CP_OnCapturedPoint);
+			
+			g_Player[client].session[Stats_Points] += points;
+			g_Player[client].points += points;
+		}
 	}
 	
 	sql.Execute(txn, _, TXN_Callback_Failure);
@@ -1201,19 +1201,13 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	if(!TF2_IsMvMGameMode())
+	if(TF2_IsMvMGameMode())
 	{
 		return;
 	}
 	
 	int client = event.GetInt("blocker");
 	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	int points = 0;
-	if((points = g_PointBlocked.IntValue) < 1)
 	{
 		return;
 	}
@@ -1237,26 +1231,31 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 		}
 	}
 	
-	char cpname[64], phrase[64];
-	event.GetString("cpname", cpname, sizeof(cpname));
-	Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_CaptureEvent_Type1", client);
-	
 	g_Player[client].session[Stats_PointsDefended]++;
-	g_Player[client].session[Stats_Points] += points;
-	g_Player[client].points += points;
 	
-	CPrintToChat(client, "%s %T"
-	, g_ChatTag
-	, "#SMStats_CaptureEvent_Default", client
-	, g_Player[client].name
-	, g_Player[client].points
-	, phrase
-	, cpname
-	, g_Player[victim].name);
-	
-	CallbackQuery("update `%s` set Points = Points+%i, PointsDefended = PointsDefended+1 where SteamID = '%s' and ServerID = %i"
-	, query_error_uniqueid_CP_OnCaptureBlocked
-	, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+	int points = 0;
+	if((points = g_PointBlocked.IntValue) < 1)
+	{
+		char cpname[64], phrase[64];
+		event.GetString("cpname", cpname, sizeof(cpname));
+		Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_CaptureEvent_Type1", client);
+		
+		CPrintToChat(client, "%s %T"
+		, g_ChatTag
+		, "#SMStats_CaptureEvent_Default", client
+		, g_Player[client].name
+		, g_Player[client].points
+		, phrase
+		, cpname
+		, g_Player[victim].name);
+		
+		CallbackQuery("update `%s` set Points = Points+%i, PointsDefended = PointsDefended+1 where SteamID = '%s' and ServerID = %i"
+		, query_error_uniqueid_CP_OnCaptureBlocked
+		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		
+		g_Player[client].session[Stats_Points] += points;
+		g_Player[client].points += points;
+	}
 }
 
 /* Called as soon the flag is picked up, captured, stolen, etc. */
@@ -3310,7 +3309,7 @@ Action Timer_OnGameFrame(Handle timer)
 					/* Mad Milk & Mutated Milk */
 					case 1:
 					{
-						g_Player[client].session[Stats_MadMilked] += jars;
+						g_Player[client].session[Stats_CoatedMilk] += jars;
 						
 						if(!g_Game[client].bPlayerMilked)
 						{
@@ -3340,7 +3339,7 @@ Action Timer_OnGameFrame(Handle timer)
 					/* Jarate, Sydney Sleeper & The Self-Aware Beauty Mark */
 					case 2:
 					{
-						g_Player[client].session[Stats_Jarated] += jars;
+						g_Player[client].session[Stats_CoatedPiss] += jars;
 						
 						if(!g_Game[client].bPlayerJarated)
 						{

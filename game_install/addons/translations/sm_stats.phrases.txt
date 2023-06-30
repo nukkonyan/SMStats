@@ -1,6 +1,18 @@
 "Phrases"
 {
 	//================================//
+	// Core.
+	//================================//
+	"#SMStats_Error_NotInitialized"
+	{
+		"en" "{yellow}Error: {grey}SM Stats: Core {yellow}has yet initialized."
+	}
+	"#SMStats_Error_SQLNotInitialized"
+	{
+		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
+	}
+
+	//================================//
 	// Connected.
 	//================================//
 	"#SMStats_Player_Connected"
@@ -37,6 +49,91 @@
 		"en" "Positioned #{1} out of {2} players."
 
 		"sv" "Positionerad #{1} utav {2} spelare."
+	}
+	"#SMStats_Menu_Session"
+	{
+		"en" "Session."
+	}
+	"#SMStats_Menu_SessionInfo"
+	{
+		"en" "View your current session statistics."
+	}
+	"#SMStats_Menu_ActiveStats"
+	{
+		"en" "Active stats."
+	}
+	"#SMStats_Menu_ActiveStatsInfo"
+	{
+		"en" "View your active statistics."
+	}
+	"#SMStats_Menu_Page"
+	{
+		"#format" "{1:i}"
+		"en" "Page {1}"
+	}
+	"#SMStats_Menu_PreviousPage"
+	{
+		"en" "Previous page"
+	}
+	"#SMStats_Menu_NextPage"
+	{
+		"en" "Next page"
+	}
+	"#SMStats_Menu_ExitPage"
+	{
+		"en" "Exit"
+	}
+
+	"#SMStats_MenuInfo_PlayTime"
+	{
+		"#format" "{1:i}"
+		"en" "Play time : {1} minutes"
+
+		"jp" "プレイーのタイム： {1}分"
+	}
+	"#SMStats_MenuInfo_PointsEarned"
+	{
+		"#format" "{1:i}"
+		"en" "Points earned : {1}"
+	}
+	"#SMStats_MenuInfo_PointsLost"
+	{
+		"#format" "{1:i}"
+		"en" "Points lost : {1}"
+	}
+	"#SMStats_MenuInfo_Frags"
+	{
+		"#format" "{1:i}"
+		"en" "Frags : {1}"
+
+		"jp" "フラッグ： {1}"
+	}
+	"#SMStats_MenuInfo_Assists"
+	{
+		"#format" "{1:i}"
+		"en" "Assists : {1}"
+	}
+	"#SMStats_MenuInfo_Deaths"
+	{
+		"#format" "{1:i}"
+		"en" "Deaths : {1}"
+
+		"jp" "死亡率： {1}"
+	}
+	"#SMStats_MenuInfo_Suicides"
+	{
+		"#format" "{1:i}"
+		"en" "Suicides : {1}"
+	}
+	"#SMStats_MenuInfo_DamageDone"
+	{
+		"#format" "{1:i}"
+		"en" "Damage done : {1}"
+	}
+	"#SMStats_MenuInfo_AchievementsEarned"
+	{
+		"#format" "{1:i}"
+		"en" "Achievements Earned : {1}"
 	}
 	
 	//================================//
