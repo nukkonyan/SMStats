@@ -56,6 +56,7 @@
 
 #include <sm_stats>
 #include <sm_stats_core>
+#include <geoip_country>
 #include <geoip>
 #include <multicolors>
 #include <tf2_stocks>

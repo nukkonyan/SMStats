@@ -1157,36 +1157,6 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 
 //
 
-/**
- *	Converts the string into lowercase.
- *
- *	@param	str		The string to convert.
- *
- *	@return void
- */
-stock void StrToLower(char[] str)
-{
-	for(int i = 0; i < strlen(str); i++)
-	{
-		str[i] = CharToLower(str[i]);
-	}
-}
-
-/**
- *	Converts the string into uppercase.
- *
- *	@param	str		The string to convert.
- *
- *	@return void
- */
-stock void StrToUpper(char[] str)
-{
-	for(int i = 0; i < strlen(str); i++)
-	{
-		str[i] = CharToUpper(str[i]);
-	}
-}
-
 /*
  * Same as CPrintToChatAll() but uses player entity while() loop instead of for() loop.
  * More efficient and faster.
@@ -1209,34 +1179,6 @@ stock void CPrintToChatAll2(const char[] message, any ...)
 	}
 }
 
-/*
- * Returns the country name.
- */
-stock void GetCountryName(int client, const char[] ip, char[] name, int maxlen)
-{
-	if(!GeoipCountry(ip, name, maxlen))
-	{
-		strcopy(name, maxlen, "unknown country");
-		return;
-	}
-	
-	char ccode[3];
-	StrToUpper(ccode);
-	switch(GeoipCode2(ip, ccode))
-	{
-		case false:
-		{
-			Format(name, maxlen, "%T", "#SM_CountryName_ZZ", client);
-		}
-		
-		case true:
-		{
-			Format(name, maxlen, "#SM_CountryName_%s", ccode);
-			Format(name, maxlen, "%T", name, client);
-		}
-	}
-}
-
 //
 
 stock void Send_Player_Connected(SMStats_PlayerInfo info)
@@ -1249,7 +1191,7 @@ stock void Send_Player_Connected(SMStats_PlayerInfo info)
 		if(IsValidClient(player))
 		{
 			char country_name[64];
-			GetCountryName(player, info.ip, country_name, sizeof(country_name));
+			GeoipCountryName(player, info.ip, country_name, sizeof(country_name));
 			
 			CPrintToChat(player, "%s %T"
 			, g_ChatTag
@@ -1272,7 +1214,7 @@ stock void Send_Player_Disconnected(SMStats_PlayerInfo info, const char[] event_
 		if(IsValidClient(player))
 		{
 			char country_name[64];
-			GetCountryName(player, info.ip, country_name, sizeof(country_name));
+			GeoipCountryName(player, info.ip, country_name, sizeof(country_name));
 			
 			CPrintToChat(player, "%s %T"
 			, g_ChatTag
