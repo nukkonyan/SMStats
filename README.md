@@ -4,9 +4,10 @@ Currently in active re-writing process from scratch with better code-base and mu
 The new code is more efficient and impacts less on server performance.
 
 Games supported so far:
-Team Fortress 2
-Counter-Strike: Source
+Team Fortress 2 (works perfectly so far)
+Counter-Strike: Source (buggy)
 
+Some functions yet implemented and sooner or later will be.
 Some things may not work as intended at the very moment, but will get working sooner or later.
 ```
 
