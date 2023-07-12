@@ -1,7 +1,7 @@
 
 ```
 Currently in active re-writing process from scratch with better code-base and much more efficient
-SQL code as ``SM Stats`` (renamed from XStats) with full extended translation support.
+SQL code as 'SM Stats' (renamed from XStats) with full extended translation support.
 The new code is more efficient and impacts less on server performance.
 
 Games supported so far:
