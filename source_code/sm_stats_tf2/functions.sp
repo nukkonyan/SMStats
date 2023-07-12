@@ -12,6 +12,7 @@ char TF2_ClassTypeNameLC[][] = {
 	"civilian"		
 };
 
+
 bool GetPlayerName(int client, char[] name, int maxlen)
 {
 	if(!IsClientInGame(client))
@@ -755,4 +756,67 @@ bool AssistedKills(Transaction txn, const int[] list_assister, int frags, int cl
 bool TF2_IsMvMGameMode()
 {
 	return view_as<bool>(GameRules_GetProp("m_bPlayingMannVsMachine"));
+}
+
+/**
+ *	Returns if the entity is a building.
+ *
+ *	@param	entity	The building entity index.
+ *
+ *	@error	If the entity is invalid, this returns false.
+ */
+stock bool TF2_IsEntityBuilding(int building)
+{
+	return !IsValidEntity(building) ? false : HasEntProp(building, Prop_Send, "m_bBuilding");
+}
+
+/**
+ *	Returns the buildings upgrade level.
+ *
+ *	@param	entity	The building entity index.
+ *	@error	If the entity is invalid, this returns -1.
+ */
+stock int TF2_GetBuildingLevel(int building)
+{
+	return !IsValidEntity(building) ? -1 : GetEntProp(building, Prop_Send, "m_iUpgradeLevel");
+}
+
+/**
+ *	Returns the TFBuilding type.
+ *
+ *	@param	entity	The building to get TFBuilding type from.
+ *
+ *	@error	If the building is invalid, this returns TFBuilding_Invalid.
+ */
+stock TFBuilding TF2_GetBuildingType(int entity)
+{
+	char classname[64];
+	GetEntityClassname(entity, classname, sizeof(classname));
+	
+	if(StrEqual(classname, "obj_dispenser"))
+	{
+		return TFBuilding_Dispenser;
+	}
+	else if(StrEqual(classname, "obj_sentrygun"))
+	{
+		return TFBuilding_Sentrygun;
+	}
+	else if(StrEqual(classname, "obj_teleporter"))
+	{
+		switch(TF2_GetObjectMode(entity))
+		{
+			case TFObjectMode_Entrance: return TFBuilding_Teleporter_Entrance;
+			case TFObjectMode_Exit: return TFBuilding_Teleporter_Exit;
+		}
+	}
+	else if(StrEqual(classname, "obj_minisentry"))
+	{
+		return TFBuilding_MiniSentry;
+	}
+	else if(StrContains(classname, "sapper", false) != -1)
+	{
+		return TFBuilding_Sapper;
+	}
+	
+	return TFBuilding_Invalid;
 }

@@ -2,7 +2,7 @@ stock void LoadForwardEvents()
 {
 	switch(GetEngineVersion())
 	{
-		case Engine_TF2:
+		case Engine_TF2, Engine_CSS:
 		{
 			HookEvent("player_connect_client", OnPlayerConnected, EventHookMode_Pre);
 		}
@@ -71,6 +71,10 @@ public void OnClientConnected(int client)
 public void OnClientPutInServer(int client)
 {
 	CheckActivePlayers();
+	
+	SDKHook(client, SDKHook_OnTakeDamage, OnPlayerTakeDamage);
+	
+	CreateTimer(60.0, Timer_MinutePlayed, GetClientUserId(client), TIMER_REPEAT);
 }
 
 public void OnClientSettingsChanged(int client)
@@ -246,12 +250,7 @@ void CheckUserSQL_Query_Failed(Database db, int userid, int numQueries, const ch
 
 void OnPlayerConnected(Event event, const char[] event_name, bool dontBroadcast)
 {
-	if(!bLoaded)
-	{
-		return;
-	}
-	
-	event.BroadcastDisabled = true;
+	if(bLoaded) event.BroadcastDisabled = true;
 }
 
 // player disconnected event
@@ -300,4 +299,49 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 	event.GetString("reason", event_reason, sizeof(event_reason));
 	
 	Send_Player_Disconnected(g_Player[client], event_reason);
+}
+
+//
+
+Action OnPlayerTakeDamage(int victim, int &client, int &inflictor, float &damage, int &damagetype)
+{
+	if(IsValidClient(victim) && IsValidClient(client, true) && GetClientTeam(victim) != GetClientTeam(client))
+	{
+		//Turn the float into a valid integer.
+		char getdmg[96];
+		FloatToString(damage, getdmg, sizeof(getdmg));
+		SplitString(getdmg, ".", getdmg, sizeof(getdmg));
+		int dmg = StringToInt(getdmg);
+		
+		//PrintToChatAll("[%N] Damage done: %i", client, dmg);
+		
+		#if defined assister_func
+		g_PlayerDamaged[victim][client] += dmg;
+		#endif
+		
+		g_Player[client].session[Stats_DamageDone] += dmg;
+	}
+	
+	return Plugin_Continue;
+}
+
+//
+
+Action Timer_MinutePlayed(Handle timer, int userid)
+{
+	int client = 0;
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		KillTimer(timer);
+		return Plugin_Handled;
+	}
+	
+	g_Player[client].session[Stats_PlayTime]++;
+	
+	char query[256];
+	Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where SteamID = '%s' and ServerID = %i"
+	, sql_table_playerlist, g_Player[client].auth, g_ServerID);
+	sql.Query(DBQuery_Callback, query, query_error_uniqueid_UpdatePlayTime);
+	
+	return Plugin_Continue;
 }

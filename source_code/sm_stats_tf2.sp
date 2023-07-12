@@ -53,12 +53,10 @@
 #define query_error_uniqueid_PassBall_Stolen 75
 #define query_error_uniqueid_PassBall_Blocked 76
 #define query_error_uniqueid_OnUpdateDamageDone 79
+#define query_error_uniqueid_UpdatePlayTime 80
 
 #include <sm_stats>
 #include <sm_stats_core>
-#include <geoip_country>
-#include <geoip>
-#include <multicolors>
 #include <tf2_stocks>
 
 // updater
@@ -95,8 +93,8 @@ public Plugin myinfo =
 
 #include "sm_stats/functions.sp"
 #include "sm_stats/forwards.sp"
+#include "sm_stats/assister.sp"
 
-//#include "sm_stats_tf2/sql.sp"
 #include "sm_stats_tf2/functions.sp"
-//#include "sm_stats_tf2/forwards.sp"
 #include "sm_stats_tf2/game.sp"
+//#include "sm_stats_tf2/forwards.sp"

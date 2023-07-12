@@ -1,0 +1,36 @@
+create table if not exists `playerlist_css`
+(
+	`ServerID` int(16) not null default '1' comment 'Servers unique ID',
+	`Points` int(32) not null default '1000',
+	`LastConnected` int(32) not null default '0',
+	`LastConnectedServerID` int(32) not null default '1' comment 'Last server id player were on.',
+	`PlayTime` int(32) not null default '0',
+	`SteamID` varchar(64) not null default '',
+	`IPAddress` varchar(64) not null default '',
+	`Frags` int(32) not null default '0',
+	`Deaths` int(32) not null default '0',
+	`Assists` int(32) not null default '0',
+	`Suicides` int(32) not null default '0',
+	`DamageDone` int(32) not null default '0',
+
+	`KnifeFrags` int(32) not null default '0',
+	`MidAirFrags` int(32) not null default '0',
+	`Headshots` int(32) not null default '0',
+	`Noscopes` int(32) not null default '0',
+	`Dominations` int(32) not null default '0',
+	`Revenges` int(32) not null default '0',
+
+	`MoneySpent` int(32) not null default '0',
+	`FlashedOpponents` int(32) not null default '0',
+	`GrenadeFrags` int(32) not null default '0',
+
+	`BombsPlanted` int(32) not null default '0',
+	`BombsDefused` int(32) not null default '0',
+	`BombsExploded` int(32) not null default '0',
+	`BombFrags` int(32) not null default '0',
+
+	`HostagesRescued` int not null default '0',
+	`HostagesFragged` int not null default '0',
+	
+	primary key (`SteamID`)
+)

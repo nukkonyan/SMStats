@@ -1,9 +1,13 @@
-Currently in active re-writing process from scratch with better code-base and much more efficient SQL code as ``SM Stats`` with full extended translation support.
-The new code is more efficient and impacts less on server performance.
 
 ```
+Currently in active re-writing process from scratch with better code-base and much more efficient SQL code as ``SM Stats`` (renamed from XStats) with full extended translation support.
+The new code is more efficient and impacts less on server performance.
+
 Games supported so far:
 Team Fortress 2
+Counter-Strike: Source
+
+Some things may not work as intended at the very moment, but will get working sooner or later.
 ```
 
 [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling.
