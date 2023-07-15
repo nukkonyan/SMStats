@@ -7,6 +7,7 @@
 #define MaxItemDef 30758 // will later be updated to use indexes instead of itemdef
 #define GameTag "tf2"
 #define core_chattag "[SM Stats: TF2]"
+#define core_chattag2 "SM Stats: TF2"
 
 #define query_error_uniqueid_OnPlayerDeath 1
 #define query_error_uniqueid_CP_OnCapturedPoint 2
@@ -92,8 +93,8 @@ public Plugin myinfo =
 #include "sm_stats_tf2/menus.sp"
 
 #include "sm_stats/functions.sp"
-#include "sm_stats/forwards.sp"
 #include "sm_stats/assister.sp"
+#include "sm_stats/forwards.sp"
 
 #include "sm_stats_tf2/functions.sp"
 #include "sm_stats_tf2/game.sp"

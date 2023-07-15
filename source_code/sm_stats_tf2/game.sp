@@ -66,14 +66,6 @@ ConVar g_BossStunned[4];
 /* MvM related */
 ConVar g_MvM[4];
 
-/* weapons */
-enum struct CvarWeapon
-{
-	int itemdef;
-	ConVar cvar;
-}
-ArrayList g_arrayWeapons;
-
 //
 
 /* same weapon, but different item definition indexes. */
@@ -342,52 +334,6 @@ int g_tf_weapon_knife[] = {
 
 //
 
-void array_AddWeapon(int itemdef, const char[] cvar_name, int value, char[] description)
-{
-	char str_value[11];
-	IntToString(value, str_value, sizeof(str_value));
-	
-	int maxlen = strlen(description)+52;
-	char[] fixed = new char[maxlen];
-	Format(fixed, maxlen, "SM Stats: TF2 - Points earned when fragging using %s.", description);
-	
-	CvarWeapon array;
-	array.itemdef = itemdef;
-	array.cvar = CreateConVar(cvar_name, str_value, fixed, _, true);
-	g_arrayWeapons.PushArray(array, sizeof(array));
-}
-void array_AddSameWeapon(int itemdef1, int itemdef2)
-{
-	int index = -2;
-	
-	if((index = g_arrayWeapons.FindValue(itemdef2)) != -1)
-	{
-		CvarWeapon get_array;
-		g_arrayWeapons.GetArray(index, get_array, sizeof(get_array));
-		
-		CvarWeapon array;
-		array.itemdef = itemdef1;
-		array.cvar = get_array.cvar;
-		g_arrayWeapons.PushArray(array, sizeof(array));
-	}
-}
-ConVar array_GetWeapon(int itemdef)
-{
-	int index = -2;
-	
-	if((index = g_arrayWeapons.FindValue(itemdef)) != -1)
-	{
-		CvarWeapon array;
-		g_arrayWeapons.GetArray(index, array, sizeof(array));
-		
-		return array.cvar;
-	}
-	
-	return null;
-}
-
-//
-
 enum struct FragEventInfo
 {
 	int userid;
@@ -592,7 +538,7 @@ void PrepareGame()
 	/* ========================================================================================== */
 	
 	/* weapons */
-	g_arrayWeapons = new ArrayList(sizeof(CvarWeapon));
+	array_InitializeWeapons();
 	array_AddWeapon(0, "sm_stats_points_weapon_bat", 10, "Bat");
 	array_AddWeapon(1, "sm_stats_points_weapon_bottle", 10, "Bottle");
 	array_AddWeapon(2, "sm_stats_points_weapon_fireaxe", 10, "Fire Axe");
@@ -927,6 +873,11 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	if(client == victim)
 	{
 		g_Player[client].session[Stats_Suicides]++;
+		return;
+	}
+	
+	if(GetClientTeam(client) == GetClientTeam(victim))
+	{
 		return;
 	}
 	

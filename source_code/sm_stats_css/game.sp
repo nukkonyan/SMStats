@@ -208,6 +208,11 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
+	if(GetClientTeam(client) == GetClientTeam(victim))
+	{
+		return;
+	}
+	
 	int assister = GetLatestAssister(victim, client);
 	
 	//
