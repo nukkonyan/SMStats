@@ -1,3 +1,7 @@
+#include <sdkhooks>
+#include <geoip_country>
+#include <multicolors>
+
 #define StatsSize 112
 bool DEBUG = false;
 
@@ -483,7 +487,7 @@ public void _sm_stats_core_loaded()
 {
 	LoadTranslations("sm_stats.phrases");
 	LoadTranslations(game_translation);
-	LoadTranslations("sm_country_geoip.phrases");
+	GeoipCountryLoadTranslation();
 	
 	PrintToServer("%s loading..", core_chattag);
 	bLoaded = true;
@@ -530,6 +534,10 @@ public void OnPluginStart()
 	PrepareGame();
 	LoadMenus();
 	LoadForwardEvents();
+	
+	#if defined assister_func
+	LoadAssisterEvents();
+	#endif
 }
 
 //
@@ -675,4 +683,62 @@ Action Timer_LoadCurrentInGamePlayers(Handle timer)
 	}
 	
 	return Plugin_Continue;
+}
+
+// weapons
+
+enum struct CvarWeapon
+{
+	int itemdef;
+	ConVar cvar;
+}
+
+ArrayList g_arrayWeapons;
+
+stock void array_InitializeWeapons()
+{
+	g_arrayWeapons = new ArrayList(sizeof(CvarWeapon));
+}
+stock void array_AddWeapon(int itemdef, const char[] cvar_name, int value, char[] description)
+{
+	char str_value[11];
+	IntToString(value, str_value, sizeof(str_value));
+	
+	int maxlen = strlen(description)+52;
+	char[] fixed = new char[maxlen];
+	Format(fixed, maxlen, "%s - Points earned when fragging using %s.", core_chattag2, description);
+	
+	CvarWeapon array;
+	array.itemdef = itemdef;
+	array.cvar = CreateConVar(cvar_name, str_value, fixed, _, true);
+	g_arrayWeapons.PushArray(array, sizeof(array));
+}
+stock void array_AddSameWeapon(int itemdef1, int itemdef2)
+{
+	int index = -2;
+	
+	if((index = g_arrayWeapons.FindValue(itemdef2)) != -1)
+	{
+		CvarWeapon get_array;
+		g_arrayWeapons.GetArray(index, get_array, sizeof(get_array));
+		
+		CvarWeapon array;
+		array.itemdef = itemdef1;
+		array.cvar = get_array.cvar;
+		g_arrayWeapons.PushArray(array, sizeof(array));
+	}
+}
+stock ConVar array_GetWeapon(int itemdef)
+{
+	int index = -2;
+	
+	if((index = g_arrayWeapons.FindValue(itemdef)) != -1)
+	{
+		CvarWeapon array;
+		g_arrayWeapons.GetArray(index, array, sizeof(array));
+		
+		return array.cvar;
+	}
+	
+	return null;
 }
