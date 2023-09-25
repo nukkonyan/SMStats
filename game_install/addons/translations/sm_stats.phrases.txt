@@ -386,7 +386,7 @@
 		"#format" "{1:s},{2:i},{3:i}"
 		"en" "{1} ({2}) Lost {3} points for dying."
 
-		"sv" "{1} ({2}) Förlorade {3} poäng för att dö."
+		"sv" "{1} ({2}) Förlorade {3} poäng på grund att dö."
 	}
 	
 	"#SMStats_FragEvent_Special" //Special kill event.
