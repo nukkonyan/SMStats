@@ -380,13 +380,13 @@
 		"en" "{1} ({2}) Earned {3} points for assisting {4} in fragging {5}."
 
 		"sv" "{1} ({2}) Tjänade {3} poäng för att assistera {4} genom att fragga {5}."
-	}	
+	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
 		"#format" "{1:s},{2:i},{3:i}"
 		"en" "{1} ({2}) Lost {3} points for dying."
 
-		"sv" "{1} ({2}) Förlorade {3} poäng på grund att dö."
+		"sv" "{1} ({2}) Förlorade {3} poäng på grund av att dö."
 	}
 	
 	"#SMStats_FragEvent_Special" //Special kill event.
