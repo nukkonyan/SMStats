@@ -285,7 +285,7 @@
 	{
 		"en" "{green}Through Smoke"
 
-		"sv" "{green}Genom Rök"
+		"sv" "{green}Genom Röken"
 		"jp" "{green}Through Smoke{default}で"
 	}
 	"#SMStats_FragEvent_Type2" //Noscope headshot
@@ -328,21 +328,21 @@
 		"en" "{green}Deflect Frag"
 
 		"jp" "{green}Deflectフラグ{default}で"
-		"sv" "{green}Deflektering Frag"
+		"sv" "{green}Deflekteringsfrag"
 	}
 	"#SMStats_FragEvent_Type8" //Teleport frag.
 	{
 		"en" "with a {green}Telefrag"
 
 		"jp" "{green}Telefrag{default}で"
-		"sv" "med en {green}Telefrag"
+		"sv" "med {green}Telefrag"
 	}
 	"#SMStats_FragEvent_Type9" //Taunt frag.
 	{
 		"en" "with a {green}Taunt Frag"
 
 		"jp" "{green}Tauntfrag{default}で"
-		"sv" "med {green}Hån Frag"
+		"sv" "med {green}Hånsfrag"
 	}
 	"#SMStats_FragEvent_Type10" //Collateral.
 	{
@@ -356,14 +356,14 @@
 		"en" "with a {green}Grenade Frag"
 
 		"jp" "{green}グレーネドフラッグ{default}で"
-		"sv" "med en {green}Granat Frag"
+		"sv" "med {green}Granat Frag"
 	}
 	"#SMStats_FragEvent_Type12" //Bomb/C4 frag.
 	{
 		"en" "with a {green}Bomb Frag"
 
 		"jp" "{green}ボムFrag{default}で"
-		"sv" "med en {green}Bomb Frag"
+		"sv" "med {green}Bomb Frag"
 	}
 	"#SMStats_FragEvent_Type13" //Blinded frag.
 	{
