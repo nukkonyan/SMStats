@@ -3,7 +3,7 @@
 #pragma tabsize 0
 #define Version "1.0.0"
 #define VersionAlt "v" ... Version
-#define MaxPlayers 33
+#define MaxPlayers 33 // 101 cuz -unrestricted_maxplayers ?
 #define MaxItemDef 30758 // will later be updated to use indexes instead of itemdef
 #define GameTag "tf2"
 #define core_chattag "[SM Stats: TF2]"
