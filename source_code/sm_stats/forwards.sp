@@ -338,10 +338,65 @@ Action Timer_MinutePlayed(Handle timer, int userid)
 	
 	g_Player[client].session[Stats_PlayTime]++;
 	
-	char query[256];
-	Format(query, sizeof(query), "update `%s` set PlayTime = PlayTime+1 where SteamID = '%s' and ServerID = %i"
-	, sql_table_playerlist, g_Player[client].auth, g_ServerID);
-	sql.Query(DBQuery_Callback, query, query_error_uniqueid_UpdatePlayTime);
+	CallbackQuery("update `%s` set PlayTime = PlayTime+1 where SteamID = '%s' and ServerID = %i"
+	, query_error_uniqueid_UpdatePlayTime
+	, sql_table_playerlist
+	, g_Player[client].auth
+	, g_ServerID);
+	
+	if(g_Player[client].active_page_session > 0)
+	{
+		StatsMenu.Session(client, g_Player[client].active_page_session);
+	}
 	
 	return Plugin_Continue;
+}
+
+// map load event
+
+Handle hMapTimer = null;
+char cMap[64];
+
+public void OnMapStart()
+{
+	GetCurrentMap(cMap, sizeof(cMap));
+	hMapTimer = CreateTimer(60.0, MapTimer_OnMapStart, _, TIMER_REPEAT);
+}
+
+public void OnMapEnd()
+{
+	if(hMapTimer != null)
+	{
+		KillTimer(hMapTimer);
+		hMapTimer = null;
+	}
+}
+
+Action MapTimer_OnMapStart(Handle timer)
+{
+	SQLUpdateMapTimer();
+	return Plugin_Continue;
+}
+
+//
+
+void SQLUpdateMapTimer()
+{
+	if(sql != null)
+	{
+		char query[255];
+		Format(query, sizeof(query), "select * from `%s` where ServerID = %i and MapName = '%s'", sql_table_maps_log, g_ServerID, cMap);
+		sql.Query(DBQuery_MapTimer_1, query);
+	}
+}
+
+void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, any data)
+{
+	switch(results != null && results.RowCount > 0)
+	{
+		// not found
+		case false: CallbackQuery("insert into `%s` (PlayTime, ServerID, MapName) values (1, %i, '%s')", query_error_uniqueid_UpdateMapTimeInsert, sql_table_maps_log, g_ServerID, cMap);
+		// found
+		case true: CallbackQuery("update `%s` set PlayTime = PlayTime+1 where ServerID = %i and MapName = '%s'", query_error_uniqueid_UpdateMapTimeInsert, sql_table_maps_log, g_ServerID, cMap);
+	}
 }

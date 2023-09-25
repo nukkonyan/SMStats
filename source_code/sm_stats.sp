@@ -54,7 +54,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	g_fwdMinPlayersUpdated = new GlobalForward("_sm_stats_minplayers_updated", ET_Ignore, Param_Cell);
 	g_fwdAllowAbuseUpdated = new GlobalForward("sm_stats_allowabuse_updated", ET_Ignore, Param_Cell);
 	
-	g_fwdPlayerDeath = new GlobalForward("SMStats_OnPlayerDeath", ET_Ignore, Param_Cell, Param_Cell, Param_Array, Param_Array, Param_String, Param_Cell);
+	g_fwdPlayerDeath = new GlobalForward("SMStats_OnPlayerDeath", ET_Ignore, Param_Cell, Param_Cell, Param_Array, Param_Array, Param_String, Param_Array);
 	
 	// internal
 	CreateNative("_sm_stats_get_chattag", Native_GetChatTag);
@@ -262,7 +262,8 @@ any Native_PlayerDeathFwd(Handle plugin, int params)
 	char[] classname = new char[maxlen];
 	GetNativeString(5, classname, maxlen);
 	
-	int itemdef = GetNativeCell(6);
+	int[] itemdef = new int[frags];
+	GetNativeArray(6, itemdef, frags);
 	
 	Call_StartForward(g_fwdPlayerDeath);
 	Call_PushCell(attacker);
@@ -270,7 +271,7 @@ any Native_PlayerDeathFwd(Handle plugin, int params)
 	Call_PushArray(userids, frags);
 	Call_PushArray(assisters, frags);
 	Call_PushString(classname);
-	Call_PushCell(itemdef);
+	Call_PushArray(itemdef, frags);
 	Call_Finish();
 	
 	return 0;

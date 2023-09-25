@@ -19,14 +19,12 @@ enum struct StatsMenuInfo
 		panel.DrawItem("SourceMod Stats - " ... VersionAlt ... " by Teamkiller324 ( Work in progress )");
 		
 		PanelText(panel, "%T", "#SMStats_Menu_Playername", client, client);
-		PanelText(panel, "%T\n ", "#SMStats_Menu_Positioned", client, GetClientPosition(g_Player[client].auth), g_TotalTablePlayers);		
-		
+		PanelText(panel, "%T\n ", "#SMStats_Menu_Positioned", client, (g_Player[client].position = GetClientPosition(g_Player[client].auth)), g_TotalTablePlayers);		
 		PanelItem(panel, "%T"
 		... "\n  > %T"
 		... "\n "
 		, "#SMStats_Menu_Session", client
 		, "#SMStats_Menu_SessionInfo", client);
-		
 		PanelItem(panel, "%T"
 		... "\n  > %T"
 		... "\n "
@@ -40,8 +38,7 @@ enum struct StatsMenuInfo
 	void Session(int client, int page=1)
 	{
 		Panel panel = new Panel();
-		PanelItem(panel, "SourceMod Stats - %s > %T > %T"
-		, VersionAlt
+		PanelItem(panel, "SourceMod Stats - " ... VersionAlt ... " > %T > %T"
 		, "#SMStats_Menu_Session", client
 		, "#SMStats_Menu_Page", client, page);
 		
@@ -52,8 +49,8 @@ enum struct StatsMenuInfo
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, g_Player[client].session[Stats_PlayTime]);
 				switch(g_Player[client].session[Stats_Points] >= 0)
 				{
-					case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, g_Player[client].session[Stats_Points]);
-					case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, g_Player[client].session[Stats_Points]);
+					case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, g_Player[client].session[Stats_Points]);
+					case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, g_Player[client].session[Stats_Points]);
 				}
 				
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_Frags", client, g_Player[client].session[Stats_Frags]);
@@ -63,6 +60,7 @@ enum struct StatsMenuInfo
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_DamageDone", client, g_Player[client].session[Stats_DamageDone]);
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_AchievementsEarned", client, g_Player[client].session[Stats_Achievements]);
 				panel.DrawText(" ");
+				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
 				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
 				panel.DrawText(" ");
 				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
@@ -204,6 +202,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 	{
 		case 1:
 		{
+			g_Player[client].active_page_session = -1;
 			StatsMenu.Main(client);
 		}
 		case 2:
@@ -214,6 +213,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 		
 		case 3:
 		{
+			g_Player[client].active_page_session = -1;
 			StatsMenu.Main(client);
 		}
 	}
@@ -230,8 +230,9 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			/*
 			 * Session page 1
 			 * 1 : Menu title.
-			 * 2 : Next page.
-			 * 3 : Exit.
+			 * 2 : Previous page.
+			 * 3 : Next page.
+			 * 4 : Exit.
 			 */
 			 
 			switch(select)
@@ -243,10 +244,15 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				}
 				case 2:
 				{
+					g_Player[client].active_page_session = -1;
+					StatsMenu.Main(client);
+				}
+				case 3:
+				{
 					g_Player[client].active_page_session = 2;
 					StatsMenu.Session(client, 2);
 				}
-				case 3:
+				case 4:
 				{
 					g_Player[client].active_page_session = -1;
 				}

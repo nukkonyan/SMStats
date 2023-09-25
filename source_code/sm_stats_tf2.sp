@@ -55,6 +55,8 @@
 #define query_error_uniqueid_PassBall_Blocked 76
 #define query_error_uniqueid_OnUpdateDamageDone 79
 #define query_error_uniqueid_UpdatePlayTime 80
+#define query_error_uniqueid_UpdateMapTimeInsert 81
+#define query_error_uniqueid_OnPlayerDeath_MapUpdate 82
 
 #include <sm_stats>
 #include <sm_stats_core>

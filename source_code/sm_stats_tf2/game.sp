@@ -1016,7 +1016,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	frag.assister = assister;
 	frag.inflictor = event.GetInt("inflictor");
 	frag.crit_type = event.GetInt("crit_type");
-	frag.class = class;
+	frag.class = TF2_GetPlayerClass(victim);
 	
 	frag.suicide = (userid == attacker);
 	frag.suicide_assisted = assisted_suicide;
@@ -2800,7 +2800,7 @@ public void OnGameFrame()
 	
 	//CheckActivePlayers();
 	
-	// this is because it's called a little bit too early when you pull multiple kill within a short span,
+	// this is because it's called a little bit too early when you pull multiple frags within a short span,
 	// causing independant 'events' when it was within one 'event'.
 	CreateTimer(0.1, Timer_OnGameFrame);
 }
@@ -2824,179 +2824,291 @@ Action Timer_OnGameFrame(Handle timer)
 				FragEventInfo event;
 				int[] list = new int[frags];
 				int[] list_assister = new int[frags];
-				int count_frags;
-				int count_assisted_suicide;
+				int[] list_inflictor = new int[frags];
+				int[] list_itemdef = new int[frags];
+				any[] list_class = new any[frags];
+				bool[] list_wepfrag = new bool[frags];
+				char[][] list_classname = new char[frags][64];
+				
+				int iHeadshots;
+				int iBackstabs;
+				int iDominated;
+				int iRevenges;
+				int iNoscopes;
+				int iTauntFrags;
+				int iDeflectFrags;
+				int iGibFrags;
+				int iAirshots;
+				int iCollaterals;
+				int iMidAirFrags;
+				int iMiniCrits;
+				int iCrits;
+				
+				int iScouts;
+				int iSoldiers;
+				int iPyros;
+				int iDemos;
+				int iHeavies;
+				int iEngies;
+				int iMedics;
+				int iSnipers;
+				int iSpies;
+				
+				int iTeleFrags;
+				int iWepFrags;
+				
+				int iDispensers;
+				int iSentries;
+				int iSentriesLVL1;
+				int iSentriesLVL2;
+				int iSentriesLVL3;
+				int iMiniSentries;
+				
+				int points = 0;
 				
 				for(int i = 0; i < frags; i++)
 				{
 					g_Game[client].aFragEvent.GetArray(i, event, sizeof(event));
 					list[i] = event.userid;
 					list_assister[i] = event.assister;
+					list_inflictor[i] = event.inflictor;
+					list_itemdef[i] = event.itemdef;
+					list_class[i] = event.class;
+					strcopy(list_classname[i], 64, event.classname);
+					
 					if(event.suicide_assisted)
 					{
-						count_assisted_suicide++;
+						points += g_SuicideAssisted.IntValue;
 					}
 					else
 					{
-						count_frags++;
+						points += array_GetWeapon(event.itemdef).IntValue;
+					}
+					
+					if(event.headshot) iHeadshots++;
+					if(event.backstab) iBackstabs++;
+					if(event.dominated) iDominated++;
+					if(event.revenge) iRevenges++;
+					if(event.noscope) iNoscopes++;
+					if(event.tauntfrag) iTauntFrags++;
+					if(event.deflectfrag) iDeflectFrags++;
+					if(event.gibfrag) iGibFrags++;
+					if(event.airshot) iAirshots++;
+					if(event.collateral) iCollaterals++;
+					if(event.midair) iMidAirFrags++;
+					switch(event.crit_type)
+					{
+						case 1: iMiniCrits++;
+						case 2: iCrits++;
+					}
+					
+					switch(event.class)
+					{
+						case TFClass_Scout: iScouts++;
+						case TFClass_Soldier: iSoldiers++;
+						case TFClass_Pyro: iPyros++;
+						case TFClass_DemoMan: iDemos++;
+						case TFClass_Heavy: iHeavies++;
+						case TFClass_Engineer: iEngies++;
+						case TFClass_Medic: iMedics++;
+						case TFClass_Sniper: iSnipers++;
+						case TFClass_Spy: iSpies++;
+					}
+					
+					switch(TF2_IsEntityBuilding(event.inflictor))
+					{
+						case false:
+						{
+							if(event.telefrag)
+							{
+								iTeleFrags++;
+							}
+							else
+							{
+								iWepFrags++;
+								list_wepfrag[i] = true;
+							}
+						}
+						
+						case true:
+						{
+							switch(TF2_GetBuildingType(event.inflictor))
+							{
+								case TFBuilding_Dispenser: iDispensers++;
+								case TFBuilding_Sentrygun:
+								{
+									iSentries++;
+									int level = TF2_GetBuildingLevel(event.inflictor);
+									
+									switch(level)
+									{
+										case 1: iSentriesLVL1++;
+										case 2: iSentriesLVL2++;
+										case 3: iSentriesLVL3++;
+									}
+								}
+								
+								case TFBuilding_MiniSentry: iMiniSentries++;
+							}
+						}
 					}
 				}
 				
 				g_Game[client].aFragEvent.Clear();
 				
-				int attacker = GetClientOfUserId(client);
-				_sm_stats_player_death_fwd(attacker, frags, list, list_assister, event.classname, event.itemdef);
+				int attacker = GetClientOfUserId(client); // native string arrays needs to be added (・`ω´・)
+				_sm_stats_player_death_fwd(attacker, frags, list, list_assister, event.classname, list_itemdef);
 				
 				char dummy[256];
 				GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
 				
 				Transaction txn = new Transaction();
-				
-				int points = 0;
-				if(count_frags > 0)
-				{
-					points += (array_GetWeapon(event.itemdef).IntValue * frags);
-				}
-				if(count_assisted_suicide > 0)
-				{
-					points += (count_assisted_suicide * g_SuicideAssisted.IntValue);
-				}
-				
 				AssistedKills(txn, list_assister, frags, client, event);
 				VictimDied(txn, list, frags);
 				
-				char query[512];
-				int len = 0;
+				char query[512], query_map[512];
+				int len = 0, len_map = 0;
 				len += Format(query[len], sizeof(query)-len, "update `%s` set Frags = Frags+%i", sql_table_playerlist, frags);
+				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set Frags = Frags=%i", sql_table_maps_log, frags);
 				
-				switch(TF2_IsEntityBuilding(event.inflictor))
+				if(iWepFrags > 0)
 				{
-					case false:
+					for(int i = 0; i < frags; i++)
 					{
-						switch(event.telefrag)
+						if(list_wepfrag[i])
 						{
-							case false:
-							{
-								char fix_weapon[256];
-								CorrectWeaponClassname(event.class, fix_weapon, sizeof(fix_weapon), event.itemdef, event.classname);
-								
-								char query_wep[256];
-								Format(query_wep, sizeof(query_wep), "update `%s` set %s = %s+1 where SteamID = '%s' and ServerID = %i"
-								, sql_table_weapons, fix_weapon, fix_weapon, g_Player[client].auth, g_ServerID);
-								txn.AddQuery(query_wep, queryId_frag_weapon);
-							}
-							
-							case true:
-							{
-								g_Player[client].session[Stats_TeleFrags]++;
-								points = g_TeleFrag.IntValue * frags;
-								g_Player[client].session[Stats_Points] += points;
-								len += Format(query[len], sizeof(query)-len, ", TeleFrags = TeleFrags+1");
-							}
+							char fix_weapon[256], query_wep[256];
+							CorrectWeaponClassname(event.class, fix_weapon, sizeof(fix_weapon), list_itemdef[i], list_classname[i]);
+							Format(query_wep, sizeof(query_wep), "update `%s` set %s = %s+1 where SteamID = '%s' and ServerID = %i"
+							, sql_table_weapons, fix_weapon, fix_weapon, g_Player[client].auth, g_ServerID);
+							txn.AddQuery(query_wep, queryId_frag_weapon);
 						}
 					}
+				}
+							
+				if(iTeleFrags > 0)
+				{
+					g_Player[client].session[Stats_TeleFrags] += iTeleFrags;
+					points = g_TeleFrag.IntValue * iTeleFrags;
+					len += Format(query[len], sizeof(query)-len, ", TeleFrags = TeleFrags+%i", iTeleFrags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleFrags = TeleFrags+%i", iTeleFrags);
+				}
+				
+				if(iDispensers > 0)
+				{
+					PrintToServer("%s frag event (user index %i, userid %i) caught a dispenser somehow"
+					, core_chattag
+					, client, GetClientUserId(client), core_chattag);
+				}
+				
+				if(iSentries > 0)
+				{
+					g_Player[client].session[Stats_SentryFrags] += iSentries;
+					len += Format(query[len], sizeof(query)-len, ", SentryFrags = SentryFrags+%i", iSentries);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryFrags = SentryFrags+%i", iSentries);
 					
-					case true:
+					if(iSentriesLVL1 > 0)
 					{
-						switch(TF2_GetBuildingType(event.inflictor))
-						{
-							case TFBuilding_Dispenser:
-							{
-								PrintToServer("%s frag event (user index %i, userid %i) caught dispenser level %i somehow"
-								, core_chattag
-								, client, GetClientUserId(client), core_chattag, TF2_GetBuildingLevel(event.inflictor));
-							}
-							
-							case TFBuilding_Sentrygun:
-							{
-								g_Player[client].session[Stats_SentryFrags]++;
-								len += Format(query[len], sizeof(query)-len, ", SentryFrags = SentryFrags+%i", frags);
-								
-								int level = TF2_GetBuildingLevel(event.inflictor);
-								
-								if(level >= 1 && level <= 3)
-								{
-									Format(query[len], sizeof(query)-len, ", SentryLVL%iFrags = SentryLVL%iFrags+%i", level, level, frags);
-								}
-							}
-							
-							case TFBuilding_MiniSentry:
-							{
-								g_Player[client].session[Stats_MiniSentryFrags]++;
-								len += Format(query[len], sizeof(query)-len, ", MiniSentryKills = MiniSentryFrags+%i", frags);
-							}
-						}
+						len += Format(query[len], sizeof(query)-len, ", SentryLVL1Frags = SentryLVL1Frags+%i", iSentriesLVL1);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL1Frags = SentryLVL1Frags+%i", iSentriesLVL1);
+					}
+					if(iSentriesLVL2 > 0)
+					{
+						len += Format(query[len], sizeof(query)-len, ", SentryLVL2Frags = SentryLVL2Frags+%i", iSentriesLVL2);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL2Frags = SentryLVL2Frags+%i", iSentriesLVL2);
+					}
+					if(iSentriesLVL3 > 0)
+					{
+						len += Format(query[len], sizeof(query)-len, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentriesLVL3);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentriesLVL3);
 					}
 				}
-				
-				if(event.headshot)
+							
+				if(iMiniSentries > 0)
 				{
-					g_Player[client].session[Stats_Headshots]++;
+					g_Player[client].session[Stats_MiniSentryFrags] += iMiniSentries;
+					len += Format(query[len], sizeof(query)-len, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentries);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentries);
+				}
+				
+				if(iHeadshots > 0)
+				{
+					g_Player[client].session[Stats_Headshots] += iHeadshots;
 					g_Player[client].fragmsg.Headshot = true;
-					len += Format(query[len], sizeof(query)-len, ", Headshots = Headshots+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", Headshots = Headshots+%i", iHeadshots);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Headshots = Headshots+%i", iHeadshots);
 				}
 				
-				if(event.backstab)
+				if(iBackstabs > 0)
 				{
-					g_Player[client].session[Stats_Backstabs]++;
+					g_Player[client].session[Stats_Backstabs] += iBackstabs;
 					g_Player[client].fragmsg.Backstab = true;
-					len += Format(query[len], sizeof(query)-len, ", Backstabs = Backstabs+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", Backstabs = Backstabs+%i", iBackstabs);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Backstabs = Backstabs+%i", iBackstabs);
 				}
 				
-				if(event.dominated)
+				if(iDominated > 0)
 				{
-					g_Player[client].session[Stats_Dominations]++;
+					g_Player[client].session[Stats_Dominations] += iDominated;
 					g_Player[client].fragmsg.Domination = true;
-					len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", iDominated);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Dominations = Dominations+%i", iDominated);
 				}
 				
-				if(event.revenge)
+				if(iRevenges > 0)
 				{
-					g_Player[client].session[Stats_Revenges]++;
+					g_Player[client].session[Stats_Revenges] += iRevenges;
 					g_Player[client].fragmsg.Revenge = true;
-					len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", iRevenges);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Revenges = Revenges+%i", iRevenges);
 				}
 				
-				if(event.noscope)
+				if(iNoscopes > 0)
 				{
-					g_Player[client].session[Stats_Noscopes]++;
+					g_Player[client].session[Stats_Noscopes] += iNoscopes;
 					g_Player[client].fragmsg.Noscope = true;
-					len += Format(query[len], sizeof(query)-len, ", Noscopes = Noscopes+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", Noscopes = Noscopes+%i", iNoscopes);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Noscopes = Noscopes+%i", iNoscopes);
 				}
 				
-				if(event.tauntfrag)
+				if(iTauntFrags > 0)
 				{
-					g_Player[client].session[Stats_TauntFrags]++;
+					g_Player[client].session[Stats_TauntFrags] += iTauntFrags;
 					g_Player[client].fragmsg.TauntFrag = true;
-					len += Format(query[len], sizeof(query)-len, ", TauntFrags = TauntFrags+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", TauntFrags = TauntFrags+%i", iTauntFrags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TauntFrags = TauntFrags+%i", iTauntFrags);
 				}
 				
-				if(event.deflectfrag)
+				if(iDeflectFrags > 0)
 				{
-					g_Player[client].session[Stats_Deflects]++;
+					g_Player[client].session[Stats_Deflects] += iDeflectFrags;
 					g_Player[client].fragmsg.Deflected = true;
-					len += Format(query[len], sizeof(query)-len, ", Deflects = Deflects+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", Deflects = Deflects+%i", iDeflectFrags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Deflects = Deflects+%i", iDeflectFrags);
 				}
 				
-				if(event.gibfrag)
+				if(iGibFrags > 0)
 				{
-					g_Player[client].session[Stats_GibFrags]++;
+					g_Player[client].session[Stats_GibFrags] += iGibFrags;
 					g_Player[client].fragmsg.GibFrag = true;
-					len += Format(query[len], sizeof(query)-len, ", GibFrags = GibFrags+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", GibFrags = GibFrags+%i", iGibFrags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", GibFrags = GibFrags+%i", iGibFrags);
 				}
 				
-				if(event.airshot)
+				if(iAirshots > 0)
 				{
-					g_Player[client].session[Stats_Airshots]++;
+					g_Player[client].session[Stats_Airshots] += iAirshots;
 					g_Player[client].fragmsg.Airshot = true;
-					len += Format(query[len], sizeof(query)-len, ", Airshots = Airshots+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", Airshots = Airshots+%i", iAirshots);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Airshots = Airshots+%i", iAirshots);
 				}
 				
-				if(event.collateral)
+				if(iCollaterals > 0)
 				{
-					g_Player[client].session[Stats_Collaterals]++;
+					g_Player[client].session[Stats_Collaterals] += iCollaterals;
 					g_Player[client].fragmsg.Collateral = true;
-					len += Format(query[len], sizeof(query)-len, ", Collaterals = Collaterals+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", Collaterals = Collaterals+%i", iCollaterals);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Collaterals = Collaterals+%i", iCollaterals);
 					
 					if(g_Collateral.IntValue)
 					{
@@ -3004,29 +3116,87 @@ Action Timer_OnGameFrame(Handle timer)
 					}
 				}
 				
-				if(event.midair)
+				if(iMidAirFrags > 0)
 				{
-					g_Player[client].session[Stats_MidAirFrags]++;
+					g_Player[client].session[Stats_MidAirFrags] += iMidAirFrags;
 					g_Player[client].fragmsg.MidAir = true;
-					len += Format(query[len], sizeof(query)-len, ", MidAirFrags = MidAirFrags+%i", frags);
+					len += Format(query[len], sizeof(query)-len, ", MidAirFrags = MidAirFrags+%i", iMidAirFrags);
+					len_map += Format(query[len_map], sizeof(query_map)-len_map, ", MidAirFrags = MidAirFrags+%i", iMidAirFrags);
 				}
 				
-				switch(event.crit_type)
+				/* mini-crit */
+				if(iMiniCrits > 0)
 				{
-					/* mini-crit */
-					case 1:
-					{
-						g_Player[client].session[Stats_MiniCritFrags]++;
-						len += Format(query[len], sizeof(query)-len, ", MiniCritFrags = MiniCritFrags+%i", frags);
-					}
-					
-					/* crit */
-					case 2:
-					{
-						g_Player[client].session[Stats_CritFrags]++;
-						len += Format(query[len], sizeof(query)-len, ", CritFrags = CritFrags+%i", frags);
-					}
+					g_Player[client].session[Stats_MiniCritFrags] += frags;
+					len += Format(query[len], sizeof(query)-len, ", MiniCritFrags = MiniCritFrags+%i", frags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniCritFrags = MiniCritFrags+%i", frags);
 				}
+				
+				/* crit */
+				if(iCrits > 0)
+				{
+					g_Player[client].session[Stats_CritFrags] += frags;
+					len += Format(query[len], sizeof(query)-len, ", CritFrags = CritFrags+%i", frags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", CritFrags = CritFrags+%i", frags);
+				}
+				
+				/* classes */
+				if(iScouts > 0)
+				{
+					g_Player[client].session[Stats_ScoutFrags] += iScouts;
+					len += Format(query[len], sizeof(query)-len, ", ScoutFrags = ScoutFrags+%i", iScouts);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", ScoutFrags = ScoutFrags+%i", iScouts);
+				}
+				if(iSoldiers > 0)
+				{
+					g_Player[client].session[Stats_SoldierFrags] += iSoldiers;
+					len += Format(query[len], sizeof(query)-len, ", SoldierFrags = SoldierFrags+%i", iSoldiers);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SoldierFrags = SoldierFrags+%i", iSoldiers);
+				}
+				if(iPyros > 0)
+				{
+					g_Player[client].session[Stats_PyroFrags] += iPyros;
+					len += Format(query[len], sizeof(query)-len, ", PyroFrags = PyroFrags+%i", iPyros);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", PyroFrags = PyroFrags+%i", iPyros);
+				}
+				if(iDemos > 0)
+				{
+					g_Player[client].session[Stats_DemoFrags] += iDemos;
+					len += Format(query[len], sizeof(query)-len, ", DemoFrags = DemoFrags+%i", iDemos);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DemoFrags = DemoFrags+%i", iDemos);
+				}
+				if(iHeavies > 0)
+				{
+					g_Player[client].session[Stats_HeavyFrags] += iHeavies;
+					len += Format(query[len], sizeof(query)-len, ", HeavyFrags = HeavyFrags+%i", iHeavies);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", HeavyFrags = HeavyFrags+%i", iHeavies);
+				}
+				if(iEngies > 0)
+				{
+					g_Player[client].session[Stats_EngieFrags] += iEngies;
+					len += Format(query[len], sizeof(query)-len, ", EngieFrags = EngieFrags+%i", iEngies);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", EngieFrags = EngieFrags+%i", iEngies);
+				}
+				if(iMedics > 0)
+				{
+					g_Player[client].session[Stats_MedicFrags] += iMedics;
+					len += Format(query[len], sizeof(query)-len, ", MedicFrags = MedicFrags+%i", iMedics);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MedicFrags = MedicFrags+%i", iMedics);
+				}
+				if(iSnipers > 0)
+				{
+					g_Player[client].session[Stats_SniperFrags] += iSnipers;
+					len += Format(query[len], sizeof(query)-len, ", SniperFrags = SniperFrags+%i", iSnipers);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SniperFrags = SniperFrags+%i", iSnipers);
+				}
+				if(iSpies > 0)
+				{
+					g_Player[client].session[Stats_SpyFrags] += iSpies;
+					len += Format(query[len], sizeof(query)-len, ", SpyFrags = SpyFrags+%i", iSpies);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SpyFrags = SpyFrags+%i", iSpies);
+				}
+				
+				//
 				
 				g_Player[client].session[Stats_Frags] += frags;
 				
@@ -3035,18 +3205,24 @@ Action Timer_OnGameFrame(Handle timer)
 					g_Player[client].session[Stats_Points] += points;
 					g_Player[client].points += points;
 					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
-					
-					PrepareFragMessage(client, dummy, points, frags);
 				}
 				
 				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
 				txn.AddQuery(query, queryId_frag_playerlist);
-				
 				sql.Execute(txn, _, FragEvent_OnFailed, attacker);
+				
+				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where ServerID = %i", g_ServerID);
+				sql.Query(DBQuery_Callback, query_map, query_error_uniqueid_OnPlayerDeath_MapUpdate);
+				
+				// translation, separated instead.
+				if(points > 0)
+				{
+					PrepareFragMessage(client, dummy, points, frags);
+				}
 				
 				if(g_Player[client].active_page_session > 0)
 				{
-					StatsMenu.Session(g_Player[client].active_page_session);
+					StatsMenu.Session(client, g_Player[client].active_page_session);
 				}
 			}
 		}

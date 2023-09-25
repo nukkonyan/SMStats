@@ -30,10 +30,10 @@ create table if not exists `maps_log_tf2`
 	
 	`Headshots` int not null default '0',
 	`Backstabs` int not null default '0',
-	`MidAirKills` int not null default '0',
+	`MidAirFrags` int not null default '0',
 	`GibFrags` int not null default '0',
 	`CritFrags` int not null default '0',
-	`TauntKills` int not null default '0',
+	`TauntFrags` int not null default '0',
 	`Noscopes` int not null default '0',
 	`Dominations` int not null default '0',
 	`Revenges` int not null default '0',
