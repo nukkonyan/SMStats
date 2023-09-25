@@ -1,15 +1,22 @@
 "Phrases"
 {
+	// if several languages share same translation as english, it will be used by auto if no translation is specified the other language.
+
 	//================================//
 	// Core.
 	//================================//
 	"#SMStats_Error_NotInitialized"
 	{
 		"en" "{yellow}Error: {grey}SM Stats: Core {yellow}has yet initialized."
+
+		"sv" "{yellow}Fel: {grey}SM Stats: Core {yellow}har inte laddats ännu."
 	}
 	"#SMStats_Error_SQLNotInitialized"
 	{
 		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
+
+		"jp" "{yellow}エラー: {grey}SQL 接続が出来ません。"
+		"sv" "{yellow}Fel {grey}SQL Anslutning {yellow}är för tillfället otillgänglig."
 	}
 
 	//================================//
@@ -18,18 +25,18 @@
 	"#SMStats_Player_Connected"
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} (Pos #{2}, {3} points) has connected from {4}."
+		"en" "{1} (Pos #{2}, {3} points) has joined the game from {4}."
 
 		"jp" "{1}（立{2}場、{3}ポイント） が{orange}{4}{default}からを接続しました。"
-		"sv" "{1} (Pos #{2}, {3} poäng) har anslutit sig ifrån {4}."
+		"sv" "{1} (Pos #{2}, {3} poäng) har gått med ifrån {4}."
 	}
 	"#SMStats_Player_Disconnected"
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} (Pos #{2}, {3} points) has disconnected from {4}. {grey}({5})"
+		"en" "{1} (Pos #{2}, {3} points) has left the game from {4}. {grey}({5})"
 		
 		"jp" "{1}（立{2}場、{3}ポイント） が{orange}{4}{default}からを接続を解除しました。 {grey}（{5}）"
-		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat ifrån {4}. {grey}({5})"
+		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet ifrån {4}. {grey}({5})"
 	}
 
 	//================================//
@@ -53,6 +60,8 @@
 	"#SMStats_Menu_Session"
 	{
 		"en" "Session."
+
+		"jp" "セッション"
 	}
 	"#SMStats_Menu_SessionInfo"
 	{
@@ -70,36 +79,53 @@
 	{
 		"#format" "{1:i}"
 		"en" "Page {1}"
+
+		"jp" "ページ {1}"
+		"sv" "Sida {1}"
 	}
 	"#SMStats_Menu_PreviousPage"
 	{
 		"en" "Previous page"
+
+		"jp" "前にページ"
+		"sv" "Förra sida"
 	}
 	"#SMStats_Menu_NextPage"
 	{
 		"en" "Next page"
+
+		"jp" "次にページ"
+		"sv" "Nästa sida"
 	}
 	"#SMStats_Menu_ExitPage"
 	{
-		"en" "Exit"
+		"en" "Close"
+
+		"jp" "閉める"
+		"sv" "Stäng"
 	}
 
 	"#SMStats_MenuInfo_PlayTime"
 	{
 		"#format" "{1:i}"
-		"en" "Play time : {1} minutes"
+		"en" "Playtime : {1} minutes"
 
-		"jp" "プレイーのタイム： {1}分"
+		"jp" "プレイーのタイム : {1}分"
+		"sv" "Speltid : {1} minuter"
 	}
 	"#SMStats_MenuInfo_PointsEarned"
 	{
 		"#format" "{1:i}"
 		"en" "Points earned : {1}"
+
+		"sv" "Poäng belönad : {1}"
 	}
 	"#SMStats_MenuInfo_PointsLost"
 	{
 		"#format" "{1:i}"
 		"en" "Points lost : {1}"
+
+		"sv" "Poäng förlorat : {1}"
 	}
 	"#SMStats_MenuInfo_Frags"
 	{
@@ -112,6 +138,8 @@
 	{
 		"#format" "{1:i}"
 		"en" "Assists : {1}"
+
+		"sv" "Assistantal : {1}"
 	}
 	"#SMStats_MenuInfo_Deaths"
 	{
@@ -119,21 +147,28 @@
 		"en" "Deaths : {1}"
 
 		"jp" "死亡率： {1}"
+		"sv" "Dödsantal : {1}"
 	}
 	"#SMStats_MenuInfo_Suicides"
 	{
 		"#format" "{1:i}"
 		"en" "Suicides : {1}"
+
+		"sv" "Självmordsantal : {1}"
 	}
 	"#SMStats_MenuInfo_DamageDone"
 	{
 		"#format" "{1:i}"
 		"en" "Damage done : {1}"
+
+		"sv" "Skada givet : {1}"
 	}
 	"#SMStats_MenuInfo_AchievementsEarned"
 	{
 		"#format" "{1:i}"
 		"en" "Achievements Earned : {1}"
+
+		"sv" "Framgångar uppnått : {1}"
 	}
 	
 	//================================//
@@ -172,7 +207,7 @@
 	{
 		"en" "Round End: Tracking disabled"
 
-		"sv" "Rundstart: Spårning inaktiverad."
+		"sv" "Rundslut: Spårning inaktiverad."
 	}
 	"#SMStats_NotEnoughPlayers"
 	{
@@ -272,12 +307,14 @@
 		"en" "with a {green}Noscope"
 
 		"jp" "{green}ノスコープ{default}で"
+		"sv" "med en {green}icke-zoomingsskott"
 	}
 	"#SMStats_FragEvent_Type5" //Backstab.
 	{
 		"en" "with a {green}Backstab"
 
 		"jp" "{green}バックスタッブ{default}で"
+		"sv" "med {green}Rygghugg"
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
@@ -291,6 +328,7 @@
 		"en" "{green}Deflect Frag"
 
 		"jp" "{green}Deflectフラグ{default}で"
+		"sv" "{green}Deflektering Frag"
 	}
 	"#SMStats_FragEvent_Type8" //Teleport frag.
 	{
@@ -304,20 +342,20 @@
 		"en" "with a {green}Taunt Frag"
 
 		"jp" "{green}Tauntfrag{default}で"
-		"sv" "med en {green}Hån Frag"
+		"sv" "med {green}Hån Frag"
 	}
 	"#SMStats_FragEvent_Type10" //Collateral.
 	{
 		"en" "with a {green}Collateral"
 
 		"jp" "{green}Collateral{default}で"
-		"sv" "med en {green}Collateral"
+		"sv" "med {green}Kollateral"
 	}
 	"#SMStats_FragEvent_Type11" //Grenade frag.
 	{
 		"en" "with a {green}Grenade Frag"
 
-		"jp" "{green}Grenade Frag{default}で"
+		"jp" "{green}グレーネドフラッグ{default}で"
 		"sv" "med en {green}Granat Frag"
 	}
 	"#SMStats_FragEvent_Type12" //Bomb/C4 frag.
@@ -331,8 +369,8 @@
 	{
 		"en" "while {green}Blinded"
 
-		"jp" "その間{green}Blinded"
-		"sv" "medans {green}Bländad"
+		"sv" "medans {green}Förblindad"
+		"jp" "その間{green}ブラインド"
 	}
 	
 	//Kill events
@@ -356,15 +394,15 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} points in fragging {4} {5}."
 
-		"sv" "{1} ({2}) Tjänade {3} poäng genom att fragga {4} {5}."
-		"jp" "{1}（{2}） {5}フラッギング{4}で{3}ポイントを獲得しました。"
+		"jp" "{1}（{2}）{5} フラッギング {4} で {3} ポイントを獲得しました。"
+		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad {5}."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} points in fragging {4}."
 
-		"sv" "{1} ({2}) Tjänade {3} poäng genom att fragga {4}."
-		"jp" "{1} （{2}） フラッギング{4}で{3}ポイントを獲得しました。"
+		"jp" "{1} （{2}）フラッギング {4} で {3} ポイントを獲得しました。"
+		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad."
 	}
 }
