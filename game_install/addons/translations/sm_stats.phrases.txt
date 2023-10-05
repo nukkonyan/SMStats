@@ -35,7 +35,7 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}, {3} points) has left the game from {4}. {grey}({5})"
 		
-		"jp" "{1}（立{2}場、{3}ポイント） が{orange}{4}{default}からを接続を解除しました。 {grey}（{5}）"
+		"jp" "{1}（立{2}場、{3}ポイント）が{orange}{4}{default}からを接続を解除しました。 {grey}（{5}）"
 		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet ifrån {4}. {grey}({5})"
 	}
 
