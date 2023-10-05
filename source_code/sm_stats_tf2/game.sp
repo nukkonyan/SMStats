@@ -839,7 +839,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	if(!sql)
 	{
-		LogError("[SM Stats: TF2] OnPlayerDeath error: No database connection available.");
+		LogError("%s OnPlayerDeath error: No database connection available.", core_chattag);
 		return;
 	}
 	
@@ -970,40 +970,44 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		itemdef = GetPlayerWeaponSlotItemdef(client, 0);
 	}
 	/* Assisted suicide. */
+	// this will get re-done.
 	else if(StrEqual(classname, "world", false))
 	{
 		assisted_suicide = (assister > 0);
-		itemdef = -1;
+		itemdef = ITEMDEF_ASSIST_SUICIDE;
 	}
 	else if(StrEqual(classname, "player", false))
 	{
 		assisted_suicide = (assister > 0);
-		itemdef = -1;
+		itemdef = ITEMDEF_ASSIST_SUICIDE;
 	}
 	
 	//
 	
-	if(itemdef > MaxItemDef)
+	if(itemdef != ITEMDEF_ASSIST_SUICIDE)
 	{
-		PrintToServer("[SM Stats: TF2] An error has occured, itemdef %i (classname '%s') seems to be new to the current version (%s) and needs to be updated."
-		, itemdef, classname, Version);
-		return;
-	}
-	else if(itemdef < 0)
-	{
-		PrintToServer("[SM Stats: TF2] An error has occured, itemdef %i (classname '%s') is invalid."
-		, itemdef, classname);
-		return;
-	}
-	else if(!array_GetWeapon(itemdef))
-	{
-		PrintToServer("[SM Stats: TF2] An error has occured, itemdef %i (classname '%s') seems to have invalid convar handle! (New item perhaps?)"
-		, itemdef, classname);
-		return;
-	}
-	else if(array_GetWeapon(itemdef).IntValue < 1)
-	{
-		return;
+		if(itemdef > MaxItemDef)
+		{
+			PrintToServer("%s An error has occured, itemdef %i (classname '%s') seems to be new to the current version (%s) and needs to be updated."
+			, core_chattag, itemdef, classname, Version);
+			return;
+		}
+		else if(itemdef < 0)
+		{
+			PrintToServer("%s An error has occured, itemdef %i (classname '%s') is invalid."
+			, core_chattag, itemdef, classname);
+			return;
+		}
+		else if(!array_GetWeapon(itemdef))
+		{
+			PrintToServer("%s An error has occured, itemdef %i (classname '%s') seems to have invalid convar handle! (New item perhaps?)"
+			, core_chattag, itemdef, classname);
+			return;
+		}
+		else if(array_GetWeapon(itemdef).IntValue < 1)
+		{
+			return;
+		}
 	}
 	
 	//
@@ -2966,7 +2970,7 @@ Action Timer_OnGameFrame(Handle timer)
 				AssistedKills(txn, list_assister, frags, client, event);
 				VictimDied(txn, list, frags);
 				
-				char query[512], query_map[512];
+				char query[4096], query_map[4096];
 				int len = 0, len_map = 0;
 				len += Format(query[len], sizeof(query)-len, "update `%s` set Frags = Frags+%i", sql_table_playerlist, frags);
 				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set Frags = Frags=%i", sql_table_maps_log, frags);
