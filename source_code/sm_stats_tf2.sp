@@ -86,7 +86,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public Plugin myinfo =
 {
 	name = "SM Stats: Team Fortress 2",
-	author = "チームキラー三百二十四",
+	author = "teamkiller324",
 	description = "Tracks frags, maps, events, achievements, etc.",
 	version = Version,
 	url = "https://github.com/Teamkiller324"
@@ -95,6 +95,7 @@ public Plugin myinfo =
 #include "sm_stats_tf2/menus.sp"
 
 #include "sm_stats/functions.sp"
+#include "sm_stats/natives.sp"
 #include "sm_stats/assister.sp"
 #include "sm_stats/forwards.sp"
 

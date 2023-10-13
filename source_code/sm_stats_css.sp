@@ -12,6 +12,8 @@
 #define query_error_uniqueid_OnPlayerDeath 1
 #define query_error_uniqueid_OnUpdateDamageDone 79
 #define query_error_uniqueid_UpdatePlayTime 80
+#define query_error_uniqueid_UpdateMapTimeInsert 81
+#define query_error_uniqueid_OnPlayerDeath_MapUpdate 82
 
 #include <sm_stats>
 #include <sm_stats_core>
@@ -42,7 +44,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 public Plugin myinfo =
 {
 	name = "SM Stats: Counter-Strike: Source",
-	author = "チームキラー三百二十四",
+	author = "teamkiller324",
 	description = "Tracks frags, maps, events, achievements, etc.",
 	version = Version,
 	url = "https://github.com/Teamkiller324"
@@ -51,6 +53,7 @@ public Plugin myinfo =
 #include "sm_stats_css/menus.sp"
 
 #include "sm_stats/functions.sp"
+#include "sm_stats/natives.sp"
 #include "sm_stats/assister.sp"
 #include "sm_stats/forwards.sp"
 

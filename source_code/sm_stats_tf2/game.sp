@@ -2960,7 +2960,7 @@ Action Timer_OnGameFrame(Handle timer)
 				
 				g_Game[client].aFragEvent.Clear();
 				
-				int attacker = GetClientOfUserId(client); // native string arrays needs to be added (・`ω´・)
+				int attacker = GetClientUserId(client); // native string arrays needs to be added (・`ω´・)
 				_sm_stats_player_death_fwd(attacker, frags, list, list_assister, event.classname, list_itemdef);
 				
 				char dummy[256];

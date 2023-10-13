@@ -15,7 +15,7 @@
 	{
 		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
 
-		"jp" "{yellow}エラー: {grey}SQL 接続が出来ません。"
+		"jp" "{yellow}エラー: {grey}SQL 接続出来ません。"
 		"sv" "{yellow}Fel {grey}SQL Anslutning {yellow}är för tillfället otillgänglig."
 	}
 
@@ -27,7 +27,7 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} (Pos #{2}, {3} points) has joined the game from {4}."
 
-		"jp" "{1}（立{2}場、{3}ポイント） が{orange}{4}{default}からを接続しました。"
+		"jp" "{1}（立{2}場、{3}ポイント）が{orange}{4}{default}からを参加しました。"
 		"sv" "{1} (Pos #{2}, {3} poäng) har gått med ifrån {4}."
 	}
 	"#SMStats_Player_Disconnected"
@@ -35,7 +35,7 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}, {3} points) has left the game from {4}. {grey}({5})"
 		
-		"jp" "{1}（立{2}場、{3}ポイント）が{orange}{4}{default}からを接続を解除しました。 {grey}（{5}）"
+		"jp" "{1}（立{2}場、{3}ポイント）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
 		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet ifrån {4}. {grey}({5})"
 	}
 
@@ -47,7 +47,7 @@
 		"#format" "{1:N}"
 		"en" "Playername: {1}"
 
-		"jp" "プレイヤーの名前： {1}"
+		"jp" "プレイヤー名： {1}"
 		"sv" "Spelarnamn: {1}"
 	}
 	"#SMStats_Menu_Positioned"
@@ -66,14 +66,20 @@
 	"#SMStats_Menu_SessionInfo"
 	{
 		"en" "View your current session statistics."
+
+		"sv" "Kolla dina nuvarande session statistiker."
 	}
 	"#SMStats_Menu_ActiveStats"
 	{
 		"en" "Active stats."
+
+		"sv" "Nuvarande stats."
 	}
 	"#SMStats_Menu_ActiveStatsInfo"
 	{
 		"en" "View your active statistics."
+
+		"sv" "Kolla dina nuvarande statistiker."
 	}
 	"#SMStats_Menu_Page"
 	{
@@ -110,7 +116,7 @@
 		"#format" "{1:i}"
 		"en" "Playtime : {1} minutes"
 
-		"jp" "プレイーのタイム : {1}分"
+		"jp" "プレイーのタイム : {1}分間"
 		"sv" "Speltid : {1} minuter"
 	}
 	"#SMStats_MenuInfo_PointsEarned"
@@ -279,90 +285,77 @@
 		"en" "whilst {green}Mid Air"
 
 		"sv" "medans {green}I Luften"
-		"jp" "whilst {green}Mid Air{default}で"
 	}
 	"#SMStats_FragEvent_Type1" //Noscope
 	{
 		"en" "{green}Through Smoke"
 
 		"sv" "{green}Genom Röken"
-		"jp" "{green}Through Smoke{default}で"
 	}
 	"#SMStats_FragEvent_Type2" //Noscope headshot
 	{
 		"en" "with a {green}Noscope Headshot"
 
 		"sv" "med en {green}Noscope Huvudskott"
-		"jp" "{green}Noscopeヘッドショット{default}で"
 	}
 	"#SMStats_FragEvent_Type3" //Headshot.
 	{
 		"en" "with a {green}Headshot"
 
-		"jp" "{green}ヘッドショット{default}で"
 		"sv" "med ett {green}Huvudskott"
 	}
 	"#SMStats_FragEvent_Type4" //Noscope.
 	{
 		"en" "with a {green}Noscope"
 
-		"jp" "{green}ノスコープ{default}で"
 		"sv" "med en {green}icke-zoomingsskott"
 	}
 	"#SMStats_FragEvent_Type5" //Backstab.
 	{
 		"en" "with a {green}Backstab"
 
-		"jp" "{green}バックスタッブ{default}で"
 		"sv" "med {green}Rygghugg"
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
 		"en" "{green}Airshot"
 
-		"jp" "{green}エアーショット{default}で"
 		"sv" "{green}Luftskott"
 	}
 	"#SMStats_FragEvent_Type7" //Deflect frag.
 	{
 		"en" "{green}Deflect Frag"
 
-		"jp" "{green}Deflectフラグ{default}で"
 		"sv" "{green}Deflekteringsfrag"
 	}
 	"#SMStats_FragEvent_Type8" //Teleport frag.
 	{
 		"en" "with a {green}Telefrag"
 
-		"jp" "{green}Telefrag{default}で"
 		"sv" "med {green}Telefrag"
 	}
 	"#SMStats_FragEvent_Type9" //Taunt frag.
 	{
 		"en" "with a {green}Taunt Frag"
 
-		"jp" "{green}Tauntfrag{default}で"
 		"sv" "med {green}Hånsfrag"
 	}
 	"#SMStats_FragEvent_Type10" //Collateral.
 	{
 		"en" "with a {green}Collateral"
 
-		"jp" "{green}Collateral{default}で"
 		"sv" "med {green}Kollateral"
 	}
 	"#SMStats_FragEvent_Type11" //Grenade frag.
 	{
 		"en" "with a {green}Grenade Frag"
 
-		"jp" "{green}グレーネドフラッグ{default}で"
 		"sv" "med {green}Granat Frag"
 	}
 	"#SMStats_FragEvent_Type12" //Bomb/C4 frag.
 	{
 		"en" "with a {green}Bomb Frag"
 
-		"jp" "{green}ボムFrag{default}で"
 		"sv" "med {green}Bomb Frag"
 	}
 	"#SMStats_FragEvent_Type13" //Blinded frag.
@@ -370,7 +363,6 @@
 		"en" "while {green}Blinded"
 
 		"sv" "medans {green}Förblindad"
-		"jp" "その間{green}ブラインド"
 	}
 	
 	//Kill events
@@ -394,7 +386,6 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} points in fragging {4} {5}."
 
-		"jp" "{1}（{2}）{5} フラッギング {4} で {3} ポイントを獲得しました。"
 		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad {5}."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
@@ -402,7 +393,6 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} points in fragging {4}."
 
-		"jp" "{1} （{2}）フラッギング {4} で {3} ポイントを獲得しました。"
 		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad."
 	}
 }
