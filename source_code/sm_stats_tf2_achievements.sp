@@ -53,6 +53,11 @@ stock char AchName[][] =
 	"Test1",
 };
 
+public void OnPluginStart()
+{
+	LoadTranslations("sm_stats.phrases");
+}
+
 public void OnMapStart()
 {
 	PrecacheSound("misc/achievement_earned.wav");
