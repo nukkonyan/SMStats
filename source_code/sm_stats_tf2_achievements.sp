@@ -41,6 +41,23 @@ public Plugin myinfo =
 	url = "https://github.com/Teamkiller324"
 }
 
+///
+
+// achievements
+enum StatsMe_Ach
+{
+	AchId_Test1
+}
+stock char AchName[][] =
+{
+	"Test1",
+};
+
+public void OnMapStart()
+{
+	PrecacheSound("misc/achievement_earned.wav");
+}
+
 public void SMStats_OnPlayerDeath(int attacker, int frags, int[] userid, int[] assister, const char[] classname, int[] itemdef)
 {
 	int client = GetClientOfUserId(attacker);
@@ -62,6 +79,8 @@ public void SMStats_OnPlayerDeath(int attacker, int frags, int[] userid, int[] a
 			}
 		}
 	}
+	
+	SendAchievementEvent(client, AchId_Test1);
 }
 
 //
@@ -105,4 +124,103 @@ stock bool IsValidClient(int client, bool bIsFakeClient=true, bool bIsValidEntit
 	}
 	
 	return true;
+}
+
+bool GetPlayerName(int client, char[] name, int maxlen)
+{
+	if(!IsClientInGame(client))
+	{
+		Format(name, maxlen, "{grey}%N{default}", client);
+		return true;
+	}
+	
+	char auth[64];
+	GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+	if(StrContains(auth, "29639718") != -1)
+	{
+		Format(name, maxlen, "{unusual}%N{default}", client);
+		return true;
+	}
+	
+	//int team = GetEntProp(client, Prop_Send, "m_iTeamNum");
+	int team = GetClientTeam(client);
+	
+	switch(team)
+	{
+		case 2: Format(name, maxlen, "{red}%N{default}", client);
+		case 3: Format(name, maxlen, "{blue}%N{default}", client);
+		case 4: Format(name, maxlen, "{green}%N{default}", client);
+		case 5: Format(name, maxlen, "{yellow}%N{default}", client);
+		default: Format(name, maxlen, "{grey}%N{default}", client);
+	}
+	
+	/*
+	ReplaceString(name, maxlen, "'", "");
+	ReplaceString(name, maxlen, "<?PHP", "");
+	ReplaceString(name, maxlen, "<?php", "");
+	ReplaceString(name, maxlen, "<?", "");
+	ReplaceString(name, maxlen, "?>", "");
+	ReplaceString(name, maxlen, "<", "[");
+	ReplaceString(name, maxlen, ">", "]");
+	ReplaceString(name, maxlen, ",", ".");
+	*/
+	
+	return true;
+}
+
+stock void SendAchievementEvent(int client, StatsMe_Ach ach_id)
+{
+	char name[64];
+	GetPlayerName(client, name, sizeof(name));
+	
+	EmitSoundToAll("misc/achievement_earned.wav"
+	, SOUND_FROM_PLAYER
+	, SNDCHAN_AUTO
+	, SNDLEVEL_NORMAL
+	, SND_NOFLAGS
+	, SNDVOL_NORMAL
+	, SNDPITCH_NORMAL
+	, client);
+	
+	int particle;
+	if(IsValidEdict((particle = CreateEntityByName("info_particle_system"))))
+	{
+		float pos[3];
+		GetEntPropVector(client, Prop_Send, "m_vecOrigin", pos);
+		pos[2] += 80.0;
+		
+		TeleportEntity(particle, pos);
+		
+		DispatchKeyValue(particle, "effect_name", "achieved");
+		DispatchSpawn(particle);
+		ActivateEntity(particle);
+		
+		SetVariantString("!activator");
+		AcceptEntityInput(particle, "SetParent", client, particle);
+		
+		AcceptEntityInput(particle, "Start");
+		
+		int ref = EntIndexToEntRef(particle);
+		CreateTimer(1.5, Timer_KillAchParticle, ref);
+	}
+	
+	int player;
+	while((player = FindEntityByClassname(player, "player")) != -1)
+	{
+		if(IsValidClient(player))
+		{
+			CPrintToChat(player, "{green}[SM Stats] %s earned the achievement {olive}%s", name, AchName[ach_id]);
+		}
+	}
+}
+
+Action Timer_KillAchParticle(Handle timer, int ref)
+{
+	int particle = EntRefToEntIndex(ref);
+	if(IsValidEdict(particle))
+	{
+		AcceptEntityInput(particle, "KillHierarchy");
+	}
+	
+	return Plugin_Continue;
 }

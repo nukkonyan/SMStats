@@ -395,4 +395,13 @@
 
 		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad."
 	}
+
+	//================================//
+	// Achievement event.
+	//================================//
+	"#SMStats_AchEvent"
+	{
+		"#format" "{1:s},{2:s}"
+		"en" "{1} earned achievement {2}"
+	}
 }
