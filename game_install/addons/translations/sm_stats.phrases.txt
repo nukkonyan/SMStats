@@ -402,6 +402,6 @@
 	"#SMStats_AchEvent"
 	{
 		"#format" "{1:s},{2:s}"
-		"en" "{1} earned achievement {2}"
+		"en" "{1} earned achievement {olive}{2}{default}."
 	}
 }
