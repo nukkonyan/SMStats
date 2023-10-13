@@ -455,7 +455,7 @@ native int _sm_stats_get_minplayers();
  *	SourceMod Stats: Core.
  *	Call the player death forward.
  */
-native void _sm_stats_player_death_fwd(int attacker, int frags, int[] userids, int[] assisters, const char[] classname, int itemdef);
+native void _sm_stats_player_death_fwd(int attacker, int frags, int[] userids, int[] assisters, const char[] classname, int[] itemdef);
 
 // default important things
 
@@ -466,6 +466,9 @@ native void _sm_stats_player_death_fwd(int attacker, int frags, int[] userids, i
 #define sql_table_maps_log "maps_log_" ... GameTag
 #define sql_table_achievements "achievements_" ... GameTag
 #define game_translation "sm_stats_" ... GameTag ... ".phrases"
+#define ach_translation "sm_stats_" ... GameTag ... "_achievements.phrases"
+
+#define ITEMDEF_ASSIST_SUICIDE -69
 
 char g_ChatTag[96];
 Database sql = null;
@@ -485,10 +488,6 @@ PrivateForward g_GetPlayerSessionInfoFwd;
 
 public void _sm_stats_core_loaded()
 {
-	LoadTranslations("sm_stats.phrases");
-	LoadTranslations(game_translation);
-	GeoipCountryLoadTranslation();
-	
 	PrintToServer("%s loading..", core_chattag);
 	bLoaded = true;
 	
@@ -498,6 +497,13 @@ public void _sm_stats_core_loaded()
 	g_MinPlayers = _sm_stats_get_minplayers();
 	
 	CreateTimer(5.0, Timer_LoadCurrentInGamePlayers);
+}
+
+void PrepareTranslations()
+{
+	LoadTranslations("sm_stats.phrases");
+	LoadTranslations(game_translation);
+	GeoipCountryLoadTranslation();
 }
 
 public void _sm_stats_chattag_updated(const char[] tag)
@@ -531,6 +537,7 @@ public void _sm_stats_allowabuse_updated(bool value)
 
 public void OnPluginStart()
 {
+	PrepareTranslations();
 	PrepareGame();
 	LoadMenus();
 	LoadForwardEvents();
@@ -618,15 +625,41 @@ public void _sm_stats_sql_loaded(Database database, bool bOnPluginStart)
 		
 		//
 		
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_maps_log);
+		switch(!!(file = OpenFile(path, "r")))
+		{
+			case false:
+			{
+				LogError("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking maps.), Did you install it correctly?", sql_table_maps_log);
+			}
+			
+			case true:
+			{
+				while(!file.EndOfFile() && file.ReadLine(table, sizeof(table)))
+				{
+					ReplaceString(table, sizeof(table), "\n", "");
+					ReplaceString(table, sizeof(table), "\r", "");
+					ReplaceString(table, sizeof(table), "\t", "");
+					
+					len += Format(query[len], sizeof(query)-len, table);
+				}
+				
+				sql.Query(DBQuery_InsertTables, query, 1);
+				
+				query = "";
+				len = 0;
+			}
+		}
+		
+		//
+		
 		int client = 0;
 		while((client = FindEntityByClassname(client, "player")) > 0)
 		{
-			if(!IsValidClient(client))
+			if(IsValidClient(client))
 			{
-				continue;
+				OnClientConnected(client);
 			}
-			
-			OnClientConnected(client);
 		}
 	}
 }

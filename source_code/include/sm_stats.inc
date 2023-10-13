@@ -173,18 +173,18 @@ methodmap SMStats __nullable__
 
 /*
  *	SourceMod Stats
- *	Called as soon as player kills enemies.
+ *	Called as soon as player frags enemies.
  *
  *	@param	attacker	The userid of the attacking player.
  *	@param	frags		The frag count.
  *	@param	userids		An array of userids that died by the attacking player.
  *	@param	assisters	An array of userids that assisted the attacking player.
- *	@param	classname	The classname of the weapon used by the attacking player.
- *	@param	itemdef		Item definition index of the weapon used by the attacking player. By default -1 if not supported by game mod.
+ *	@param	classname	The classname of the weapon used by the attacking player. 
+ *	@param	itemdef		An array of item definition index of the weapon used by the attacking player. By default -1 if not supported by game mod.
  *
  *	@return;
  */
-forward void SMStats_OnPlayerDeath(int attacker, int frags, int[] userids, int[] assisters, const char[] classname, int itemdef);
+forward void SMStats_OnPlayerDeath(int attacker, int frags, int[] userids, int[] assisters, const char[] classname, int[] itemdef);
 
 /* ====================================================== */
 
