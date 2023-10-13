@@ -479,12 +479,12 @@ bool bWarmupActive = false;
 bool bAllowBots = false;
 bool bAllowAbuse = false;
 int g_ServerID = -1;
-int g_TotalTablePlayers = -1;
+stock int g_TotalTablePlayers = -1;
 int g_MinPlayers = -1;
 
 SMStats_PlayerInfo g_Player[MaxPlayers+1];
 
-PrivateForward g_GetPlayerSessionInfoFwd;
+stock PrivateForward g_GetPlayerSessionInfoFwd;
 
 public void _sm_stats_core_loaded()
 {
@@ -539,8 +539,14 @@ public void OnPluginStart()
 {
 	PrepareTranslations();
 	PrepareGame();
+	
+	#if defined load_menus
 	LoadMenus();
+	#endif
+	
+	#if defined load_forwards
 	LoadForwardEvents();
+	#endif
 	
 	#if defined assister_func
 	LoadAssisterEvents();

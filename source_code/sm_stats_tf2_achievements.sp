@@ -10,11 +10,12 @@
 // in active development, subject to change completely. This is a testing only.
 
 #include <sm_stats>
+#include <sm_stats_core>
 #include <multicolors>
 #include <tf2_stocks>
 
 // updater
-#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
+#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2_Achievements.txt"
 #include "sm_stats/updater.sp"
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
@@ -41,6 +42,8 @@ public Plugin myinfo =
 	url = "https://github.com/Teamkiller324"
 }
 
+#include "sm_stats/functions.sp"
+
 ///
 
 // achievements
@@ -53,14 +56,19 @@ stock char AchName[][] =
 	"Test1",
 };
 
-public void OnPluginStart()
-{
-	LoadTranslations("sm_stats.phrases");
-}
-
 public void OnMapStart()
 {
 	PrecacheSound("misc/achievement_earned.wav");
+}
+
+void PrepareGame()
+{
+	
+}
+
+public void OnClientConnected(int client)
+{
+	
 }
 
 public void SMStats_OnPlayerDeath(int attacker, int frags, int[] userid, int[] assister, const char[] classname, int[] itemdef)
@@ -89,47 +97,6 @@ public void SMStats_OnPlayerDeath(int attacker, int frags, int[] userid, int[] a
 }
 
 //
-
-stock bool IsValidClient(int client, bool bIsFakeClient=true, bool bIsValidEntity=false)
-{
-	if(client < 1 || client > MaxPlayers)
-	{
-		return false;
-	}
-	
-	if(bIsValidEntity)
-	{
-		if(!IsValidEntity(client))
-		{
-			return false;
-		}
-	}
-	
-	if(!IsClientConnected(client))
-	{
-		return false;
-	}
-	
-	if(IsClientReplay(client))
-	{
-		return false;
-	}
-	
-	if(IsClientSourceTV(client))
-	{
-		return false;
-	}
-	
-	if(bIsFakeClient)
-	{
-		if(IsFakeClient(client))
-		{
-			return false;
-		}
-	}
-	
-	return true;
-}
 
 bool GetPlayerName(int client, char[] name, int maxlen)
 {

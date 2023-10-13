@@ -138,16 +138,6 @@ stock void VictimDied(Transaction txn, const int[] list, int frags)
 	}
 }
 
-stock void UpdateDamageDone(SMStats_PlayerInfo player)
-{
-	CallbackQuery("update `%s` set DamageDone = DamageDone+%i where SteamID = '%s' and ServerID = %i"
-	, query_error_uniqueid_OnUpdateDamageDone
-	, sql_table_playerlist
-	, player.session[Stats_DamageDone]
-	, player.auth
-	, g_ServerID);
-}
-
 /* ============================================================== */
 
 stock int GetClientPosition(const char[] auth)
@@ -286,7 +276,7 @@ stock bool IsWarmupActive()
 }
 
 /* Called as soon the round has started. */
-void OnRoundStarted(Event event, const char[] event_name, bool dontBroadcast)
+stock void OnRoundStarted(Event event, const char[] event_name, bool dontBroadcast)
 {
 	bRoundActive = true;
 	
@@ -323,7 +313,7 @@ void OnRoundStarted(Event event, const char[] event_name, bool dontBroadcast)
 }
 
 /* Called as soon as the round has ended. */
-void OnRoundEnded(Event event, const char[] event_name, bool dontBroadcast)
+stock void OnRoundEnded(Event event, const char[] event_name, bool dontBroadcast)
 {
 	bRoundActive = false;
 	
@@ -1206,7 +1196,7 @@ stock bool CS_IsClientInSmoke(int client)
 
 //
 
-void UpdatePlayerName(int client)
+stock void UpdatePlayerName(int client)
 {
 	if(!IsValidClient(client, false))
 	{

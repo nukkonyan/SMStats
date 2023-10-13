@@ -15,7 +15,6 @@
 	{
 		"Patch"
 		{
-			"Plugin"	"Path_SM/plugins/sm_stats.smx"
 			"Plugin"	"Path_SM/translations/sm_stats_tf2.phrases.txt"
 			
 			"Plugin"	"Path_SM/configs/sm_stats/playerlist_tf2.sm_stats"

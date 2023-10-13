@@ -8,6 +8,8 @@
 #define GameTag "tf2"
 #define core_chattag "[SM Stats: TF2]"
 #define core_chattag2 "SM Stats: TF2"
+#define load_menus
+#define load_forwards
 
 #define query_error_uniqueid_OnPlayerDeath 1
 #define query_error_uniqueid_CP_OnCapturedPoint 2
@@ -95,6 +97,7 @@ public Plugin myinfo =
 #include "sm_stats_tf2/menus.sp"
 
 #include "sm_stats/functions.sp"
+#include "sm_stats/damage_done.sp"
 #include "sm_stats/natives.sp"
 #include "sm_stats/assister.sp"
 #include "sm_stats/forwards.sp"

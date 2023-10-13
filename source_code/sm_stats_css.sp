@@ -8,6 +8,8 @@
 #define core_chattag "[SM Stats: CSS]"
 #define core_chattag2 "SM Stats: CSS"
 #define assister_func
+#define load_menus
+#define load_forwards
 
 #define query_error_uniqueid_OnPlayerDeath 1
 #define query_error_uniqueid_OnUpdateDamageDone 79
@@ -53,6 +55,7 @@ public Plugin myinfo =
 #include "sm_stats_css/menus.sp"
 
 #include "sm_stats/functions.sp"
+#include "sm_stats/damage_done.sp"
 #include "sm_stats/natives.sp"
 #include "sm_stats/assister.sp"
 #include "sm_stats/forwards.sp"
