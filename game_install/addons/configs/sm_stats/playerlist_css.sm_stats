@@ -1,9 +1,10 @@
 create table if not exists `playerlist_css`
 (
+	`ID` int not null auto_increment,
 	`ServerID` int(16) not null default '1' comment 'Servers unique ID',
+	`PlayerName` varchar(64) default 'ERR_NAME_NOT_FOUND',
 	`Points` int(32) not null default '1000',
 	`LastConnected` int(32) not null default '0',
-	`LastConnectedServerID` int(32) not null default '1' comment 'Last server id player were on.',
 	`PlayTime` int(32) not null default '0',
 	`SteamID` varchar(64) not null default '',
 	`IPAddress` varchar(64) not null default '',

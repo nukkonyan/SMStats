@@ -1,5 +1,3 @@
-#define MaxPlayers 33
-
 enum TFBuilding
 {
 	TFBuilding_Invalid = -1,

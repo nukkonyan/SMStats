@@ -2,6 +2,7 @@ create table if not exists `playerlist_tf2`
 (
 	`ID` int not null auto_increment,
 	`ServerID` int not null default '1',
+	`PlayerName` varchar(64) default 'ERR_NAME_NOT_FOUND',
 	`Points` int not null default '1000',
 	`LastConnected` int not null default '0',
 	`PlayTime` int not null default '0',

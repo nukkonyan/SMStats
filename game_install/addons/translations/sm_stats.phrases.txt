@@ -176,6 +176,15 @@
 
 		"sv" "Framgångar uppnått : {1}"
 	}
+	"#SMStats_MenuInfo_Achievement"
+	{
+		"#format" "{1:s}"
+		"en" "Achievement:"
+	}
+	"#SMStats_MenuInfo_Description"
+	{
+		"en" "Description:"
+	}
 	
 	//================================//
 	// Updater.

@@ -1,13 +1,15 @@
 #pragma semicolon 1
 #pragma newdecls required
 #pragma tabsize 0
-#define MaxPlayers 33
 #define Version "1.0.0"
+#define VersionAlt "v" ... Version
+#define MaxPlayers 33 // 101 cuz -unrestricted_maxplayers ?
 #define GameTag "tf2"
 #define core_chattag "[SM Stats: TF2 Achievements]"
 #define core_chattag2 "SM Stats: TF2 Achievements"
+#define load_menus
 
-// in active development, subject to change completely. This is a testing only.
+// in active development, this is subject to change completely. This is a testing only, early prototype.
 
 #include <sm_stats>
 #include <sm_stats_core>
@@ -49,12 +51,43 @@ public Plugin myinfo =
 // achievements
 enum StatsMe_Ach
 {
-	AchId_Test1
+	AchId_Test1,
+	AchId_Test2,
+	AchId_Test3,
 }
 stock char AchName[][] =
 {
 	"Test1",
+	"Test2",
+	"Test3",
 };
+stock char AchDescription[][] =
+{
+	//Test1
+	"get 69 kills lmao",
+	//Test2
+	"insert dank text here",
+	//Test3
+	"420 blaze it"
+};
+
+int g_AchCount = 3;
+
+enum struct AchievementsStruct
+{
+	bool bAch_Test1;
+	
+	void Reset()
+	{
+		this.bAch_Test1 = false;
+	}
+}
+
+AchievementsStruct g_Ach[MaxPlayers+1];
+
+#include "sm_stats_tf2/achievements/menus.sp"
+
+//
 
 public void OnMapStart()
 {
@@ -69,6 +102,11 @@ void PrepareGame()
 public void OnClientConnected(int client)
 {
 	
+}
+
+public void OnClientDisconnect_Post(int client)
+{
+	g_Ach[client].Reset();
 }
 
 public void SMStats_OnPlayerDeath(int attacker, int frags, int[] userid, int[] assister, const char[] classname, int[] itemdef)

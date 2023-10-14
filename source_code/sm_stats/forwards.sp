@@ -384,8 +384,10 @@ void SQLUpdateMapTimer()
 {
 	if(sql != null)
 	{
+		PrintToServer("Checking map timer for map '%s'", cMap);
+		
 		char query[255];
-		Format(query, sizeof(query), "select * from `%s` where ServerID = %i and MapName = '%s'", sql_table_maps_log, g_ServerID, cMap);
+		Format(query, sizeof(query), "select * from `%s` where MapName = '%s' and ServerID = %i", sql_table_maps_log, cMap, g_ServerID);
 		sql.Query(DBQuery_MapTimer_1, query);
 	}
 }
@@ -395,8 +397,22 @@ void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, an
 	switch(results != null && results.RowCount > 0)
 	{
 		// not found
-		case false: CallbackQuery("insert into `%s` (PlayTime, ServerID, MapName) values (1, %i, '%s')", query_error_uniqueid_UpdateMapTimeInsert, sql_table_maps_log, g_ServerID, cMap);
+		case false:
+		{
+			PrintToServer("Map timer for '%s' not found, inserting map..", cMap);
+			
+			CallbackQuery("insert into `%s` (PlayTime, ServerID, MapName) values (1, %i, '%s')"
+			, query_error_uniqueid_UpdateMapTimeInsert
+			, sql_table_maps_log, g_ServerID, cMap);
+		}
 		// found
-		case true: CallbackQuery("update `%s` set PlayTime = PlayTime+1 where ServerID = %i and MapName = '%s'", query_error_uniqueid_UpdateMapTimeInsert, sql_table_maps_log, g_ServerID, cMap);
+		case true:
+		{
+			PrintToServer("Map timer for '%s' was found, updating map..", cMap);
+			
+			CallbackQuery("update `%s` set PlayTime = PlayTime+1 where ServerID = %i and MapName = '%s'"
+			, query_error_uniqueid_UpdateMapTimeInsert
+			, sql_table_maps_log, g_ServerID, cMap);
+		}
 	}
 }
