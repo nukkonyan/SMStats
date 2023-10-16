@@ -12,7 +12,6 @@ char TF2_ClassTypeNameLC[][] = {
 	"civilian"		
 };
 
-
 bool GetPlayerName(int client, char[] name, int maxlen)
 {
 	if(!IsClientInGame(client))
@@ -21,10 +20,13 @@ bool GetPlayerName(int client, char[] name, int maxlen)
 		return true;
 	}
 	
-	if(StrContains(g_Player[client].auth, "29639718") != -1)
+	switch(IsValidDeveloperType(g_Player[client].auth))
 	{
-		Format(name, maxlen, "{unusual}%N{default}", client);
-		return true;
+		case 1:
+		{
+			Format(name, maxlen, "{unusual}%N{default}", client);
+			return true;
+		}
 	}
 	
 	//int team = GetEntProp(client, Prop_Send, "m_iTeamNum");

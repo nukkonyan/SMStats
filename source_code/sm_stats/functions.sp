@@ -1201,3 +1201,20 @@ stock void UpdatePlayerName(int client)
 		GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
 	}
 }
+
+/*
+ * Returns the developer role.
+ */
+stock int IsValidDeveloperType(const char[] auth)
+{
+	if(StrContains(auth, "29639718") != -1)
+	{
+		return 1; // founder
+	}
+	//else if(StrContains(auth, "example") != -1)
+	//{
+	//	return 2; // developer
+	//}
+	
+	return false;
+}
