@@ -13,6 +13,7 @@ create table if not exists `playerlist_tf2`
 	`Assists` int not null default '0',
 	`Suicides` int not null default '0',
 	`DamageDone` int not null default '0',
+	`Achievements` int not null default '0',
 	
 	`ScoutFrags` int not null default '0',
 	`SoldierFrags` int not null default '0',
@@ -34,7 +35,7 @@ create table if not exists `playerlist_tf2`
 	`SniperDeaths` int not null default '0',
 	`SpyDeaths` int not null default '0',
 	
-	`Deflects` int not null default '0',
+	`DeflectFrags` int not null default '0',
 	`GibFrags` int not null default '0',
 	`MiniCritFrags` int not null default '0',
 	`CritFrags` int not null default '0',
@@ -80,12 +81,13 @@ create table if not exists `playerlist_tf2`
 	`FlagsCaptured` int not null default '0',
 	`FlagsStolen` int not null default '0',
 	`FlagsDefended` int not null default '0',
+	`FlagsDropped` int not null default '0',
 	
 	`Ubercharged` int not null default '0',
 	`SandvichesStolen` int not null default '0',
 	
-	`Teleported` int not null default '0',
 	`PlayersTeleported` int not null default '0',
+	`TeleportersUsed` int not null default '0',
 	
 	`StunnedPlayers` int not null default '0',
 	`MoonShotStunnedPlayers` int not null default '0',

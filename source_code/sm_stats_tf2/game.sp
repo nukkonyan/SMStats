@@ -1602,7 +1602,7 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 		}
 	}
 	
-	g_Player[client].session[Stats_Teleported]++;
+	g_Player[client].session[Stats_TeleportersUsed]++;
 	
 	// only create the handle if either points are valid or victim ain't a bot, to reserve memory space as it would otherwise serve no use and cause error.
 	Transaction txn;
@@ -1617,7 +1617,7 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 			txn = new Transaction();
 			
 			char query[256];
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, Teleported = Teleported+1 where SteamID = '%s' and ServerID = %i"
+			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TeleportersUsed = TeleportersUsed+1 where SteamID = '%s' and ServerID = %i"
 			, sql_table_playerlist, g_Player[client].auth, g_ServerID);
 			txn.AddQuery(query, query_error_uniqueid_OnPlayerUsedTeleporter);
 		}
@@ -3087,8 +3087,8 @@ Action Timer_OnGameFrame(Handle timer)
 				{
 					g_Player[client].session[Stats_Deflects] += iDeflectFrags;
 					g_Player[client].fragmsg.Deflected = true;
-					len += Format(query[len], sizeof(query)-len, ", Deflects = Deflects+%i", iDeflectFrags);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Deflects = Deflects+%i", iDeflectFrags);
+					len += Format(query[len], sizeof(query)-len, ", DeflectFrags = DeflectFrags+%i", iDeflectFrags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DeflectFrags = DeflectFrags+%i", iDeflectFrags);
 				}
 				
 				if(iGibFrags > 0)

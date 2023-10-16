@@ -408,8 +408,6 @@ void SQLUpdateMapTimer()
 {
 	if(sql != null)
 	{
-		PrintToServer("Checking map timer for map '%s'", cMap);
-		
 		char query[255];
 		Format(query, sizeof(query), "select ServerID from `%s` where MapName = '%s' and ServerID = %i"
 		, sql_table_maps_log
@@ -425,8 +423,6 @@ void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, an
 		// not found
 		case false:
 		{
-			PrintToServer("Map timer for '%s' not found, inserting map..", cMap);
-			
 			CallbackQuery("insert into `%s` (PlayTime, ServerID, MapName) values (1, %i, '%s')"
 			, query_error_uniqueid_UpdateMapTimeInserting
 			, sql_table_maps_log, g_ServerID, cMap);
@@ -434,8 +430,6 @@ void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, an
 		// found
 		case true:
 		{
-			PrintToServer("Map timer for '%s' was found, updating map..", cMap);
-			
 			CallbackQuery("update `%s` set PlayTime = PlayTime+1 where ServerID = %i and MapName = '%s'"
 			, query_error_uniqueid_UpdateMapTimeUpdating
 			, sql_table_maps_log, g_ServerID, cMap);
