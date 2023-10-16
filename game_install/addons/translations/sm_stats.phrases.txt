@@ -81,6 +81,22 @@
 
 		"sv" "Kolla dina nuvarande statistiker."
 	}
+	"#SMStats_Menu_Top10"
+	{
+		"en" "Top 10 players"
+	}
+	"#SMStats_Menu_Top10Info"
+	{
+		"en" "View the top 10 players of this server."
+	}
+	"#SMStats_Menu_TopPlayers"
+	{
+		"en" "Top concurrent players"
+	}
+	"#SMStats_Menu_TopPlayersInfo"
+	{
+		"en" "View the top concurrent players of this server."
+	}
 	"#SMStats_Menu_Page"
 	{
 		"#format" "{1:i}"

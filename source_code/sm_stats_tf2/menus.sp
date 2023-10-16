@@ -30,6 +30,11 @@ enum struct StatsMenuInfo
 		... "\n "
 		, "#SMStats_Menu_ActiveStats", client
 		, "#SMStats_Menu_ActiveStatsInfo", client);
+		PanelItem(panel, "%T"
+		... "\n  > %T"
+		... "\n "
+		, "#SMStats_Menu_Top10", client
+		, "#SMStats_Menu_Top10Info", client);
 		
 		panel.Send(client, StatsMenu_Main, MENU_TIME_FOREVER);
 		delete panel;
@@ -186,6 +191,51 @@ enum struct StatsMenuInfo
 		panel.Send(client, StatsMenu_Session, MENU_TIME_FOREVER);
 		delete panel;
 	}
+	
+	void Top10(int client)
+	{
+		char[][] SteamID = new char[10][64];
+		char[][] PlayerName = new char[10][64];
+		int Players = 0;
+		
+		SQL_LockDatabase(sql);
+		//char error[256];
+		DBResultSet results = SQL_Query(sql, "select PlayerName, SteamID from `"... sql_table_playerlist ... "` order by 'Points' asc limit 10");
+		if(results == null)
+		{
+			SQL_UnlockDatabase(sql);
+			delete results;
+			CPrintToChat(client, "%s SQL Error parsing top 10 players", g_ChatTag);
+			return;
+		}
+		
+		while(results.FetchRow())
+		{
+			results.FetchString(0, PlayerName[Players], 64);
+			results.FetchString(1, SteamID[Players], 64);
+			
+			Players++
+		}
+		delete results;
+		SQL_UnlockDatabase(sql);
+		
+		if(Players < 1)
+		{
+			CPrintToChat(client, "%s found no players on the leaderboard.", g_ChatTag);
+			return;
+		}
+		
+		Menu menu = new Menu(StatsMenu_Top10);
+		menu.SetTitle("SourceMod Stats - " ... VersionAlt ... " > %T\n ", "#SMStats_Menu_Top10", client);
+		
+		for(int i = 0; i < Players; i++)
+		{
+			menu.AddItem(SteamID[i], PlayerName[i]);
+		}
+		
+		menu.ExitBackButton = true;
+		menu.Display(client, MENU_TIME_FOREVER);
+	}
 }
 
 StatsMenuInfo StatsMenu;
@@ -196,7 +246,8 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 	 * Main page.
 	 * 1: Menu title.
 	 * 2: Session.
-	 * 3: Total stats.
+	 * 3: Active stats.
+	 * 4: Top 10 players.
 	 */
 	switch(select)
 	{
@@ -210,11 +261,15 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 			g_Player[client].active_page_session = 1;
 			StatsMenu.Session(client, 1);
 		}
-		
 		case 3:
 		{
 			g_Player[client].active_page_session = -1;
 			StatsMenu.Main(client);
+		}
+		case 4:
+		{
+			g_Player[client].active_page_session = -1;
+			StatsMenu.Top10(client);
 		}
 	}
 	
@@ -490,6 +545,27 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				}
 			}
 		}
+	}
+	
+	return 0;
+}
+
+int StatsMenu_Top10(Menu menu, MenuAction action, int client, int select)
+{
+	switch(action)
+	{
+		case MenuAction_Select:
+		{
+			
+		}
+		case MenuAction_Cancel:
+		{
+			if(select == MenuCancel_ExitBack)
+			{
+				StatsMenu.Main(client);
+			}
+		}
+		case MenuAction_End: delete menu;
 	}
 	
 	return 0;

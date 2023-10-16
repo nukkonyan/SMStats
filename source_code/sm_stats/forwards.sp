@@ -47,6 +47,7 @@ public void OnClientConnected(int client)
 	
 	g_Player[client].userid = userid;
 	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
+	GetClientName(client, g_Player[client].name2, sizeof(g_Player[].name2));
 	
 	if(!GetClientIP(client, g_Player[client].ip, sizeof(g_Player[].ip)))
 	{
@@ -94,6 +95,25 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 	if(IsValidClient((client = GetClientOfUserId(userid)), false))
 	{
 		UpdatePlayerName(client);
+		
+		// check & obtain player name
+		char name[64];
+		GetClientName(client, name, sizeof(name));
+		
+		// no name stored yet.
+		if(strlen(g_Player[client].name2) < 1)
+		{
+			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
+		}
+		// duplicate runs of same event.
+		else if(!StrEqual(name, g_Player[client].name2))
+		{
+			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
+			
+			CallbackQuery("update `%s` set PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
+			, query_error_uniqueid_OnPlayerNameUpdate
+			, sql_table_playerlist, name, g_Player[client].auth, g_ServerID);
+		}
 	}
 	
 	return Plugin_Continue;
@@ -127,18 +147,22 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 					server_id = results[i].FetchInt(0);
 				}
 				
+				char name[64];
+				GetClientName(client, name, sizeof(name));
+				TrimString(name);
+				
 				if(server_id >= 0)
 				{
 					// found table, update it.
-					Format(query, sizeof(query), "update `%s` set IPAddress = '%s' where SteamID = '%s' and ServerID = %i"
-					, sql_table_playerlist, g_Player[client].ip, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "update `%s` set IPAddress = '%s', PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
+					, sql_table_playerlist, g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 1);
 				}
 				else
 				{
 					// table not found, insert it.
-					Format(query, sizeof(query), "insert into `%s` (IPAddress, SteamID, ServerID) values ('%s', '%s', %i)"
-					, sql_table_playerlist, g_Player[client].ip, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "insert into `%s` (IPAddress, PlayerName, SteamID, ServerID) values ('%s', '%s', '%s', %i)"
+					, sql_table_playerlist, g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 2);
 				}
 			}
@@ -387,14 +411,16 @@ void SQLUpdateMapTimer()
 		PrintToServer("Checking map timer for map '%s'", cMap);
 		
 		char query[255];
-		Format(query, sizeof(query), "select * from `%s` where MapName = '%s' and ServerID = %i", sql_table_maps_log, cMap, g_ServerID);
+		Format(query, sizeof(query), "select ServerID from `%s` where MapName = '%s' and ServerID = %i"
+		, sql_table_maps_log
+		, cMap, g_ServerID);
 		sql.Query(DBQuery_MapTimer_1, query);
 	}
 }
 
 void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, any data)
 {
-	switch(results != null && results.RowCount > 0)
+	switch(results != null && (results.RowCount != 0))
 	{
 		// not found
 		case false:
@@ -402,7 +428,7 @@ void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, an
 			PrintToServer("Map timer for '%s' not found, inserting map..", cMap);
 			
 			CallbackQuery("insert into `%s` (PlayTime, ServerID, MapName) values (1, %i, '%s')"
-			, query_error_uniqueid_UpdateMapTimeInsert
+			, query_error_uniqueid_UpdateMapTimeInserting
 			, sql_table_maps_log, g_ServerID, cMap);
 		}
 		// found
@@ -411,7 +437,7 @@ void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, an
 			PrintToServer("Map timer for '%s' was found, updating map..", cMap);
 			
 			CallbackQuery("update `%s` set PlayTime = PlayTime+1 where ServerID = %i and MapName = '%s'"
-			, query_error_uniqueid_UpdateMapTimeInsert
+			, query_error_uniqueid_UpdateMapTimeUpdating
 			, sql_table_maps_log, g_ServerID, cMap);
 		}
 	}

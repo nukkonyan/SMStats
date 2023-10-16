@@ -14,8 +14,9 @@
 #define query_error_uniqueid_OnPlayerDeath 1
 #define query_error_uniqueid_OnUpdateDamageDone 79
 #define query_error_uniqueid_UpdatePlayTime 80
-#define query_error_uniqueid_UpdateMapTimeInsert 81
-#define query_error_uniqueid_OnPlayerDeath_MapUpdate 82
+#define query_error_uniqueid_UpdateMapTimeInserting 81
+#define query_error_uniqueid_UpdateMapTimeUpdating 82
+#define query_error_uniqueid_OnPlayerDeath_MapUpdate 83
 
 #include <sm_stats>
 #include <sm_stats_core>

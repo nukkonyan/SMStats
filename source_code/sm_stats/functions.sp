@@ -1196,18 +1196,8 @@ stock bool CS_IsClientInSmoke(int client)
 
 stock void UpdatePlayerName(int client)
 {
-	if(!IsValidClient(client, false))
+	if(IsValidClient(client, !bAllowBots ? true : false))
 	{
-		return;
+		GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
 	}
-	
-	if(!bAllowBots)
-	{
-		if(IsFakeClient(client))
-		{
-			return;
-		}
-	}
-	
-	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
 }

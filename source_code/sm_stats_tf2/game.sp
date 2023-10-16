@@ -741,8 +741,8 @@ void PrepareGame()
 	for(int i = 0; i < sizeof(g_tf_weapon_pistol); i++) array_AddSameWeapon(g_tf_weapon_pistol[i], 22);
 	for(int i = 0; i < sizeof(g_tf_weapon_revolver); i++) array_AddSameWeapon(g_tf_weapon_revolver[i], 24);
 	
-	array_AddSameWeapon(19012, 129);	//TF2Items Give Weapon: Beta Split Equalizer 1.
-	array_AddSameWeapon(19013, 129);	//TF2Items Give Weapon: Beta Split Equalizer 2.
+	array_AddSameWeapon(19012, 129); //TF2Items Give Weapon: Beta Split Equalizer 1.
+	array_AddSameWeapon(19013, 129); //TF2Items Give Weapon: Beta Split Equalizer 2.
 	
 	array_AddWeapon(30474, "sm_stats_points_weapon_nostromonapalmer", 10, "Nostromo Napalmer");
 	array_AddWeapon(30665, "sm_stats_points_weapon_shootingstar", 10, "Shooting star");
