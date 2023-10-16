@@ -341,6 +341,7 @@ enum struct FragEventInfo
 	int inflictor;
 	int crit_type;
 	TFClassType class;
+	TFClassType class_attacker;
 	
 	int penetrated;
 	
@@ -1021,6 +1022,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	frag.inflictor = event.GetInt("inflictor");
 	frag.crit_type = event.GetInt("crit_type");
 	frag.class = TF2_GetPlayerClass(victim);
+	frag.class_attacker = class;
 	
 	frag.suicide = (userid == attacker);
 	frag.suicide_assisted = assisted_suicide;
@@ -2982,7 +2984,7 @@ Action Timer_OnGameFrame(Handle timer)
 						if(list_wepfrag[i])
 						{
 							char fix_weapon[256], query_wep[256];
-							CorrectWeaponClassname(event.class, fix_weapon, sizeof(fix_weapon), list_itemdef[i], list_classname[i]);
+							CorrectWeaponClassname(event.class_attacker, fix_weapon, sizeof(fix_weapon), list_itemdef[i], list_classname[i]);
 							Format(query_wep, sizeof(query_wep), "update `%s` set %s = %s+1 where SteamID = '%s' and ServerID = %i"
 							, sql_table_weapons, fix_weapon, fix_weapon, g_Player[client].auth, g_ServerID);
 							txn.AddQuery(query_wep, queryId_frag_weapon);
