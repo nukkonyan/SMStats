@@ -5,8 +5,8 @@ and SQL-code as 'SM Stats' (renamed from XStats) with full extended translation 
 The new code is more efficient and impacts less on server performance.
 
 Games supported so far:
-Team Fortress 2 (works great so far, potential bugs)
-Counter-Strike: Source (buggy)
+Team Fortress 2 (works well, some bugs are expected)
+Counter-Strike: Source (very buggy, barely worked on yet)
 
 Some functions yet implemented and sooner or later will be.
 Some things may not work as intended at the very moment, but will get working sooner or later.
