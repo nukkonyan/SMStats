@@ -201,6 +201,11 @@
 	{
 		"en" "Description:"
 	}
+	"#SMStats_MenuInfo_TopPlayer"
+	{
+		"#format" "{1:i},{2:s},{3:i}"
+		"en" "Top {1} - {2} [{3} points]"
+	}
 	
 	//================================//
 	// Updater.

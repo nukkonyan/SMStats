@@ -196,11 +196,12 @@ enum struct StatsMenuInfo
 	{
 		char[][] SteamID = new char[10][64];
 		char[][] PlayerName = new char[10][64];
+		int Points[10];
 		int Players = 0;
 		
 		SQL_LockDatabase(sql);
 		//char error[256];
-		DBResultSet results = SQL_Query(sql, "select PlayerName, SteamID from `"... sql_table_playerlist ... "` order by 'Points' asc limit 10");
+		DBResultSet results = SQL_Query(sql, "select PlayerName, SteamID, Points from `"... sql_table_playerlist ... "` order by 'Points' asc limit 10");
 		if(results == null)
 		{
 			SQL_UnlockDatabase(sql);
@@ -213,6 +214,7 @@ enum struct StatsMenuInfo
 		{
 			results.FetchString(0, PlayerName[Players], 64);
 			results.FetchString(1, SteamID[Players], 64);
+			Points[Players] = results.FetchInt(2);
 			
 			Players++
 		}
@@ -226,11 +228,13 @@ enum struct StatsMenuInfo
 		}
 		
 		Menu menu = new Menu(StatsMenu_Top10);
-		menu.SetTitle("SourceMod Stats - " ... VersionAlt ... " > %T\n ", "#SMStats_Menu_Top10", client);
+		menu.SetTitle("SourceMod Stats - " ... VersionAlt ... " > %T", "#SMStats_Menu_Top10", client);
 		
 		for(int i = 0; i < Players; i++)
 		{
-			menu.AddItem(SteamID[i], PlayerName[i]);
+			char dummy[96];
+			Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_TopPlayer", client, i+1, PlayerName[i], Points[i]);
+			menu.AddItem(SteamID[i], dummy);
 		}
 		
 		menu.ExitBackButton = true;
