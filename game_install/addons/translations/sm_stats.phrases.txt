@@ -399,7 +399,7 @@
 	"#SMStats_FragEvent_Assisted" //Assist
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} points for assisting {4} in fragging {5}."
+		"en" "{1} ({2}) Earned {3} points for assisting {4} for fragging {5}."
 
 		"sv" "{1} ({2}) Tjänade {3} poäng för att assistera {4} genom att fragga {5}."
 	}
@@ -414,14 +414,14 @@
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} points in fragging {4} {5}."
+		"en" "{1} ({2}) Earned {3} points for fragging {4} {5}."
 
 		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad {5}."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} ({2}) Earned {3} points in fragging {4}."
+		"en" "{1} ({2}) Earned {3} points for fragging {4}."
 
 		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad."
 	}
