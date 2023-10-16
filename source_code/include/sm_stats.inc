@@ -104,7 +104,7 @@ enum SMStats_Type
 	Stats_TeleportersDestroyed = 79,
 	Stats_SappersDestroyed = 80,
 	
-	Stats_Teleported = 81,
+	Stats_TeleportersUsed = 81,
 	Stats_PlayersTeleported = 82,
 	
 	Stats_StunnedPlayers = 83,
@@ -145,6 +145,7 @@ enum SMStats_Type
 	Stats_HostagesRescued = 110,
 	Stats_HostagesFragged = 111,
 }
+#define SMStats_StatsSize 112
 
 typeset SMStats_Callback
 {

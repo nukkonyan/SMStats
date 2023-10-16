@@ -2,7 +2,6 @@
 #include <geoip_country>
 #include <multicolors>
 
-#define StatsSize 112
 bool DEBUG = false;
 
 enum struct SMStats_StatsInfo
@@ -17,10 +16,6 @@ enum struct SMStats_StatsInfo
 	int DamageDone;
 	
 	int Achievements;
-	
-	/* add & remove session points. just to make it easier :) */
-	void AddPoints(int value) { this.Points += value; }
-	void RemovePoints(int value) { this.Points -= value; }
 	
 	/* generic */
 	int Dominations;
@@ -337,15 +332,20 @@ enum struct SMStats_PlayerInfo
 	int userid;
 	char auth[64];
 	char name[64];
+	char name2[64];
 	char ip[16];
 	//bool bAlreadyConnected;
 	int points;
 	int position;
+	int active_page_menu;
 	int active_page_session;
 	int active_page_total;
+	int active_page_top10;
 	
-	int session[StatsSize];
-	int totalstats[StatsSize];
+	int session[SMStats_StatsSize];
+	int totalstats[SMStats_StatsSize];
+	int top10[SMStats_StatsSize];
+	char top10name[64];
 	SMStats_FragMsgInfo fragmsg;
 	
 	void Reset()
@@ -353,16 +353,21 @@ enum struct SMStats_PlayerInfo
 		this.userid = -1;
 		this.auth = "";
 		this.name = "";
+		this.name2 = "";
 		//this.bAlreadyConnected = false;
 		this.points = -1;
 		this.position = -1;
+		this.active_page_menu = -1;
 		this.active_page_session = -1;
 		this.active_page_total = -1;
+		this.active_page_top10 = -1;
+		this.top10name = "";
 		
-		for(int type = 0; type < StatsSize; type++)
+		for(int type = 0; type < SMStats_StatsSize; type++)
 		{
 			this.session[type] = -1;
 			this.totalstats[type] = -1;
+			this.top10[type] = -1;
 		}
 		this.fragmsg.Reset();
 	}
@@ -373,7 +378,9 @@ stock char str_cmdMenu[][] =
 	"sm_stats",
 	"sm_stat",
 	"sm_rank",
-	"sm_ranks"
+	"sm_ranks",
+	"sm_top10",
+	"sm_top"
 };
 
 //
