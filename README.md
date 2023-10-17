@@ -12,6 +12,16 @@ Some functions yet implemented and sooner or later will be.
 Some things may not work as intended at the very moment, but will get working sooner or later.
 ```
 
+### To-do
+   - tf2
+        - ``Implement CTF intelligence spam-detect block (Block ctf flag spam to farm points).``
+   - overall
+        - ``Implement custom achievements functionality.``
+        - ``Implement leaderboard ban functionality (Prevented from gaining points).``
+        - ``Implement functional K-A-D ratio (Kill-Assist-Death ratio).``
+        - ``Implement functional K/D Ratio (Kill-Death ratio).``
+        - ``Create website.``
+
 [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
 
 ``SM Stats`` or ``SourceMod Stats`` is a multi-statistical tracking plugin that tracks frags, events, achievements and offers multi-game support, player connection/disconnection messages, player connect sounds, full translation support and more likely to come.
