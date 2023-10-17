@@ -537,7 +537,7 @@
 	
 	"#SMStats_Player_Extinguished" // extinguished
 	{
-		"#format" "{1:s},{2:i},{3:s},{4:s}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} points for extinguishing {4}"
 	}
 }
