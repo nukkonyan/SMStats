@@ -110,7 +110,7 @@ stock void VictimDied(Transaction txn, const int[] list, int frags)
 	for(int i = 0; i < frags; i++)
 	{
 		int victim;
-		if(IsValidClient((victim = GetClientOfUserId(list[i])))
+		if(IsValidClient((victim = GetClientOfUserId(list[i]))))
 		{
 			char query[256];
 			Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID = '%s' and ServerID = %i"

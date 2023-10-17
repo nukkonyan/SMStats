@@ -2950,7 +2950,7 @@ Action Timer_OnGameFrame(Handle timer)
 				char query[4096], query_map[4096];
 				int len = 0, len_map = 0;
 				len += Format(query[len], sizeof(query)-len, "update `%s` set Frags = Frags+%i", sql_table_playerlist, frags);
-				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set Frags = Frags=%i", sql_table_maps_log, frags);
+				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set Frags = Frags+%i", sql_table_maps_log, frags);
 				
 				if(iWepFrags > 0)
 				{
