@@ -632,8 +632,8 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			case true:
 			{
 				Format(buffer, sizeof(buffer), "%T{default} %T{default}"
-				, Frag_Type[Frag_Backstab]
-				, Frag_Type[Frag_MidAir]);
+				, Frag_Type[Frag_Backstab], client
+				, Frag_Type[Frag_MidAir], client);
 			}
 			/* backstab kill */
 			case false:
