@@ -3214,11 +3214,10 @@ Action Timer_OnGameFrame(Handle timer)
 				}
 				
 				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
-				txn.AddQuery(query, queryId_frag_playerlist);
-				sql.Execute(txn, _, FragEvent_OnFailed, attacker);
-				
 				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where ServerID = %i", g_ServerID);
-				sql.Query(DBQuery_Callback, query_map, query_error_uniqueid_OnPlayerDeath_MapUpdate);
+				txn.AddQuery(query, queryId_frag_playerlist);
+				txn.AddQuery(query_map, queryId_frag_playerlist_MapUpdate);
+				sql.Execute(txn, _, TXNEvent_OnFailed, attacker);
 				
 				// translation, separated instead.
 				if(points > 0)
@@ -3239,6 +3238,13 @@ Action Timer_OnGameFrame(Handle timer)
 			if((objects = g_Game[client].aObjectPlaced.Length) > 0)
 			{
 				int points = 0;
+				int buildings;
+				int sentryguns;
+				int dispensers;
+				int minisentryguns;
+				int teleporterentrances;
+				int teleporterexits;
+				int sappers;
 				any[] list = new any[objects];
 				for(int i = 0; i < objects; i++)
 				{
@@ -3251,18 +3257,24 @@ Action Timer_OnGameFrame(Handle timer)
 						{
 							g_Player[client].session[Stats_SentryGunsPlaced] += objects;
 							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							sentryguns++;
+							buildings++;
 						}
 						
 						case TFBuilding_Dispenser:
 						{
 							g_Player[client].session[Stats_DispensersPlaced] += objects;
 							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							dispensers++;
+							buildings++;
 						}
 						
 						case TFBuilding_MiniSentry:
 						{
 							g_Player[client].session[Stats_MiniSentryGunsPlaced] += objects;
 							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							minisentryguns++;
+							buildings++;
 						}
 						
 						case TFBuilding_Teleporter_Entrance:
@@ -3270,6 +3282,8 @@ Action Timer_OnGameFrame(Handle timer)
 							g_Player[client].session[Stats_TeleporterEntrancesPlaced] += objects;
 							g_Player[client].session[Stats_TeleportersPlaced] += objects;
 							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							teleporterentrances++;
+							buildings++;
 						}
 						
 						case TFBuilding_Teleporter_Exit:
@@ -3277,11 +3291,14 @@ Action Timer_OnGameFrame(Handle timer)
 							g_Player[client].session[Stats_TeleporterExitsPlaced] += objects;
 							g_Player[client].session[Stats_TeleportersPlaced] += objects;
 							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							teleporterexits++;
+							buildings++;
 						}
 						
 						case TFBuilding_Sapper:
 						{
 							g_Player[client].session[Stats_SappersPlaced] += objects;
+							sappers++;
 						}
 					}
 					
@@ -3295,10 +3312,67 @@ Action Timer_OnGameFrame(Handle timer)
 				}
 				
 				g_Game[client].aObjectPlaced.Clear();
+				Transaction txn = new Transaction();
 				
+				char query[4096], query_map[4096];
+				int len = 0, len_map = 0;
+				len += Format(query[len], sizeof(query)-len, "update `%s` set BuildingsPlaced = BuildingsPlaced+%i", sql_table_playerlist, buildings);
+				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set BuildingsPlaced = BuildingsPlaced+%i", sql_table_maps_log, buildings);
+				if(sentryguns > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", SentryGunsPlaced = SentryGunsPlaced+%i", sentryguns);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryGunsPlaced = SentryGunsPlaced+%i", sentryguns);
+				}
+				if(dispensers > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", DispensersPlaced = DispensersPlaced+%i", dispensers);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DispensersPlaced = DispensersPlaced+%i", dispensers);
+				}
+				if(minisentryguns > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", MiniSentryGunsPlaced = MiniSentryGunsPlaced+%i", minisentryguns);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryGunsPlaced = MiniSentryGunsPlaced+%i", minisentryguns);
+				}
+				if(teleporterentrances > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", TeleporterEntrancesPlaced = TeleporterEntrancesPlaced+%i", teleporterentrances);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleporterEntrancesPlaced = TeleporterEntrancesPlaced+%i", teleporterentrances);
+				}
+				if(teleporterexits > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", TeleporterExitsPlaced = TeleporterExitsPlaced+%i", teleporterexits);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleporterExitsPlaced = TeleporterExitsPlaced+%i", teleporterexits);
+				}
+				if(sappers > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", SappersPlaced = SappersPlaced+%i", sappers);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SappersPlaced = SappersPlaced+%i", sappers);
+				}
 				if(points > 0)
 				{
-					char dummy[256];
+					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+					
+					g_Player[client].session[Stats_Points] += points;
+					g_Player[client].points += points;
+				}
+				
+				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where ServerID = %i", g_ServerID);
+				txn.AddQuery(query, queryId_object_placed);
+				txn.AddQuery(query_map, queryId_object_placed_MapUpdate);
+				sql.Execute(txn, _, TXNEvent_OnFailed, GetClientUserId(client));
+				
+				DataPack pack;
+				CreateDataTimer(g_Time_ObjectPlaced, Timer_bObjectPlaced, pack);
+				pack.WriteCell(GetClientUserId(client));
+				pack.WriteCell(objects);
+				pack.WriteCellArray(list, objects);
+				pack.Reset();
+				
+				// if translation is invalid, it wont stop middle of query, breaking the plugin.
+				if(points > 0)
+				{
+					char dummy[255];
 					GetMultipleObjects(client, list, objects, dummy, sizeof(dummy));
 					
 					char phrase[64];
@@ -3308,21 +3382,11 @@ Action Timer_OnGameFrame(Handle timer)
 					, g_ChatTag
 					, "#SMStats_ObjectEvent_Default", client
 					, g_Player[client].name
-					, g_Player[client].points
+					, g_Player[client].points-points
 					, points
 					, phrase
 					, dummy);
-					
-					g_Player[client].session[Stats_Points] += points;
-					g_Player[client].points += points;
 				}
-				
-				DataPack pack;
-				CreateDataTimer(g_Time_ObjectPlaced, Timer_bObjectPlaced, pack);
-				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(objects);
-				pack.WriteCellArray(list, objects);
-				pack.Reset();
 			}
 		}
 		
@@ -3332,6 +3396,13 @@ Action Timer_OnGameFrame(Handle timer)
 			if((objects = g_Game[client].aObjectDestroyed.Length) > 0)
 			{
 				int points = 0;
+				int buildings;
+				int sentryguns;
+				int dispensers;
+				int minisentryguns;
+				int teleporterentrances;
+				int teleporterexits;
+				int sappers;
 				any[] list = new any[objects];
 				for(int i = 0; i < objects; i++)
 				{
@@ -3342,39 +3413,50 @@ Action Timer_OnGameFrame(Handle timer)
 					{
 						case TFBuilding_Sentrygun:
 						{
-							g_Player[client].session[Stats_SentryGunsDestroyed] += objects;
-							g_Player[client].session[Stats_BuildingsDestroyed] += objects;
+							g_Player[client].session[Stats_SentryGunsPlaced] += objects;
+							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							sentryguns++;
+							buildings++;
 						}
 						
 						case TFBuilding_Dispenser:
 						{
-							g_Player[client].session[Stats_DispensersDestroyed] += objects;
-							g_Player[client].session[Stats_BuildingsDestroyed] += objects;
+							g_Player[client].session[Stats_DispensersPlaced] += objects;
+							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							dispensers++;
+							buildings++;
 						}
 						
 						case TFBuilding_MiniSentry:
 						{
-							g_Player[client].session[Stats_MiniSentryGunsDestroyed] += objects;
-							g_Player[client].session[Stats_BuildingsDestroyed] += objects;
+							g_Player[client].session[Stats_MiniSentryGunsPlaced] += objects;
+							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							minisentryguns++;
+							buildings++;
 						}
 						
 						case TFBuilding_Teleporter_Entrance:
 						{
-							g_Player[client].session[Stats_TeleporterEntrancesDestroyed] += objects;
-							g_Player[client].session[Stats_TeleportersDestroyed] += objects;
-							g_Player[client].session[Stats_BuildingsDestroyed] += objects;
+							g_Player[client].session[Stats_TeleporterEntrancesPlaced] += objects;
+							g_Player[client].session[Stats_TeleportersPlaced] += objects;
+							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							teleporterentrances++;
+							buildings++;
 						}
 						
 						case TFBuilding_Teleporter_Exit:
 						{
-							g_Player[client].session[Stats_TeleporterExitsDestroyed] += objects;
-							g_Player[client].session[Stats_TeleportersDestroyed] += objects;
-							g_Player[client].session[Stats_BuildingsDestroyed] += objects;
+							g_Player[client].session[Stats_TeleporterExitsPlaced] += objects;
+							g_Player[client].session[Stats_TeleportersPlaced] += objects;
+							g_Player[client].session[Stats_BuildingsPlaced] += objects;
+							teleporterexits++;
+							buildings++;
 						}
 						
 						case TFBuilding_Sapper:
 						{
-							g_Player[client].session[Stats_SappersDestroyed] += objects;
+							g_Player[client].session[Stats_SappersPlaced] += objects;
+							sappers++;
 						}
 					}
 					
@@ -3388,6 +3470,62 @@ Action Timer_OnGameFrame(Handle timer)
 				}
 				
 				g_Game[client].aObjectDestroyed.Clear();
+				Transaction txn = new Transaction();
+				
+				char query[4096], query_map[4096];
+				int len = 0, len_map = 0;
+				len += Format(query[len], sizeof(query)-len, "update `%s` set BuildingsDestroyed = BuildingsDestroyed+%i", sql_table_playerlist, buildings);
+				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set BuildingsDestroyed = BuildingsDestroyed+%i", sql_table_maps_log, buildings);
+				if(sentryguns > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", SentryGunsDestroyed = SentryGunsDestroyed+%i", sentryguns);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryGunsDestroyed = SentryGunsDestroyed+%i", sentryguns);
+				}
+				if(dispensers > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", DispensersDestroyed = DispensersDestroyed+%i", dispensers);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DispensersDestroyed = DispensersDestroyed+%i", dispensers);
+				}
+				if(minisentryguns > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+%i", minisentryguns);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+%i", minisentryguns);
+				}
+				if(teleporterentrances > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+%i", teleporterentrances);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+%i", teleporterentrances);
+				}
+				if(teleporterexits > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", TeleporterExitsDestroyed = TeleporterExitsDestroyed+%i", teleporterexits);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleporterExitsDestroyed = TeleporterExitsDestroyed+%i", teleporterexits);
+				}
+				if(sappers > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", SappersDestroyed = SappersDestroyed+%i", sappers);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SappersDestroyed = SappersDestroyed+%i", sappers);
+				}
+				if(points > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+					
+					g_Player[client].session[Stats_Points] += points;
+					g_Player[client].points += points;
+				}
+				
+				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+				len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where ServerID = %i", g_ServerID);
+				txn.AddQuery(query, queryId_object_destroyed);
+				txn.AddQuery(query_map, queryId_object_destroyed_MapUpdate);
+				sql.Execute(txn, _, TXNEvent_OnFailed, GetClientUserId(client));
+				
+				DataPack pack;
+				CreateDataTimer(g_Time_ObjectDestroyed, Timer_bObjectDestroyed, pack);
+				pack.WriteCell(GetClientUserId(client));
+				pack.WriteCell(objects);
+				pack.WriteCellArray(list, objects);
+				pack.Reset();
 				
 				if(points > 0)
 				{
@@ -3399,18 +3537,11 @@ Action Timer_OnGameFrame(Handle timer)
 					, g_ChatTag
 					, "#SMStats_ObjectEvent_Default", client
 					, g_Player[client].name
-					, g_Player[client].points
+					, g_Player[client].points-points
 					, points
 					, phrase
 					, dummy);
 				}
-				
-				DataPack pack;
-				CreateDataTimer(g_Time_ObjectDestroyed, Timer_bObjectDestroyed, pack);
-				pack.WriteCell(GetClientUserId(client));
-				pack.WriteCell(objects);
-				pack.WriteCellArray(list, objects);
-				pack.Reset();
 			}
 		}
 		

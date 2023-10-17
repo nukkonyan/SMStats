@@ -35,6 +35,8 @@ enum struct StatsMenuInfo
 		... "\n "
 		, "#SMStats_Menu_Top10", client
 		, "#SMStats_Menu_Top10Info", client);
+		panel.DrawText(" ");
+		PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
 		
 		panel.Send(client, StatsMenu_Main, MENU_TIME_FOREVER);
 		delete panel;
@@ -404,6 +406,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 	 * 2: Session.
 	 * 3: Active stats.
 	 * 4: Top 10 players.
+	 * 5: Close.
 	 */
 	switch(select)
 	{
@@ -430,6 +433,11 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 			g_Player[client].active_page_session = -1;
 			g_Player[client].active_page_top10 = -1;
 			StatsMenu.Top10(client);
+		}
+		case 5:
+		{
+			g_Player[client].active_page_session = -1;
+			g_Player[client].active_page_top10 = -1;
 		}
 	}
 	

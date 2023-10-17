@@ -1135,9 +1135,9 @@ stock void Send_Player_Disconnected(SMStats_PlayerInfo info, const char[] event_
 	}
 }
 
-stock void FragEvent_OnFailed(Database db, int userid, int numQueries, const char[] error, int failIndex, int[] queryId)
+stock void TXNEvent_OnFailed(Database db, int userid, int numQueries, const char[] error, int failIndex, int[] queryId)
 {
-	PrintToServer("%s FragEvent_OnFailed: query for '%s' (userid %i) failed (%s)", core_chattag, g_strTXNqueryId[queryId[failIndex]], userid, error);
+	PrintToServer("%s TXNEvent_OnFailed:\nQuery for '%s' (userid %i) failed\nError below:\n%s", core_chattag, g_strTXNqueryId[queryId[failIndex]], userid, error);
 }
 
 //

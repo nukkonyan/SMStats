@@ -11,37 +11,24 @@
 #define load_menus
 #define load_forwards
 
-#define query_error_uniqueid_OnPlayerDeath 1
-#define query_error_uniqueid_CP_OnCapturedPoint 2
-#define query_error_uniqueid_CP_OnCaptureBlocked 3
-#define query_error_uniqueid_CTF_OnFlagPickedUp 4
-#define query_error_uniqueid_CTF_OnFlagStolen 5
-#define query_error_uniqueid_CTF_OnFlagCaptured 6
-#define query_error_uniqueid_CTF_OnFlagDefended 7
-#define query_error_uniqueid_CTF_OnFlagDropped 8
-#define query_error_uniqueid_Object_OnSentryGunPlaced 9
-#define query_error_uniqueid_Object_OnDispenserPlaced 10
-#define query_error_uniqueid_Object_OnMiniSentryGunPlaced 11
-#define query_error_uniqueid_Object_OnTeleporterEntrancePlaced 12
-#define query_error_uniqueid_Object_OnTeleporterExitPlaced 13
-#define query_error_uniqueid_Object_OnSapperPlaced 14
-#define query_error_uniqueid_Object_OnSentryGunDestroyed 15
-#define query_error_uniqueid_Object_OnDispenserDestroyed 16
-#define query_error_uniqueid_Object_OnMiniSentryGunDestroyed 17
-#define query_error_uniqueid_Object_OnTeleporterEntranceDestroyed 18
-#define query_error_uniqueid_Object_OnTeleporterExitDestroyed 19
-#define query_error_uniqueid_Object_OnSapperDestroyed 14
-#define query_error_uniqueid_OnPlayerUbercharged 15
-#define query_error_uniqueid_OnPlayerUsedTeleporter 16
-#define query_error_uniqueid_OnPlayerTeleported 17
-#define query_error_uniqueid_OnPlayerStealSandvich 18
-#define query_error_uniqueid_OnPlayerStunned 19
-#define query_error_uniqueid_Halloween_OnHHHFragged 20
-#define query_error_uniqueid_Halloween_OnMonoculusFragged 21
-#define query_error_uniqueid_Halloween_OnMerasmusFragged 22
-#define query_error_uniqueid_Halloween_OnSkeletonKingFragged 23
-#define query_error_uniqueid_Halloween_OnMonoculusStunned 24
-#define query_error_uniqueid_Halloween_OnMerasmusStunned 25
+#define query_error_uniqueid_CP_OnCapturedPoint 1
+#define query_error_uniqueid_CP_OnCaptureBlocked 2
+#define query_error_uniqueid_CTF_OnFlagPickedUp 3
+#define query_error_uniqueid_CTF_OnFlagStolen 4
+#define query_error_uniqueid_CTF_OnFlagCaptured 5
+#define query_error_uniqueid_CTF_OnFlagDefended 6
+#define query_error_uniqueid_CTF_OnFlagDropped 7
+#define query_error_uniqueid_OnPlayerUbercharged 8
+#define query_error_uniqueid_OnPlayerUsedTeleporter 9
+#define query_error_uniqueid_OnPlayerTeleported 10
+#define query_error_uniqueid_OnPlayerStealSandvich 11
+#define query_error_uniqueid_OnPlayerStunned 12
+#define query_error_uniqueid_Halloween_OnHHHFragged 13
+#define query_error_uniqueid_Halloween_OnMonoculusFragged 14
+#define query_error_uniqueid_Halloween_OnMerasmusFragged 15
+#define query_error_uniqueid_Halloween_OnSkeletonKingFragged 16
+#define query_error_uniqueid_Halloween_OnMonoculusStunned 17
+#define query_error_uniqueid_Halloween_OnMerasmusStunned 18
 #define query_error_uniqueid_OnRobotsFragged 52
 #define query_error_uniqueid_OnPlayerExtinguished 54
 #define query_error_uniqueid_OnPlayerJarated 57
@@ -59,8 +46,7 @@
 #define query_error_uniqueid_UpdatePlayTime 80
 #define query_error_uniqueid_UpdateMapTimeInserting 81
 #define query_error_uniqueid_UpdateMapTimeUpdating 82
-#define query_error_uniqueid_OnPlayerDeath_MapUpdate 83
-#define query_error_uniqueid_OnPlayerNameUpdate 84
+#define query_error_uniqueid_OnPlayerNameUpdate 83
 
 #include <sm_stats>
 #include <sm_stats_core>

@@ -50,7 +50,7 @@ create table if not exists `maps_log_tf2`
 	`SentryLVL2Frags` int not null default '0',
 	`SentryLVL3Frags` int not null default '0',
 	
-	`TotalBuildingsPlaced` int not null default '0',
+	`BuildingsPlaced` int not null default '0',
 	`MiniSentryGunsPlaced` int not null default '0',
 	`SentryGunsPlaced` int not null default '0',
 	`DispensersPlaced` int not null default '0',
@@ -58,7 +58,7 @@ create table if not exists `maps_log_tf2`
 	`TeleporterEntrancesPlaced` int not null default '0',
 	`SappersPlaced` int not null default '0',
 	
-	`TotalBuildingsDestroyed` int not null default '0',
+	`BuildingsDestroyed` int not null default '0',
 	`MiniSentryGunsDestroyed` int not null default '0',
 	`SentryGunDestroyed` int not null default '0',
 	`DispenserDestroyed` int not null default '0',
