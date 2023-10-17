@@ -686,12 +686,12 @@ void CorrectWeaponClassname(TFClassType class, char[] weapon, int maxlen, int it
 }
 
 bool AssistedKills(Transaction txn
+					, const int[] list
 					, const int[] list_assister
 					, const bool[] list_assister_dominate
 					, const bool[] list_assister_revenge
 					, int frags
-					, int client
-					, const char[] dummy)
+					, int client)
 {
 	int assist_points = 10; // placeholder
 	
@@ -754,6 +754,9 @@ bool AssistedKills(Transaction txn
 			if(IsValidClient(assist))
 			{
 				g_Player[assist].session[Stats_Assists]++;
+				
+				char dummy[256];
+				GetMultipleTargets(assist, list, frags, dummy, sizeof(dummy));
 				
 				char query[1024];
 				int len = 0;
@@ -869,7 +872,7 @@ stock TFBuilding TF2_GetBuildingType(int entity)
 
 //
 
-stock void GetMultipleTargets(int client, int[] list, int counter, char[] dummy, int maxlen)
+stock void GetMultipleTargets(int client, const int[] list, int counter, char[] dummy, int maxlen)
 {
 	if(counter == 1)
 	{

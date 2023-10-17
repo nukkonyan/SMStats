@@ -2944,7 +2944,7 @@ Action Timer_OnGameFrame(Handle timer)
 				GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
 				
 				Transaction txn = new Transaction();
-				AssistedKills(txn, list_assister, list_assister_dominate, list_assister_revenge, frags, client, dummy);
+				AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client);
 				VictimDied(txn, list, frags);
 				
 				char query[4096], query_map[4096];
