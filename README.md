@@ -16,6 +16,7 @@ Some things may not work as intended at the very moment, but will get working so
    - tf2
         - ``Implement CTF intelligence spam-detect block (Block ctf flag spam to farm points).``
    - overall
+        - ``Implement 'info module' (Gather information of the players current points, etc. so after plugin was updated mid-game, stats will be restored to the correct stats).``
         - ``Implement custom achievements functionality.``
         - ``Implement leaderboard ban functionality (Prevented from gaining points).``
         - ``Implement functional K-A-D ratio (Kill-Assist-Death ratio).``
