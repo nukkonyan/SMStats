@@ -27,9 +27,11 @@ enum struct StatsMenuInfo
 		, "#SMStats_Menu_SessionInfo", client);
 		PanelItem(panel, "%T"
 		... "\n  > %T"
+		... "\n  > %T"
 		... "\n "
 		, "#SMStats_Menu_ActiveStats", client
-		, "#SMStats_Menu_ActiveStatsInfo", client);
+		, "#SMStats_Menu_ActiveStatsInfo", client
+		, "#SMStats_FeatureUnavailable", client);
 		PanelItem(panel, "%T"
 		... "\n  > %T"
 		... "\n "

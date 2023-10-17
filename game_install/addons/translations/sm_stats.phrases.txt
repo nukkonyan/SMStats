@@ -304,9 +304,9 @@
 
 		"jp" " （{1}）"
 	}
-	"#SMStats_FunctionUnavailable"
+	"#SMStats_FeatureUnavailable"
 	{
-		"en" "Function is currently unavailable."
+		"en" "Feature is currently unavailable."
 	}
 	
 	//================================//
