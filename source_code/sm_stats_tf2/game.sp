@@ -3550,24 +3550,24 @@ Action Timer_OnGameFrame(Handle timer)
 						{
 							if((points = g_Jarated.IntValue * jars) > 0)
 							{
-								CPrintToChat(client, "%s %T"
-								, g_ChatTag
-								, "#SMStats_Player_CoatedPiss", client
-								, g_Player[client].name
-								, g_Player[client].points
-								, points 
-								, dummy);
-								
-								g_Player[client].session[Stats_Points] += points;
-								g_Player[client].points += points;
-								
-								CallbackQuery("update `%s` set Points = Points+%i, CoatedPiss = CoatedPiss+%i where SteamID = '%s' and ServerID = %i"
+								CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+1, CoatedPiss = CoatedPiss+%i where SteamID = '%s' and ServerID = %i"
 								, query_error_uniqueid_OnPlayerJarated
 								, sql_table_playerlist, points, jars, g_Player[client].auth, g_ServerID);
 							}
 							
 							g_Game[client].bPlayerJarated = true;
 							CreateTimer(g_Time_PlayerJarated, Timer_bPlayerJarated, GetClientUserId(client));
+							
+							if(points > 0)
+							{
+								CPrintToChat(client, "%s %T"
+								, g_ChatTag
+								, "#SMStats_Player_CoatedPiss", client
+								, g_Player[client].name
+								, g_Player[client].points-points
+								, points 
+								, dummy);
+							}
 						}
 					}
 					/* Coated with milk */
@@ -3579,6 +3579,19 @@ Action Timer_OnGameFrame(Handle timer)
 						{
 							if((points = g_Milked.IntValue * jars) > 0)
 							{
+								g_Player[client].session[Stats_Points] += points;
+								g_Player[client].points += points;
+								
+								CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+1, CoatedMilk = CoatedMilk+%i where SteamID = '%s' and ServerID = %i"
+								, query_error_uniqueid_OnPlayerMilked
+								, sql_table_playerlist, points, jars, g_Player[client].auth, g_ServerID);
+							}
+							
+							g_Game[client].bPlayerMilked = true;
+							CreateTimer(g_Time_PlayerMilked, Timer_bPlayerMilked, GetClientUserId(client));
+							
+							if(points > 0)
+							{
 								CPrintToChat(client, "%s %T"
 								, g_ChatTag
 								, "#SMStats_Player_CoatedMilk", client
@@ -3586,17 +3599,7 @@ Action Timer_OnGameFrame(Handle timer)
 								, g_Player[client].points
 								, points 
 								, dummy);
-								
-								g_Player[client].session[Stats_Points] += points;
-								g_Player[client].points += points;
-								
-								CallbackQuery("update `%s` set Points = Points+%i, CoatedMilk = CoatedMilk+%i where SteamID = '%s' and ServerID = %i"
-								, query_error_uniqueid_OnPlayerMilked
-								, sql_table_playerlist, points, jars, g_Player[client].auth, g_ServerID);
 							}
-							
-							g_Game[client].bPlayerMilked = true;
-							CreateTimer(g_Time_PlayerMilked, Timer_bPlayerMilked, GetClientUserId(client));
 						}
 					}
 				}
