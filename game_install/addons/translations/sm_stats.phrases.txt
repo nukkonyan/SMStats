@@ -304,6 +304,10 @@
 
 		"jp" " （{1}）"
 	}
+	"#SMStats_FunctionUnavailable"
+	{
+		"en" "Function is currently unavailable."
+	}
 	
 	//================================//
 	// Frag Event.
