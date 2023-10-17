@@ -35,7 +35,6 @@ enum struct StatsMenuInfo
 		... "\n "
 		, "#SMStats_Menu_Top10", client
 		, "#SMStats_Menu_Top10Info", client);
-		panel.DrawText(" ");
 		PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
 		
 		panel.Send(client, StatsMenu_Main, MENU_TIME_FOREVER);
