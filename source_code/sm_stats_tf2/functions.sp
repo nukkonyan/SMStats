@@ -1002,3 +1002,40 @@ stock void GetObjectName(int client, TFBuilding obj, char[] name, int maxlen)
 	Format(name, maxlen, "#SMStats_Object_Type%i", obj);
 	Format(name, maxlen, "%T{default}", name, client);
 }
+
+stock ArrayList GetHealers(int client)
+{
+	ArrayList array;
+	int player;
+	while((player = FindEntityByClassname(player, "player")) != -1)
+	{
+		if(IsValidClient(player, !bAllowBots ? true : false))
+		{
+			if(array == null)
+			{
+				array = new ArrayList();
+			}
+			
+			int medigun = GetPlayerWeaponSlot(player, 1);
+			if(IsValidEdict(medigun))
+			{
+				char classname[64];
+				GetEntityClassname(medigun, classname, sizeof(classname));
+				if(StrContains(classname, "tf_weapon_medigun", false) != -1)
+				{
+					if(GetEntProp(medigun, Prop_Send, "m_bHealing"))
+					{
+						if(GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget") == client)
+						{
+							array.Push(GetClientUserId(player));
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	return array;
+}
+
+//

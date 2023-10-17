@@ -342,6 +342,7 @@ enum struct FragEventInfo
 	int crit_type;
 	TFClassType class;
 	TFClassType class_attacker;
+	ArrayList healers;
 	
 	int penetrated;
 	
@@ -882,8 +883,6 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	//
-	
 	int assister = event.GetInt("assister");
 	
 	char classname[64];
@@ -1023,6 +1022,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	frag.crit_type = event.GetInt("crit_type");
 	frag.class = TF2_GetPlayerClass(victim);
 	frag.class_attacker = class;
+	frag.healers = GetHealers(client);
 	
 	frag.suicide = (userid == attacker);
 	frag.suicide_assisted = assisted_suicide;
@@ -2797,12 +2797,14 @@ Action Timer_OnGameFrame(Handle timer)
 		{
 			int frags;
 			if((frags = g_Game[client].aFragEvent.Length) > 0)
-			{
+			{	
 				FragEventInfo event;
 				int[] list = new int[frags];
 				int[] list_assister = new int[frags];
 				bool[] list_assister_dominate = new bool[frags];
 				bool[] list_assister_revenge = new bool[frags];
+				int[] list_healercount = new int[frags];
+				int[][] list_healer = new int[MaxPlayers+1][frags];
 				int[] list_inflictor = new int[frags];
 				int[] list_itemdef = new int[frags];
 				any[] list_class = new any[frags];
@@ -2856,6 +2858,18 @@ Action Timer_OnGameFrame(Handle timer)
 					list_itemdef[i] = event.itemdef;
 					list_class[i] = event.class;
 					strcopy(list_classname[i], 64, event.classname);
+					
+					// override medic assister, count all healers as assisters.
+					if(event.healers != null)
+					{
+						for(int x = 0; x < event.healers.Length; x++)
+						{
+							list_healer[x][i] = event.healers.Get(x);
+							list_healercount[i] = event.healers.Length;
+						}
+						
+						delete event.healers;
+					}
 					
 					if(event.suicide_assisted)
 					{
@@ -2946,6 +2960,15 @@ Action Timer_OnGameFrame(Handle timer)
 				Transaction txn = new Transaction();
 				AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client);
 				VictimDied(txn, list, frags);
+				
+				for(int i = 0; i < frags; i++)
+				{
+					for(int x = 0; x < list_healercount[i]; x++)
+					{
+						int healer = GetClientOfUserId(list_healer[x][i]);
+						PrintToServer("Healer : %N", healer);
+					}
+				}
 				
 				char query[4096], query_map[4096];
 				int len = 0, len_map = 0;
