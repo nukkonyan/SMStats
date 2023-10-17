@@ -2583,15 +2583,12 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 	int victim = bf.ReadByte();
 	int itemdef = -1;
 	
+	char item_class[64];
 	int jar = GetPlayerWeaponSlot(client, 1);
 	if(IsValidEntity(jar))
 	{
 		itemdef = GetEntProp(jar, Prop_Send, "m_iItemDefinitionIndex");
-	}
-	
-	if(!bLoaded)
-	{
-		return Plugin_Handled;
+		GetEntityClassname(jar, item_class, sizeof(item_class));
 	}
 	
 	if(!IsValidClient(client))
@@ -2602,61 +2599,30 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 	bool bProceed = true;
 	int iType = -1;
 	
-	switch(itemdef)
+	/* Coated with piss */
+	if(StrEqual(item_class, "tf_weapon_jar", false))
 	{
-		/* Mad Milk & Mutated Milk */
-		case 222, 1121:
+		if(g_Game[client].bPlayerJarated)
 		{
-			if(g_Game[client].bPlayerMilked)
-			{
-				bProceed = false;
-			}
-			
-			iType = 1;
+			bProceed = false;
 		}
 		
-		/* Jarate & The Self-Aware Beauty Mark */
-		case 58, 1105:
+		iType = 1;
+	}
+	/* Coated with milk */
+	else if(StrEqual(item_class, "tf_weapon_jar_milk", false))
+	{
+		if(g_Game[client].bPlayerMilked)
 		{
-			if(g_Game[client].bPlayerJarated)
-			{
-				bProceed = false;
-			}
-			
-			iType = 2;
+			bProceed = false;
 		}
 		
-		default:
-		{
-			switch(TF2_GetPlayerClass(client))
-			{
-				case TFClass_Sniper:
-				{
-					// primary slot
-					int weapon = GetPlayerWeaponSlot(client, 0);
-					
-					if(IsValidEntity(weapon))
-					{
-						int weapon_itemdef = GetEntProp(weapon, Prop_Send, "m_iItemDefinitionIndex");
-						
-						switch(weapon_itemdef)
-						{
-							/* Sydney Sleeper */
-							case 230:
-							{
-								if(g_Game[client].bPlayerJarated)
-								{
-									bProceed = false;
-								}
-								
-								iType = 2;
-								itemdef = weapon_itemdef;
-							}
-						}
-					}
-				}
-			}
-		}
+		iType = 2;
+	}
+	else
+	{
+		PrintToServer("%s OnPlayerCoated() Invalid jar detected!\nInformation: Item classname '%s'\nItem definition index %i", core_chattag, item_class, itemdef);
+		bProceed = false;
 	}
 	
 	/* Manually fire a broken event */
@@ -2666,12 +2632,17 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 	event.SetInt("itemdefindex", itemdef);
 	event.Fire();
 	
-	if(IsValidAbuse(client))
+	if(!bLoaded)
 	{
 		return Plugin_Handled;
 	}
 	
 	if(!bProceed)
+	{
+		return Plugin_Handled;
+	}
+	
+	if(IsValidAbuse(client))
 	{
 		return Plugin_Handled;
 	}
@@ -2692,7 +2663,7 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 	}
 	
 	int array[2];
-	array[0] = GetClientOfUserId(victim);
+	array[0] = GetClientUserId(victim);
 	array[1] = iType;
 	
 	g_Game[client].aJarEvent.PushArray(array, sizeof(array));
@@ -3556,13 +3527,13 @@ Action Timer_OnGameFrame(Handle timer)
 				{
 					int array[2];
 					g_Game[client].aJarEvent.GetArray(i, array, sizeof(array));
-					iType = array[0];
-					list[i++] = array[1];
+					list[i++] = array[0];
+					iType = array[1];
 				}
 				
 				g_Game[client].aJarEvent.Clear();
 				
-				char dummy[256];
+				char dummy[255];
 				GetMultipleTargets(client, list, jars, dummy, sizeof(dummy));
 				
 				g_Player[client].session[Stats_Coated] += jars;
@@ -3570,38 +3541,8 @@ Action Timer_OnGameFrame(Handle timer)
 				int points = 0;
 				switch(iType)
 				{
-					/* Mad Milk & Mutated Milk */
+					/* Coated with piss */
 					case 1:
-					{
-						g_Player[client].session[Stats_CoatedMilk] += jars;
-						
-						if(!g_Game[client].bPlayerMilked)
-						{
-							if((points = g_Milked.IntValue * jars) > 0)
-							{
-								CPrintToChat(client, "%s %T"
-								, g_ChatTag
-								, "#SMStats_Player_CoatedMilk", client
-								, g_Player[client].name
-								, g_Player[client].points
-								, points 
-								, dummy);
-								
-								g_Player[client].session[Stats_Points] += points;
-								g_Player[client].points += points;
-								
-								CallbackQuery("update `%s` set Points = Points+%i, CoatedMilk = CoatedMilk+%i where SteamID = '%s' and ServerID = %i"
-								, query_error_uniqueid_OnPlayerMilked
-								, sql_table_playerlist, points, jars, g_Player[client].auth, g_ServerID);
-							}
-							
-							g_Game[client].bPlayerMilked = true;
-							CreateTimer(g_Time_PlayerMilked, Timer_bPlayerMilked, GetClientUserId(client));
-						}
-					}
-					
-					/* Jarate, Sydney Sleeper & The Self-Aware Beauty Mark */
-					case 2:
 					{
 						g_Player[client].session[Stats_CoatedPiss] += jars;
 						
@@ -3627,6 +3568,35 @@ Action Timer_OnGameFrame(Handle timer)
 							
 							g_Game[client].bPlayerJarated = true;
 							CreateTimer(g_Time_PlayerJarated, Timer_bPlayerJarated, GetClientUserId(client));
+						}
+					}
+					/* Coated with milk */
+					case 2:
+					{
+						g_Player[client].session[Stats_CoatedMilk] += jars;
+						
+						if(!g_Game[client].bPlayerMilked)
+						{
+							if((points = g_Milked.IntValue * jars) > 0)
+							{
+								CPrintToChat(client, "%s %T"
+								, g_ChatTag
+								, "#SMStats_Player_CoatedMilk", client
+								, g_Player[client].name
+								, g_Player[client].points
+								, points 
+								, dummy);
+								
+								g_Player[client].session[Stats_Points] += points;
+								g_Player[client].points += points;
+								
+								CallbackQuery("update `%s` set Points = Points+%i, CoatedMilk = CoatedMilk+%i where SteamID = '%s' and ServerID = %i"
+								, query_error_uniqueid_OnPlayerMilked
+								, sql_table_playerlist, points, jars, g_Player[client].auth, g_ServerID);
+							}
+							
+							g_Game[client].bPlayerMilked = true;
+							CreateTimer(g_Time_PlayerMilked, Timer_bPlayerMilked, GetClientUserId(client));
 						}
 					}
 				}
