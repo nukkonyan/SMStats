@@ -3596,7 +3596,7 @@ Action Timer_OnGameFrame(Handle timer)
 								, g_ChatTag
 								, "#SMStats_Player_CoatedMilk", client
 								, g_Player[client].name
-								, g_Player[client].points
+								, g_Player[client].points-points
 								, points 
 								, dummy);
 							}
@@ -3620,7 +3620,7 @@ Action Timer_OnGameFrame(Handle timer)
 				
 				g_Game[client].aExtEvent.Clear();
 				
-				char dummy[256];
+				char dummy[255];
 				GetMultipleTargets(client, list, exts, dummy, sizeof(dummy));
 				
 				g_Player[client].session[Stats_Extinguished] += exts;
@@ -3630,14 +3630,6 @@ Action Timer_OnGameFrame(Handle timer)
 					int points = 0;
 					if((points = g_Extinguished.IntValue * exts) > 0)
 					{
-						CPrintToChat(client, "%s %T"
-						, g_ChatTag
-						, "#SMStats_Player_Extinguished", client
-						, g_Player[client].name
-						, g_Player[client].points
-						, points 
-						, dummy);
-						
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
 						
@@ -3648,6 +3640,17 @@ Action Timer_OnGameFrame(Handle timer)
 					
 					g_Game[client].bExtEvent = true;
 					CreateTimer(g_Time_ExtEvent, Timer_bExtEvent, GetClientUserId(client));
+					
+					if(points > 0)
+					{
+						CPrintToChat(client, "%s %T"
+						, g_ChatTag
+						, "#SMStats_Player_Extinguished", client
+						, g_Player[client].name
+						, g_Player[client].points-points
+						, points 
+						, dummy);
+					}
 				}
 			}
 		}
