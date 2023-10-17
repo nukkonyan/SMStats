@@ -685,68 +685,108 @@ void CorrectWeaponClassname(TFClassType class, char[] weapon, int maxlen, int it
 	}
 }
 
-bool AssistedKills(Transaction txn, const int[] list_assister, int frags, int client, FragEventInfo event)
+bool AssistedKills(Transaction txn
+					, const int[] list_assister
+					, const bool[] list_assister_dominate
+					, const bool[] list_assister_revenge
+					, int frags
+					, int client
+					, const char[] dummy)
 {
-	int victim = GetClientOfUserId(event.userid);
-	if(!IsValidClient(victim, false))
-	{
-		return false;
-	}
-	
 	int assist_points = 10;
 	
-	// needs to be further optimized for sql.
+	//
+	
+	ArrayList assisters;
 	for(int i = 0; i < frags; i++)
 	{
-		int assister = list_assister[i];
-		int assist = GetClientOfUserId(assister);
+		int assist = list_assister[i];
 		
-		if(assist == client 
-		|| assister == event.userid)
+		if(assist > 0)
 		{
-			continue;
+			assisters = new ArrayList();
+			if(assisters.FindValue(assist) == -1)
+			{
+				assisters.Push(assist);
+			}
+		}
+	}
+	
+	if(assisters != null)
+	{
+		// create arrays per assisters domination and revenge count.
+		int[] assister_count = new int[assisters.Length];
+		int[] assister_dominations = new int[assisters.Length];
+		int[] assister_revenges = new int[assisters.Length];
+		
+		for(int i = 0; i < frags; i++)
+		{
+			int assist = list_assister[i];
+			if(assist > 0)
+			{
+				for(int x = 0; x < assisters.Length; x++)
+				{
+					if(assisters.Get(x) == assist)
+					{
+						assister_count[x]++;
+						
+						if(list_assister_dominate[i])
+						{
+							assister_dominations[x]++;
+						}
+						if(list_assister_revenge[i])
+						{
+							assister_revenges[x]++;
+						}
+					}
+				}
+			}
 		}
 		
-		if(IsValidClient(assist))
+		// loop information and obtain if the assister did dominate or revenge somebody.
+		for(int i = 0; i < assisters.Length; i++)
 		{
-			g_Player[assist].session[Stats_Assists]++;
-			
-			char query[1024];
-			int len = 0;
-			
-			len += Format(query[len], sizeof(query)-len, "update `%s` set ", sql_table_playerlist);
-			len += Format(query[len], sizeof(query)-len, "Assists = Assists+1");
-			
-			if(event.dominated_assister)
+			int assist = GetClientOfUserId(assisters.Get(i));
+			if(IsValidClient(assist))
 			{
-				len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+1");
-			}
-			else if(event.revenge_assister)
-			{
-				len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+1");
-			}
-			
-			// a little optimization.
-			if(assist_points > 0)
-			{
-				g_Player[assist].points += assist_points;
+				g_Player[assist].session[Stats_Assists]++;
 				
-				CPrintToChat(assist, "%s %T"
-				, g_ChatTag
-				, "#SMStats_FragEvent_Assisted", client
-				, g_Player[assist].name
-				, g_Player[assist].points
-				, assist_points
-				, g_Player[client].name
-				, g_Player[victim].name);
+				char query[1024];
+				int len = 0;
+				len += Format(query[len], sizeof(query)-len, "update `%s` set Assists = Assists+%i", sql_table_playerlist, assister_count[i]);
+				if(assister_dominations[i] > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", assister_dominations[i]);
+				}
+				if(assister_revenges[i] > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", assister_revenges[i]);
+				}
+				if(assist_points > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", assist_points*assister_count[i]);
+				}
+				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[assist].auth, g_ServerID);
+				txn.AddQuery(query, queryId_frag_assister);
 				
-				len += Format(query, sizeof(query), ", Points = Points+%i", assist_points);
+				if(assist_points > 0)
+				{
+					g_Player[assist].session[Stats_Points] += assist_points*assister_count[i];
+					g_Player[assist].points += assist_points*assister_count[i];
+						
+					CPrintToChat(assist, "%s %T"
+					, g_ChatTag
+					, "#SMStats_FragEvent_Assisted", client
+					, g_Player[assist].name
+					, g_Player[assist].points
+					, assist_points*assister_count[i]
+					, g_Player[client].name
+					, dummy);
+				}
 			}
-			
-			len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[assist].auth, g_ServerID);
-
-			txn.AddQuery(query, queryId_frag_assister);
 		}
+		
+		delete assisters;
 	}
 	
 	return true;
@@ -821,4 +861,137 @@ stock TFBuilding TF2_GetBuildingType(int entity)
 	}
 	
 	return TFBuilding_Invalid;
+}
+
+//
+
+stock void GetMultipleTargets(int client, int[] list, int counter, char[] dummy, int maxlen)
+{
+	if(counter == 1)
+	{
+		int userid = list[0];
+		int target = GetClientOfUserId(userid);
+		strcopy(dummy, maxlen, g_Player[target].name);
+	}
+	else if(counter == 2)
+	{
+		int userid1 = list[0];
+		int target1 = GetClientOfUserId(userid1);
+		
+		int userid2 = list[1];
+		int target2 = GetClientOfUserId(userid2);
+		
+		Format(dummy, maxlen, "%s%T%s%T", g_Player[target1].name, "#SMStats_And", client, g_Player[target2].name, "#SMStats_Counter", client, counter);
+	}
+	else if(counter > 2 && counter <= 4)
+	{
+		for(int i = 0; i < counter-1; i++)
+		{
+			int userid = list[i];
+			int target = GetClientOfUserId(userid);
+			
+			if(dummy[0] != '\0')
+			{
+				Format(dummy, maxlen, "%s%T", dummy, "#SMStats_Comma", client);
+			}
+			
+			Format(dummy, maxlen, "%s%s", dummy, g_Player[target].name);
+		}
+		
+		int target = GetClientOfUserId(list[counter-1]);
+		Format(dummy, maxlen, "%s%T%s%T", dummy, "#SMStats_And", client, g_Player[target].name, "#SMStats_Counter", client, counter);
+		// outputs the "and last player".
+	}
+	else
+	{
+		Format(dummy, maxlen, "%T", "#SMStats_MultipleTargets", client);
+	}
+}
+
+stock void GetMultipleObjects(int client, TFBuilding[] list, int objects, char[] dummy, int maxlen)
+{
+	TFBuilding obj_prev;
+	int obj_count[6];
+	for(int i = 0; i < objects; i++)
+	{
+		TFBuilding obj = list[i];
+		
+		if(obj != obj_prev)
+		{
+			obj_count[obj]++;
+		}
+		else
+		{
+			obj_count[obj_prev]++;
+		}
+		
+		obj_prev = obj;
+	}
+	
+	int obj_types;
+	for(int i = 0; i < objects; i++)
+	{
+		TFBuilding obj = list[i];
+		if(obj_count[obj] > 0)
+		{
+			obj_types++;
+		}
+	}
+	
+	switch(obj_types)
+	{
+		case 1:
+		{
+			TFBuilding obj = list[0];
+			GetObjectName(client, obj, dummy, maxlen);
+			
+			if(objects > 1)
+			{
+				Format(dummy, maxlen, "%s%T", dummy, "#MStats_Counter", client, objects);
+			}
+		}
+		
+		case 2:
+		{
+			char name1[64], name2[64];
+			GetObjectName(client, list[0], name1, sizeof(name1));
+			GetObjectName(client, list[1], name2, sizeof(name2));
+			
+			Format(dummy, maxlen, "%s%T%s%T"
+			, name1
+			, "#SMStats_And", client
+			, name2
+			, "#SMStats_Counter", client, objects);
+		}
+		
+		case 3:
+		{
+			char name1[64], name2[64], name3[64];
+			GetObjectName(client, list[0], name1, sizeof(name1));
+			GetObjectName(client, list[1], name2, sizeof(name2));
+			GetObjectName(client, list[2], name3, sizeof(name3));
+			
+			TFBuilding obj = list[objects-1];
+			char object_name[64];
+			GetObjectName(client, obj, object_name, sizeof(object_name));
+			Format(dummy, maxlen, "%s%T%s%T%s%T"
+			, name1
+			, "#SMStats_Comma", client
+			, name2
+			, "#SMStats_And", client
+			, name3
+			, "#SMStats_Counter", client, objects);
+		}
+		
+		default:
+		{
+			Format(dummy, maxlen, "%T %T", "#SMStats_MultipleObjects", client, "#SMStats_Counter", client, objects);
+		}
+	}
+}
+
+stock void GetObjectName(int client, TFBuilding obj, char[] name, int maxlen)
+{
+	Format(name, maxlen, "#SMStats_Object_Type%i", obj);
+	Format(name, maxlen, "%T{default}", name, client);
 }

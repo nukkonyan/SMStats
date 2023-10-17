@@ -2801,6 +2801,8 @@ Action Timer_OnGameFrame(Handle timer)
 				FragEventInfo event;
 				int[] list = new int[frags];
 				int[] list_assister = new int[frags];
+				bool[] list_assister_dominate = new bool[frags];
+				bool[] list_assister_revenge = new bool[frags];
 				int[] list_inflictor = new int[frags];
 				int[] list_itemdef = new int[frags];
 				any[] list_class = new any[frags];
@@ -2848,6 +2850,8 @@ Action Timer_OnGameFrame(Handle timer)
 					g_Game[client].aFragEvent.GetArray(i, event, sizeof(event));
 					list[i] = event.userid;
 					list_assister[i] = event.assister;
+					list_assister_dominate[i] = event.dominated_assister;
+					list_assister_revenge[i] = event.revenge_assister;
 					list_inflictor[i] = event.inflictor;
 					list_itemdef[i] = event.itemdef;
 					list_class[i] = event.class;
@@ -2940,7 +2944,7 @@ Action Timer_OnGameFrame(Handle timer)
 				GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
 				
 				Transaction txn = new Transaction();
-				AssistedKills(txn, list_assister, frags, client, event);
+				AssistedKills(txn, list_assister, list_assister_dominate, list_assister_revenge, frags, client, dummy);
 				VictimDied(txn, list, frags);
 				
 				char query[4096], query_map[4096];
@@ -3690,139 +3694,6 @@ Action Timer_OnGameFrame(Handle timer)
 	}
 	
 	return Plugin_Continue;
-}
-
-//
-
-void GetMultipleTargets(int client, int[] list, int counter, char[] dummy, int maxlen)
-{
-	if(counter == 1)
-	{
-		int userid = list[0];
-		int target = GetClientOfUserId(userid);
-		strcopy(dummy, maxlen, g_Player[target].name);
-	}
-	else if(counter == 2)
-	{
-		int userid1 = list[0];
-		int target1 = GetClientOfUserId(userid1);
-		
-		int userid2 = list[1];
-		int target2 = GetClientOfUserId(userid2);
-		
-		Format(dummy, maxlen, "%s%T%s%T", g_Player[target1].name, "#SMStats_And", client, g_Player[target2].name, "#SMStats_Counter", client, counter);
-	}
-	else if(counter > 2 && counter <= 4)
-	{
-		for(int i = 0; i < counter-1; i++)
-		{
-			int userid = list[i];
-			int target = GetClientOfUserId(userid);
-			
-			if(dummy[0] != '\0')
-			{
-				Format(dummy, maxlen, "%s%T", dummy, "#SMStats_Comma", client);
-			}
-			
-			Format(dummy, maxlen, "%s%s", dummy, g_Player[target].name);
-		}
-		
-		int target = GetClientOfUserId(list[counter-1]);
-		Format(dummy, maxlen, "%s%T%s%T", dummy, "#SMStats_And", client, g_Player[target].name, "#SMStats_Counter", client, counter);
-		// outputs the "and last player".
-	}
-	else
-	{
-		Format(dummy, maxlen, "%T", "#SMStats_MultipleTargets", client);
-	}
-}
-
-void GetMultipleObjects(int client, TFBuilding[] list, int objects, char[] dummy, int maxlen)
-{
-	TFBuilding obj_prev;
-	int obj_count[6];
-	for(int i = 0; i < objects; i++)
-	{
-		TFBuilding obj = list[i];
-		
-		if(obj != obj_prev)
-		{
-			obj_count[obj]++;
-		}
-		else
-		{
-			obj_count[obj_prev]++;
-		}
-		
-		obj_prev = obj;
-	}
-	
-	int obj_types;
-	for(int i = 0; i < objects; i++)
-	{
-		TFBuilding obj = list[i];
-		if(obj_count[obj] > 0)
-		{
-			obj_types++;
-		}
-	}
-	
-	switch(obj_types)
-	{
-		case 1:
-		{
-			TFBuilding obj = list[0];
-			GetObjectName(client, obj, dummy, maxlen);
-			
-			if(objects > 1)
-			{
-				Format(dummy, maxlen, "%s%T", dummy, "#MStats_Counter", client, objects);
-			}
-		}
-		
-		case 2:
-		{
-			char name1[64], name2[64];
-			GetObjectName(client, list[0], name1, sizeof(name1));
-			GetObjectName(client, list[1], name2, sizeof(name2));
-			
-			Format(dummy, maxlen, "%s%T%s%T"
-			, name1
-			, "#SMStats_And", client
-			, name2
-			, "#SMStats_Counter", client, objects);
-		}
-		
-		case 3:
-		{
-			char name1[64], name2[64], name3[64];
-			GetObjectName(client, list[0], name1, sizeof(name1));
-			GetObjectName(client, list[1], name2, sizeof(name2));
-			GetObjectName(client, list[2], name3, sizeof(name3));
-			
-			TFBuilding obj = list[objects-1];
-			char object_name[64];
-			GetObjectName(client, obj, object_name, sizeof(object_name));
-			Format(dummy, maxlen, "%s%T%s%T%s%T"
-			, name1
-			, "#SMStats_Comma", client
-			, name2
-			, "#SMStats_And", client
-			, name3
-			, "#SMStats_Counter", client, objects);
-		}
-		
-		default:
-		{
-			Format(dummy, maxlen, "%T %T", "#SMStats_MultipleObjects", client, "#SMStats_Counter", client, objects);
-		}
-	}
-}
-
-void GetObjectName(int client, TFBuilding obj, char[] name, int maxlen)
-{
-	Format(name, maxlen, "#SMStats_Object_Type%i", obj);
-	Format(name, maxlen, "%T{default}", name, client);
 }
 
 // timers
