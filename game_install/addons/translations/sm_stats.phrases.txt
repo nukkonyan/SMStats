@@ -403,9 +403,9 @@
 	"#SMStats_FragEvent_Assisted" //Assist
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} points for assisting {4} for fragging {5}."
+		"en" "{1} ({2}) Earned {3} points in assisting {4} for fragging {5}."
 
-		"sv" "{1} ({2}) Tjänade {3} poäng för att assistera {4} genom att fragga {5}."
+		"sv" "{1} ({2}) Tjänade {3} poäng genom att assistera {4} för att fragga {5}."
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
