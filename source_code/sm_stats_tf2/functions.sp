@@ -693,9 +693,9 @@ bool AssistedKills(Transaction txn
 					, int client
 					, const char[] dummy)
 {
-	int assist_points = 10;
+	int assist_points = 10; // placeholder
 	
-	//
+	// spaghetti code
 	
 	ArrayList assisters;
 	for(int i = 0; i < frags; i++)
@@ -704,7 +704,11 @@ bool AssistedKills(Transaction txn
 		
 		if(assist > 0)
 		{
-			assisters = new ArrayList();
+			if(assisters == null)
+			{
+				assisters = new ArrayList();
+			}
+			
 			if(assisters.FindValue(assist) == -1)
 			{
 				assisters.Push(assist);
