@@ -21,6 +21,7 @@ Some things may not work as intended at the very moment, but will get working so
         - ``Implement leaderboard ban functionality (Prevented from gaining points).``
         - ``Implement functional K-A-D ratio (Kill-Assist-Death ratio).``
         - ``Implement functional K/D Ratio (Kill-Death ratio).``
+        - ``Support more source games.``
         - ``Create website.``
 
 [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
