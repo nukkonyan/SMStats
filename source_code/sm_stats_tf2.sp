@@ -79,7 +79,7 @@ public Plugin myinfo =
 	author = "teamkiller324",
 	description = "Tracks frags, maps, events, achievements, etc.",
 	version = Version,
-	url = "https://github.com/Teamkiller324"
+	url = "https://github.com/Teamkiller324/SMStats"
 }
 
 #include "sm_stats_tf2/menus.sp"
