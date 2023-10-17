@@ -3550,9 +3550,9 @@ Action Timer_OnGameFrame(Handle timer)
 						{
 							if((points = g_Jarated.IntValue * jars) > 0)
 							{
-								CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+1, CoatedPiss = CoatedPiss+%i where SteamID = '%s' and ServerID = %i"
+								CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+%i, CoatedPiss = CoatedPiss+%i where SteamID = '%s' and ServerID = %i"
 								, query_error_uniqueid_OnPlayerJarated
-								, sql_table_playerlist, points, jars, g_Player[client].auth, g_ServerID);
+								, sql_table_playerlist, points, jars, jars, g_Player[client].auth, g_ServerID);
 							}
 							
 							g_Game[client].bPlayerJarated = true;
@@ -3582,9 +3582,9 @@ Action Timer_OnGameFrame(Handle timer)
 								g_Player[client].session[Stats_Points] += points;
 								g_Player[client].points += points;
 								
-								CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+1, CoatedMilk = CoatedMilk+%i where SteamID = '%s' and ServerID = %i"
+								CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+%i, CoatedMilk = CoatedMilk+%i where SteamID = '%s' and ServerID = %i"
 								, query_error_uniqueid_OnPlayerMilked
-								, sql_table_playerlist, points, jars, g_Player[client].auth, g_ServerID);
+								, sql_table_playerlist, points, jars, jars, g_Player[client].auth, g_ServerID);
 							}
 							
 							g_Game[client].bPlayerMilked = true;
