@@ -132,6 +132,13 @@
 		"jp" "プレイーのタイム : {1}分間"
 		"sv" "Speltid : {1} minuter"
 	}
+	"#SMStats_MenuInfo_Country"
+	{
+		"#format" "{1:s}"
+		"en" "Country : {1}"
+		"jp" "国 : {1}"
+		"sv" "Land : {1}"
+	}
 	"#SMStats_MenuInfo_PointsEarned"
 	{
 		"#format" "{1:i}"
