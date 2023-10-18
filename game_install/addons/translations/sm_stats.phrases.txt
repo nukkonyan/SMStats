@@ -61,9 +61,9 @@
 		// minutes - {MINUTE}
 		// seconds - {SECOND}
 		// 2023-10-18 PM 2:56:43
-		"en" "{YEAR}-{MONTH}-{DAY} {AM_PM} {12HOUR}:{MINUTE}:{SECOND}"
-		"jp" "{YEAR}年の{AM_PM}{12HOUR}時{MINUTE}分{SECOND}秒に{MONTH}月{DAY}日"
-		"sv" "{YEAR}/{DAY}/{MONTH} {24HOUR}:{MINUTE}:{SECOND}"
+		"en" "{YEAR}-{MONTH}-{DAY}"
+		"jp" "{YEAR}年の{MONTH}月{DAY}日"
+		"sv" "{YEAR}/{DAY}/{MONTH}"
 	}
 
 	//================================//
