@@ -1011,11 +1011,6 @@ stock ArrayList GetHealers(int client)
 	{
 		if(IsValidClient(player, !bAllowBots ? true : false))
 		{
-			if(array == null)
-			{
-				array = new ArrayList();
-			}
-			
 			int medigun = GetPlayerWeaponSlot(player, 1);
 			if(IsValidEdict(medigun))
 			{
@@ -1027,6 +1022,10 @@ stock ArrayList GetHealers(int client)
 					{
 						if(GetEntPropEnt(medigun, Prop_Send, "m_hHealingTarget") == client)
 						{
+							if(array == null)
+							{
+								array = new ArrayList();
+							}
 							array.Push(GetClientUserId(player));
 						}
 					}

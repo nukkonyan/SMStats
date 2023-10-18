@@ -19,6 +19,11 @@ enum struct StatsMenuInfo
 		panel.DrawItem("SourceMod Stats - " ... VersionAlt ... " by Teamkiller324 ( Work in progress )");
 		
 		PanelText(panel, "%T", "#SMStats_Menu_Playername", client, client);
+		
+		char country[64];
+		GeoipCountryName(client, g_Player[client].ip, country, sizeof(country));
+		PanelText(panel, "%T", "#SMStats_MenuInfo_Country", client, country);
+		
 		PanelText(panel, "%T\n ", "#SMStats_Menu_Positioned", client, (g_Player[client].position = GetClientPosition(g_Player[client].auth)), g_TotalTablePlayers);		
 		PanelItem(panel, "%T"
 		... "\n  > %T"

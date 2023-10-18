@@ -117,7 +117,7 @@ stock void VictimDied(Transaction txn, const int[] list, int frags)
 			, sql_table_playerlist, frags, g_Player[victim].auth, g_ServerID);
 			txn.AddQuery(query, queryId_frag_victim_death);
 			
-			int death_points = _sm_stats_get_deathpoints() * frags;
+			int death_points = _sm_stats_get_deathpoints();
 			if(death_points > 0)
 			{
 				//g_Player[victim].points = GetClientPoints(g_Player[victim].auth);

@@ -110,7 +110,7 @@
 	{
 		"en" "Previous page"
 		"jp" "前のページ"
-		"sv" "Förra sida"
+		"sv" "Förra sidan"
 	}
 	"#SMStats_Menu_NextPage"
 	{
@@ -277,7 +277,7 @@
 		"en" " and "
 		"de" " und "
 		"dk" " og "
-		"jp" "と"
+		"jp" " と "
 		"no" " og "
 		"nl" " en "
 		"ru" " и "
