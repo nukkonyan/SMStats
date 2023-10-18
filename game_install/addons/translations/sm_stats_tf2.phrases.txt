@@ -13,7 +13,7 @@
 	{
 		"#format" "{1:i}"
 		"en" "Revenges : {1}"
-		"sv" "Hämndningar : {1}"
+		"sv" "Hämningar : {1}"
 	}
 	"#SMStats_MenuInfo_Airshots"
 	{
@@ -31,6 +31,7 @@
 	{
 		"#format" "{1:i}"
 		"en" "Noscopes : {1}"
+		"sv" "Icke-zoomingsskott : {1}"
 	}
 	"#SMStats_MenuInfo_Backstabs"
 	{
@@ -48,6 +49,7 @@
 	{
 		"#format" "{1:i}"
 		"en" "Gib frags : {1}"
+		"sv" "Gibbfraggade : {1}"
 	}
 	"#SMStats_MenuInfo_DeflectFrags"
 	{
@@ -59,6 +61,7 @@
 	{
 		"#format" "{1:i}"
 		"en" "Tele frags : {1}"
+		"sv" "Telefraggade : {1}"
 	}
 	"#SMStats_MenuInfo_Collaterals"
 	{
@@ -87,62 +90,62 @@
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Scout : {1} Fragged / {2} Deaths"
-		"sv" "Löpare : {1} Fraggad / {2} Dödad"
+		"sv" "Löpare : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Soldier"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Soldier : {1} Fragged / {2} Deaths"
-		"sv" "Soldat : {1} Fraggad / {2} Dödad"
+		"sv" "Soldat : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Pyro"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Pyro : {1} Fragged / {2} Deaths"
-		"en" "Pyro : {1} Fraggad / {2} Dödad"
+		"en" "Pyro : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Demoman"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Demoman : {1} Fragged / {2} Deaths"
-		"en" "Demoman : {1} Fraggad / {2} Dödad"
+		"en" "Demoman : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Heavy"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Heavy : {1} Fragged / {2} Deaths"
-		"en" "Heavy : {1} Fraggad / {2} Dödad"
+		"en" "Heavy : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Engineer"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Engineer : {1} Fragged / {2} Deaths"
-		"en" "Ingenjör : {1} Fraggad / {2} Dödad"
+		"en" "Ingenjör : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Medic"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Medic : {1} Fragged / {2} Deaths"
-		"en" "Sjukvårdare : {1} Fraggad / {2} Dödad"
+		"en" "Sjukvårdare : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Sniper"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Sniper : {1} Fragged / {2} Deaths"
-		"en" "Krypskyttaren : {1} Fraggad / {2} Dödad"
+		"en" "Krypskyttare : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Spy"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Spy : {1} Fragged / {2} Deaths"
-		"en" "Spion : {1} Fraggad / {2} Dödad"
+		"en" "Spion : {1} Fraggade / {2} Dödad"
 	}
 
 	"#SMStats_MenuInfo_Buildings"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Buildings : {1} Placed / {2} Destroyed"
-		"en" "Byggnader : {1} Placerad / {2} Förstörd"
+		"en" "Byggnader : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_Dispenser"
 	{
@@ -154,31 +157,31 @@
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Sentry Gun : {1} Placed / {2} Destroyed"
-		"en" "Vaktgevär : {1} Placerad / {2} Förstörd"
+		"en" "Vaktgevär : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_TeleporterEntrance"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Teleporter Entrance : {1} Placed / {2} Destroyed"
-		"en" "Ingångsteleporter : {1} Placerad / {2} Förstörd"
+		"en" "Ingångsteleporter : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_TeleporterExit"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Teleporter Exit : {1} Placed / {2} Destroyed"
-		"en" "Utgångsteleporter : {1} Placerad / {2} Förstörd"
+		"en" "Utgångsteleporter : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_MiniSentryGun"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Mini-Sentry Gun : {1} Placed / {2} Destroyed"
-		"en" "Mini-Vaktgevär : {1} Placerad / {2} Förstörd"
+		"en" "Mini-Vaktgevär : {1} Placerad / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_Sapper"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Sapper : {1} Placed / {2} Destroyed"
-		"en" "Sapper : {1} Placerad / {2} Förstörd"
+		"en" "Sapper : {1} Placerade / {2} Förstörda"
 	}
 
 	"#SMStats_MenuInfo_CP_Captured"
@@ -196,32 +199,32 @@
 	"#SMStats_MenuInfo_CTF_Stolen"
 	{
 		"#format" "{1:i}"
-		"en" "Flag-Intelligence stolen : {1}"
-		"en" "Flagginformation stulna : {1}"
+		"en" "Flags stolen : {1}"
+		"en" "Flaggor stulna : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_PickedUp"
 	{
 		"#format" "{1:i}"
-		"en" "Flag-Intelligence picked up : {1}"
-		"en" "Flagginformation uppplockade : {1}"
+		"en" "Flags picked up : {1}"
+		"en" "Flaggor uppplockade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Captured"
 	{
 		"#format" "{1:i}"
-		"en" "Flag-Intelligence captured : {1}"
-		"sv" "Flagginformation erövrade : {1}"
+		"en" "Flags captured : {1}"
+		"sv" "Flaggor erövrade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Defended"
 	{
 		"#format" "{1:i}"
-		"en" "Flag-Intelligence defended : {1}"
-		"sv" "Flagginformation försvarade : {1}"
+		"en" "Flags defended : {1}"
+		"sv" "Flaggor försvarade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Dropped"
 	{
 		"#format" "{1:i}"
-		"en" "Flag-Intelligence dropped : {1}"
-		"sv" "Flagginformation tappade : {1}"
+		"en" "Flags dropped : {1}"
+		"sv" "Flaggor tappade : {1}"
 	}
 
 	"#SMStats_MenuInfo_TeleportersUsed"
@@ -348,28 +351,28 @@
 	//===================//
 	"#SMStats_FlagEvent_Type0" //Picked up opponents intelligence.
 	{
-		"en" "{green}Picking Up Opponents Intelligence"
-		"sv" "{green}Plockat upp Motståndsinformationen"
+		"en" "{green}Picking Up Opponents Flag"
+		"sv" "{green}Plockat upp Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent_Type1" //Stole the opponents intelligence.
 	{
-		"en" "{green}Stealing Opponents Intelligence"
-		"en" "{green}Stulit Motståndsinformationen"
+		"en" "{green}Stealing Opponents Flag"
+		"en" "{green}Stulit Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent_Type2" //Captured the opponents intelligence.
 	{
-		"en" "{green}Capturing Opponents Intelligence"
-		"sv" "{green}Erövrat Motståndsinformationen"
+		"en" "{green}Capturing Opponents Flag"
+		"sv" "{green}Erövrat Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent_Type3" //Defended the opponnents intelligence.
 	{
-		"en" "{green}Defending Team Intelligence"
-		"sv" "{green}Försvarat Lagsinformationen"
+		"en" "{green}Defending Team Flag"
+		"sv" "{green}Försvarat Lagsflaggan"
 	}
 	"#SMStats_FlagEvent_Type4" //Dropped the opponents intelligence.
 	{
-		"en" "{green}Dropping Opponents Intelligence"
-		"sv" "{green}Tappat Motståndsinformationen"
+		"en" "{green}Dropping Opponents Flag"
+		"sv" "{green}Tappat Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent0" //Earned points on intelligence event.
 	{
