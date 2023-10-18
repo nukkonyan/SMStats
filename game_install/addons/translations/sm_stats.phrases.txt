@@ -81,6 +81,12 @@
 		"en" "View the top 10 players of this server."
 		"sv" "Kolla dem top 10 spelarna av denna server."
 	}
+	"#SMStats_Menu_TopPlayer"
+	{
+		"#format" "{1:i}"
+		"en" "Top {1} player"
+		"sv" "Topp {1} spelare"
+	}
 	"#SMStats_Menu_TopPlayers"
 	{
 		"en" "Current top players"
