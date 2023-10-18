@@ -154,15 +154,15 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				if(server_id >= 0)
 				{
 					// found table, update it.
-					Format(query, sizeof(query), "update `%s` set IPAddress = '%s', PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
-					, sql_table_playerlist, g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "update `%s` set LastConnected = %i, IPAddress = '%s', PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
+					, sql_table_playerlist, GetTime(), g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 1);
 				}
 				else
 				{
 					// table not found, insert it.
-					Format(query, sizeof(query), "insert into `%s` (IPAddress, PlayerName, SteamID, ServerID) values ('%s', '%s', '%s', %i)"
-					, sql_table_playerlist, g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "insert into `%s` (LastConnected, IPAddress, PlayerName, SteamID, ServerID) values (%i, '%s', '%s', '%s', %i)"
+					, sql_table_playerlist, GetTime(), g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 2);
 				}
 			}
@@ -300,29 +300,27 @@ public void OnClientDisconnect_Post(int client)
 
 void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadcast)
 {
-	if(!bLoaded)
+	if(bLoaded)
 	{
-		return;
+		int client, userid = event.GetInt("userid");
+		if(userid > 0)
+		{
+			if(IsValidClient((client = GetClientOfUserId(userid))))
+			{
+				event.BroadcastDisabled = true;
+				
+				char event_reason[256], auth[64];
+				event.GetString("reason", event_reason, sizeof(event_reason));
+				GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+				
+				CallbackQuery("update `" ... sql_table_playerlist ... "` set LastConnected = %i where SteamID = '%s' and ServerID = '%s'"
+				, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected
+				, GetTime(), auth, g_ServerID);
+				
+				Send_Player_Disconnected(g_Player[client], event_reason);
+			}
+		}
 	}
-	
-	int userid = event.GetInt("userid");
-	if(userid < 1)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	event.BroadcastDisabled = true;
-	
-	char event_reason[256];
-	event.GetString("reason", event_reason, sizeof(event_reason));
-	
-	Send_Player_Disconnected(g_Player[client], event_reason);
 }
 
 //

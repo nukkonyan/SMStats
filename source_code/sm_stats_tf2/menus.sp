@@ -263,9 +263,11 @@ enum struct StatsMenuInfo
 			{
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, g_Player[client].topstats[Stats_PlayTime]);
 				
-				char country[64];
+				char country[64], last_connected[128];
 				GeoipCountryName(client, g_Player[client].topstatsip, country, sizeof(country));
+				GetLastConnectedFormat(client, g_Player[client].toplastconnected, last_connected, sizeof(last_connected));
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_Country", client, country);
+				PanelText(panel, "  %T", "#SMStats_MenuInfo_LastConnected", client, last_connected);
 				
 				switch(g_Player[client].topstats[Stats_Points] >= 0)
 				{
@@ -775,92 +777,93 @@ int StatsMenu_TopStats(Menu menu, MenuAction action, int client, int select)
 			/* 0*/... "PlayerName,"
 			/* 1*/... "IPAddress,"
 			/* 2*/... "PlayTime,"
-			/* 3*/... "Points,"
-			/* 4*/... "Frags,"
-			/* 5*/... "Assists,"
-			/* 6*/... "Deaths,"
-			/* 7*/... "Suicides,"
-			/* 8*/... "DamageDone,"
-			/* 9*/... "Achievements,"
+			/* 3*/... "LastConnected,"
+			/* 4*/... "Points,"
+			/* 5*/... "Frags,"
+			/* 6*/... "Assists,"
+			/* 7*/... "Deaths,"
+			/* 8*/... "Suicides,"
+			/* 9*/... "DamageDone,"
+			/*10*/... "Achievements,"
 			
-			/*10*/... "Dominations,"
-			/*11*/... "Revenges,"
-			/*12*/... "Airshots,"
-			/*13*/... "Headshots,"
-			/*14*/... "Noscopes,"
-			/*15*/... "Backstabs,"
-			/*16*/... "TauntFrags,"
-			/*17*/... "GibFrags,"
-			/*18*/... "DeflectFrags,"
-			/*19*/... "TeleFrags,"
-			/*20*/... "Collaterals,"
-			/*21*/... "MidAirFrags,"
-			/*22*/... "CritFrags,"
-			/*23*/... "MiniCritFrags,"
+			/*11*/... "Dominations,"
+			/*12*/... "Revenges,"
+			/*13*/... "Airshots,"
+			/*14*/... "Headshots,"
+			/*15*/... "Noscopes,"
+			/*16*/... "Backstabs,"
+			/*17*/... "TauntFrags,"
+			/*18*/... "GibFrags,"
+			/*19*/... "DeflectFrags,"
+			/*20*/... "TeleFrags,"
+			/*21*/... "Collaterals,"
+			/*22*/... "MidAirFrags,"
+			/*23*/... "CritFrags,"
+			/*24*/... "MiniCritFrags,"
 			
-			/*24*/... "ScoutFrags,"
-			/*25*/... "SoldierFrags,"
-			/*26*/... "PyroFrags,"
-			/*27*/... "DemoFrags,"
-			/*28*/... "HeavyFrags,"
-			/*29*/... "EngieFrags,"
-			/*30*/... "MedicFrags,"
-			/*31*/... "SniperFrags,"
-			/*32*/... "SpyFrags,"
-			/*33*/... "ScoutDeaths,"
-			/*34*/... "SoldierDeaths,"
-			/*35*/... "PyroDeaths,"
-			/*36*/... "DemoDeaths,"
-			/*37*/... "HeavyDeaths,"
-			/*38*/... "EngieDeaths,"
-			/*39*/... "MedicDeaths,"
-			/*40*/... "SniperDeaths,"
-			/*41*/... "SpyDeaths,"
+			/*25*/... "ScoutFrags,"
+			/*26*/... "SoldierFrags,"
+			/*27*/... "PyroFrags,"
+			/*28*/... "DemoFrags,"
+			/*29*/... "HeavyFrags,"
+			/*30*/... "EngieFrags,"
+			/*31*/... "MedicFrags,"
+			/*32*/... "SniperFrags,"
+			/*33*/... "SpyFrags,"
+			/*34*/... "ScoutDeaths,"
+			/*35*/... "SoldierDeaths,"
+			/*36*/... "PyroDeaths,"
+			/*37*/... "DemoDeaths,"
+			/*38*/... "HeavyDeaths,"
+			/*39*/... "EngieDeaths,"
+			/*40*/... "MedicDeaths,"
+			/*41*/... "SniperDeaths,"
+			/*42*/... "SpyDeaths,"
 			
-			/*42*/... "BuildingsPlaced,"
-			/*43*/... "DispensersPlaced,"
-			/*44*/... "SentryGunsPlaced,"
-			/*45*/... "TeleporterEntrancesPlaced,"
-			/*46*/... "TeleporterExitsPlaced,"
-			/*47*/... "MiniSentryGunsPlaced,"
-			/*48*/... "SappersPlaced,"
-			/*49*/... "BuildingsDestroyed,"
-			/*50*/... "DispensersDestroyed,"
-			/*51*/... "SentryGunsDestroyed,"
-			/*52*/... "TeleporterEntrancesDestroyed,"
-			/*53*/... "TeleporterExitsDestroyed,"
-			/*54*/... "MiniSentryGunsDestroyed,"
-			/*55*/... "SappersDestroyed,"
+			/*43*/... "BuildingsPlaced,"
+			/*44*/... "DispensersPlaced,"
+			/*45*/... "SentryGunsPlaced,"
+			/*46*/... "TeleporterEntrancesPlaced,"
+			/*47*/... "TeleporterExitsPlaced,"
+			/*48*/... "MiniSentryGunsPlaced,"
+			/*49*/... "SappersPlaced,"
+			/*50*/... "BuildingsDestroyed,"
+			/*51*/... "DispensersDestroyed,"
+			/*52*/... "SentryGunsDestroyed,"
+			/*53*/... "TeleporterEntrancesDestroyed,"
+			/*54*/... "TeleporterExitsDestroyed,"
+			/*55*/... "MiniSentryGunsDestroyed,"
+			/*56*/... "SappersDestroyed,"
 			
-			/*56*/... "PointsCaptured,"
-			/*57*/... "PointsDefended,"
-			/*58*/... "FlagsPickedUp,"
-			/*59*/... "FlagsCaptured,"
-			/*60*/... "FlagsStolen,"
-			/*61*/... "FlagsDefended,"
-			/*62*/... "FlagsDropped,"
+			/*57*/... "PointsCaptured,"
+			/*58*/... "PointsDefended,"
+			/*59*/... "FlagsPickedUp,"
+			/*60*/... "FlagsCaptured,"
+			/*61*/... "FlagsStolen,"
+			/*62*/... "FlagsDefended,"
+			/*63*/... "FlagsDropped,"
 			
-			/*63*/... "TeleportersUsed,"
-			/*64*/... "PlayersTeleported,"
-			/*65*/... "CoatedMilk,"
-			/*66*/... "CoatedPiss,"
-			/*67*/... "Coated,"
-			/*68*/... "Extinguished,"
+			/*64*/... "TeleportersUsed,"
+			/*65*/... "PlayersTeleported,"
+			/*66*/... "CoatedMilk,"
+			/*67*/... "CoatedPiss,"
+			/*68*/... "Coated,"
+			/*69*/... "Extinguished,"
 			/*XX*///... "Ignited,"
-			/*69*/... "Ubercharged,"
-			/*70*/... "SandvichesStolen,"
+			/*70*/... "Ubercharged,"
+			/*71*/... "SandvichesStolen,"
 			
-			/*71*/... "MonoculusStunned,"
-			/*72*/... "MerasmusStunned,"
-			/*73*/... "MonoculusFragged,"
-			/*74*/... "MerasmusFragged,"
-			/*75*/... "HHHFragged,"
-			/*76*/... "SkeletonKingsFragged,"
+			/*72*/... "MonoculusStunned,"
+			/*73*/... "MerasmusStunned,"
+			/*74*/... "MonoculusFragged,"
+			/*75*/... "MerasmusFragged,"
+			/*76*/... "HHHFragged,"
+			/*77*/... "SkeletonKingsFragged,"
 			
 			/*XX*///... "RobotsFragged,"
-			/*77*/... "TanksDestroyed,"
-			/*78*/... "SentryBustersFragged,"
-			/*79*/... "BombsResetted"
+			/*78*/... "TanksDestroyed,"
+			/*79*/... "SentryBustersFragged,"
+			/*80*/... "BombsResetted"
 			
 			... " from `%s` where SteamID = '%s' and ServerID = %i"
 			, sql_table_playerlist, auth, g_ServerID);
@@ -884,92 +887,93 @@ int StatsMenu_TopStats(Menu menu, MenuAction action, int client, int select)
 					results.FetchString(0, g_Player[client].topstatsname, sizeof(g_Player[].topstatsname));
 					results.FetchString(1, g_Player[client].topstatsip, sizeof(g_Player[].topstatsip));
 					g_Player[client].topstats[Stats_PlayTime] = results.FetchInt(2);
-					g_Player[client].topstats[Stats_Points] = results.FetchInt(3);
-					g_Player[client].topstats[Stats_Frags] = results.FetchInt(4);
-					g_Player[client].topstats[Stats_Assists] = results.FetchInt(5);
-					g_Player[client].topstats[Stats_Deaths] = results.FetchInt(6);
-					g_Player[client].topstats[Stats_Suicides] = results.FetchInt(7);
-					g_Player[client].topstats[Stats_DamageDone] = results.FetchInt(8);
-					g_Player[client].topstats[Stats_Achievements] = results.FetchInt(9);
+					g_Player[client].toplastconnected = results.FetchInt(3);
+					g_Player[client].topstats[Stats_Points] = results.FetchInt(4);
+					g_Player[client].topstats[Stats_Frags] = results.FetchInt(5);
+					g_Player[client].topstats[Stats_Assists] = results.FetchInt(6);
+					g_Player[client].topstats[Stats_Deaths] = results.FetchInt(7);
+					g_Player[client].topstats[Stats_Suicides] = results.FetchInt(8);
+					g_Player[client].topstats[Stats_DamageDone] = results.FetchInt(9);
+					g_Player[client].topstats[Stats_Achievements] = results.FetchInt(10);
 					
-					g_Player[client].topstats[Stats_Dominations] = results.FetchInt(10);
-					g_Player[client].topstats[Stats_Revenges] = results.FetchInt(11);
-					g_Player[client].topstats[Stats_Airshots] = results.FetchInt(12);
-					g_Player[client].topstats[Stats_Headshots] = results.FetchInt(13);
-					g_Player[client].topstats[Stats_Noscopes] = results.FetchInt(14);
-					g_Player[client].topstats[Stats_Backstabs] = results.FetchInt(15);
-					g_Player[client].topstats[Stats_TauntFrags] = results.FetchInt(16);
-					g_Player[client].topstats[Stats_GibFrags] = results.FetchInt(17);
-					g_Player[client].topstats[Stats_Deflects] = results.FetchInt(18);
-					g_Player[client].topstats[Stats_TeleFrags] = results.FetchInt(19);
-					g_Player[client].topstats[Stats_Collaterals] = results.FetchInt(20);
-					g_Player[client].topstats[Stats_MidAirFrags] = results.FetchInt(21);
-					g_Player[client].topstats[Stats_CritFrags] = results.FetchInt(22);
-					g_Player[client].topstats[Stats_MiniCritFrags] = results.FetchInt(23);
+					g_Player[client].topstats[Stats_Dominations] = results.FetchInt(11);
+					g_Player[client].topstats[Stats_Revenges] = results.FetchInt(12);
+					g_Player[client].topstats[Stats_Airshots] = results.FetchInt(13);
+					g_Player[client].topstats[Stats_Headshots] = results.FetchInt(14);
+					g_Player[client].topstats[Stats_Noscopes] = results.FetchInt(15);
+					g_Player[client].topstats[Stats_Backstabs] = results.FetchInt(16);
+					g_Player[client].topstats[Stats_TauntFrags] = results.FetchInt(17);
+					g_Player[client].topstats[Stats_GibFrags] = results.FetchInt(18);
+					g_Player[client].topstats[Stats_Deflects] = results.FetchInt(19);
+					g_Player[client].topstats[Stats_TeleFrags] = results.FetchInt(20);
+					g_Player[client].topstats[Stats_Collaterals] = results.FetchInt(21);
+					g_Player[client].topstats[Stats_MidAirFrags] = results.FetchInt(22);
+					g_Player[client].topstats[Stats_CritFrags] = results.FetchInt(23);
+					g_Player[client].topstats[Stats_MiniCritFrags] = results.FetchInt(24);
 					
-					g_Player[client].topstats[Stats_ScoutFrags] = results.FetchInt(24);
-					g_Player[client].topstats[Stats_SoldierFrags] = results.FetchInt(25);
-					g_Player[client].topstats[Stats_PyroFrags] = results.FetchInt(26);
-					g_Player[client].topstats[Stats_DemoFrags] = results.FetchInt(27);
-					g_Player[client].topstats[Stats_HeavyFrags] = results.FetchInt(28);
-					g_Player[client].topstats[Stats_EngieFrags] = results.FetchInt(29);
-					g_Player[client].topstats[Stats_MedicFrags] = results.FetchInt(30);
-					g_Player[client].topstats[Stats_SniperFrags] = results.FetchInt(31);
-					g_Player[client].topstats[Stats_SpyFrags] = results.FetchInt(32);
-					g_Player[client].topstats[Stats_ScoutDeaths] = results.FetchInt(33);
-					g_Player[client].topstats[Stats_SoldierDeaths] = results.FetchInt(34);
-					g_Player[client].topstats[Stats_PyroDeaths] = results.FetchInt(35);
-					g_Player[client].topstats[Stats_DemoDeaths] = results.FetchInt(36);
-					g_Player[client].topstats[Stats_HeavyDeaths] = results.FetchInt(37);
-					g_Player[client].topstats[Stats_EngieDeaths] = results.FetchInt(38);
-					g_Player[client].topstats[Stats_MedicDeaths] = results.FetchInt(39);
-					g_Player[client].topstats[Stats_SniperDeaths] = results.FetchInt(40);
-					g_Player[client].topstats[Stats_SpyDeaths] = results.FetchInt(41);
+					g_Player[client].topstats[Stats_ScoutFrags] = results.FetchInt(25);
+					g_Player[client].topstats[Stats_SoldierFrags] = results.FetchInt(26);
+					g_Player[client].topstats[Stats_PyroFrags] = results.FetchInt(27);
+					g_Player[client].topstats[Stats_DemoFrags] = results.FetchInt(28);
+					g_Player[client].topstats[Stats_HeavyFrags] = results.FetchInt(29);
+					g_Player[client].topstats[Stats_EngieFrags] = results.FetchInt(30);
+					g_Player[client].topstats[Stats_MedicFrags] = results.FetchInt(31);
+					g_Player[client].topstats[Stats_SniperFrags] = results.FetchInt(32);
+					g_Player[client].topstats[Stats_SpyFrags] = results.FetchInt(33);
+					g_Player[client].topstats[Stats_ScoutDeaths] = results.FetchInt(34);
+					g_Player[client].topstats[Stats_SoldierDeaths] = results.FetchInt(35);
+					g_Player[client].topstats[Stats_PyroDeaths] = results.FetchInt(36);
+					g_Player[client].topstats[Stats_DemoDeaths] = results.FetchInt(37);
+					g_Player[client].topstats[Stats_HeavyDeaths] = results.FetchInt(38);
+					g_Player[client].topstats[Stats_EngieDeaths] = results.FetchInt(39);
+					g_Player[client].topstats[Stats_MedicDeaths] = results.FetchInt(40);
+					g_Player[client].topstats[Stats_SniperDeaths] = results.FetchInt(41);
+					g_Player[client].topstats[Stats_SpyDeaths] = results.FetchInt(42);
 					
-					g_Player[client].topstats[Stats_BuildingsPlaced] = results.FetchInt(42);
-					g_Player[client].topstats[Stats_DispensersPlaced] = results.FetchInt(43);
-					g_Player[client].topstats[Stats_SentryGunsPlaced] = results.FetchInt(44);
-					g_Player[client].topstats[Stats_TeleporterEntrancesPlaced] = results.FetchInt(45);
-					g_Player[client].topstats[Stats_TeleporterExitsPlaced] = results.FetchInt(46);
-					g_Player[client].topstats[Stats_MiniSentryGunsPlaced] = results.FetchInt(47);
-					g_Player[client].topstats[Stats_SappersPlaced] = results.FetchInt(48);
-					g_Player[client].topstats[Stats_BuildingsDestroyed] = results.FetchInt(49);
-					g_Player[client].topstats[Stats_DispensersDestroyed] = results.FetchInt(50);
-					g_Player[client].topstats[Stats_SentryGunsDestroyed] = results.FetchInt(51);
-					g_Player[client].topstats[Stats_TeleporterEntrancesDestroyed] = results.FetchInt(52);
-					g_Player[client].topstats[Stats_TeleporterExitsDestroyed] = results.FetchInt(53);
-					g_Player[client].topstats[Stats_MiniSentryGunsDestroyed] = results.FetchInt(54);
-					g_Player[client].topstats[Stats_SappersDestroyed] = results.FetchInt(55);
+					g_Player[client].topstats[Stats_BuildingsPlaced] = results.FetchInt(43);
+					g_Player[client].topstats[Stats_DispensersPlaced] = results.FetchInt(44);
+					g_Player[client].topstats[Stats_SentryGunsPlaced] = results.FetchInt(45);
+					g_Player[client].topstats[Stats_TeleporterEntrancesPlaced] = results.FetchInt(46);
+					g_Player[client].topstats[Stats_TeleporterExitsPlaced] = results.FetchInt(47);
+					g_Player[client].topstats[Stats_MiniSentryGunsPlaced] = results.FetchInt(48);
+					g_Player[client].topstats[Stats_SappersPlaced] = results.FetchInt(49);
+					g_Player[client].topstats[Stats_BuildingsDestroyed] = results.FetchInt(50);
+					g_Player[client].topstats[Stats_DispensersDestroyed] = results.FetchInt(51);
+					g_Player[client].topstats[Stats_SentryGunsDestroyed] = results.FetchInt(52);
+					g_Player[client].topstats[Stats_TeleporterEntrancesDestroyed] = results.FetchInt(53);
+					g_Player[client].topstats[Stats_TeleporterExitsDestroyed] = results.FetchInt(54);
+					g_Player[client].topstats[Stats_MiniSentryGunsDestroyed] = results.FetchInt(55);
+					g_Player[client].topstats[Stats_SappersDestroyed] = results.FetchInt(56);
 					
-					g_Player[client].topstats[Stats_PointsCaptured] = results.FetchInt(56);
-					g_Player[client].topstats[Stats_PointsDefended] = results.FetchInt(57);
-					g_Player[client].topstats[Stats_FlagsPickedUp] = results.FetchInt(58);
-					g_Player[client].topstats[Stats_FlagsCaptured] = results.FetchInt(59);
-					g_Player[client].topstats[Stats_FlagsStolen] = results.FetchInt(60);
-					g_Player[client].topstats[Stats_FlagsDefended] = results.FetchInt(61);
-					g_Player[client].topstats[Stats_FlagsDropped] = results.FetchInt(62);
+					g_Player[client].topstats[Stats_PointsCaptured] = results.FetchInt(57);
+					g_Player[client].topstats[Stats_PointsDefended] = results.FetchInt(58);
+					g_Player[client].topstats[Stats_FlagsPickedUp] = results.FetchInt(59);
+					g_Player[client].topstats[Stats_FlagsCaptured] = results.FetchInt(60);
+					g_Player[client].topstats[Stats_FlagsStolen] = results.FetchInt(61);
+					g_Player[client].topstats[Stats_FlagsDefended] = results.FetchInt(62);
+					g_Player[client].topstats[Stats_FlagsDropped] = results.FetchInt(63);
 					
-					g_Player[client].topstats[Stats_TeleportersUsed] = results.FetchInt(63);
-					g_Player[client].topstats[Stats_PlayersTeleported] = results.FetchInt(64);
-					g_Player[client].topstats[Stats_CoatedMilk] = results.FetchInt(65);
-					g_Player[client].topstats[Stats_CoatedPiss] = results.FetchInt(66);
-					g_Player[client].topstats[Stats_Coated] = results.FetchInt(67);
-					g_Player[client].topstats[Stats_Extinguished] = results.FetchInt(68);
+					g_Player[client].topstats[Stats_TeleportersUsed] = results.FetchInt(64);
+					g_Player[client].topstats[Stats_PlayersTeleported] = results.FetchInt(65);
+					g_Player[client].topstats[Stats_CoatedMilk] = results.FetchInt(66);
+					g_Player[client].topstats[Stats_CoatedPiss] = results.FetchInt(67);
+					g_Player[client].topstats[Stats_Coated] = results.FetchInt(68);
+					g_Player[client].topstats[Stats_Extinguished] = results.FetchInt(69);
 					//g_Player[client].topstats[Stats_Ignited] = results.FetchInt(XX);
-					g_Player[client].topstats[Stats_Ubercharged] = results.FetchInt(69);
-					g_Player[client].topstats[Stats_SandvichesStolen] = results.FetchInt(70);
+					g_Player[client].topstats[Stats_Ubercharged] = results.FetchInt(70);
+					g_Player[client].topstats[Stats_SandvichesStolen] = results.FetchInt(71);
 					
-					g_Player[client].topstats[Stats_MonoculusStunned] = results.FetchInt(71);
-					g_Player[client].topstats[Stats_MerasmusStunned] = results.FetchInt(72);
-					g_Player[client].topstats[Stats_MonoculusFragged] = results.FetchInt(73);
-					g_Player[client].topstats[Stats_MerasmusFragged] = results.FetchInt(74);
-					g_Player[client].topstats[Stats_HHHFragged] = results.FetchInt(75);
-					g_Player[client].topstats[Stats_SkeletonKingsFragged] = results.FetchInt(76);
+					g_Player[client].topstats[Stats_MonoculusStunned] = results.FetchInt(72);
+					g_Player[client].topstats[Stats_MerasmusStunned] = results.FetchInt(73);
+					g_Player[client].topstats[Stats_MonoculusFragged] = results.FetchInt(74);
+					g_Player[client].topstats[Stats_MerasmusFragged] = results.FetchInt(75);
+					g_Player[client].topstats[Stats_HHHFragged] = results.FetchInt(76);
+					g_Player[client].topstats[Stats_SkeletonKingsFragged] = results.FetchInt(77);
 					
 					//g_Player[client].topstats[Stats_RobotsFragged] = results.FetchInt(XX);
-					g_Player[client].topstats[Stats_TanksDestroyed] = results.FetchInt(77);
-					g_Player[client].topstats[Stats_SentryBustersFragged] = results.FetchInt(78);
-					g_Player[client].topstats[Stats_BombsResetted] = results.FetchInt(79);
+					g_Player[client].topstats[Stats_TanksDestroyed] = results.FetchInt(78);
+					g_Player[client].topstats[Stats_SentryBustersFragged] = results.FetchInt(79);
+					g_Player[client].topstats[Stats_BombsResetted] = results.FetchInt(80);
 					
 					//
 					

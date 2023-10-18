@@ -18,6 +18,55 @@
 	}
 
 	//================================//
+	// Time format. // The ' #|# ' is the plural-splitter.
+	//================================//
+	"#SMStats_TimeFormat_Minute"
+	{
+		"en" "{MINUTE} minute#|#{MINUTE} minutes"
+		"jp" "{1}分"
+	}
+	"#SMStats_TimeFormat_Hour"
+	{
+		"en" "{HOUR} hour#|#{12HOUR} hours"
+		"jp" "{HOUR}時間"
+	}
+	"#SMStats_TimeFormat_Day"
+	{
+		"en" "{1} day#|#{1} days"
+		"jp" "{1}日"
+	}
+	"#SMStats_TimeFormat_Month"
+	{
+		"en" "{1} month#|#{1} months"
+		"jp" "{1}月#|#{1}ヶ月"
+	}
+	"#SMStats_TimeFormat_Year"
+	{
+		"en" "{1} year#|#{1} years"
+		"jp" "{1}年#|#{1}ヶ年"
+	}
+	"#SMStats_TimeFormat_AM_PM"
+	{
+		"en" "AM#|#PM"
+		"jp" "午前#|#午後"
+		"sv" "Förmiddag#|#Eftermiddag"
+	}
+	"#SMStats_TimeFormat_LastConnected"
+	{
+		// Year - {YEAR}
+		// Month - {MONTH}
+		// Day - {DAY}
+		// 12 hour (AM/PM) - {12HOUR}
+		// 24 hour - {24HOUR}
+		// minutes - {MINUTE}
+		// seconds - {SECOND}
+		// 2023-10-18 PM 2:56:43
+		"en" "{YEAR}-{MONTH}-{DAY} {AM_PM} {12HOUR}:{MINUTE}:{SECOND}"
+		"jp" "{YEAR}年の{AM_PM}{12HOUR}時{MINUTE}分{SECOND}秒に{MONTH}月{DAY}日"
+		"sv" "{YEAR}/{DAY}/{MONTH} {24HOUR}:{MINUTE}:{SECOND}"
+	}
+
+	//================================//
 	// Connected.
 	//================================//
 	"#SMStats_Player_Connected"
@@ -125,12 +174,19 @@
 		"sv" "Stäng"
 	}
 
-	"#SMStats_MenuInfo_PlayTime"
+	"#SMStats_MenuInfo_PlayTime" // SOON DEPRECATED .
 	{
 		"#format" "{1:i}"
 		"en" "Playtime : {1} minutes"
 		"jp" "プレイーのタイム : {1}分間"
 		"sv" "Speltid : {1} minuter"
+	}
+	"#SMStats_MenuInfo_PlayTimeNew"
+	{
+		"#format" "{1:s}"
+		"en" "Playtime : {1}"
+		"jp" "時間やってました : {1}"
+		"sv" "Speltid : {1}"
 	}
 	"#SMStats_MenuInfo_Country"
 	{
@@ -138,6 +194,12 @@
 		"en" "Country : {1}"
 		"jp" "国 : {1}"
 		"sv" "Land : {1}"
+	}
+	"#SMStats_MenuInfo_LastConnected"
+	{
+		"#format" "{1:s}"
+		"en" "Last connected : {1}"
+		"sv" "Senast ansluten : {1}"
 	}
 	"#SMStats_MenuInfo_PointsEarned"
 	{

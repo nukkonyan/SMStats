@@ -47,6 +47,7 @@
 #define query_error_uniqueid_UpdateMapTimeInserting 81
 #define query_error_uniqueid_UpdateMapTimeUpdating 82
 #define query_error_uniqueid_OnPlayerNameUpdate 83
+#define query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected 84
 
 #include <sm_stats>
 #include <sm_stats_core>

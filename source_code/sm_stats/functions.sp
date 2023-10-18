@@ -1216,3 +1216,99 @@ stock int IsValidDeveloperType(const char[] auth)
 	
 	return false;
 }
+
+//
+
+stock void GetPlayTimeFormat(int client, int minutes, char[] buffer, int maxlen)
+{
+	
+}
+
+stock void GetLastConnectedFormat(int client, int last_connected, char[] buffer, int maxlen)
+{
+	char time_format[128];
+	Format(time_format, sizeof(time_format), "%T", "#SMStats_TimeFormat_LastConnected", client);
+	
+	int year, month, day, hour, minute, second;
+	UnixToTime(last_connected, year, month, day, hour, minute, second, UT_TIMEZONE_SERVER);
+	
+	/*
+	PrintToServer("LastConnect converted:"
+	... "\nUNIX : %i"
+	... "\nYear : %i"
+	... "\nDays : %i"
+	... "\nHour : %i"
+	... "\nMins : %i"
+	... "\nSecs : %i"
+	, last_connected, year, month, day, hour, minute, second);
+	*/
+	
+	if(StrContains(time_format, "{YEAR}") != -1)
+	{
+		char dummy[11];
+		Format(dummy, sizeof(dummy), "%02d", year);
+		ReplaceString(time_format, sizeof(time_format), "{YEAR}", dummy);
+	}
+	if(StrContains(time_format, "{MONTH}") != -1)
+	{
+		char dummy[11];
+		Format(dummy, sizeof(dummy), "%02d", month);
+		ReplaceString(time_format, sizeof(time_format), "{MONTH}", dummy);
+	}
+	if(StrContains(time_format, "{DAY}") != -1)
+	{
+		char dummy[11];
+		Format(dummy, sizeof(dummy), "%02d", day);
+		ReplaceString(time_format, sizeof(time_format), "{DAY}", dummy);
+	}
+	if(StrContains(time_format, "{AM_PM}") != -1)
+	{
+		char am_pm[64];
+		Format(am_pm, sizeof(am_pm), "%T", "#SMStats_TimeFormat_AM_PM", client);
+		
+		if(StrContains(am_pm, "#|#") != -1)
+		{
+			bool PM = (hour >= 12);
+			char dummy[2][11];
+			ExplodeString(am_pm, "#|#", dummy, sizeof(dummy), 11);
+			
+			if(!PM)
+			{
+				ReplaceString(dummy[0], sizeof(dummy[]), "#|#", "");
+			}
+			
+			ReplaceString(time_format, sizeof(time_format), "{AM_PM}", dummy[view_as<int>(PM)]);
+		}
+	}
+	if(StrContains(time_format, "{12HOUR}") != -1)
+	{
+		if(hour > 12)
+		{
+			hour = hour-12;
+		}
+		
+		char dummy[11];
+		Format(dummy, sizeof(dummy), "%02d", hour);
+		ReplaceString(time_format, sizeof(time_format), "{12HOUR}", dummy);
+	}
+	if(StrContains(time_format, "{24HOUR}") != -1)
+	{
+		char dummy[11];
+		Format(dummy, sizeof(dummy), "%02d", hour);
+		ReplaceString(time_format, sizeof(time_format), "{24HOUR}", dummy);
+	}
+	if(StrContains(time_format, "{MINUTE}") != -1)
+	{
+		char dummy[11];
+		Format(dummy, sizeof(dummy), "%02d", minute);
+		ReplaceString(time_format, sizeof(time_format), "{MINUTE}", dummy);
+	}
+	if(StrContains(time_format, "{SECOND}") != -1)
+	{
+		char dummy[11];
+		Format(dummy, sizeof(dummy), "%02d", second);
+		ReplaceString(time_format, sizeof(time_format), "{SECOND}", dummy);
+	}
+	
+	strcopy(buffer, maxlen, time_format);
+}
