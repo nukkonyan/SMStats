@@ -56,11 +56,13 @@
 		// Year - {YEAR}
 		// Month - {MONTH}
 		// Day - {DAY}
-		// 12 hour (AM/PM) - {12HOUR}
+		// AM/PM - {AM_PM}
+		// 12 hour - {12HOUR}
 		// 24 hour - {24HOUR}
 		// minutes - {MINUTE}
 		// seconds - {SECOND}
 		// 2023-10-18 PM 2:56:43
+		// {YEAR}-{MONTH}-{DAY} {AM_PM} {12HOUR}-{MINUTE}-{SECOND}
 		"dk" "{YEAR}/{DAY}/{MONTH}"
 		"en" "{YEAR}-{MONTH}-{DAY}"
 		"fi" "{YEAR}/{DAY}/{MONTH}"
