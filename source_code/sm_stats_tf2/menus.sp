@@ -261,14 +261,14 @@ enum struct StatsMenuInfo
 		{
 			case 1:
 			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, g_Player[client].topstats[Stats_PlayTime]);
-				
 				char country[64], last_connected[128];
 				GeoipCountryName(client, g_Player[client].topstatsip, country, sizeof(country));
 				GetLastConnectedFormat(client, g_Player[client].toplastconnected, last_connected, sizeof(last_connected));
+				
+				//PanelItem(panel, "  %T", "#SMStats_MenuInfo_Profile", client); // need a working Steam32 (STEAM_0:0:123456 => 7655168912398123456)
+				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, g_Player[client].topstats[Stats_PlayTime]);
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_Country", client, country);
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_LastConnected", client, last_connected);
-				
 				switch(g_Player[client].topstats[Stats_Points] >= 0)
 				{
 					case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, g_Player[client].topstats[Stats_Points]);
@@ -980,6 +980,7 @@ int StatsMenu_TopStats(Menu menu, MenuAction action, int client, int select)
 					g_Player[client].active_page_menu = menu.Selection;
 					g_Player[client].active_page_topstats = 1;
 					g_Player[client].toppos = select+1;
+					strcopy(g_Player[client].topstatsauth, sizeof(g_Player[].topstatsauth), auth);
 					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
 				}
 			}
@@ -1009,9 +1010,10 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			/*
 			 * Top player page 1
 			 * 1 : Menu title.
-			 * 2 : Previous page.
-			 * 3 : Next page.
-			 * 4 : Exit.
+			 * 2 : Visit profile.
+			 * 3 : Previous page.
+			 * 4 : Next page.
+			 * 5 : Exit.
 			 */
 			 
 			switch(select)
@@ -1025,16 +1027,27 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				case 2:
 				{
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_topstats = 1;
+					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
+					
+					//char profile[128];
+					//Format(profile, sizeof(profile), "https://steamcommunity.com/profiles/%i");
+					//ShowMOTDPanel(client, core_chattag2, profile, MOTDPANEL_TYPE_URL);
+					//PrintToServer(profile);
+				}
+				case 3:
+				{
+					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.TopStats(client, g_Player[client].active_page_menu);
 				}
-				case 3:
+				case 4:
 				{
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 2;
 					StatsMenu.TopStatsInfo(client, 2, g_Player[client].toppos);
 				}
-				case 4:
+				case 5:
 				{
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();

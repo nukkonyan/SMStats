@@ -1,6 +1,7 @@
 #include <sdkhooks>
 #include <geoip_country>
 #include <multicolors>
+#include <unixtime_sourcemod>
 
 bool DEBUG = false;
 
@@ -340,12 +341,16 @@ enum struct SMStats_PlayerInfo
 	int active_page_menu;
 	int active_page_session;
 	int active_page_total;
-	int active_page_top10;
+	int active_page_topstats;
 	
 	int session[SMStats_StatsSize];
 	int totalstats[SMStats_StatsSize];
-	int top10[SMStats_StatsSize];
-	char top10name[64];
+	int topstats[SMStats_StatsSize];
+	char topstatsname[64];
+	char topstatsauth[64];
+	char topstatsip[16];
+	int toppos;
+	int toplastconnected;
 	SMStats_FragMsgInfo fragmsg;
 	
 	void Reset()
@@ -360,16 +365,33 @@ enum struct SMStats_PlayerInfo
 		this.active_page_menu = -1;
 		this.active_page_session = -1;
 		this.active_page_total = -1;
-		this.active_page_top10 = -1;
-		this.top10name = "";
+		this.active_page_topstats = -1;
+		this.topstatsname = "";
+		this.topstatsauth = "";
+		this.topstatsip = "";
+		this.toppos = -1;
+		this.toplastconnected = -1;
 		
 		for(int type = 0; type < SMStats_StatsSize; type++)
 		{
 			this.session[type] = -1;
 			this.totalstats[type] = -1;
-			this.top10[type] = -1;
+			this.topstats[type] = -1;
 		}
 		this.fragmsg.Reset();
+	}
+	
+	void ResetTopStats()
+	{
+		this.topstatsname = "";
+		this.topstatsauth = "";
+		this.topstatsip = "";
+		this.toppos = -1;
+		this.toplastconnected = -1;
+		for(int type = 0; type < SMStats_StatsSize; type++)
+		{
+			this.topstats[type] = -1;
+		}
 	}
 }
 
@@ -389,6 +411,11 @@ stock char str_cmdMenu[][] =
 #define queryId_frag_weapon 1
 #define queryId_frag_victim_death 2
 #define queryId_frag_playerlist 3
+#define queryId_frag_playerlist_MapUpdate 4
+#define queryId_object_placed 5
+#define queryId_object_placed_MapUpdate 6
+#define queryId_object_destroyed 7
+#define queryId_object_destroyed_MapUpdate 8
 
 stock char g_strTXNqueryId[][] = 
 {
@@ -396,6 +423,11 @@ stock char g_strTXNqueryId[][] =
 	/*1*/"frag event: weapon",
 	/*2*/"frag event: victim death",
 	/*3*/"frag event: playerlist",
+	/*4*/"frag event: playerlist map update",
+	/*5*/"object event: placed",
+	/*6*/"object event: placed map update",
+	/*7*/"object event: destroyed",
+	/*8*/"object event: destroyed map update",
 };
 
 //
