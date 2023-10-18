@@ -109,13 +109,13 @@
 	"#SMStats_Menu_PreviousPage"
 	{
 		"en" "Previous page"
-		"jp" "前にページ"
+		"jp" "前のページ"
 		"sv" "Förra sida"
 	}
 	"#SMStats_Menu_NextPage"
 	{
 		"en" "Next page"
-		"jp" "次にページ"
+		"jp" "次のページ"
 		"sv" "Nästa sida"
 	}
 	"#SMStats_Menu_ExitPage"
