@@ -8,13 +8,11 @@
 	"#SMStats_Error_NotInitialized"
 	{
 		"en" "{yellow}Error: {grey}SM Stats: Core {yellow}has yet initialized."
-
 		"sv" "{yellow}Fel: {grey}SM Stats: Core {yellow}har inte laddats ännu."
 	}
 	"#SMStats_Error_SQLNotInitialized"
 	{
 		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
-
 		"jp" "{yellow}エラー: {grey}SQL 接続出来ません。"
 		"sv" "{yellow}Fel {grey}SQL Anslutning {yellow}är för tillfället otillgänglig."
 	}
@@ -26,16 +24,14 @@
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} (Pos #{2}, {3} points) has joined the game from {4}."
-
-		"jp" "{1}（立{2}場、{3}ポイント）が{orange}{4}{default}からを参加しました。"
+		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からを参加しました。"
 		"sv" "{1} (Pos #{2}, {3} poäng) har gått med ifrån {4}."
 	}
 	"#SMStats_Player_Disconnected"
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}, {3} points) has left the game from {4}. {grey}({5})"
-		
-		"jp" "{1}（立{2}場、{3}ポイント）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
+		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
 		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet ifrån {4}. {grey}({5})"
 	}
 
@@ -46,7 +42,6 @@
 	{
 		"#format" "{1:N}"
 		"en" "Playername: {1}"
-
 		"jp" "プレイヤー名： {1}"
 		"sv" "Spelarnamn: {1}"
 	}
@@ -54,75 +49,70 @@
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Positioned #{1} out of {2} players."
-
 		"sv" "Positionerad #{1} utav {2} spelare."
 	}
 	"#SMStats_Menu_Session"
 	{
 		"en" "Session."
-
 		"jp" "セッション"
 	}
 	"#SMStats_Menu_SessionInfo"
 	{
 		"en" "View your current session statistics."
-
 		"sv" "Kolla dina nuvarande session statistiker."
 	}
 	"#SMStats_Menu_ActiveStats"
 	{
 		"en" "Active stats."
-
 		"sv" "Nuvarande stats."
 	}
 	"#SMStats_Menu_ActiveStatsInfo"
 	{
 		"en" "View your active statistics."
-
 		"sv" "Kolla dina nuvarande statistiker."
 	}
 	"#SMStats_Menu_Top10"
 	{
 		"en" "Top 10 players"
+		"sv" "Topp 10 spelare"
 	}
 	"#SMStats_Menu_Top10Info"
 	{
 		"en" "View the top 10 players of this server."
+		"sv" "Kolla dem top 10 spelarna av denna server."
 	}
 	"#SMStats_Menu_TopPlayers"
 	{
-		"en" "Top concurrent players"
+		"en" "Current top players"
+		"sv" "Nuvarande topp spelare"
 	}
 	"#SMStats_Menu_TopPlayersInfo"
 	{
-		"en" "View the top concurrent players of this server."
+		"en" "View the current top players of this server."
+		"sv" "Kolla dem nuvarande topp spelarna på denna server."
 	}
 	"#SMStats_Menu_Page"
 	{
 		"#format" "{1:i}"
 		"en" "Page {1}"
-
 		"jp" "ページ {1}"
 		"sv" "Sida {1}"
 	}
 	"#SMStats_Menu_PreviousPage"
 	{
 		"en" "Previous page"
-
 		"jp" "前にページ"
 		"sv" "Förra sida"
 	}
 	"#SMStats_Menu_NextPage"
 	{
 		"en" "Next page"
-
 		"jp" "次にページ"
 		"sv" "Nästa sida"
 	}
 	"#SMStats_Menu_ExitPage"
 	{
 		"en" "Close"
-
 		"jp" "閉める"
 		"sv" "Stäng"
 	}
@@ -131,7 +121,6 @@
 	{
 		"#format" "{1:i}"
 		"en" "Playtime : {1} minutes"
-
 		"jp" "プレイーのタイム : {1}分間"
 		"sv" "Speltid : {1} minuter"
 	}
@@ -139,35 +128,30 @@
 	{
 		"#format" "{1:i}"
 		"en" "Points earned : {1}"
-
 		"sv" "Poäng belönad : {1}"
 	}
 	"#SMStats_MenuInfo_PointsLost"
 	{
 		"#format" "{1:i}"
 		"en" "Points lost : {1}"
-
 		"sv" "Poäng förlorat : {1}"
 	}
 	"#SMStats_MenuInfo_Frags"
 	{
 		"#format" "{1:i}"
 		"en" "Frags : {1}"
-
 		"jp" "フラッグ： {1}"
 	}
 	"#SMStats_MenuInfo_Assists"
 	{
 		"#format" "{1:i}"
 		"en" "Assists : {1}"
-
 		"sv" "Assistantal : {1}"
 	}
 	"#SMStats_MenuInfo_Deaths"
 	{
 		"#format" "{1:i}"
 		"en" "Deaths : {1}"
-
 		"jp" "死亡率： {1}"
 		"sv" "Dödsantal : {1}"
 	}
@@ -175,36 +159,37 @@
 	{
 		"#format" "{1:i}"
 		"en" "Suicides : {1}"
-
 		"sv" "Självmordsantal : {1}"
 	}
 	"#SMStats_MenuInfo_DamageDone"
 	{
 		"#format" "{1:i}"
 		"en" "Damage done : {1}"
-
 		"sv" "Skada givet : {1}"
 	}
 	"#SMStats_MenuInfo_AchievementsEarned"
 	{
 		"#format" "{1:i}"
 		"en" "Achievements Earned : {1}"
-
-		"sv" "Framgångar uppnått : {1}"
+		"sv" "Prestationer uppnått : {1}"
 	}
 	"#SMStats_MenuInfo_Achievement"
 	{
 		"#format" "{1:s}"
 		"en" "Achievement:"
+		"sv" "Prestation:"
 	}
 	"#SMStats_MenuInfo_Description"
 	{
 		"en" "Description:"
+		"sv" "Beskrivning:"
 	}
 	"#SMStats_MenuInfo_TopPlayer"
 	{
 		"#format" "{1:i},{2:s},{3:i}"
 		"en" "Top {1} - {2} [{3} points]"
+		"jp" "トップ {1} - {2} [{3}ポイント]"
+		"sv" "Top {1} - {2} [{3] poäng]"
 	}
 	
 	//================================//
@@ -213,14 +198,12 @@
 	"#SMStats_UpdateFound"
 	{
 		"en" "New {lightgreen}Update {default}was found, restarting.."
-
 		"sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
 	}
 	"#SMStats_UpdateFinished"
 	{
 		"#format" "{1:s}"
 		"en" "New {lightgreen}Update {orange}Version {1} {default}has been loaded."
-
 		"sv" "Ny {lightgreen}Uppdatering {orange}Version {1} {default}har laddats."
 	}
 	
@@ -230,33 +213,28 @@
 	"#SMStats_RoundStart"
 	{
 		"en" "Round Start: Tracking enabled."
-
 		"sv" "Rundstart: Spårning aktiverad."
 	}
 	"#SMStats_RoundStart_Warmup"
 	{
 		"en" "Round Start: Warmup/Waiting for players detected, ignoring statistical tracking."
-
 		"sv" "Rundstart: Uppvärmning/Väntar på spelare upptäckt, ignorerar statistiskt spårning."
 	}
 	"#SMStats_RoundEnd"
 	{
 		"en" "Round End: Tracking disabled"
-
 		"sv" "Rundslut: Spårning inaktiverad."
 	}
 	"#SMStats_NotEnoughPlayers"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Not enough players ({1} out of required {2}), disabling.."
-
 		"sv" "Inte tillräckligt med spelare ({1} utav krävande {2}), inaktiverar.."
 	}
 	"#SMStats_EnoughPlayers"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Enough Players ({1} out of required {2}), enabling.."
-
 		"sv" "Tillräckligt med spelare ({1} utav krävande {2}), aktiverar.."
 	}
 	
@@ -266,7 +244,6 @@
 	"#SMStats_MultipleTargets"
 	{
 		"en" "Multiple targets"
-
 		"dk" "Flere mål"
 		"sv" "Flera mål"
 		"jp" "複数のターゲット"
@@ -275,7 +252,6 @@
 	"#SMStats_MultipleObjects"
 	{
 		"en" "Multiple objects"
-
 		"dk" "Flere objekt"
 		"sv" "Flera objekt"
 		"jp" "複数のオブジェクト"
@@ -301,7 +277,6 @@
 	{
 		"#format" "{1:i}"
 		"en" " ({1})"
-
 		"jp" " （{1}）"
 	}
 	"#SMStats_FeatureUnavailable"
@@ -317,85 +292,71 @@
 	"#SMStats_FragEvent_Type0" //Mid Air.
 	{
 		"en" "whilst {green}Mid Air"
-
 		"sv" "medans {green}I Luften"
 	}
 	"#SMStats_FragEvent_Type1" //Noscope
 	{
 		"en" "{green}Through Smoke"
-
 		"sv" "{green}Genom Röken"
 	}
 	"#SMStats_FragEvent_Type2" //Noscope headshot
 	{
 		"en" "with a {green}Noscope Headshot"
-
 		"sv" "med en {green}Noscope Huvudskott"
 	}
 	"#SMStats_FragEvent_Type3" //Headshot.
 	{
 		"en" "with a {green}Headshot"
-
 		"sv" "med ett {green}Huvudskott"
 	}
 	"#SMStats_FragEvent_Type4" //Noscope.
 	{
 		"en" "with a {green}Noscope"
-
 		"sv" "med en {green}icke-zoomingsskott"
 	}
 	"#SMStats_FragEvent_Type5" //Backstab.
 	{
 		"en" "with a {green}Backstab"
-
 		"sv" "med {green}Rygghugg"
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
 		"en" "{green}Airshot"
-
 		"sv" "{green}Luftskott"
 	}
 	"#SMStats_FragEvent_Type7" //Deflect frag.
 	{
 		"en" "{green}Deflect Frag"
-
 		"sv" "{green}Deflekteringsfrag"
 	}
 	"#SMStats_FragEvent_Type8" //Teleport frag.
 	{
 		"en" "with a {green}Telefrag"
-
 		"sv" "med {green}Telefrag"
 	}
 	"#SMStats_FragEvent_Type9" //Taunt frag.
 	{
 		"en" "with a {green}Taunt Frag"
-
 		"sv" "med {green}Hånsfrag"
 	}
 	"#SMStats_FragEvent_Type10" //Collateral.
 	{
 		"en" "with a {green}Collateral"
-
 		"sv" "med {green}Kollateral"
 	}
 	"#SMStats_FragEvent_Type11" //Grenade frag.
 	{
 		"en" "with a {green}Grenade Frag"
-
 		"sv" "med {green}Granat Frag"
 	}
 	"#SMStats_FragEvent_Type12" //Bomb/C4 frag.
 	{
 		"en" "with a {green}Bomb Frag"
-
 		"sv" "med {green}Bomb Frag"
 	}
 	"#SMStats_FragEvent_Type13" //Blinded frag.
 	{
 		"en" "while {green}Blinded"
-
 		"sv" "medans {green}Förblindad"
 	}
 	
@@ -404,14 +365,12 @@
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} points in assisting {4} for fragging {5}."
-
 		"sv" "{1} ({2}) Tjänade {3} poäng genom att assistera {4} för att fragga {5}."
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
 		"#format" "{1:s},{2:i},{3:i}"
 		"en" "{1} ({2}) Lost {3} points for dying."
-
 		"sv" "{1} ({2}) Förlorade {3} poäng på grund av att dö."
 	}
 	
@@ -419,14 +378,12 @@
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} points for fragging {4} {5}."
-
 		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad {5}."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} points for fragging {4}."
-
 		"sv" "{1} ({2}) Belönades {3} poäng för att {4} blev fraggad."
 	}
 
