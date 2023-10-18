@@ -14,17 +14,20 @@ Some things may not work as intended at the very moment, but will get working so
 
 ### To-do
    - tf2
-        - ``Implement CTF intelligence spam-detect block (Block ctf flag spam to farm points).``
+        - Implement CTF intelligence spam-detect block (Block ctf flag spam to farm points).
    - stats menu
-        - ``Implement sm_stats <top index> command feature, to manually check statistics of that particular top player. Example sm_stats 30 displays Top 30 current player.``
+        - Implement sm_stats <top index | steamid > to manually check statistics of a particular player.
+             -  Example sm_stats 30 displays Top 30 current player.
+             -  Example sm_stats "STEAM_0:0:1234" displays the player through steamid.
    - overall
-        - ``Implement 'info module' (Gather information of the players current points, etc. so after plugin was updated mid-game, stats will be restored to the correct stats).``
-        - ``Implement custom achievements functionality.``
-        - ``Implement leaderboard ban functionality (Prevented from gaining points).``
-        - ``Implement functional K-A-D ratio (Kill-Assist-Death ratio).``
-        - ``Implement functional K/D Ratio (Kill-Death ratio).``
-        - ``Support more source games.``
-        - ``Create website.``
+        - Potentially 'info module' (Store information of the current players, so after plugin was updated mid-game, stats will be restored).
+        - Implement custom achievements functionality.
+        - Implement leaderboard ban functionality (Prevented from gaining points).
+        - Implement functional K-A-D ratio (Kill-Assist-Death ratio).
+        - Implement functional K/D Ratio (Kill-Death ratio).
+        - Implement functional time played (Convert x minutes to 1 day 1 hour, etc.)
+        - Support more source games.
+        - Create website.
 
 [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
 
