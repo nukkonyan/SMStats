@@ -16,7 +16,9 @@ Some things may not work as intended at the very moment, but will get working so
    - tf2
         - ``Implement CTF intelligence spam-detect block (Block ctf flag spam to farm points).``
    - stats menu
-        - ``Implement sm_stats <top index> command feature, to manually check statistics of that particular top player. Example sm_stats 30 displays Top 30 current player.``
+        - ``Implement sm_stats <top index | steamid > to manually check statistics of a particular player.``
+             -  Example sm_stats 30 displays Top 30 current player.
+             -  Example sm_stats "STEAM_0:0:1234" displays the player through steamid.
    - overall
         - ``Implement 'info module' (Gather information of the players current points, etc. so after plugin was updated mid-game, stats will be restored to the correct stats).``
         - ``Implement custom achievements functionality.``
