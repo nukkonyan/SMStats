@@ -74,6 +74,7 @@
 	"#SMStats_Menu_Top10"
 	{
 		"en" "Top 10 players"
+		"jp" "トップ10プレイヤー"
 		"sv" "Topp 10 spelare"
 	}
 	"#SMStats_Menu_Top10Info"
@@ -85,7 +86,7 @@
 	{
 		"#format" "{1:i}"
 		"en" "Top {1} player"
-		"jp" "立{1}場プレイヤー"
+		"jp" "トップ{1}プレイヤー"
 		"sv" "Topp {1} spelare"
 	}
 	"#SMStats_Menu_TopPlayers"
