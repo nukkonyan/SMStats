@@ -7,21 +7,25 @@
 	{
 		"#format" "{1:i}"
 		"en" "Dominations : {1}"
+		"sv" "Domineringar : {1}"
 	}
 	"#SMStats_MenuInfo_Revenges"
 	{
 		"#format" "{1:i}"
 		"en" "Revenges : {1}"
+		"sv" "Hämndningar : {1}"
 	}
 	"#SMStats_MenuInfo_Airshots"
 	{
 		"#format" "{1:i}"
 		"en" "Airshots : {1}"
+		"sv" "Luftskott : {1}"
 	}
 	"#SMStats_MenuInfo_Headshots"
 	{
 		"#format" "{1:i}"
 		"en" "Headshots : {1}"
+		"sv" "Huvudskott : {1}"
 	}
 	"#SMStats_MenuInfo_Noscopes"
 	{
@@ -32,11 +36,13 @@
 	{
 		"#format" "{1:i}"
 		"en" "Backstabs : {1}"
+		"sv" "Rygghuggningar : {1}"
 	}
 	"#SMStats_MenuInfo_TauntFrags"
 	{
 		"#format" "{1:i}"
 		"en" "Taunt frags : {1}"
+		"sv" "Hånfrags : {1}"
 	}
 	"#SMStats_MenuInfo_GibFrags"
 	{
@@ -47,6 +53,7 @@
 	{
 		"#format" "{1:i}"
 		"en" "Deflect frags : {1}"
+		"sv" "Deflekteringsfrags : {1}"
 	}
 	"#SMStats_MenuInfo_TeleFrags"
 	{
@@ -62,11 +69,13 @@
 	{
 		"#format" "{1:i}"
 		"en" "Mid Air frags : {1}"
+		"sv" "Mitt-i-luftenfrags : {1}"
 	}
 	"#SMStats_MenuInfo_CritFrags"
 	{
 		"#format" "{1:i}"
 		"en" "Critical frags : {1}"
+		"sv" "Kritiska frags : {1}"
 	}
 	"#SMStats_MenuInfo_MiniCritFrags"
 	{
@@ -77,207 +86,241 @@
 	"#SMStats_MenuInfo_Scout"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Scout : {1} Frags / {2} Deaths"
+		"en" "Scout : {1} Fragged / {2} Deaths"
+		"sv" "Löpare : {1} Fraggad / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Soldier"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Soldier : {1} Frags / {2} Deaths"
+		"en" "Soldier : {1} Fragged / {2} Deaths"
+		"sv" "Soldat : {1} Fraggad / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Pyro"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Pyro : {1} Frags / {2} Deaths"
+		"en" "Pyro : {1} Fragged / {2} Deaths"
+		"en" "Pyro : {1} Fraggad / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Demoman"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Demoman : {1} Frags / {2} Deaths"
+		"en" "Demoman : {1} Fragged / {2} Deaths"
+		"en" "Demoman : {1} Fraggad / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Heavy"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Heavy : {1} Frags / {2} Deaths"
+		"en" "Heavy : {1} Fragged / {2} Deaths"
+		"en" "Heavy : {1} Fraggad / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Engineer"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Engineer : {1} Frags / {2} Deaths"
+		"en" "Engineer : {1} Fragged / {2} Deaths"
+		"en" "Ingenjör : {1} Fraggad / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Medic"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Medic : {1} Frags / {2} Deaths"
+		"en" "Medic : {1} Fragged / {2} Deaths"
+		"en" "Sjukvårdare : {1} Fraggad / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Sniper"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Sniper : {1} Frags / {2} Deaths"
+		"en" "Sniper : {1} Fragged / {2} Deaths"
+		"en" "Krypskyttaren : {1} Fraggad / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Spy"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Spy : {1} Frags / {2} Deaths"
+		"en" "Spy : {1} Fragged / {2} Deaths"
+		"en" "Spion : {1} Fraggad / {2} Dödad"
 	}
 
 	"#SMStats_MenuInfo_Buildings"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Buildings : {1} Placed / {2} Destroyed"
+		"en" "Byggnader : {1} Placerad / {2} Förstörd"
 	}
 	"#SMStats_MenuInfo_Dispenser"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Dispenser : {1} Placed / {2} Destroyed"
+		"en" "Utmatare : {1} Placerad / {2} Förstörd"
 	}
 	"#SMStats_MenuInfo_SentryGun"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Sentry Gun : {1} Placed / {2} Destroyed"
+		"en" "Vaktgevär : {1} Placerad / {2} Förstörd"
 	}
 	"#SMStats_MenuInfo_TeleporterEntrance"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Teleporter Entrance : {1} Placed / {2} Destroyed"
+		"en" "Ingångsteleporter : {1} Placerad / {2} Förstörd"
 	}
 	"#SMStats_MenuInfo_TeleporterExit"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Teleporter Exit : {1} Placed / {2} Destroyed"
+		"en" "Utgångsteleporter : {1} Placerad / {2} Förstörd"
 	}
 	"#SMStats_MenuInfo_MiniSentryGun"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Mini-Sentry Gun : {1} Placed / {2} Destroyed"
+		"en" "Mini-Vaktgevär : {1} Placerad / {2} Förstörd"
 	}
 	"#SMStats_MenuInfo_Sapper"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Sapper : {1} Placed / {2} Destroyed"
+		"en" "Sapper : {1} Placerad / {2} Förstörd"
 	}
 
 	"#SMStats_MenuInfo_CP_Captured"
 	{
 		"#format" "{1:i}"
 		"en" "Capture Points captured : {1}"
+		"sv" "Kontrollpunkter Erövrade : {1}"
 	}
 	"#SMStats_MenuInfo_CP_Defended"
 	{
 		"#format" "{1:i}"
 		"en" "Capture Points defended : {1}"
+		"sv" "Kontrollpunkter försvarade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Stolen"
 	{
 		"#format" "{1:i}"
 		"en" "Flag-Intelligence stolen : {1}"
+		"en" "Flagginformation stulna : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_PickedUp"
 	{
 		"#format" "{1:i}"
 		"en" "Flag-Intelligence picked up : {1}"
+		"en" "Flagginformation uppplockade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Captured"
 	{
 		"#format" "{1:i}"
 		"en" "Flag-Intelligence captured : {1}"
+		"sv" "Flagginformation erövrade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Defended"
 	{
 		"#format" "{1:i}"
 		"en" "Flag-Intelligence defended : {1}"
+		"sv" "Flagginformation försvarade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Dropped"
 	{
 		"#format" "{1:i}"
 		"en" "Flag-Intelligence dropped : {1}"
+		"sv" "Flagginformation tappade : {1}"
 	}
 
 	"#SMStats_MenuInfo_TeleportersUsed"
 	{
 		"#format" "{1:i}"
 		"en" "Teleporters used : {1}"
+		"sv" "Teleportrar använda : {1}"
 	}
 	"#SMStats_MenuInfo_PlayersTeleported"
 	{
 		"#format" "{1:i}"
 		"en" "Players teleported : {1}"
-	}
-	"#SMStats_MenuInfo_PlayersTeleported"
-	{
-		"#format" "{1:i}"
-		"en" "Players teleported : {1}"
+		"sv" "Spelare teleporterade : {1}"
 	}
 	"#SMStats_MenuInfo_CoatedMilk"
 	{
 		"#format" "{1:i}"
 		"en" "Players coated with milk : {1}"
+		"sv" "Spelare täckt med mjölk : {1}"
 	}
 	"#SMStats_MenuInfo_CoatedPiss"
 	{
 		"#format" "{1:i}"
 		"en" "Players coated with piss : {1}"
+		"sv" "Spelare täckt med urin : {1}"
 	}
 	"#SMStats_MenuInfo_Coated"
 	{
 		"#format" "{1:i}"
 		"en" "Players coated : {1}"
+		"sv" "Spelare täckta : {1}"
 	}
 	"#SMStats_MenuInfo_Extinguished"
 	{
 		"#format" "{1:i}"
 		"en" "Players extinguished : {1}"
+		"sv" "Spelare släckta : {1}"
 	}
 	"#SMStats_MenuInfo_Ignited"
 	{
 		"#format" "{1:i}"
 		"en" "Players ignited : {1}"
+		"sv" "Spelare påtänd : {1}"
 	}
 	"#SMStats_MenuInfo_Ubercharged"
 	{
 		"#format" "{1:i}"
 		"en" "Übercharged : {1}"
+		"sv" "Überladdning : {1}"
 	}
 	"#SMStats_MenuInfo_SandvichesStolen"
 	{
 		"#format" "{1:i}"
 		"en" "Sandviches stolen : {1}"
+		"sv" "Smörgåsar stulna : {1}"
 	}
 
 	"#SMStats_MenuInfo_HWN_Monoculus"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Monoculus : {1} Fragged / {2} Stunned"
+		"sv" "Monoculus : {1} Fraggad / {2} Stunnad"
 	}
 	"#SMStats_MenuInfo_HWN_Merasmus"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Merasmus : {1} Fragged / {2} Stunned"
+		"sv" "Merasmus : {1} Fraggad / {2} Stunnad"
 	}
 	"#SMStats_MenuInfo_HWN_HHH"
 	{
 		"#format" "{1:i}"
-		"en" "Horseless Headless Horsemann fragged : {1}"
+		"en" "Horseless Headless Horsemann : {1} Fragged"
+		"sv" "Horseless Headless Horsemann : {1} Fraggad"
 	}
 	"#SMStats_MenuInfo_HWN_SkeletonKing"
 	{
 		"#format" "{1:i}"
-		"en" "Skeleton Kings fragged : {1}"
+		"en" "Skeleton King : {1} Fragged"
+		"sv" "Skelettkung : {1} Fragged"
 	}
 
 	"#SMStats_MenuInfo_MvM_TanksDestroyed"
 	{
 		"#format" "{1:i}"
 		"en" "Tanks destroyed : {1}"
+		"sv" "Tankar förstörda : {1}"
 	}
 	"#SMStats_MenuInfo_MvM_SentryBustersFragged"
 	{
 		"#format" "{1:i}"
-		"en" "Sentry Busters fragged : {1}"
+		"en" "Sentry Busters destroyed : {1}"
+		"sv" "Vaktgevärsförgörare förstörda : {1}"
 	}
 	"#SMStats_MenuInfo_MvM_BombsResetted"
 	{
 		"#format" "{1:i}"
 		"en" "Bombs resetted : {1}"
+		"sv" "Bombser resettade : {1}"
 	}
 
 	//===================//
@@ -286,15 +329,18 @@
 	"#SMStats_CaptureEvent_Type0" //Captured the point.
 	{
 		"en" "{green}Capturing Point"
-	}	
+		"sv" "{green}Erövrat Kontrollspunkten"
+	}
 	"#SMStats_CaptureEvent_Type1" //Defended the point.
 	{
 		"en" "{green}Defending Point"
+		"sv" "{green}Försvarat Kontrollspunkten"
 	}
 	"#SMStats_CaptureEvent_Default" 
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} points for {4}"
+		"sv" "{1} ({2}) Belönades {3} poäng för att ha"
 	}
 
 	//===================//
@@ -302,33 +348,40 @@
 	//===================//
 	"#SMStats_FlagEvent_Type0" //Picked up opponents intelligence.
 	{
-		"en" "{green}Picking Up Intelligence"
+		"en" "{green}Picking Up Opponents Intelligence"
+		"sv" "{green}Plockat upp Motståndsinformationen"
 	}
 	"#SMStats_FlagEvent_Type1" //Stole the opponents intelligence.
 	{
-		"en" "{green}Stealing Intelligence"
+		"en" "{green}Stealing Opponents Intelligence"
+		"en" "{green}Stulit Motståndsinformationen"
 	}
 	"#SMStats_FlagEvent_Type2" //Captured the opponents intelligence.
 	{
 		"en" "{green}Capturing Opponents Intelligence"
+		"sv" "{green}Erövrat Motståndsinformationen"
 	}
 	"#SMStats_FlagEvent_Type3" //Defended the opponnents intelligence.
 	{
 		"en" "{green}Defending Team Intelligence"
+		"sv" "{green}Försvarat Lagsinformationen"
 	}
 	"#SMStats_FlagEvent_Type4" //Dropped the opponents intelligence.
 	{
 		"en" "{green}Dropping Opponents Intelligence"
+		"sv" "{green}Tappat Motståndsinformationen"
 	}
 	"#SMStats_FlagEvent0" //Earned points on intelligence event.
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} points for {4}"
+		"sv" "{1} ({2}} Belönades {3} poäng för att ha {4}"
 	}
 	"#SMStats_FlagEvent1" //Lost points on intelligence event.
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Lost {3} points for {4}"
+		"sv" "{1} ({2}) Förlorade {3} poäng för att ha {4}"
 	}
 
 	//===================//
@@ -337,51 +390,53 @@
 	"#SMStats_Object_Type0" //Sentrygun.
 	{
 		"en" "{orange}Sentry Gun"
-
 		"jp" "{orange}セントリーガン"
+		"sv" "{orange}Vaktgeväret"
 	}
 	"#SMStats_Object_Type1" //Dispenser.
 	{
 		"en" "{orange}Dispenser"
-
 		"jp" "{orange}ディスペンサー"
+		"sv" "{orange}Utmataren"
 	}
 	"#SMStats_Object_Type2" //Teleporter Entrance.
 	{
 		"en" "{orange}Teleporter Entrance"
-
 		"jp" "{orange}テレポーターの入り口"
+		"sv" "{orange}Ingångsteleportern"
 	}
 	"#SMStats_Object_Type3" //Teleporter Exit.
 	{
 		"en" "{orange}Teleporter Exit"
-
 		"jp" "{orange}テレポーターの出口"
+		"sv" "{orange}Utgångsteleportern"
 	}
 	"#SMStats_Object_Type4" //Mini-Sentrygun.
 	{
 		"en" "{orange}Mini-Sentry Gun"
-
 		"jp" "{orange}ミニセントリーガン"
+		"sv" "{orange}Mini-Vaktgeväret"
 	}
 	"#SMStats_Object_Type5" //Sapper.
 	{
 		"en" "{orange}Sapper"
-
 		"jp" "{orange}サッパー"
 	}
 	"#SMStats_ObjectEvent_Type0" //Object was placed.
 	{
 		"en" "{green}Placing"
+		"sv" "{green}Placerat"
 	}	
 	"#SMStats_ObjectEvent_Type1" //Object was destroyed.
 	{
 		"en" "{green}Destroying"
+		"sv" "{green}Förstört"
 	}
 	"#SMStats_ObjectEvent_Default" //Object event.
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} points for {4} {5}"
+		"sv" "{1} ({2}) Belönades {3} poäng för att {4} {5}"
 	}
 
 	//===================//
@@ -389,51 +444,60 @@
 	//===================//
 	"#SMStats_PassBall_GrabNeutralBall"
 	{
-		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Grabbing {default}neutral ball"
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for {green}Grabbing {default}neutral ball."
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Greppat {default}den neutrala bollen."
 	}
 	"#SMStats_PassBall_ScoreBall"
 	{
-		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Scoring {default}ball"
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for {green}Scoring {default}the ball."
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Gjort mål {default}med bollen."
 	}
 	"#SMStats_PassBall_DropBall"
 	{
-		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Lost {3} points for {green}Dropping {default}the ball"
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Lost {3} points for {green}Dropping {default}the ball"
+		"sv" "{1} ({2}) Förlorade {3} för att {green}Tappat {default}bollen."
 	}
 
 	"#SMStats_PassBall_CatchBall_Scenario0"
 	{
-		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Catching the ball"
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for {green}Catching {default}the ball."
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Tagit Emot {default}bollen."
 	}
 	"#SMStats_PassBall_CatchBall_Scenario1"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Catching {default}the ball from {4}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {green}Catching {default}the ball from {4}."
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Tagit Emot {default}bollen ifrån {4}."
 	}
 
 	"#SMStats_PassBall_StealBall_Scenario0"
 	{
-		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Stealing the ball"
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for {green}Stealing the ball."
+		"sv" "{1} ({2}) Belönades {3} poäng för att ha {green}Stulit {default}bollen."
 	}
 	"#SMStats_PassBall_StealBall_Scenario1"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Stealing {default}the ball from {4}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {green}Stealing {default}the ball from {4}."
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Stulit {default}bollen ifrån {4}."
 	}
 
 	"#SMStats_PassBall_BlockBall_Scenario0"
 	{
-		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Blocking the ball"
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for {green}Blocking the ball"
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Blockerat {default}bollen."
 	}
 	"#SMStats_PassBall_BlockBall_Scenario1"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {green}Blocking {default}the ball from {4}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {green}Blocking {default}the ball from {4}"
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Blockerat {default}bollen ifrån {4}"
 	}
 
 	//===================//
@@ -441,29 +505,33 @@
 	//===================//
 	"#SMStats_HalloweenBoss_Type1" //Horseless Headless Horsemann.
 	{
-		"en"		"{purple}Horseless Headless Horsemann"
+		"en" "{purple}Horseless Headless Horsemann"
+		"sv" "{purple}Hästlöshuvudslösahästmannen"
 	}
 	"#SMStats_HalloweenBoss_Type2" //Monoculus.
 	{
-		"en"		"{purple}Monoculus"
+		"en" "{purple}Monoculus"
 	}
 	"#SMStats_HalloweenBoss_Type3" //Merasmus.
 	{
-		"en"		"{lightgreen}Merasmus"
+		"en" "{lightgreen}Merasmus"
 	}
 	"#SMStats_HalloweenBoss_Type4" //Skeleton King.
 	{
-		"en"		"{lightgreen}Skeleton King"
+		"en" "{lightgreen}Skeleton King"
+		"sv" "{lightgreen}Skelettkung"
 	}
 	"#SMStats_FragEvent_HalloweenBoss" //Killed boss.
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for eliminating {4}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for neutralizing {4}"
+		"sv" "{1} ({2}) Belönades {3} poäng för att neutralizerat {4}."
 	}
 	"#SMStats_HalloweenBoss_StunEvent" //Stunned boss.
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for stunning {4}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {green}Stunning {4}"
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Stunnat {4}"
 	}
 
 	//===================//
@@ -472,22 +540,26 @@
 	"#SMStats_MvM_TeamDestroyedTank"
 	{
 		"#format" "{1:s},{2:i},{3:i}"
-		"en" "{1} ({2}) Earned {2} points for destroying the {cyan}Tank{default}"
+		"en" "{1} ({2}) Earned {2} points for destroying the {cyan}Tank{default}."
+		"sv" "{1} ({2}) Belönade {2} poäng för att förstört {cyan}Tanken{default}."
 	}
 	"#SMStats_MvM_Player_FragRobot"
 	{
 		"#format" "{1:s},{2:i},{3:i}"
-		"en" "{1} ({2}) Earned {3} points for fragging a {cyan}Robot{default}"
+		"en" "{1} ({2}) Earned {3} points for fragging a {cyan}Robot{default}."
+		"sv" "{1} ({2}) Belönades {3} poäng för att fraggat {cyan}Roboten{default}."
 	}
 	"#SMStats_MvM_Player_FragSentryBuster"
 	{
 		"#format" "{1:s},{2:i},{3:i}"
-		"en" "{1} ({2}) Earned {3} points for fragging {cyan}Sentry Buster{default}"
+		"en" "{1} ({2}) Earned {3} points for fäö {cyan}Sentry Buster{default}."
+		"sv" "{1} ({2}) Belönades {3} poäng för att fraggat {cyan}Vaktgevärsförgöraren{default}."
 	}
 	"#SMStats_MvM_Player_ResetBomb"
 	{
 		"#format" "{1:s},{2:i},{3:i}"
-		"en" "{1} ({2}) Earned {3} points for resetting the bomb"
+		"en" "{1} ({2}) Earned {3} points for {green}Resetting {default}the bomb."
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Resettat {default}bomben."
 	}
 
 	//===================//
@@ -495,49 +567,58 @@
 	//===================//
 	"#SMStats_Player_Ubercharged"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for übercharging {4}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for übercharging {4}"
+		"sv" "{1} ({2}) Belönades {3} poäng för att überladdat {4}"
 	}
 	"#SMStats_Player_UsedTeleporter"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for {4} using your teleporter"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {4} using your teleporter."
+		"sv" "{1} ({2}) Belönades {3} poäng för att {4} använder din teleporter."
 	}
 	"#SMStats_Player_StealSandvich_Scenario0"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for stealing sandvich belonging to {4}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for stealing sandvich belonging to {4}."
+		"sv" "{1} ({2}) Belönades {3} poäng för att stulit smörgåsen som tillhörde {4}."
 	}
 	"#SMStats_Player_StealSandvich_Scenario1"
 	{
-		"#format"	"{1:s},{2:i},{3:i}"
-		"en"		"{1} ({2}) Earned {3} points for stealing sandvich"
+		"#format" "{1:s},{2:i},{3:i}"
+		"en" "{1} ({2}) Earned {3} points for stealing a sandvich."
+		"sv" "{1} ({2}) Belönades {3} poäng för att stulit en smörgås."
 	}
 	"#SMStats_Player_StunScenario0"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for stunning {4} with a {green}Moon Shot{default}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {green}Stunning {4} with a {green}Moon Shot{default}."
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Stunnat {4} med {green}Månskott{default}."
 	}
 	"#SMStats_Player_StunScenario1"
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for stunning {4}"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {green}Stunning {4}"
+		"sv" "{1} ({2}) Belönades {3} poäng för att {green}Stunnat {4}"
 	}
 	
 	"#SMStats_Player_CoatedPiss" //Pissed opponent.
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for coating {4} with piss"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for coating {4} with piss."
+		"sv" "{1} ({2}) Belönades {3} poäng för att täcka {4} med urin."
 	}
 	"#SMStats_Player_CoatedMilk" //Milked opponent.
 	{
-		"#format"	"{1:s},{2:i},{3:i},{4:s}"
-		"en"		"{1} ({2}) Earned {3} points for coating {4} with milk"
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for coating {4} with milk."
+		"sv" "{1} ({2}) Belönades {3} poäng för att ha täckt {4} med mjölk."
 	}
 	
 	"#SMStats_Player_Extinguished" // extinguished
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} ({2}) Earned {3} points for extinguishing {4}"
+		"en" "{1} ({2}) Earned {3} points for extinguishing {4}."
+		"sv" "{1} ({2}) Belönades {3} poäng för att ha släckt {4}."
 	}
 }
