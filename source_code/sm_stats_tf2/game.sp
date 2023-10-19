@@ -2847,6 +2847,22 @@ Action Timer_OnGameFrame(Handle timer)
 				
 				int points = 0;
 				
+				// store temporary info for frag message
+				
+				bool bPrev_headshot;
+				bool bPrev_backstab;
+				bool bPrev_domination;
+				bool bPrev_revenge;
+				bool bPrev_noscope;
+				bool bPrev_tauntfrag;
+				bool bPrev_deflectfrag;
+				bool bPrev_gibfrag;
+				bool bPrev_airshot;
+				bool bPrev_collateral;
+				bool bPrev_midair;
+				
+				//
+				
 				for(int i = 0; i < frags; i++)
 				{
 					g_Game[client].aFragEvent.GetArray(i, event, sizeof(event));
@@ -2871,26 +2887,164 @@ Action Timer_OnGameFrame(Handle timer)
 						delete event.healers;
 					}
 					
-					if(event.suicide_assisted)
+					switch(event.suicide_assisted)
 					{
-						points += g_SuicideAssisted.IntValue;
+						case false: points += array_GetWeapon(event.itemdef).IntValue;
+						case true: points += g_SuicideAssisted.IntValue;
 					}
-					else
+					switch(event.headshot)
 					{
-						points += array_GetWeapon(event.itemdef).IntValue;
+						case false: bPrev_headshot = false;
+						case true:
+						{
+							iHeadshots++;
+							switch(bPrev_headshot)
+							{
+								case false: g_Player[client].fragmsg.Headshot = false;
+								case true: g_Player[client].fragmsg.Headshot = true;
+							}
+							bPrev_headshot = true;
+						}
 					}
-					
-					if(event.headshot) iHeadshots++;
-					if(event.backstab) iBackstabs++;
-					if(event.dominated) iDominated++;
-					if(event.revenge) iRevenges++;
-					if(event.noscope) iNoscopes++;
-					if(event.tauntfrag) iTauntFrags++;
-					if(event.deflectfrag) iDeflectFrags++;
-					if(event.gibfrag) iGibFrags++;
-					if(event.airshot) iAirshots++;
-					if(event.collateral) iCollaterals++;
-					if(event.midair) iMidAirFrags++;
+					switch(event.backstab)
+					{
+						case false: bPrev_backstab = false;
+						case true:
+						{
+							iBackstabs++;
+							switch(bPrev_backstab)
+							{
+								case false: g_Player[client].fragmsg.Backstab = false;
+								case true: g_Player[client].fragmsg.Backstab = true;
+							}
+							bPrev_backstab = true;
+						}
+					}
+					switch(event.dominated)
+					{
+						case false: bPrev_domination = false;
+						case true:
+						{
+							iDominated++;
+							switch(bPrev_domination)
+							{
+								case false: g_Player[client].fragmsg.Domination = false;
+								case true: g_Player[client].fragmsg.Domination = true;
+							}
+							bPrev_domination = true;
+						}
+					}
+					switch(event.revenge)
+					{
+						case false: bPrev_revenge = false;
+						case true:
+						{
+							iRevenges++;
+							switch(bPrev_revenge)
+							{
+								case false: g_Player[client].fragmsg.Revenge = false;
+								case true: g_Player[client].fragmsg.Revenge = true;
+							}
+							bPrev_revenge = true;
+						}
+					}
+					switch(event.noscope)
+					{
+						case false: bPrev_noscope = false;
+						case true:
+						{
+							iNoscopes++;
+							switch(bPrev_noscope)
+							{
+								case false: g_Player[client].fragmsg.Noscope = false;
+								case true: g_Player[client].fragmsg.Noscope = true;
+							}
+							bPrev_noscope = true;
+						}
+					}
+					switch(event.tauntfrag)
+					{
+						case false: bPrev_tauntfrag = false;
+						case true:
+						{
+							iTauntFrags++;
+							switch(bPrev_tauntfrag)
+							{
+								case false: g_Player[client].fragmsg.TauntFrag = false;
+								case true: g_Player[client].fragmsg.TauntFrag = true;
+							}
+							bPrev_tauntfrag = true;
+						}
+					}
+					switch(event.deflectfrag)
+					{
+						case false: bPrev_deflectfrag = false;
+						case true:
+						{
+							iDeflectFrags++;
+							switch(bPrev_deflectfrag)
+							{
+								case false: g_Player[client].fragmsg.Deflected = false;
+								case true: g_Player[client].fragmsg.Deflected = true;
+							}
+							bPrev_deflectfrag = true;
+						}
+					}
+					switch(event.gibfrag)
+					{
+						case false: bPrev_gibfrag = false;
+						case true:
+						{
+							iGibFrags++;
+							switch(bPrev_gibfrag)
+							{
+								case false: g_Player[client].fragmsg.GibFrag = false;
+								case true: g_Player[client].fragmsg.GibFrag = true;
+							}
+							bPrev_gibfrag = true;
+						}
+					}
+					switch(event.airshot)
+					{
+						case false: bPrev_airshot = false;
+						case true:
+						{
+							iAirshots++;
+							switch(bPrev_airshot)
+							{
+								case false: g_Player[client].fragmsg.Airshot = false;
+								case true: g_Player[client].fragmsg.Airshot = true;
+							}
+							bPrev_airshot = true;
+						}
+					}
+					switch(event.collateral)
+					{
+						case false: bPrev_collateral = false;
+						case true:
+						{
+							iCollaterals++;
+							switch(bPrev_collateral)
+							{
+								case false: g_Player[client].fragmsg.Collateral = false;
+								case true: g_Player[client].fragmsg.Collateral = true;
+							}
+						}
+					}
+					switch(event.midair)
+					{
+						case false: bPrev_midair = false;
+						case true:
+						{
+							iMidAirFrags++;
+							switch(bPrev_midair)
+							{
+								case false: g_Player[client].fragmsg.MidAir = false;
+								case true: g_Player[client].fragmsg.MidAir = true;
+							}
+							bPrev_midair = true;
+						}
+					}
 					switch(event.crit_type)
 					{
 						case 1: iMiniCrits++;
@@ -2914,14 +3068,14 @@ Action Timer_OnGameFrame(Handle timer)
 					{
 						case false:
 						{
-							if(event.telefrag)
+							switch(event.telefrag)
 							{
-								iTeleFrags++;
-							}
-							else
-							{
-								iWepFrags++;
-								list_wepfrag[i] = true;
+								case false:
+								{
+									iWepFrags++;
+									list_wepfrag[i] = true;
+								}
+								case true: iTeleFrags++;
 							}
 						}
 						
@@ -2947,6 +3101,8 @@ Action Timer_OnGameFrame(Handle timer)
 							}
 						}
 					}
+					
+					//
 				}
 				
 				g_Game[client].aFragEvent.Clear();
@@ -3038,7 +3194,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iHeadshots > 0)
 				{
 					g_Player[client].session[Stats_Headshots] += iHeadshots;
-					g_Player[client].fragmsg.Headshot = true;
 					len += Format(query[len], sizeof(query)-len, ", Headshots = Headshots+%i", iHeadshots);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Headshots = Headshots+%i", iHeadshots);
 				}
@@ -3046,7 +3201,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iBackstabs > 0)
 				{
 					g_Player[client].session[Stats_Backstabs] += iBackstabs;
-					g_Player[client].fragmsg.Backstab = true;
 					len += Format(query[len], sizeof(query)-len, ", Backstabs = Backstabs+%i", iBackstabs);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Backstabs = Backstabs+%i", iBackstabs);
 				}
@@ -3054,7 +3208,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iDominated > 0)
 				{
 					g_Player[client].session[Stats_Dominations] += iDominated;
-					g_Player[client].fragmsg.Domination = true;
 					len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", iDominated);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Dominations = Dominations+%i", iDominated);
 				}
@@ -3062,7 +3215,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iRevenges > 0)
 				{
 					g_Player[client].session[Stats_Revenges] += iRevenges;
-					g_Player[client].fragmsg.Revenge = true;
 					len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", iRevenges);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Revenges = Revenges+%i", iRevenges);
 				}
@@ -3070,7 +3222,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iNoscopes > 0)
 				{
 					g_Player[client].session[Stats_Noscopes] += iNoscopes;
-					g_Player[client].fragmsg.Noscope = true;
 					len += Format(query[len], sizeof(query)-len, ", Noscopes = Noscopes+%i", iNoscopes);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Noscopes = Noscopes+%i", iNoscopes);
 				}
@@ -3078,7 +3229,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iTauntFrags > 0)
 				{
 					g_Player[client].session[Stats_TauntFrags] += iTauntFrags;
-					g_Player[client].fragmsg.TauntFrag = true;
 					len += Format(query[len], sizeof(query)-len, ", TauntFrags = TauntFrags+%i", iTauntFrags);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TauntFrags = TauntFrags+%i", iTauntFrags);
 				}
@@ -3086,7 +3236,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iDeflectFrags > 0)
 				{
 					g_Player[client].session[Stats_Deflects] += iDeflectFrags;
-					g_Player[client].fragmsg.Deflected = true;
 					len += Format(query[len], sizeof(query)-len, ", DeflectFrags = DeflectFrags+%i", iDeflectFrags);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DeflectFrags = DeflectFrags+%i", iDeflectFrags);
 				}
@@ -3094,7 +3243,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iGibFrags > 0)
 				{
 					g_Player[client].session[Stats_GibFrags] += iGibFrags;
-					g_Player[client].fragmsg.GibFrag = true;
 					len += Format(query[len], sizeof(query)-len, ", GibFrags = GibFrags+%i", iGibFrags);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", GibFrags = GibFrags+%i", iGibFrags);
 				}
@@ -3102,7 +3250,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iAirshots > 0)
 				{
 					g_Player[client].session[Stats_Airshots] += iAirshots;
-					g_Player[client].fragmsg.Airshot = true;
 					len += Format(query[len], sizeof(query)-len, ", Airshots = Airshots+%i", iAirshots);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Airshots = Airshots+%i", iAirshots);
 				}
@@ -3110,7 +3257,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iCollaterals > 0)
 				{
 					g_Player[client].session[Stats_Collaterals] += iCollaterals;
-					g_Player[client].fragmsg.Collateral = true;
 					len += Format(query[len], sizeof(query)-len, ", Collaterals = Collaterals+%i", iCollaterals);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Collaterals = Collaterals+%i", iCollaterals);
 					
@@ -3123,7 +3269,6 @@ Action Timer_OnGameFrame(Handle timer)
 				if(iMidAirFrags > 0)
 				{
 					g_Player[client].session[Stats_MidAirFrags] += iMidAirFrags;
-					g_Player[client].fragmsg.MidAir = true;
 					len += Format(query[len], sizeof(query)-len, ", MidAirFrags = MidAirFrags+%i", iMidAirFrags);
 					len_map += Format(query[len_map], sizeof(query_map)-len_map, ", MidAirFrags = MidAirFrags+%i", iMidAirFrags);
 				}
