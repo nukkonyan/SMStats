@@ -1021,23 +1021,6 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 	
 	switch(strlen(buffer) > 0)
 	{
-		case true:
-		{
-			if(frags > 4)
-			{
-				Format(buffer, sizeof(buffer), "%s%T", buffer, "#SMStats_Counter", client, frags);
-			}
-			
-			CPrintToChat(client, "%s %T"
-			, g_ChatTag
-			, "#SMStats_FragEvent_Special", client
-			, g_Player[client].name
-			, g_Player[client].points-points
-			, points
-			, victim
-			, buffer);
-		}
-		
 		case false:
 		{
 			char str_counter[12];
@@ -1054,6 +1037,22 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			, points
 			, victim
 			, (strlen(str_counter) > 0) ? str_counter : "");
+		}
+		case true:
+		{
+			if(frags > 4)
+			{
+				Format(buffer, sizeof(buffer), "%s%T", buffer, "#SMStats_Counter", client, frags);
+			}
+			
+			CPrintToChat(client, "%s %T"
+			, g_ChatTag
+			, "#SMStats_FragEvent_Special", client
+			, g_Player[client].name
+			, g_Player[client].points-points
+			, points
+			, victim
+			, buffer);
 		}
 	}
 	
