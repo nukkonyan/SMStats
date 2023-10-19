@@ -3029,6 +3029,7 @@ Action Timer_OnGameFrame(Handle timer)
 								case false: g_Player[client].fragmsg.Collateral = false;
 								case true: g_Player[client].fragmsg.Collateral = true;
 							}
+							bPrev_collateral = true;
 						}
 					}
 					switch(event.midair)
