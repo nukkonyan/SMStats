@@ -463,7 +463,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			 * 3 : Next page.
 			 * 4 : Exit.
 			 */
-			 
+			
 			switch(select)
 			{
 				case 1:
@@ -1015,7 +1015,7 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			 * 4 : Next page.
 			 * 5 : Exit.
 			 */
-			 
+			
 			switch(select)
 			{
 				case 1:
@@ -1024,6 +1024,7 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 					g_Player[client].active_page_topstats = 1;
 					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
 				}
+				/*
 				case 2:
 				{
 					g_Player[client].active_page_session = -1;
@@ -1035,19 +1036,20 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 					//ShowMOTDPanel(client, core_chattag2, profile, MOTDPANEL_TYPE_URL);
 					//PrintToServer(profile);
 				}
-				case 3:
+				*/
+				case 2:
 				{
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.TopStats(client, g_Player[client].active_page_menu);
 				}
-				case 4:
+				case 3:
 				{
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 2;
 					StatsMenu.TopStatsInfo(client, 2, g_Player[client].toppos);
 				}
-				case 5:
+				case 4:
 				{
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();

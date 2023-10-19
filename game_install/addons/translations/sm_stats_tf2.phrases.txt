@@ -102,86 +102,86 @@
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Pyro : {1} Fragged / {2} Deaths"
-		"en" "Pyro : {1} Fraggade / {2} Dödad"
+		"sv" "Pyro : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Demoman"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Demoman : {1} Fragged / {2} Deaths"
-		"en" "Demoman : {1} Fraggade / {2} Dödad"
+		"sv" "Demoman : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Heavy"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Heavy : {1} Fragged / {2} Deaths"
-		"en" "Heavy : {1} Fraggade / {2} Dödad"
+		"sv" "Heavy : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Engineer"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Engineer : {1} Fragged / {2} Deaths"
-		"en" "Ingenjör : {1} Fraggade / {2} Dödad"
+		"sv" "Ingenjör : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Medic"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Medic : {1} Fragged / {2} Deaths"
-		"en" "Sjukvårdare : {1} Fraggade / {2} Dödad"
+		"sv" "Sjukvårdare : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Sniper"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Sniper : {1} Fragged / {2} Deaths"
-		"en" "Krypskyttare : {1} Fraggade / {2} Dödad"
+		"sv" "Krypskyttare : {1} Fraggade / {2} Dödad"
 	}
 	"#SMStats_MenuInfo_Spy"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Spy : {1} Fragged / {2} Deaths"
-		"en" "Spion : {1} Fraggade / {2} Dödad"
+		"sv" "Spion : {1} Fraggade / {2} Dödad"
 	}
 
 	"#SMStats_MenuInfo_Buildings"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Buildings : {1} Placed / {2} Destroyed"
-		"en" "Byggnader : {1} Placerade / {2} Förstörda"
+		"sv" "Byggnader : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_Dispenser"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Dispenser : {1} Placed / {2} Destroyed"
-		"en" "Utmatare : {1} Placerad / {2} Förstörd"
+		"sv" "Utmatare : {1} Placerad / {2} Förstörd"
 	}
 	"#SMStats_MenuInfo_SentryGun"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Sentry Gun : {1} Placed / {2} Destroyed"
-		"en" "Vaktgevär : {1} Placerade / {2} Förstörda"
+		"sv" "Vaktgevär : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_TeleporterEntrance"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Teleporter Entrance : {1} Placed / {2} Destroyed"
-		"en" "Ingångsteleporter : {1} Placerade / {2} Förstörda"
+		"sv" "Ingångsteleporter : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_TeleporterExit"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Teleporter Exit : {1} Placed / {2} Destroyed"
-		"en" "Utgångsteleporter : {1} Placerade / {2} Förstörda"
+		"sv" "Utgångsteleporter : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_MiniSentryGun"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Mini-Sentry Gun : {1} Placed / {2} Destroyed"
-		"en" "Mini-Vaktgevär : {1} Placerad / {2} Förstörda"
+		"sv" "Mini-Vaktgevär : {1} Placerad / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_Sapper"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Sapper : {1} Placed / {2} Destroyed"
-		"en" "Sapper : {1} Placerade / {2} Förstörda"
+		"sv" "Sapper : {1} Placerade / {2} Förstörda"
 	}
 
 	"#SMStats_MenuInfo_CP_Captured"
@@ -200,13 +200,13 @@
 	{
 		"#format" "{1:i}"
 		"en" "Flags stolen : {1}"
-		"en" "Flaggor stulna : {1}"
+		"sv" "Flaggor stulna : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_PickedUp"
 	{
 		"#format" "{1:i}"
 		"en" "Flags picked up : {1}"
-		"en" "Flaggor uppplockade : {1}"
+		"sv" "Flaggor uppplockade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Captured"
 	{
@@ -357,7 +357,7 @@
 	"#SMStats_FlagEvent_Type1" //Stole the opponents intelligence.
 	{
 		"en" "{green}Stealing Opponents Flag"
-		"en" "{green}Stulit Motståndsflaggan"
+		"sv" "{green}Stulit Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent_Type2" //Captured the opponents intelligence.
 	{
