@@ -2892,156 +2892,145 @@ Action Timer_OnGameFrame(Handle timer)
 						case false: points += array_GetWeapon(event.itemdef).IntValue;
 						case true: points += g_SuicideAssisted.IntValue;
 					}
-					switch(event.headshot)
+					switch((g_Player[client].fragmsg.Headshot = event.headshot))
 					{
 						case false: bPrev_headshot = false;
 						case true:
 						{
 							iHeadshots++;
-							switch(bPrev_headshot)
+							if(frags > 1 && !bPrev_headshot)
 							{
-								case false: g_Player[client].fragmsg.Headshot = false;
-								case true: g_Player[client].fragmsg.Headshot = true;
+								g_Player[client].fragmsg.Headshot = false;
 							}
 							bPrev_headshot = true;
 						}
 					}
-					switch(event.backstab)
+					switch((g_Player[client].fragmsg.Backstab = event.backstab))
 					{
 						case false: bPrev_backstab = false;
 						case true:
 						{
 							iBackstabs++;
-							switch(bPrev_backstab)
+							if(frags > 1 && !bPrev_backstab)
 							{
-								case false: g_Player[client].fragmsg.Backstab = false;
-								case true: g_Player[client].fragmsg.Backstab = true;
+								g_Player[client].fragmsg.Backstab = false;
 							}
 							bPrev_backstab = true;
 						}
 					}
-					switch(event.dominated)
+					switch((g_Player[client].fragmsg.Domination = event.dominated))
 					{
 						case false: bPrev_domination = false;
 						case true:
 						{
 							iDominated++;
-							switch(bPrev_domination)
+							if(frags > 1 && !bPrev_domination)
 							{
-								case false: g_Player[client].fragmsg.Domination = false;
-								case true: g_Player[client].fragmsg.Domination = true;
+								g_Player[client].fragmsg.Domination = false;
 							}
 							bPrev_domination = true;
 						}
 					}
-					switch(event.revenge)
+					switch((g_Player[client].fragmsg.Revenge = event.revenge))
 					{
 						case false: bPrev_revenge = false;
 						case true:
 						{
 							iRevenges++;
-							switch(bPrev_revenge)
+							if(frags > 1 && bPrev_revenge)
 							{
-								case false: g_Player[client].fragmsg.Revenge = false;
-								case true: g_Player[client].fragmsg.Revenge = true;
+								g_Player[client].fragmsg.Revenge = false;
 							}
 							bPrev_revenge = true;
 						}
 					}
-					switch(event.noscope)
+					switch((g_Player[client].fragmsg.Noscope = event.noscope))
 					{
 						case false: bPrev_noscope = false;
 						case true:
 						{
 							iNoscopes++;
-							switch(bPrev_noscope)
+							if(frags > 1 && !bPrev_noscope)
 							{
-								case false: g_Player[client].fragmsg.Noscope = false;
-								case true: g_Player[client].fragmsg.Noscope = true;
+								g_Player[client].fragmsg.Noscope = false;
 							}
 							bPrev_noscope = true;
 						}
 					}
-					switch(event.tauntfrag)
+					switch((g_Player[client].fragmsg.TauntFrag = event.tauntfrag))
 					{
 						case false: bPrev_tauntfrag = false;
 						case true:
 						{
 							iTauntFrags++;
-							switch(bPrev_tauntfrag)
+							if(frags > 1 && !bPrev_tauntfrag)
 							{
-								case false: g_Player[client].fragmsg.TauntFrag = false;
-								case true: g_Player[client].fragmsg.TauntFrag = true;
+								g_Player[client].fragmsg.TauntFrag = false;
 							}
 							bPrev_tauntfrag = true;
 						}
 					}
-					switch(event.deflectfrag)
+					switch((g_Player[client].fragmsg.Deflected = event.deflectfrag))
 					{
 						case false: bPrev_deflectfrag = false;
 						case true:
 						{
 							iDeflectFrags++;
-							switch(bPrev_deflectfrag)
+							if(frags > 1 && !bPrev_deflectfrag)
 							{
-								case false: g_Player[client].fragmsg.Deflected = false;
-								case true: g_Player[client].fragmsg.Deflected = true;
+								g_Player[client].fragmsg.Deflected = false;
 							}
 							bPrev_deflectfrag = true;
 						}
 					}
-					switch(event.gibfrag)
+					switch((g_Player[client].fragmsg.GibFrag = event.gibfrag))
 					{
 						case false: bPrev_gibfrag = false;
 						case true:
 						{
 							iGibFrags++;
-							switch(bPrev_gibfrag)
+							if(frags > 1 && !bPrev_gibfrag)
 							{
-								case false: g_Player[client].fragmsg.GibFrag = false;
-								case true: g_Player[client].fragmsg.GibFrag = true;
+								g_Player[client].fragmsg.GibFrag = false;
 							}
 							bPrev_gibfrag = true;
 						}
 					}
-					switch(event.airshot)
+					switch((g_Player[client].fragmsg.Airshot = event.airshot))
 					{
 						case false: bPrev_airshot = false;
 						case true:
 						{
 							iAirshots++;
-							switch(bPrev_airshot)
+							if(frags > 1 && !bPrev_airshot)
 							{
-								case false: g_Player[client].fragmsg.Airshot = false;
-								case true: g_Player[client].fragmsg.Airshot = true;
+								g_Player[client].fragmsg.Airshot = false;
 							}
 							bPrev_airshot = true;
 						}
 					}
-					switch(event.collateral)
+					switch((g_Player[client].fragmsg.Collateral = event.collateral))
 					{
 						case false: bPrev_collateral = false;
 						case true:
 						{
 							iCollaterals++;
-							switch(bPrev_collateral)
+							if(frags > 1 && !bPrev_collateral)
 							{
-								case false: g_Player[client].fragmsg.Collateral = false;
-								case true: g_Player[client].fragmsg.Collateral = true;
+								g_Player[client].fragmsg.Collateral = false;
 							}
 							bPrev_collateral = true;
 						}
 					}
-					switch(event.midair)
+					switch((g_Player[client].fragmsg.MidAir = event.midair))
 					{
 						case false: bPrev_midair = false;
 						case true:
 						{
 							iMidAirFrags++;
-							switch(bPrev_midair)
+							if(frags > 1 && !bPrev_midair)
 							{
-								case false: g_Player[client].fragmsg.MidAir = false;
-								case true: g_Player[client].fragmsg.MidAir = true;
+								g_Player[client].fragmsg.MidAir = false;
 							}
 							bPrev_midair = true;
 						}
