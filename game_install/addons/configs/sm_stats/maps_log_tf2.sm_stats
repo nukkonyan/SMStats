@@ -61,7 +61,7 @@ create table if not exists `maps_log_tf2`
 	`BuildingsDestroyed` int not null default '0',
 	`MiniSentryGunsDestroyed` int not null default '0',
 	`SentryGunDestroyed` int not null default '0',
-	`DispenserDestroyed` int not null default '0',
+	`DispensersDestroyed` int not null default '0',
 	`TeleporterExitsDestroyed` int not null default '0',
 	`TeleporterEntrancesDestroyed` int not null default '0',
 	`SappersDestroyed` int not null default '0',
