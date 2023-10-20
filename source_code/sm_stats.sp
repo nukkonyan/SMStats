@@ -9,7 +9,7 @@
 
 public Plugin myinfo = {
 	name = "SM Stats: Core",
-	author = "チームキラー三百二十四",
+	author = "teamkiller324",
 	description = "Tracks frags, maps, events, achievements, etc.",
 	version = Version,
 	url = "https://github.com/Teamkiller324"
