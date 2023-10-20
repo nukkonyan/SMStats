@@ -463,7 +463,6 @@
 		"en" "{1} ({2}) Lost {3} points for {green}Dropping {default}the ball"
 		"sv" "{1} ({2}) Förlorade {3} för att {green}Tappat {default}bollen."
 	}
-
 	"#SMStats_PassBall_CatchBall_Scenario0"
 	{
 		"#format" "{1:s},{2:i},{3:i}"
@@ -476,7 +475,6 @@
 		"en" "{1} ({2}) Earned {3} points for {green}Catching {default}the ball from {4}."
 		"sv" "{1} ({2}) Belönades med {3} poäng för att {green}Tagit Emot {default}bollen ifrån {4}."
 	}
-
 	"#SMStats_PassBall_StealBall_Scenario0"
 	{
 		"#format" "{1:s},{2:i},{3:i}"
@@ -489,7 +487,6 @@
 		"en" "{1} ({2}) Earned {3} points for {green}Stealing {default}the ball from {4}."
 		"sv" "{1} ({2}) Belönades med {3} poäng för att {green}Stulit {default}bollen ifrån {4}."
 	}
-
 	"#SMStats_PassBall_BlockBall_Scenario0"
 	{
 		"#format" "{1:s},{2:i},{3:i}"
