@@ -817,7 +817,7 @@ bool AssistedKills(Transaction txn
 						
 					CPrintToChat(assist, "%s %T"
 					, g_ChatTag
-					, "#SMStats_FragEvent_Assisted", client
+					, "#SMStats_FragEvent_Assisted", assist
 					, g_Player[assist].name
 					, g_Player[assist].points
 					, assist_points*assister_count[i]
