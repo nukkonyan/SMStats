@@ -3104,17 +3104,8 @@ Action Timer_OnGameFrame(Handle timer)
 				GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
 				
 				Transaction txn = new Transaction();
-				AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client);
+				AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client, list_healercount, list_healer);
 				VictimDied(txn, list, list_class, frags);
-				
-				for(int i = 0; i < frags; i++)
-				{
-					for(int x = 0; x < list_healercount[i]; x++)
-					{
-						int healer = GetClientOfUserId(list_healer[x][i]);
-						PrintToServer("Healer : %N", healer);
-					}
-				}
 				
 				char query[4096], query_map[4096];
 				int len = 0, len_map = 0;

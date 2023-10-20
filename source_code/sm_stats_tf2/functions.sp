@@ -691,7 +691,9 @@ bool AssistedKills(Transaction txn
 					, const bool[] list_assister_dominate
 					, const bool[] list_assister_revenge
 					, int frags
-					, int client)
+					, int client
+					, const int[] list_healercount
+					, const int[][] list_healer)
 {
 	int assist_points = 10; // placeholder
 	
@@ -712,6 +714,21 @@ bool AssistedKills(Transaction txn
 			if(assisters.FindValue(assist) == -1)
 			{
 				assisters.Push(assist);
+			}
+		}
+		
+		int healers = list_healercount[i];
+		
+		if(healers > 0)
+		{
+			for(int x = 0; x < healers; x++)
+			{
+				int healer = list_healer[x][i];
+				
+				if(assisters.FindValue(healer) == -1)
+				{
+					assisters.Push(healer);
+				}
 			}
 		}
 	}
