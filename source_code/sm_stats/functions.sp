@@ -732,7 +732,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 					/* Mid air noscope headshot kill */
 					case false:
 					{
-						Format(buffer, sizeof(buffer), "%t{default} %t{default}"
+						Format(buffer, sizeof(buffer), "%T{default} %T{default}"
 						, Frag_Type[Frag_NoscopeHS], client
 						, Frag_Type[Frag_MidAir], client);
 					}
@@ -772,7 +772,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 					/* Noscope kill whilst blinded */
 					case true:
 					{
-						Format(buffer, sizeof(buffer), "%T{default} %t{default}"
+						Format(buffer, sizeof(buffer), "%T{default} %T{default}"
 						, Frag_Type[Frag_Noscope], client
 						, Frag_Type[Frag_Blinded], client);
 					}
