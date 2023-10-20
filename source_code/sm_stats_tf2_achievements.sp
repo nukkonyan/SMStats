@@ -219,7 +219,7 @@ stock void SendAchievementEvent(int client, StatsMe_Ach ach_id)
 	{
 		if(IsValidClient(player))
 		{
-			CPrintToChat(player, "{green}[SM Stats] %T", "#SMStats_AchEvent", client, name, AchName[ach_id]);
+			CPrintToChat(player, "%s %T", g_ChatTag, "#SMStats_AchEvent", player, name, AchName[ach_id]);
 		}
 	}
 }
