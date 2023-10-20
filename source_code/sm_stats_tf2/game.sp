@@ -677,6 +677,7 @@ void PrepareGame()
 	array_AddWeapon(656, "sm_stats_points_weapon_holidaypunch", 10, "Holiday Punch");
 	array_AddSameWeapon(660, 0); //Festive Bat.
 	array_AddWeapon(727, "sm_stats_points_weapon_blackrose", 10, "Blackrose");
+	array_AddWeapon(730, "sm_stats_points_weapon_beggarsbazooka", 10, "Beggar's Bazooka");
 	array_AddWeapon(739, "sm_stats_points_weapon_lollichop", 10, "Lollichop");
 	array_AddWeapon(740, "sm_stats_points_weapon_scorchshot", 10, "Scorch Shot");
 	array_AddWeapon(741, "sm_stats_points_weapon_rainblower", 10, "Rainblower");
@@ -990,18 +991,24 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		{
 			PrintToServer("%s An error has occured, itemdef %i (classname '%s') seems to be new to the current version (%s) and needs to be updated."
 			, core_chattag, itemdef, classname, Version);
+			CPrintToChat(client, "%s %T"
+			, g_ChatTag, "#SMStats_FragEventError_NewItem", client, itemdef, classname, Version);
 			return;
 		}
 		else if(itemdef < 0)
 		{
 			PrintToServer("%s An error has occured, itemdef %i (classname '%s') is invalid."
 			, core_chattag, itemdef, classname);
+			CPrintToChat(client, "%s %T"
+			, g_ChatTag, "#SMStats_FragEventError_InvalidItem", client, itemdef, classname);
 			return;
 		}
 		else if(!array_GetWeapon(itemdef))
 		{
 			PrintToServer("%s An error has occured, itemdef %i (classname '%s') seems to have invalid convar handle! (New item perhaps?)"
 			, core_chattag, itemdef, classname);
+			CPrintToChat(client, "%s %T"
+			, g_ChatTag, "#SMStats_FragEventError_InvalidItemCvar", client, itemdef, classname);
 			return;
 		}
 		else if(array_GetWeapon(itemdef).IntValue < 1)
@@ -2889,7 +2896,28 @@ Action Timer_OnGameFrame(Handle timer)
 					
 					switch(event.suicide_assisted)
 					{
-						case false: points += array_GetWeapon(event.itemdef).IntValue;
+						case false:
+						{
+							int itemdef = event.itemdef;
+							ConVar cvar_points;
+							switch((cvar_points = array_GetWeapon(itemdef)) == null)
+							{
+								case false: points += cvar_points.IntValue;
+								case true:
+								{
+									PrintToServer("%s itemdef %i has invalid convar!"
+									... "\nattacker userid : %i"
+									... "\nvictim userid : %i"
+									... "\nvictim class : %i"
+									... "\n "
+									, core_chattag, itemdef
+									, GetClientUserId(client)
+									, list[i]
+									, list_class[i]);
+									continue;
+								}
+							}
+						}
 						case true: points += g_SuicideAssisted.IntValue;
 					}
 					switch((g_Player[client].fragmsg.Headshot = event.headshot))

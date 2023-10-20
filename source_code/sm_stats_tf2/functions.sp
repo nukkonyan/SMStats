@@ -627,6 +627,7 @@ void CorrectWeaponClassname(TFClassType class, char[] weapon, int maxlen, int it
 		case 649: strcopy(weapon, maxlen, "tf_weapon_spycicle");				//The Spycicle.
 		case 656: strcopy(weapon, maxlen, "tf_weapon_holidaypunch");			//The Holiday Punch.
 		case 727: strcopy(weapon, maxlen, "tf_weapon_blackrose");				//The Blackrose.
+		case 730: strcopy(weapon, maxlen, "tf_weapon_beggarsbazooka");			//The Beggars Bazooka.
 		case 739: strcopy(weapon, maxlen, "tf_weapon_lollichop");				//The Lollichop.
 		case 740: strcopy(weapon, maxlen, "tf_weapon_scorchshot");				//The Shorch Shot.
 		case 741: strcopy(weapon, maxlen, "tf_weapon_rainblower");				//The Rainblower.

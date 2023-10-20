@@ -475,6 +475,22 @@
 		"sv" "{1} ({2}) Belönades med {3} poäng för att {4} blev fraggad."
 	}
 
+	"#SMStats_FragEventError_NewItem"
+	{
+		"#format" "{1:i},{2:s},{3:s}"
+		"en" "{yellow}Error: The weapon itemdef {1} (classname '{2}') is new to current version ({3}) and needs to be updated."
+	}
+	"#SMStats_FragEventError_InvalidItem"
+	{
+		"#format" "{1:i},{2:s}"
+		"en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is invalid."
+	}
+	"#SMStats_FragEventError_InvalidItemCvar"
+	{
+		"#format" "{1:i},{2:s}"
+		"en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') seems to be invalid! (New item perhaps?)"
+	}
+
 	//================================//
 	// Achievement event.
 	//================================//
@@ -482,6 +498,6 @@
 	{
 		"#format" "{1:s},{2:s}"
 		"en" "{1} has earned the achievement {olive}{2}"
-		"sv" "{1} har uppnått prestationen {olive}{2}"
+		"sv" "{1} har förtjänat uppdraget {olive}{2}"
 	}
 }

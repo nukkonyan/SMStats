@@ -145,6 +145,7 @@ create table if not exists `weapons_tf2`
 	`tf_weapon_spycicle` int not null default '0',
 	`tf_weapon_holidaypunch` int not null default '0',
 	`tf_weapon_blackrose` int not null default '0',
+	`tf_weapon_beggarsbazooka` int not null default '0',
 	`tf_weapon_lollipop` int not null default '0',
 	`tf_weapon_scorchshot` int not null default '0',
 	`tf_weapon_rainblower` int not null default '0',
