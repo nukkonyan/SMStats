@@ -13,8 +13,8 @@ Some things may not work as intended at the very moment, but will get working so
 ```
 
 ### To-do
-   - tf2
-        - Implement CTF intelligence spam-detect block (Block ctf flag spam to farm points).
+   - Team Fortress 2
+        - Implement spam-detection (exploiting to farm points such as spamming CTF Flag being picked up).
    - stats menu
         - Implement sm_stats <top index | steamid > to manually check statistics of a particular player.
              -  Example sm_stats 30 displays Top 30 current player.
