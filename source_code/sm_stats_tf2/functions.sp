@@ -703,7 +703,6 @@ bool AssistedKills(Transaction txn
 	for(int i = 0; i < frags; i++)
 	{
 		int assist = list_assister[i];
-		
 		if(assist > 0)
 		{
 			if(assisters == null)
@@ -718,7 +717,6 @@ bool AssistedKills(Transaction txn
 		}
 		
 		int healers = list_healercount[i];
-		
 		if(healers > 0)
 		{
 			for(int x = 0; x < healers; x++)
@@ -758,6 +756,25 @@ bool AssistedKills(Transaction txn
 						if(list_assister_revenge[i])
 						{
 							assister_revenges[x]++;
+						}
+					}
+				}
+			}
+			
+			int healers = list_healercount[i];
+			if(healers > 0)
+			{
+				for(int x = 0; x < healers; x++)
+				{
+					int healer = list_healer[x][i];
+					if(healer != assist)
+					{
+						for(int y = 0; y < assisters.Length; y++)
+						{
+							if(assisters.Get(y) == healer)
+							{
+								assister_count[y]++;
+							}
 						}
 					}
 				}
