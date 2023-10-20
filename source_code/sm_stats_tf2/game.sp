@@ -3105,7 +3105,7 @@ Action Timer_OnGameFrame(Handle timer)
 				
 				Transaction txn = new Transaction();
 				AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client);
-				VictimDied(txn, list, frags);
+				VictimDied(txn, list, list_class, frags);
 				
 				for(int i = 0; i < frags; i++)
 				{

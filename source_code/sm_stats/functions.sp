@@ -104,38 +104,6 @@ stock void PanelText(Panel panel, const char[] text, any ...)
 
 /* ============================================================== */
 
-// will be re-done and optimized.
-stock void VictimDied(Transaction txn, const int[] list, int frags)
-{
-	for(int i = 0; i < frags; i++)
-	{
-		int victim;
-		if(IsValidClient((victim = GetClientOfUserId(list[i]))))
-		{
-			char query[256];
-			Format(query, sizeof(query), "update `%s` set Deaths = Deaths+1 where SteamID = '%s' and ServerID = %i"
-			, sql_table_playerlist, frags, g_Player[victim].auth, g_ServerID);
-			txn.AddQuery(query, queryId_frag_victim_death);
-			
-			int death_points = _sm_stats_get_deathpoints();
-			if(death_points > 0)
-			{
-				//g_Player[victim].points = GetClientPoints(g_Player[victim].auth);
-				g_Player[victim].session[Stats_Points] -= death_points;
-				g_Player[victim].points -= death_points;
-				g_Player[victim].session[Stats_Deaths]++;
-				
-				CPrintToChat(victim, "%s %T"
-				, g_ChatTag
-				, "#SMStats_FragEvent_Death", victim
-				, g_Player[victim].name, g_Player[victim].points+death_points, death_points);
-			}
-		}
-	}
-}
-
-/* ============================================================== */
-
 stock int GetClientPosition(const char[] auth)
 {
 	int position = -1;
@@ -1223,10 +1191,9 @@ stock void GetPlayTimeFormat(int client, int minutes, char[] buffer, int maxlen)
 	
 }
 
-stock void GetLastConnectedFormat(int client, int last_connected, char[] buffer, int maxlen)
+stock void GetLastConnectedFormat(int client, int last_connected, char[] time_format, int maxlen)
 {
-	char time_format[128];
-	Format(time_format, sizeof(time_format), "%T", "#SMStats_TimeFormat_LastConnected", client);
+	Format(time_format, maxlen, "%T", "#SMStats_TimeFormat_LastConnected", client);
 	
 	int year, month, day, hour, minute, second;
 	UnixToTime(last_connected, year, month, day, hour, minute, second, UT_TIMEZONE_SERVER);
@@ -1246,19 +1213,19 @@ stock void GetLastConnectedFormat(int client, int last_connected, char[] buffer,
 	{
 		char dummy[11];
 		Format(dummy, sizeof(dummy), "%02d", year);
-		ReplaceString(time_format, sizeof(time_format), "{YEAR}", dummy);
+		ReplaceString(time_format, maxlen, "{YEAR}", dummy);
 	}
 	if(StrContains(time_format, "{MONTH}") != -1)
 	{
 		char dummy[11];
 		Format(dummy, sizeof(dummy), "%02d", month);
-		ReplaceString(time_format, sizeof(time_format), "{MONTH}", dummy);
+		ReplaceString(time_format, maxlen, "{MONTH}", dummy);
 	}
 	if(StrContains(time_format, "{DAY}") != -1)
 	{
 		char dummy[11];
 		Format(dummy, sizeof(dummy), "%02d", day);
-		ReplaceString(time_format, sizeof(time_format), "{DAY}", dummy);
+		ReplaceString(time_format, maxlen, "{DAY}", dummy);
 	}
 	if(StrContains(time_format, "{AM_PM}") != -1)
 	{
@@ -1276,7 +1243,7 @@ stock void GetLastConnectedFormat(int client, int last_connected, char[] buffer,
 				ReplaceString(dummy[0], sizeof(dummy[]), "#|#", "");
 			}
 			
-			ReplaceString(time_format, sizeof(time_format), "{AM_PM}", dummy[view_as<int>(PM)]);
+			ReplaceString(time_format, maxlen, "{AM_PM}", dummy[view_as<int>(PM)]);
 		}
 	}
 	if(StrContains(time_format, "{12HOUR}") != -1)
@@ -1288,26 +1255,24 @@ stock void GetLastConnectedFormat(int client, int last_connected, char[] buffer,
 		
 		char dummy[11];
 		Format(dummy, sizeof(dummy), "%02d", hour);
-		ReplaceString(time_format, sizeof(time_format), "{12HOUR}", dummy);
+		ReplaceString(time_format, maxlen, "{12HOUR}", dummy);
 	}
 	if(StrContains(time_format, "{24HOUR}") != -1)
 	{
 		char dummy[11];
 		Format(dummy, sizeof(dummy), "%02d", hour);
-		ReplaceString(time_format, sizeof(time_format), "{24HOUR}", dummy);
+		ReplaceString(time_format, maxlen, "{24HOUR}", dummy);
 	}
 	if(StrContains(time_format, "{MINUTE}") != -1)
 	{
 		char dummy[11];
 		Format(dummy, sizeof(dummy), "%02d", minute);
-		ReplaceString(time_format, sizeof(time_format), "{MINUTE}", dummy);
+		ReplaceString(time_format, maxlen, "{MINUTE}", dummy);
 	}
 	if(StrContains(time_format, "{SECOND}") != -1)
 	{
 		char dummy[11];
 		Format(dummy, sizeof(dummy), "%02d", second);
-		ReplaceString(time_format, sizeof(time_format), "{SECOND}", dummy);
+		ReplaceString(time_format, maxlen, "{SECOND}", dummy);
 	}
-	
-	strcopy(buffer, maxlen, time_format);
 }

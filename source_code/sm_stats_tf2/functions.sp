@@ -799,6 +799,95 @@ bool AssistedKills(Transaction txn
 	return true;
 }
 
+// will be re-done and optimized.
+stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] list_class, int frags)
+{
+	for(int i = 0; i < frags; i++)
+	{
+		int victim;
+		if(IsValidClient((victim = GetClientOfUserId(list[i]))))
+		{
+			TFClassType class = list_class[i];
+			if(class < TFClass_Scout || class > TFClass_Engineer)
+			{
+				PrintToServer("%s VictimDied() UserId %i has an invalid class id of %i", core_chattag, list[i], class);
+				continue;
+			}
+			
+			int len = 0;
+			char query[1024];
+			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set Deaths = Deaths+1");
+			
+			g_Player[victim].session[Stats_Deaths]++;
+			switch(class)
+			{
+				case TFClass_Scout:
+				{
+					g_Player[victim].session[Stats_ScoutDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", ScoutDeaths = ScoutDeaths+1");
+				}
+				case TFClass_Soldier:
+				{
+					g_Player[victim].session[Stats_SoldierDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", SoldierDeaths = SoldierDeaths+1");
+				}
+				case TFClass_Pyro:
+				{
+					g_Player[victim].session[Stats_PyroDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", PyroDeaths = PyroDeaths+1");
+				}
+				case TFClass_DemoMan:
+				{
+					g_Player[victim].session[Stats_DemoDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", DemoDeaths = DemoDeaths+1");
+				}
+				case TFClass_Heavy:
+				{
+					g_Player[victim].session[Stats_HeavyDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", HeavyDeaths = HeavyDeaths+1");
+				}
+				case TFClass_Engineer:
+				{
+					g_Player[victim].session[Stats_EngieDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", EngieDeaths = EngieDeaths+1");
+				}
+				case TFClass_Medic:
+				{
+					g_Player[victim].session[Stats_MedicDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", MedicDeaths = MedicDeaths+1");
+				}
+				case TFClass_Sniper:
+				{
+					g_Player[victim].session[Stats_SniperDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", SniperDeaths = SniperDeaths+1");
+				}
+				case TFClass_Spy:
+				{
+					g_Player[victim].session[Stats_SpyDeaths]++;
+					len += Format(query[len], sizeof(query)-len, ", SpyDeaths = SpyDeaths+1");
+				}
+			}
+			
+			int death_points = _sm_stats_get_deathpoints();
+			if(death_points > 0)
+			{
+				len += Format(query[len], sizeof(query)-len, ", Points = Points-%i", death_points);
+				
+				g_Player[victim].session[Stats_Points] -= death_points;
+				g_Player[victim].points -= death_points;
+				
+				CPrintToChat(victim, "%s %T"
+				, g_ChatTag
+				, "#SMStats_FragEvent_Death", victim
+				, g_Player[victim].name, g_Player[victim].points, death_points);
+			}
+			
+			len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[victim].auth, g_ServerID);
+			txn.AddQuery(query, queryId_frag_victim_death);
+		}
+	}
+}
+
 /**
  *	Returns if MvM (Mann-Vs-Machine) mode is active.
  */
