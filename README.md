@@ -26,6 +26,7 @@ Some things may not work as intended at the very moment, but will get working so
         - Implement functional K/D Ratio (Kill-Death ratio).
         - Implement functional time played (Convert x minutes to 1 day 1 hour, etc.)
 		- Implement a ban feature which detects if the player has been banned from the server, the player's details on SMStats will be removed.
+        - Fix playtime timer. Right is buggy and not working correctly.
         - Support more source games.
         - Create website.
 
