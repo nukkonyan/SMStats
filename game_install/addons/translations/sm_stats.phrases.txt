@@ -453,6 +453,7 @@
 	"#SMStats_FeatureUnavailable"
 	{
 		"en" "Feature is currently unavailable."
+		"jp" "この機能が利用出来ません。"
 		"sv" "Funktionen är förnuvarande otillgänglig."
 	}
 	
