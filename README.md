@@ -20,7 +20,6 @@ Some things may not work as intended at the very moment, but will get working so
              -  Example sm_stats 30 displays Top 30 current player.
              -  Example sm_stats "STEAM_0:0:1234" displays the player through steamid.
    - overall
-        - Potentially 'info module' (Store information of the current players, so after plugin was updated mid-game, stats will be restored).
         - Implement custom achievements functionality.
         - Implement leaderboard ban functionality (Prevented from gaining points).
         - Implement functional K-A-D ratio (Kill-Assist-Death ratio).
@@ -34,6 +33,6 @@ Some things may not work as intended at the very moment, but will get working so
 
 ``SM Stats`` or ``SourceMod Stats`` is a multi-statistical tracking plugin that tracks frags, events, achievements and offers multi-game support, player connection/disconnection messages, player connect sounds, full translation support and more likely to come.
 
-### This project is just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.
+### This project is only just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.
 
 ## GitHub page to be updated.
