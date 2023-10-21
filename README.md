@@ -30,7 +30,7 @@ Some things may not work as intended at the very moment, but will get working so
         - Create website.
 
 ## Lookin to assist in development?
-   - Hit me up on [Steam]!(https://steamcommunity.com/id/Teamkiller324
+   - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
    - Active development server:
         - 83.253.75.203:27018 [password: ``784e35eryg``]
 
