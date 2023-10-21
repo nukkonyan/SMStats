@@ -1186,17 +1186,336 @@ stock int IsValidDeveloperType(const char[] auth)
 
 //
 
-stock void GetPlayTimeFormat(int client, int minutes, char[] buffer, int maxlen)
+int ConvertHoursToDays(int hours)
 {
+	int days;
+	int divider = ( hours / 24 );
 	
+	while(divider >= 24)
+	{
+		days++;
+		divider -= 24;
+	}
+	
+	return days;
 }
 
-stock void GetLastConnectedFormat(int client, int last_connected, char[] time_format, int maxlen)
+int ConvertSecondsBecauseMinutes(int playtime_seconds)
+{
+	int minutes = (playtime_seconds / 60);
+	int minutes_sec = minutes * 60;
+	
+	return (playtime_seconds - minutes_sec);
+}
+
+void GetCountStr(int count, char[] yes, int no)
+{
+	IntToString(count, yes, no);
+	if(strlen(yes) == 1)
+	{
+		Format(yes, no, "0%s", yes);
+	}
+}
+
+stock void GetPlayTimeFormat(int client, int playtime_seconds, char[] time_format, int maxlen)
+{
+	// convert seconds into Year/s Day/s Hour/s Minute/s Second/s
+	
+	int seconds = ConvertSecondsBecauseMinutes(playtime_seconds);
+	int minutes = (playtime_seconds / 60);
+	int hours = (minutes / 60);
+	int days = ConvertHoursToDays(hours);
+	int months;
+	int years;
+	
+	char szYear[2][32];
+	bool bYearPlural = false;
+	Format(time_format, maxlen, "%T", "#SMStats_TimeFormat_Year", client);
+	if(StrContains(time_format, "{YEAR}", false) != -1)
+	{
+		char count[11];
+		GetCountStr(years, count, sizeof(count));
+		ReplaceString(time_format, maxlen, "{YEAR}", count, false);
+	}
+	switch(StrContains(time_format, "#|#") != -1)
+	{
+		case false:
+		{
+			bYearPlural = false;
+			strcopy(szYear[0], sizeof(szYear[]), time_format);
+		}
+		case true:
+		{
+			if(ExplodeString(time_format, "#|#", szYear, sizeof(szYear), 32) == 2)
+			{
+				ReplaceString(szYear[0], sizeof(szYear[]), "#|#", "");
+			}
+		}
+	}
+	
+	char szMonth[2][32];
+	bool bMonthPlural = false;
+	Format(time_format, maxlen, "%T", "#SMStats_TimeFormat_Month", client);
+	if(StrContains(time_format, "{MONTH}", false) != -1)
+	{
+		char count[11];
+		GetCountStr(months, count, sizeof(count));
+		ReplaceString(time_format, maxlen, "{MONTH}", count, false);
+	}
+	switch(StrContains(time_format, "#|#") != -1)
+	{
+		case false:
+		{
+			bMonthPlural = false;
+			strcopy(szMonth[0], sizeof(szMonth[]), time_format);
+		}
+		case true:
+		{
+			ExplodeString(time_format, "#|#", szMonth, sizeof(szMonth), 32);
+			ReplaceString(szMonth[0], sizeof(szMonth[]), "#|#", "");
+		}
+	}
+	
+	char szDay[2][32];
+	bool bDayPlural = false;
+	Format(time_format, maxlen, "%T", "#SMStats_TimeFormat_Day", client);
+	if(StrContains(time_format, "{DAY}", false) != -1)
+	{
+		char count[11];
+		GetCountStr(days, count, sizeof(count));
+		ReplaceString(time_format, maxlen, "{DAY}", count, false);
+	}
+	switch(StrContains(time_format, "#|#") != -1)
+	{
+		case false:
+		{
+			bDayPlural = false;
+			strcopy(szDay[0], sizeof(szDay[]), time_format);
+		}
+		case true:
+		{
+			ExplodeString(time_format, "#|#", szDay, sizeof(szDay), 32);
+			ReplaceString(szDay[0], sizeof(szDay[]), "#|#", "");
+		}
+	}
+	
+	char szHour[2][32];
+	bool bHourPlural = false;
+	Format(time_format, maxlen, "%T", "#SMStats_TimeFormatShort_Hour", client);
+	if(StrContains(time_format, "{HOUR}", false) != -1)
+	{
+		char count[11];
+		GetCountStr(hours, count, sizeof(count));
+		ReplaceString(time_format, maxlen, "{HOUR}", count, false);
+	}
+	switch(StrContains(time_format, "#|#") != -1)
+	{
+		case false:
+		{
+			bHourPlural = false;
+			strcopy(szHour[0], sizeof(szHour[]), time_format);
+		}
+		case true:
+		{
+			ExplodeString(time_format, "#|#", szHour, sizeof(szHour), 32);
+			ReplaceString(szHour[0], sizeof(szHour[]), "#|#", "");
+		}
+	}
+	
+	char szMinute[2][32];
+	bool bMinutePlural = (minutes != 0);
+	Format(time_format, maxlen, "%T", "#SMStats_TimeFormatShort_Minute", client);
+	if(StrContains(time_format, "{MINUTE}", false) != -1)
+	{
+		char count[11];
+		GetCountStr(minutes, count, sizeof(count));
+		ReplaceString(time_format, maxlen, "{MINUTE}", count, false);
+	}
+	switch(StrContains(time_format, "#|#") != -1)
+	{
+		case false:
+		{
+			bMinutePlural = false;
+			strcopy(szMinute[0], sizeof(szMinute[]), time_format);
+		}
+		case true:
+		{
+			ExplodeString(time_format, "#|#", szMinute, sizeof(szMinute), 32);
+			ReplaceString(szMinute[0], sizeof(szMinute[]), "#|#", "");
+		}
+	}
+	
+	char szSecond[2][32];
+	bool bSecondPlural = (seconds != 0);
+	Format(time_format, maxlen, "%T", "#SMStats_TimeFormatShort_Second", client);
+	if(StrContains(time_format, "{SECOND}", false) != -1)
+	{
+		char count[11];
+		GetCountStr(seconds, count, sizeof(count));
+		ReplaceString(time_format, maxlen, "{SECOND}", count, false);
+	}
+	switch(StrContains(time_format, "#|#") != -1)
+	{
+		case false:
+		{
+			bSecondPlural = false;
+			strcopy(szSecond[0], sizeof(szSecond[]), time_format);
+		}
+		case true:
+		{
+			ExplodeString(time_format, "#|#", szSecond, sizeof(szSecond), 32);
+			ReplaceString(szSecond[0], sizeof(szSecond[]), "#|#", "");
+		}
+	}
+	
+	//
+	
+	if(years > 0
+	&& months > 0
+	&& days > 0
+	&& hours > 0
+	&& minutes > 0
+	&& seconds >= 0)
+	{
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario0", client);
+		if(StrContains(time_format, "{YEAR}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{YEARS}", szYear[view_as<int>(bYearPlural)], false);
+		}
+		if(StrContains(time_format, "{MONTHS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{MONTHS}", szMonth[view_as<int>(bMonthPlural)], false);
+		}
+		if(StrContains(time_format, "{DAYS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{DAYS}", szDay[view_as<int>(bDayPlural)], false);
+		}
+		if(StrContains(time_format, "{HOURS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{HOURS}", szHour[view_as<int>(bHourPlural)], false);
+		}
+		if(StrContains(time_format, "{MINUTES}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+		}
+		if(StrContains(time_format, "{SECONDS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+		}
+	} else
+	if(months > 0
+	&& days > 0
+	&& hours > 0
+	&& minutes > 0
+	&& seconds >= 0)
+	{
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario1", client);
+		if(StrContains(time_format, "{MONTHS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{MONTHS}", szMonth[view_as<int>(bMonthPlural)], false);
+		}
+		if(StrContains(time_format, "{DAYS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{DAYS}", szDay[view_as<int>(bDayPlural)], false);
+		}
+		if(StrContains(time_format, "{HOURS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{HOURS}", szHour[view_as<int>(bHourPlural)], false);
+		}
+		if(StrContains(time_format, "{MINUTES}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+		}
+		if(StrContains(time_format, "{SECONDS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+		}
+	} else
+	if(days > 0
+	&& hours > 0
+	&& minutes > 0
+	&& seconds >= 0)
+	{
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario2", client);
+		if(StrContains(time_format, "{DAYS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{DAYS}", szDay[view_as<int>(bDayPlural)], false);
+		}
+		if(StrContains(time_format, "{HOURS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{HOURS}", szHour[view_as<int>(bHourPlural)], false);
+		}
+		if(StrContains(time_format, "{MINUTES}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+		}
+		if(StrContains(time_format, "{SECONDS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+		}
+	}
+	else
+	if(hours > 0
+	&& minutes > 0
+	&& seconds >= 0)
+	{
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario3", client);
+		if(StrContains(time_format, "{HOURS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{HOURS}", szHour[view_as<int>(bHourPlural)], false);
+		}
+		if(StrContains(time_format, "{MINUTES}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+		}
+		if(StrContains(time_format, "{SECONDS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+		}
+	}
+	else
+	if(minutes > 0
+	&& seconds >= 0)
+	{
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario4", client);
+		if(StrContains(time_format, "{MINUTES}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+		}
+		if(StrContains(time_format, "{SECONDS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+		}
+	}
+	else
+	{
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario5", client, seconds);
+		if(StrContains(time_format, "{SECONDS}", false) != -1)
+		{
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+		}
+	}
+	
+	//PrintToServer(time_format);
+}
+
+stock void GetLastConnectedFormat(int client, char[] timezone_ip, int last_connected, char[] time_format, int maxlen)
 {
 	Format(time_format, maxlen, "%T", "#SMStats_TimeFormat_LastConnected", client);
 	
+	int timezone = UT_TIMEZONE_SERVER;
+	char str_timezone[32];
+	switch(GeoipTimezone(timezone_ip, str_timezone, sizeof(str_timezone)))
+	{
+		case false: PrintToServer("%s GetLastConnectedFormat() Error: Failed to get timezone, using server timezone instead.", core_chattag);
+		case true:
+		{
+			PrintToServer("%s GetLastConnectedFormat() Timezone : %s", core_chattag, str_timezone);
+		}
+	}
+	
 	int year, month, day, hour, minute, second;
-	UnixToTime(last_connected, year, month, day, hour, minute, second, UT_TIMEZONE_SERVER);
+	UnixToTime(last_connected, year, month, day, hour, minute, second, timezone);
 	
 	/*
 	PrintToServer("LastConnect converted:"

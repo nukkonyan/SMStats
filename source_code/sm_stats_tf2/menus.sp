@@ -59,13 +59,15 @@ enum struct StatsMenuInfo
 		{
 			case 1:
 			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, g_Player[client].session[Stats_PlayTime]);
+				char play_time[128];
+				GetPlayTimeFormat(client, g_Player[client].session[Stats_PlayTime], play_time, sizeof(play_time));
+				
+				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, play_time);
 				switch(g_Player[client].session[Stats_Points] >= 0)
 				{
 					case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, g_Player[client].session[Stats_Points]);
 					case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, g_Player[client].session[Stats_Points]);
 				}
-				
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_Frags", client, g_Player[client].session[Stats_Frags]);
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_Assists", client, g_Player[client].session[Stats_Assists]);
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_Deaths", client, g_Player[client].session[Stats_Deaths]);
@@ -261,12 +263,13 @@ enum struct StatsMenuInfo
 		{
 			case 1:
 			{
-				char country[64], last_connected[128];
+				char country[64], last_connected[128], play_time[255];
 				GeoipCountryName(client, g_Player[client].topstatsip, country, sizeof(country));
-				GetLastConnectedFormat(client, g_Player[client].toplastconnected, last_connected, sizeof(last_connected));
+				GetLastConnectedFormat(client, g_Player[client].topstatsip, g_Player[client].toplastconnected, last_connected, sizeof(last_connected));
+				GetPlayTimeFormat(client, g_Player[client].topstats[Stats_PlayTime], play_time, sizeof(play_time));
 				
 				//PanelItem(panel, "  %T", "#SMStats_MenuInfo_Profile", client); // need a working Steam32 (STEAM_0:0:123456 => 7655168912398123456)
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, g_Player[client].topstats[Stats_PlayTime]);
+				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, play_time);
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_Country", client, country);
 				PanelText(panel, "  %T", "#SMStats_MenuInfo_LastConnected", client, last_connected);
 				switch(g_Player[client].topstats[Stats_Points] >= 0)

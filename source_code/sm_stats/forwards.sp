@@ -22,7 +22,7 @@ public void OnClientConnected(int client)
 	
 	if(!sql)
 	{
-		PrintToServer("[SM Stats] OnClientConnected error: No database connection.");
+		PrintToServer("%s OnClientConnected error: No database connection.", core_chattag);
 		return;
 	}
 	
@@ -35,13 +35,13 @@ public void OnClientConnected(int client)
 	
 	if(!GetClientAuthId(client, AuthId_Steam2, g_Player[client].auth, sizeof(g_Player[].auth), false))
 	{
-		PrintToServer("[SM Stats] OnClientConnected error: Failed to authenticate user index %i (userid %i)", client, userid);
+		PrintToServer("%s OnClientConnected error: Failed to authenticate user index %i (userid %i)", core_chattag, client, userid);
 		return;
 	}
 	
 	if(strlen(g_Player[client].auth) < 1)
 	{
-		PrintToServer("[SM Stats] OnClientConnected error: Obtained an empty steamid of user index (userid %i)", client, userid);
+		PrintToServer("%s OnClientConnected error: Obtained an empty steamid of user index (userid %i)", core_chattag, client, userid);
 		return;
 	}
 	
@@ -51,17 +51,17 @@ public void OnClientConnected(int client)
 	
 	if(!GetClientIP(client, g_Player[client].ip, sizeof(g_Player[].ip)))
 	{
-		PrintToServer("[SM Stats] Failed to obtain ip from user index %i (userid %i)", client, userid);
+		PrintToServer("%s OnClientConnect error: Failed to obtain ip from user index %i (userid %i)", core_chattag, client, userid);
 		return;
 	}
 	
 	Transaction txn = new Transaction();
 	char query[256];
 	
-	Format(query, sizeof(query), "select ServerID from `%s` where SteamID = '%s' and ServerID = %i", sql_table_playerlist, g_Player[client].auth, g_ServerID);
+	Format(query, sizeof(query), "select ServerID from `" ... sql_table_playerlist ... "` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
 	txn.AddQuery(query, 1);
 	
-	Format(query, sizeof(query), "select ServerID from `%s` where SteamID = '%s' and ServerID = %i", sql_table_weapons, g_Player[client].auth, g_ServerID);
+	Format(query, sizeof(query), "select ServerID from `" ... sql_table_weapons ... "` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
 	txn.AddQuery(query, 2);
 	
 	sql.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, g_Player[client].userid);
@@ -75,7 +75,7 @@ public void OnClientPutInServer(int client)
 	
 	SDKHook(client, SDKHook_OnTakeDamage, OnPlayerTakeDamage);
 	
-	CreateTimer(60.0, Timer_MinutePlayed, GetClientUserId(client), TIMER_REPEAT);
+	CreateTimer(60.0, Timer_TimePlayed, GetClientUserId(client), TIMER_REPEAT);
 }
 
 public void OnClientSettingsChanged(int client)
@@ -124,7 +124,7 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 	int client = GetClientOfUserId(userid);
 	if(!IsValidClient(client))
 	{
-		PrintToServer("[SM Stats] CheckUser_SQL error: Attempted reading invalid userid %i (Disconnected during query?)", userid);
+		PrintToServer("%s CheckUser_SQL error: Attempted reading invalid userid %i (Disconnected during query?)", core_chattag, userid);
 		return;
 	}
 	
@@ -312,14 +312,49 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 				char event_reason[256], auth[64];
 				event.GetString("reason", event_reason, sizeof(event_reason));
 				GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+				int timestamp = GetTime();
 				
-				CallbackQuery("update `" ... sql_table_playerlist ... "` set LastConnected = %i where SteamID = '%s' and ServerID = '%s'"
-				, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected
-				, GetTime(), auth, g_ServerID);
+				char query[255];
+				Format(query, sizeof(query), "select PlayTime from `" ... sql_table_playerlist ..."` where SteamID = '%s' and ServerID = %i"
+				, auth, g_ServerID);
+				DataPack pack = new DataPack();
+				pack.WriteCell(strlen(auth)+1);
+				pack.WriteString(auth);
+				pack.WriteCell(timestamp);
+				pack.WriteCell(g_Player[client].session[Stats_PlayTime]);
+				pack.Reset();
+				sql.Query(DBQuery_OnPlayerDisconnected, query, pack);
 				
 				Send_Player_Disconnected(g_Player[client], event_reason);
 			}
 		}
+	}
+}
+
+void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const char[] error, DataPack pack)
+{
+	int maxlen = pack.ReadCell();
+	char[] auth = new char[maxlen];
+	pack.ReadString(auth, maxlen);
+	int timestamp = pack.ReadCell();
+	int session_PlayTime = pack.ReadCell();
+	delete pack;
+	
+	if(results == null)
+	{
+		PrintToServer("%s OnPlayerDisconnected() Error: Failed checking user on disconnect\nSteamID: %s\nError below:\n%s"
+		, core_chattag, auth, error);
+		return;
+	}
+	
+	if(results.FetchRow())
+	{
+		int PlayTime = results.FetchInt(0);
+		int calculate = PlayTime - session_PlayTime;
+		
+		CallbackQuery("update `" ... sql_table_playerlist ... "` set LastConnected = %i, PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = '%s'"
+		, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected
+		, timestamp, calculate, auth, g_ServerID);
 	}
 }
 
@@ -349,7 +384,7 @@ Action OnPlayerTakeDamage(int victim, int &client, int &inflictor, float &damage
 
 //
 
-Action Timer_MinutePlayed(Handle timer, int userid)
+Action Timer_TimePlayed(Handle timer, int userid)
 {
 	int client = 0;
 	if(!IsValidClient((client = GetClientOfUserId(userid))))
@@ -358,20 +393,45 @@ Action Timer_MinutePlayed(Handle timer, int userid)
 		return Plugin_Handled;
 	}
 	
-	g_Player[client].session[Stats_PlayTime]++;
+	char query[255];
+	Format(query, sizeof(query), "select PlayTime from `" ... sql_table_playerlist ..."` where SteamID = '%s' and ServerID = %i"
+	, g_Player[client].auth, g_ServerID);
+	sql.Query(DBQuery_TimePlayed, query, userid);
 	
-	CallbackQuery("update `%s` set PlayTime = PlayTime+1 where SteamID = '%s' and ServerID = %i"
-	, query_error_uniqueid_UpdatePlayTime
-	, sql_table_playerlist
-	, g_Player[client].auth
-	, g_ServerID);
-	
-	if(g_Player[client].active_page_session > 0)
+	if(g_Player[client].active_page_session == 1)
 	{
-		StatsMenu.Session(client, g_Player[client].active_page_session);
+		StatsMenu.Session(client, 1);
 	}
 	
 	return Plugin_Continue;
+}
+
+void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		PrintToServer("%s Attempted to check playtime of userid %i that isn't valid!", core_chattag, userid);
+		return;
+	}
+	
+	if(results == null)
+	{
+		PrintToServer("%s Attemped to check playtime of userid %i but results is invalid!\nError below:\n%s", core_chattag, userid, error);
+		return;
+	}
+	
+	if(results.FetchRow())
+	{
+		int PlayTime = results.FetchInt(0);
+		int calculate = PlayTime - g_Player[client].session[Stats_PlayTime];
+		
+		CallbackQuery("update `" ... sql_table_playerlist ..."` set PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = %i"
+		, query_error_uniqueid_UpdatePlayTime
+		, calculate
+		, g_Player[client].auth
+		, g_ServerID);
+	}
 }
 
 // map load event
@@ -407,8 +467,7 @@ void SQLUpdateMapTimer()
 	if(sql != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select ServerID from `%s` where MapName = '%s' and ServerID = %i"
-		, sql_table_maps_log
+		Format(query, sizeof(query), "select ServerID from `" ... sql_table_maps_log ... "` where MapName = '%s' and ServerID = %i"
 		, cMap, g_ServerID);
 		sql.Query(DBQuery_MapTimer_1, query);
 	}
@@ -421,16 +480,16 @@ void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, an
 		// not found
 		case false:
 		{
-			CallbackQuery("insert into `%s` (PlayTime, ServerID, MapName) values (1, %i, '%s')"
+			CallbackQuery("insert into `" ... sql_table_maps_log ... "` (PlayTime, ServerID, MapName) values (1, %i, '%s')"
 			, query_error_uniqueid_UpdateMapTimeInserting
-			, sql_table_maps_log, g_ServerID, cMap);
+			, g_ServerID, cMap);
 		}
 		// found
 		case true:
 		{
-			CallbackQuery("update `%s` set PlayTime = PlayTime+1 where ServerID = %i and MapName = '%s'"
+			CallbackQuery("update `" ... sql_table_maps_log ... "` set PlayTime = PlayTime+1 where ServerID = %i and MapName = '%s'"
 			, query_error_uniqueid_UpdateMapTimeUpdating
-			, sql_table_maps_log, g_ServerID, cMap);
+			, g_ServerID, cMap);
 		}
 	}
 }

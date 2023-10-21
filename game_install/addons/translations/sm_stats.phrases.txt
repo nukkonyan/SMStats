@@ -20,36 +20,91 @@
 	//================================//
 	// Time format. // The ' #|# ' is the plural-splitter.
 	//================================//
-	"#SMStats_TimeFormat_Minute"
+	"#SMStats_TimeFormat_Year"
 	{
-		"en" "{MINUTE} minute#|#{MINUTE} minutes"
-		"jp" "{1}分"
-	}
-	"#SMStats_TimeFormat_Hour"
-	{
-		"en" "{HOUR} hour#|#{12HOUR} hours"
-		"jp" "{HOUR}時間"
-	}
-	"#SMStats_TimeFormat_Day"
-	{
-		"en" "{1} day#|#{1} days"
-		"jp" "{1}日"
+		"en" "{YEAR} year#|#{YEAR} years"
+		"jp" "{YEAR}ヶ年"
 	}
 	"#SMStats_TimeFormat_Month"
 	{
-		"en" "{1} month#|#{1} months"
-		"jp" "{1}月#|#{1}ヶ月"
+		"en" "{MONTH} month#|#{MONTH} months"
+		"jp" "{MONTH}ヶ月"
 	}
-	"#SMStats_TimeFormat_Year"
+	"#SMStats_TimeFormat_Day"
 	{
-		"en" "{1} year#|#{1} years"
-		"jp" "{1}年#|#{1}ヶ年"
+		"en" "{DAY} day#|#{DAY} days"
+		"jp" "{DAY}日間"
 	}
+	"#SMStats_TimeFormat_Hour"
+	{
+		"en" "{HOUR} hour#|#{HOUR} hours"
+		"jp" "{HOUR}時間"
+	}
+	"#SMStats_TimeFormat_Minute"
+	{
+		"en" "{MINUTE} minute#|#{MINUTE} minutes"
+		"jp" "{MINUTE}分"
+	}
+	"#SMStats_TimeFormat_Second"
+	{
+		"en" "{SECOND} second#|#{SECOND} seconds"
+		"jp" "{SECOND}秒"
+	}
+	"#SMStats_TimeFormatShort_Hour"
+	{
+		"en" "{HOUR}hr#|#{HOUR}hrs"
+		"jp" "{HOUR}時間"
+	}
+	"#SMStats_TimeFormatShort_Minute"
+	{
+		"en" "{MINUTE}min"
+		"jp" "{MINUTE}分"
+	}
+	"#SMStats_TimeFormatShort_Second"
+	{
+		"en" "{SECOND}sec"
+		"jp" "{SECOND}秒"
+	}
+
 	"#SMStats_TimeFormat_AM_PM"
 	{
 		"en" "AM#|#PM"
 		"jp" "午前#|#午後"
 		"sv" "Förmiddag#|#Eftermiddag"
+	}
+	"#SMStats_PlayTimeFormat_Scenario0"
+	{
+		"en" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
+		"jp" "{YEARS}{MONTHS}{DAYS}{HOURS}{MINUTES}{SECONDS}"
+		"sv" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
+	}
+	"#SMStats_PlayTimeFormat_Scenario1"
+	{
+		"en" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
+		"jp" "{MONTHS}{DAYS}{HOURS}{MINUTES}{SECONDS}"
+		"sv" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
+	}
+	"#SMStats_PlayTimeFormat_Scenario2"
+	{
+		"en" "{DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
+		"jp" "{DAYS}{HOURS}{MINUTES}{SECONDS}"
+		"sv" "{DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
+	}
+	"#SMStats_PlayTimeFormat_Scenario3"
+	{
+		"en" "{HOURS}, {MINUTES} and {SECONDS}"
+		"jp" "{HOURS}{MINUTES}{SECONDS}"
+		"sv" "{HOURS}, {MINUTES} och {SECONDS}"
+	}
+	"#SMStats_PlayTimeFormat_Scenario4"
+	{
+		"en" "{MINUTES} and {SECONDS}"
+		"jp" "{MINUTES}{SECONDS}"
+		"sv" "{MINUTES} och {SECONDS}"
+	}
+	"#SMStats_PlayTimeFormat_Scenario5"
+	{
+		"en" "{SECONDS}"
 	}
 	"#SMStats_TimeFormat_LastConnected"
 	{
@@ -179,18 +234,11 @@
 		"sv" "Stäng"
 	}
 
-	"#SMStats_MenuInfo_PlayTime" // SOON DEPRECATED .
-	{
-		"#format" "{1:i}"
-		"en" "Playtime : {1} minutes"
-		"jp" "プレイーのタイム : {1}分間"
-		"sv" "Speltid : {1} minuter"
-	}
-	"#SMStats_MenuInfo_PlayTimeNew"
+	"#SMStats_MenuInfo_PlayTime"
 	{
 		"#format" "{1:s}"
 		"en" "Playtime : {1}"
-		"jp" "時間やってました : {1}"
+		"jp" "やる時間 : {1}"
 		"sv" "Speltid : {1}"
 	}
 	"#SMStats_MenuInfo_Country"

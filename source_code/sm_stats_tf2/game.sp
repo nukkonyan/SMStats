@@ -2782,6 +2782,22 @@ public void OnGameFrame()
 		return;
 	}
 	
+	// better than a for() loop.
+	int client;
+	while((client = FindEntityByClassname(client, "player")) > 0)
+	{
+		if(IsValidClient(client))
+		{
+			char dummy[11];
+			FloatToString(GetClientTime(client), dummy, sizeof(dummy));
+			g_Player[client].session[Stats_PlayTime] = StringToInt(dummy);
+			if(g_Player[client].active_page_session == 1)
+			{
+				StatsMenu.Session(client, g_Player[client].active_page_session);
+			}
+		}
+	}
+	
 	//CheckActivePlayers();
 	
 	// this is because it's called a little bit too early when you pull multiple frags within a short span,
