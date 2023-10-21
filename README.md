@@ -29,6 +29,11 @@ Some things may not work as intended at the very moment, but will get working so
         - Support more source games.
         - Create website.
 
+## Lookin to assist in development?
+   - Hit me up on [Steam]!(https://steamcommunity.com/id/Teamkiller324
+   - Active development server:
+        - 83.253.75.203:27018 [password: ``784e35eryg``]
+
 [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
 
 ``SM Stats`` or ``SourceMod Stats`` is a multi-statistical tracking plugin that tracks frags, events, achievements and offers multi-game support, player connection/disconnection messages, player connect sounds, full translation support and more likely to come.
