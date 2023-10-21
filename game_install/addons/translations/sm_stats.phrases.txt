@@ -24,36 +24,49 @@
 	{
 		"en" "{YEAR} year#|#{YEAR} years"
 		"jp" "{YEAR}ヶ年"
+		"sv" "{YEAR}år"
 	}
 	"#SMStats_TimeFormat_Month"
 	{
 		"en" "{MONTH} month#|#{MONTH} months"
 		"jp" "{MONTH}ヶ月"
+		"sv" "{MONTH} måned#|#{MONTH} måneder"
+		"sv" "{MONTH} månad#|#{MONTH} månader"
 	}
 	"#SMStats_TimeFormat_Day"
 	{
 		"en" "{DAY} day#|#{DAY} days"
 		"jp" "{DAY}日間"
+		"no" "{DAY} dag#|#{DAY} dager"
+		"sv" "{DAY} dag#|#{DAY} dagar"
 	}
 	"#SMStats_TimeFormat_Hour"
 	{
 		"en" "{HOUR} hour#|#{HOUR} hours"
 		"jp" "{HOUR}時間"
+		"no" "{HOUR} time#|#{HOUR} timer"
+		"sv" "{HOUR} timme#|#{HOUR} timmar"
 	}
 	"#SMStats_TimeFormat_Minute"
 	{
 		"en" "{MINUTE} minute#|#{MINUTE} minutes"
 		"jp" "{MINUTE}分"
+		"no" "{MINUTE} minut#|#{MINUTE} minuter"
+		"sv" "{MINUTE} minut#|#{MINUTE} minuter"
 	}
 	"#SMStats_TimeFormat_Second"
 	{
 		"en" "{SECOND} second#|#{SECOND} seconds"
 		"jp" "{SECOND}秒"
+		"no" "{SECOND} sekund#|#{SECOND} sekunder"
+		"sv" "{SECOND} sekund#|#{SECOND} sekunder"
 	}
 	"#SMStats_TimeFormatShort_Hour"
 	{
 		"en" "{HOUR}hr#|#{HOUR}hrs"
 		"jp" "{HOUR}時間"
+		"no" "{HOUR}hr"
+		"sv" "{HOUR}hr"
 	}
 	"#SMStats_TimeFormatShort_Minute"
 	{
@@ -64,42 +77,50 @@
 	{
 		"en" "{SECOND}sec"
 		"jp" "{SECOND}秒"
+		"no" "{SECOND}sek"
+		"sv" "{SECOND}sek"
 	}
 
 	"#SMStats_TimeFormat_AM_PM"
 	{
 		"en" "AM#|#PM"
 		"jp" "午前#|#午後"
+		"no" "Morgen#|#Ettermiddag"
 		"sv" "Förmiddag#|#Eftermiddag"
 	}
 	"#SMStats_PlayTimeFormat_Scenario0"
 	{
 		"en" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
 		"jp" "{YEARS}{MONTHS}{DAYS}{HOURS}{MINUTES}{SECONDS}"
+		"no" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
 		"sv" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario1"
 	{
 		"en" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
 		"jp" "{MONTHS}{DAYS}{HOURS}{MINUTES}{SECONDS}"
+		"no" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
 		"sv" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario2"
 	{
 		"en" "{DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
 		"jp" "{DAYS}{HOURS}{MINUTES}{SECONDS}"
+		"no" "{DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
 		"sv" "{DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario3"
 	{
 		"en" "{HOURS}, {MINUTES} and {SECONDS}"
 		"jp" "{HOURS}{MINUTES}{SECONDS}"
+		"no" "{HOURS}, {MINUTES} og {SECONDS}"
 		"sv" "{HOURS}, {MINUTES} och {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario4"
 	{
 		"en" "{MINUTES} and {SECONDS}"
 		"jp" "{MINUTES}{SECONDS}"
+		"no" "{MINUTES} og {SECONDS}"
 		"sv" "{MINUTES} och {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario5"
@@ -134,14 +155,16 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} (Pos #{2}, {3} points) has joined the game from {4}."
 		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からを参加しました。"
-		"sv" "{1} (Pos #{2}, {3} poäng) har gått med ifrån {4}."
+		"no" "{1} (Pos #{2}, {3} poeng) er blitt med i spillet fra {4}."
+		"sv" "{1} (Pos #{2}, {3} poäng) har gått med i spelet från {4}."
 	}
 	"#SMStats_Player_Disconnected"
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}, {3} points) has left the game from {4}. {grey}({5})"
 		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
-		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet ifrån {4}. {grey}({5})"
+		"no" "{1} (Pos #{2}, {3} poeng) har forlatt spillet fra {4}. {grey}({5})"
+		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet från {4}. {grey}({5})"
 	}
 
 	//================================//
@@ -152,13 +175,15 @@
 		"#format" "{1:N}"
 		"en" "Playername: {1}"
 		"jp" "プレイヤー名： {1}"
+		"no" "Spillernavn : {1}"
 		"sv" "Spelarnamn: {1}"
 	}
 	"#SMStats_Menu_Positioned"
 	{
 		"#format" "{1:i},{2:i}"
 		"en" "Positioned #{1} out of {2} players."
-		"sv" "Positionerad #{1} utav {2} spelare."
+		"no" "Plassert #{1} av {2} spillere."
+		"sv" "Placerad #{1} av {2} spelare."
 	}
 	"#SMStats_Menu_Session"
 	{
@@ -184,6 +209,7 @@
 	{
 		"en" "Top 10 players"
 		"jp" "トップ10プレイヤー"
+		"no" "Topp 10 spillere"
 		"sv" "Topp 10 spelare"
 	}
 	"#SMStats_Menu_Top10Info"
@@ -213,12 +239,14 @@
 		"#format" "{1:i}"
 		"en" "Page {1}"
 		"jp" "ページ {1}"
+		"no" "Side {1}"
 		"sv" "Sida {1}"
 	}
 	"#SMStats_Menu_PreviousPage"
 	{
 		"en" "Previous page"
 		"jp" "前のページ"
+		"no" "Forrige siden"
 		"sv" "Förra sidan"
 	}
 	"#SMStats_Menu_NextPage"
@@ -239,6 +267,7 @@
 		"#format" "{1:s}"
 		"en" "Playtime : {1}"
 		"jp" "やる時間 : {1}"
+		"no" "Spilletid : {1}"
 		"sv" "Speltid : {1}"
 	}
 	"#SMStats_MenuInfo_Country"
@@ -246,6 +275,7 @@
 		"#format" "{1:s}"
 		"en" "Country : {1}"
 		"jp" "国 : {1}"
+		"no" "Land : {1}"
 		"sv" "Land : {1}"
 	}
 	"#SMStats_MenuInfo_LastConnected"
@@ -282,7 +312,8 @@
 	{
 		"#format" "{1:i}"
 		"en" "Assists : {1}"
-		"sv" "Assistantal : {1}"
+		"no" "Assister : {1}"
+		"sv" "Assister : {1}"
 	}
 	"#SMStats_MenuInfo_Deaths"
 	{
@@ -313,11 +344,14 @@
 	{
 		"#format" "{1:s}"
 		"en" "Achievement:"
+		"nl" "Prestatie:"
 		"sv" "Prestation:"
 	}
 	"#SMStats_MenuInfo_Description"
 	{
 		"en" "Description:"
+		"nl" "Beschrijving:"
+		"no" "Beskrivelse:"
 		"sv" "Beskrivning:"
 	}
 	"#SMStats_MenuInfo_TopPlayer"
@@ -325,6 +359,7 @@
 		"#format" "{1:i},{2:s},{3:i}"
 		"en" "Top {1} - {2} [{3} points]"
 		"jp" "トップ{1} - {2} [{3}ポイント]"
+		"no" "Topp {1} - {2} [{3} poeng]"
 		"sv" "Topp {1} - {2} [{3} poäng]"
 	}
 	
@@ -418,6 +453,7 @@
 	"#SMStats_FeatureUnavailable"
 	{
 		"en" "Feature is currently unavailable."
+		"sv" "Funktionen är förnuvarande otillgänglig."
 	}
 	
 	//================================//
