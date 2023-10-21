@@ -16,9 +16,9 @@ Some things may not work as intended at the very moment, but will get working so
    - Team Fortress 2
         - Implement spam-detection (exploiting to farm points such as spamming CTF Flag being picked up).
    - stats menu
-        - Implement sm_stats <top index | steamid > to manually check statistics of a particular player.
-             -  Example sm_stats 30 displays Top 30 current player.
-             -  Example sm_stats "STEAM_0:0:1234" displays the player through steamid.
+        - ~~Implement sm_stats <top index | steamid > to manually check statistics of a particular player.~~ Added
+             -  ~~Example sm_stats 30 displays Top 30 current player.
+             -  ~~Example sm_stats "STEAM_0:0:1234" displays the player through steamid.~~
    - overall
         - Implement custom achievements functionality.
         - Implement leaderboard ban functionality (Prevented from gaining points).
