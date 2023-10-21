@@ -46,17 +46,17 @@ public void Updater_OnPluginUpdating()
 	
 	while((client = FindEntityByClassname(client, "player")) > 0)
 	{		
-		if(!IsClientInGame(client))
+		if(IsClientInGame(client))
 		{
-			continue;
+			if(!IsFakeClient(client))
+			{
+				CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFound", client);
+			}
 		}
 		
-		if(IsFakeClient(client))
-		{
-			continue;
-		}
-		
-		CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFound", client);
+		#if defined updater_info
+		SMStatsInfo.Save(client, g_Player[client]);
+		#endif
 	}
 }
 
@@ -66,23 +66,22 @@ public void Updater_OnPluginUpdated()
 	
 	while((client = FindEntityByClassname(client, "player")) > 0)
 	{
-		if(!IsClientInGame(client))
+		if(IsClientInGame(client))
 		{
-			continue;
+			if(!IsFakeClient(client))
+			{
+				CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFinished", client, Version);
+			}
 		}
 		
-		if(IsFakeClient(client))
-		{
-			continue;
-		}
-		
-		CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFinished", client, Version);
+		#if defined updater_info
+		SMStatsInfo.Get(client, g_Player[client]);
+		#endif
 	}
 }
 
 Action Timer_CheckForUpdate(Handle timer)
 {
 	Updater_ForceUpdate();
-	
 	return Plugin_Continue;
 }
