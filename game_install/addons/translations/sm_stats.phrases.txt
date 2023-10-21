@@ -13,7 +13,7 @@
 	"#SMStats_Error_SQLNotInitialized"
 	{
 		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
-		"jp" "{yellow}エラー: {grey}SQL 接続出来ません。"
+		"jp" "{yellow}エラー: {grey}SQL 接続できません。"
 		"sv" "{yellow}Fel {grey}SQL Anslutning {yellow}är för tillfället otillgänglig."
 	}
 
@@ -203,7 +203,7 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} (Pos #{2}, {3} points) has joined the game from {4}."
 		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からを参加しました。"
-		"nl" "{1} (Pos #{2}, {3} points) neemt deel aan het spel van {4}."
+		"nl" "{1} (Pos #{2}, {3} punten) neemt deel aan het spel van {4}."
 		"no" "{1} (Pos #{2}, {3} poeng) er blitt med i spillet fra {4}."
 		"sv" "{1} (Pos #{2}, {3} poäng) har gått med i spelet från {4}."
 	}
@@ -212,7 +212,7 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}, {3} points) has left the game from {4}. {grey}({5})"
 		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
-		"nl" "{1} (Pos #{2}, {3} points) heeft het spel verlaten van {4} {grey}({5})"
+		"nl" "{1} (Pos #{2}, {3} punten) heeft het spel verlaten van {4} {grey}({5})"
 		"no" "{1} (Pos #{2}, {3} poeng) har forlatt spillet fra {4}. {grey}({5})"
 		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet från {4}. {grey}({5})"
 	}
@@ -231,7 +231,7 @@
 	"#SMStats_Menu_Positioned"
 	{
 		"#format" "{1:i},{2:i}"
-		"en" "Positioned #{1} out of {2} players."
+		"en" "Placed #{1} of {2} players."
 		"no" "Plassert #{1} av {2} spillere."
 		"sv" "Placerad #{1} av {2} spelare."
 	}
@@ -295,14 +295,14 @@
 	"#SMStats_Menu_PreviousPage"
 	{
 		"en" "Previous page"
-		"jp" "前のページ"
+		"jp" "前へページ"
 		"no" "Forrige siden"
 		"sv" "Förra sidan"
 	}
 	"#SMStats_Menu_NextPage"
 	{
 		"en" "Next page"
-		"jp" "次のページ"
+		"jp" "次へページ"
 		"sv" "Nästa sida"
 	}
 	"#SMStats_Menu_ExitPage"
@@ -409,6 +409,7 @@
 		"#format" "{1:i},{2:s},{3:i}"
 		"en" "Top {1} - {2} [{3} points]"
 		"jp" "トップ{1} - {2} [{3}ポイント]"
+		"nl" "Topp {1} - {2} [{3} punten]"
 		"no" "Topp {1} - {2} [{3} poeng]"
 		"sv" "Topp {1} - {2} [{3} poäng]"
 	}
