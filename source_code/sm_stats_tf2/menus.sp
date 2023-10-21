@@ -1369,7 +1369,6 @@ stock bool StrHasNumbers(const char[] str) {
 bool TF2_GetTopSQLInformation(int client, const char[] auth, bool bTopPlayerCustom=false, bool bTopPlayerId=false)
 {
 	bool bSuccess = false;
-	SQL_LockDatabase(sql);
 	
 	char query[2048];
 	Format(query, sizeof(query), "select "
@@ -1466,6 +1465,8 @@ bool TF2_GetTopSQLInformation(int client, const char[] auth, bool bTopPlayerCust
 	
 	... " from `%s` where SteamID = '%s' and ServerID = %i"
 	, sql_table_playerlist, auth, g_ServerID);
+	
+	SQL_LockDatabase(sql);
 	DBResultSet results = SQL_Query(sql, query);
 	switch(results != null && results.FetchRow())
 	{
@@ -1484,7 +1485,7 @@ bool TF2_GetTopSQLInformation(int client, const char[] auth, bool bTopPlayerCust
 					case false: CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist", client, g_Player[client].topstatsauth);
 				}
 			}
-			bSuccess = false;
+			return false;
 		}
 		case true:
 		{
