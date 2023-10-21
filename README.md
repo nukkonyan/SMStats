@@ -30,9 +30,9 @@ Some things may not work as intended at the very moment, but will get working so
         - Create website.
 
 ## Lookin to assist in development?
-   - Hit me up on [Steam]!(https://steamcommunity.com/id/Teamkiller324
-   - Active development server:
-        - 83.253.75.203:27018 [password: ``784e35eryg``]
+   - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
+   - Active SMStats server:
+        - 83.253.75.203:27018 (Team Fortress 2)
 
 [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
 
