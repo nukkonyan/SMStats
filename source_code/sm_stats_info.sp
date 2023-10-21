@@ -11,7 +11,7 @@
 public Plugin myinfo = {
 	name = "SM Stats: Info",
 	author = "teamkiller324",
-	description = "Tracks frags, maps, events, achievements, etc.",
+	description = "Tracks player statistics. Keeps the stats when SMStats is updated.",
 	version = Version,
 	url = "https://github.com/Teamkiller324"
 }
@@ -27,6 +27,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	
 	CreateNative("SMStatsInfo.Get", Native_Get);
 	CreateNative("SMStatsInfo.Save", Native_Save);
+	CreateNative("SMStatsInfo.Reset", Native_Reset);
 	
 	return APLRes_Success;
 }
@@ -42,5 +43,12 @@ int Native_Save(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);
 	GetNativeArray(2, g_Player[client], sizeof(g_Player[]));
+	return -69;
+}
+
+int Native_Reset(Handle plugin, int params)
+{
+	int client = GetNativeCell(1);
+	g_Player[client].Reset();
 	return -69;
 }

@@ -148,6 +148,54 @@
 	}
 
 	//================================//
+	// sm_stats Command.
+	//================================//
+	"#SMStats_StatsCmd_Usage"
+	{
+		"en" "{grey}Usage: {lightgreen}sm_stats <top id | steamid>\n{grey}Example:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+	}
+	"#SMStats_StatsCmd_Error"
+	{
+		"en" "{yellow}Error: {default}You must enter a valid top id or steamid."
+	}
+	"#SMStats_StatsCmd_NULL"
+	{
+		"en" "{yellow}Error: {default}The value may not be {red}NULL{default}."
+	}
+	"#SMStats_StatsCmd_InvalidTopPlayer"
+	{
+		"#format" "{1:i}"
+		"en" "{yellow}Error: {default}The enter top id {lightgreen}{1} {default}you entered is invalid. The value must be 1 or greater."
+	}
+	"#SMStats_StatsCmd_InvalidSteamID"
+	{
+		"#format" "{1:s}"
+		"en" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
+	}
+
+	//================================//
+	// Top Player SQL Information.
+	//================================//
+	"#SMStats_TopSQLInfo_ErrorParsing"
+	{
+		"en" "{yellow}Error: {default}Unable to parse top players of the leaderboard."
+	}
+	"#SMStats_TopSQLInfo_NoPlayers"
+	{
+		"en" "{yellow}Error: {default}No players were found on the leaderboard."
+	}
+	"#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist"
+	{
+		"#format" "{1:i}"
+		"en" "{yellow}Error: {default}Top player id {lightgreen}{1} {default}does not exist on the leaderboard."
+	}
+	"#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist"
+	{
+		"#format" "{1:s}"
+		"en" "{yellow}Error: {default}Top player steamid {lightgreen}{1} {default}does not exist on the leaderboard."
+	}
+
+	//================================//
 	// Connected.
 	//================================//
 	"#SMStats_Player_Connected"
@@ -155,6 +203,7 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} (Pos #{2}, {3} points) has joined the game from {4}."
 		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からを参加しました。"
+		"nl" "{1} (Pos #{2}, {3} points) neemt deel aan het spel van {4}."
 		"no" "{1} (Pos #{2}, {3} poeng) er blitt med i spillet fra {4}."
 		"sv" "{1} (Pos #{2}, {3} poäng) har gått med i spelet från {4}."
 	}
@@ -163,6 +212,7 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}, {3} points) has left the game from {4}. {grey}({5})"
 		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
+		"nl" "{1} (Pos #{2}, {3} points) heeft het spel verlaten van {4} {grey}({5})"
 		"no" "{1} (Pos #{2}, {3} poeng) har forlatt spillet fra {4}. {grey}({5})"
 		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet från {4}. {grey}({5})"
 	}
@@ -369,13 +419,23 @@
 	"#SMStats_UpdateFound"
 	{
 		"en" "New {lightgreen}Update {default}was found, restarting.."
+		"jp" "{lightgreen}新しいアップデートが見つかりました... 再起動しています.."
 		"sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
 	}
 	"#SMStats_UpdateFinished"
 	{
 		"#format" "{1:s}"
-		"en" "New {lightgreen}Update {orange}Version {1} {default}has been loaded."
-		"sv" "Ny {lightgreen}Uppdatering {orange}Version {1} {default}har laddats."
+		"en" "New {lightgreen}Update {orange}Version {1} {default}has been loaded!"
+		"jp" "{lightgreen}新しいアップデート{orange}バーション{1}{defualt}がロードされました！"
+		"sv" "Ny {lightgreen}Uppdatering {orange}Version {1} {default}har laddats!"
+	}
+
+	"#SMStats_GameLoaded"
+	{
+		"#format" "{1:s}"
+		"en" "{orange}Version {1} has been loaded!"
+		"jp" "{orange}バーション{1}ロードされました！"
+		"sv" "{orange}Version {1} har laddats!"
 	}
 	
 	//================================//

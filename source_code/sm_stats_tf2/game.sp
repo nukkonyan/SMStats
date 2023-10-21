@@ -1086,13 +1086,11 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 /* Called as soon a player changes their team. */
 void OnPlayerTeamChange(Event event, const char[] event_name, bool dontBroadcast)
 {
-	if(!bLoaded)
+	if(bLoaded)
 	{
-		return;
+		// too early to gather info, delay has to be added..
+		CreateTimer(0.2, Timer_OnPlayerUpdated, event.GetInt("userid"));
 	}
-	
-	// too early to gather info, delay has to be added..
-	CreateTimer(0.2, Timer_OnPlayerUpdated, event.GetInt("userid"));
 }
 
 /* Called as soon as a player captures a capture point. */

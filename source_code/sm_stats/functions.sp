@@ -9,19 +9,11 @@ enum TFBuilding
 	TFBuilding_Sapper = 5
 }
 
-stock bool IsValidClient(int client, bool bIsFakeClient=true, bool bIsValidEntity=false)
+stock bool IsValidClient(int client, bool bIsFakeClient=true)
 {
 	if(client < 1 || client > MaxPlayers)
 	{
 		return false;
-	}
-	
-	if(bIsValidEntity)
-	{
-		if(!IsValidEntity(client))
-		{
-			return false;
-		}
 	}
 	
 	if(!IsClientConnected(client))

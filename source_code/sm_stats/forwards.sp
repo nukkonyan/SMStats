@@ -104,11 +104,13 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 		if(strlen(g_Player[client].name2) < 1)
 		{
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
+			SMStatsInfo.Save(client, g_Player[client]);
 		}
 		// duplicate runs of same event.
 		else if(!StrEqual(name, g_Player[client].name2))
 		{
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
+			SMStatsInfo.Save(client, g_Player[client]);
 			
 			CallbackQuery("update `%s` set PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
 			, query_error_uniqueid_OnPlayerNameUpdate
@@ -292,6 +294,7 @@ public void OnClientDisconnect_Post(int client)
 	}
 	
 	g_Player[client].Reset();
+	SMStatsInfo.Reset(client);
 	
 	CheckActivePlayers();
 	
@@ -475,7 +478,9 @@ void SQLUpdateMapTimer()
 
 void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, any data)
 {
-	switch(results != null && (results.RowCount != 0))
+	int rowcount = results.RowCount;
+	
+	switch(results != null && rowcount != 0)
 	{
 		// not found
 		case false:
