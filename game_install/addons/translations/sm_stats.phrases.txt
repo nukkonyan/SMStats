@@ -203,6 +203,16 @@
 		"sv" "{yellow}Fel: {default}Toppspelaren med steamid {lightgreen}{1} {default}finns ej på leaderboardet."
 	}
 
+	//===================//
+	// Penalty.
+	//===================//
+	"#SMStats_Player_Penalty"
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:i},{5:i}"
+		"en" "{1} (Pos #{2}, {3} points) {darkred}was given {yellow}{4} {default}penalty due to abusing spamming. Your recent abused {5} points was reverted. You will not be able to gain points during penalty."
+		"sv" "{1} (Pos #{2}, {3} poäng) {darkred}Blev given en {yellow}{4} {default}staff på grund av missbruka spammning. Dina senaste missbrukade {5} poäng blev återställd. Du kan ej få poäng medans straffad."
+	}
+
 	//================================//
 	// Connected.
 	//================================//
