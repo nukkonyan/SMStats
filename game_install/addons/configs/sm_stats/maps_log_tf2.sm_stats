@@ -1,5 +1,6 @@
 create table if not exists `maps_log_tf2`
 (
+	`ID` int not null auto_increment,
 	`ServerID` int not null default '1',
 	`MapName` varchar(64) not null default '',
 	`PlayTime` int not null default '0',
@@ -100,5 +101,5 @@ create table if not exists `maps_log_tf2`
 	`Jarated` int not null default '0',
 	`MadMilked` int not null default '0',
 	`Extinguished` int not null default '0',
-	primary key (`ServerID`)
+	primary key (`ID`)
 )

@@ -196,7 +196,7 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 
 void CheckUserSQL_Failed(Database db, int userid, int numQueries, const char[] error, int failIndex, int[] queryData)
 {
-	PrintToServer("[SM Stats] CheckUser_SQL error: query id %i failed! (%s)", queryData[failIndex], error);
+	PrintToServer("%s CheckUser_SQL error: query id %i failed! (%s)", core_chattag, queryData[failIndex], error);
 }
 
 void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResultSet[] results, int[] queryData)
@@ -204,7 +204,7 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 	int client = GetClientOfUserId(userid);
 	if(!IsValidClient(client))
 	{
-		PrintToServer("[SM Stats] CheckUserSQL_Query error: Attempted reading invalid userid %i (Disconnected during query?)", userid);
+		PrintToServer("%s CheckUserSQL_Query error: Attempted reading invalid userid %i (Disconnected during query?)", core_chattag, userid);
 		return;
 	}
 	
@@ -254,14 +254,13 @@ void DBQuery_CheckUserSQL_Points(Database db, DBResultSet results, const char[] 
 	{
 		case false:
 		{
-			PrintToServer("[SM Stats] CheckUserSQL_Points error: Failed to obtain points for user index %i (userid %i)\nError: %s"
-			, client, g_Player[client].userid, error);
+			PrintToServer("%s CheckUserSQL_Points error: Failed to obtain points for user index %i (userid %i)\nError: %s"
+			, core_chattag, client, g_Player[client].userid, error);
 		}
 		
 		case true:
 		{
 			g_Player[client].points = results.FetchInt(0);
-			
 			Send_Player_Connected(g_Player[client]);
 		}
 	}
@@ -269,7 +268,7 @@ void DBQuery_CheckUserSQL_Points(Database db, DBResultSet results, const char[] 
 
 void CheckUserSQL_Query_Failed(Database db, int userid, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
-	PrintToServer("[SM Stats] CheckUserSQL_Query error: query id %i failed (%s)", queryData[failIndex], error);
+	PrintToServer("%s CheckUserSQL_Query error: query id %i failed (%s)", core_chattag, queryData[failIndex], error);
 }
 
 void OnPlayerConnected(Event event, const char[] event_name, bool dontBroadcast)
@@ -363,21 +362,24 @@ void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const 
 
 Action OnPlayerTakeDamage(int victim, int &client, int &inflictor, float &damage, int &damagetype)
 {
-	if(IsValidClient(victim) && IsValidClient(client, true) && GetClientTeam(victim) != GetClientTeam(client))
+	if(IsValidClient(victim) && IsValidClient(client, true))
 	{
-		//Turn the float into a valid integer.
-		char getdmg[96];
-		FloatToString(damage, getdmg, sizeof(getdmg));
-		SplitString(getdmg, ".", getdmg, sizeof(getdmg));
-		int dmg = StringToInt(getdmg);
-		
-		//PrintToChatAll("[%N] Damage done: %i", client, dmg);
-		
-		#if defined assister_func
-		g_PlayerDamaged[victim][client] += dmg;
-		#endif
-		
-		g_Player[client].session[Stats_DamageDone] += dmg;
+		if(GetClientTeam(victim) != GetClientTeam(client) && client != victim)
+		{
+			//Turn the float into a valid integer.
+			char getdmg[96];
+			FloatToString(damage, getdmg, sizeof(getdmg));
+			SplitString(getdmg, ".", getdmg, sizeof(getdmg));
+			int dmg = StringToInt(getdmg);
+			
+			//PrintToChatAll("[%N] Damage done: %i", client, dmg);
+			
+			#if defined assister_func
+			g_PlayerDamaged[victim][client] += dmg;
+			#endif
+			
+			g_Player[client].session[Stats_DamageDone] += dmg;
+		}
 	}
 	
 	return Plugin_Continue;
@@ -425,7 +427,8 @@ void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] err
 	if(results.FetchRow())
 	{
 		int PlayTime = results.FetchInt(0);
-		int calculate = g_Player[client].session[Stats_PlayTime] - PlayTime;
+		int session = g_Player[client].session[Stats_PlayTime];
+		int calculate = session - PlayTime;
 		CallbackQuery("update `" ... sql_table_playerlist ..."` set PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = %i"
 		, query_error_uniqueid_UpdatePlayTime
 		, calculate
@@ -434,15 +437,17 @@ void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] err
 	}
 }
 
-// map load event
-
-Handle hMapTimer = null;
-char cMap[64];
-
 public void OnMapStart()
 {
 	GetCurrentMap(cMap, sizeof(cMap));
-	hMapTimer = CreateTimer(60.0, MapTimer_OnMapStart, _, TIMER_REPEAT);
+	if(hMapTimer == null)
+	{
+		hMapTimer = CreateTimer(60.0, MapTimer_OnMapStart_Minutes, _, TIMER_REPEAT);
+	}
+	if(hMapTimerSeconds == null)
+	{
+		hMapTimerSeconds = CreateTimer(1.0, MapTimer_OnMapStart_Seconds, _, TIMER_REPEAT);
+	}
 }
 
 public void OnMapEnd()
@@ -452,11 +457,27 @@ public void OnMapEnd()
 		KillTimer(hMapTimer);
 		hMapTimer = null;
 	}
+	
+	if(hMapTimerSeconds != null)
+	{
+		KillTimer(hMapTimerSeconds)
+		hMapTimerSeconds = null;
+		UpdateMapTimerSeconds(cMap, iMapTimerSeconds);
+		iMapTimerSeconds = 0;
+	}
+	
+	
 }
 
-Action MapTimer_OnMapStart(Handle timer)
+Action MapTimer_OnMapStart_Minutes(Handle timer)
 {
 	SQLUpdateMapTimer();
+	return Plugin_Continue;
+}
+
+Action MapTimer_OnMapStart_Seconds(Handle timer)
+{
+	iMapTimerSeconds++;
 	return Plugin_Continue;
 }
 
@@ -467,31 +488,67 @@ void SQLUpdateMapTimer()
 	if(sql != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select ServerID from `" ... sql_table_maps_log ... "` where MapName = '%s' and ServerID = %i"
-		, cMap, g_ServerID);
-		sql.Query(DBQuery_MapTimer_1, query);
+		Format(query, sizeof(query), "select PlayTime from `"...sql_table_maps_log..."` where MapName = '%s' and ServerID = %i", cMap, g_ServerID);
+		sql.Query(DBQuery_MapTimer, query);
 	}
 }
 
-void DBQuery_MapTimer_1(Database db, DBResultSet results, const char[] error, any data)
+void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, any data)
 {
-	int rowcount = results.RowCount;
-	
-	switch(results != null && rowcount != 0)
+	switch(results != null && results.RowCount > 0)
 	{
 		// not found
 		case false:
 		{
-			CallbackQuery("insert into `" ... sql_table_maps_log ... "` (PlayTime, ServerID, MapName) values (1, %i, '%s')"
+			CallbackQuery("insert into `" ... sql_table_maps_log ... "` (PlayTime, ServerID, MapName) values (%i, %i, '%s')"
 			, query_error_uniqueid_UpdateMapTimeInserting
-			, g_ServerID, cMap);
+			, iMapTimerSeconds, g_ServerID, cMap);
 		}
 		// found
 		case true:
 		{
-			CallbackQuery("update `" ... sql_table_maps_log ... "` set PlayTime = PlayTime+1 where ServerID = %i and MapName = '%s'"
-			, query_error_uniqueid_UpdateMapTimeUpdating
-			, g_ServerID, cMap);
+			if(results.FetchRow())
+			{
+				int PlayTime = results.FetchInt(0);
+				int session = iMapTimerSeconds;
+				int calculate = session - PlayTime;
+				
+				CallbackQuery("update `" ... sql_table_maps_log ... "` set PlayTime = PlayTime+%i where ServerID = %i and MapName = '%s'"
+				, query_error_uniqueid_UpdateMapTimeUpdating
+				, calculate, g_ServerID, cMap);
+			}
 		}
+	}
+}
+
+void UpdateMapTimerSeconds(const char[] map, int seconds)
+{
+	char query[255];
+	Format(query, sizeof(query), "select PlayTime from `"...sql_table_maps_log..."` where MapName = '%s' and ServerID = %i", map, g_ServerID);
+	DataPack pack = new DataPack();
+	pack.WriteCell(strlen(map)+1);
+	pack.WriteString(map);
+	pack.WriteCell(seconds);
+	pack.Reset();
+	sql.Query(DBQuery_UpdateMapTimerSeconds, query, pack);
+}
+
+void DBQuery_UpdateMapTimerSeconds(Database db, DBResultSet results, const char[] error, DataPack pack)
+{
+	int maxlen = pack.ReadCell();
+	char[] map = new char[maxlen];
+	pack.ReadString(map, maxlen);
+	int seconds = pack.ReadCell();
+	delete pack;
+	
+	if(results.FetchRow())
+	{
+		int PlayTime = results.FetchInt(0);
+		int session = seconds;
+		int calculate = session - PlayTime;
+		
+		CallbackQuery("update `" ... sql_table_maps_log ... "` set PlayTime = PlayTime+%i where ServerID = %i and MapName = '%s'"
+		, query_error_uniqueid_UpdateMapTimeUpdatingSeconds
+		, calculate, g_ServerID, map);
 	}
 }

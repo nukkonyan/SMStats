@@ -80,7 +80,6 @@
 		"no" "{SECOND}sek"
 		"sv" "{SECOND}sek"
 	}
-
 	"#SMStats_TimeFormat_AM_PM"
 	{
 		"en" "AM#|#PM"
@@ -152,25 +151,30 @@
 	//================================//
 	"#SMStats_StatsCmd_Usage"
 	{
-		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid>\n{grey}Example:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid>  {grey}Example below:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"sv" "{grey}Använding: {lightgreen}sm_stats <topp spelarplacering | steamid>  {grey}Exempel nedan:\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 	}
 	"#SMStats_StatsCmd_Error"
 	{
 		"en" "{yellow}Error: {default}You must enter a valid top player position or steamid."
+		"sv" "{yellow}Fel: {default}Du måste ange en giltig spelarplacering eller steamid."
 	}
 	"#SMStats_StatsCmd_NULL"
 	{
 		"en" "{yellow}Error: {default}The value may not be {red}NULL{default}."
+		"sv" "{yellow}Fel: {default}Värdet bör ej vara {red}tom{default}."
 	}
 	"#SMStats_StatsCmd_InvalidTopPlayer"
 	{
 		"#format" "{1:i}"
 		"en" "{yellow}Error: {default}The enter top player position {lightgreen}{1} {default}you entered is invalid. The value must be 1 or greater."
+		"sv" "{yellow}Fel: {default}Det angivna toppspelarplaceringen {lightgreen}{1} {default}är ej giltigt. Värdet bör vara 1 eller högre."
 	}
 	"#SMStats_StatsCmd_InvalidSteamID"
 	{
 		"#format" "{1:s}"
 		"en" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
+		"sv" "{yellow}Fel: {default}steamidn {lightgreen}{1} {default}är ej giltigt. steamidn bör se ut någonting likt {lightgreen}STEAM_0:0:12345{default}."
 	}
 
 	//================================//
@@ -179,20 +183,24 @@
 	"#SMStats_TopSQLInfo_ErrorParsing"
 	{
 		"en" "{yellow}Error: {default}Unable to parse top players of the leaderboard."
+		"sv" "{yellow}Fel: {default}Kunde inte parsa toppspelarna av leaderboardet."
 	}
 	"#SMStats_TopSQLInfo_NoPlayers"
 	{
-		"en" "{yellow}Error: {default}No players were found on the leaderboard."
+		"en" "{yellow}Error: {default}No player were found on the leaderboard."
+		"sv" "{yellow}Fel: {default}Ingen spelare var funnen på leaderboardet."
 	}
 	"#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist"
 	{
 		"#format" "{1:i}"
 		"en" "{yellow}Error: {default}Top player placed {lightgreen}#{1} {default}does not exist on the leaderboard."
+		"sv" "{yellow}Fel: {default}Toppspelaren placerad {lightgreen}#{1} {default}finns ej på leaderboardet."
 	}
 	"#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist"
 	{
 		"#format" "{1:s}"
-		"en" "{yellow}Error: {default}Top player steamid {lightgreen}{1} {default}does not exist on the leaderboard."
+		"en" "{yellow}Error: {default}Top player with steamid {lightgreen}{1} {default}does not exist on the leaderboard."
+		"sv" "{yellow}Fel: {default}Toppspelaren med steamid {lightgreen}{1} {default}finns ej på leaderboardet."
 	}
 
 	//================================//
@@ -319,6 +327,14 @@
 		"jp" "やる時間 : {1}"
 		"no" "Spilletid : {1}"
 		"sv" "Speltid : {1}"
+	}
+	"#SMStats_MenuInfo_MapTime"
+	{
+		"#format" "{1:s}"
+		"en" "Maptime: {1}"
+		"jp" "マップ時間 : {1}"
+		"no" "Karttid : {1}"
+		"sv" "Karttid : {1}"
 	}
 	"#SMStats_MenuInfo_Country"
 	{

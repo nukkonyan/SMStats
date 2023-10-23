@@ -15,14 +15,17 @@ enum struct StatsMenuInfo
 			return;
 		}
 		
+		char country[64], map_time[128];
+		GeoipCountryName(client, g_Player[client].ip, country, sizeof(country));
+		GetTimeFormat(client, iMapTimerSeconds, map_time, sizeof(map_time));
+		
 		Panel panel = new Panel();
 		panel.DrawItem("SourceMod Stats - " ... VersionAlt ... " by Teamkiller324 ( Work in progress )");
 		
 		PanelText(panel, "%T", "#SMStats_Menu_Playername", client, client);
-		
-		char country[64];
-		GeoipCountryName(client, g_Player[client].ip, country, sizeof(country));
 		PanelText(panel, "%T", "#SMStats_MenuInfo_Country", client, country);
+		PanelText(panel, "%T", "#SMStats_MenuInfo_PlayTime", client, map_time);
+		PanelText(panel, "%T", "#SMStats_MenuInfo_MapTime", client, map_time);
 		
 		PanelText(panel, "%T\n ", "#SMStats_Menu_Positioned", client, (g_Player[client].position = GetClientPosition(g_Player[client].auth)), g_TotalTablePlayers);		
 		PanelItem(panel, "%T"
@@ -55,148 +58,7 @@ enum struct StatsMenuInfo
 		, "#SMStats_Menu_Session", client
 		, "#SMStats_Menu_Page", client, page);
 		
-		switch(page)
-		{
-			case 1:
-			{
-				char play_time[128];
-				GetPlayTimeFormat(client, g_Player[client].session[Stats_PlayTime], play_time, sizeof(play_time));
-				
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, play_time);
-				switch(g_Player[client].session[Stats_Points] >= 0)
-				{
-					case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, g_Player[client].session[Stats_Points]);
-					case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, g_Player[client].session[Stats_Points]);
-				}
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Frags", client, g_Player[client].session[Stats_Frags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Assists", client, g_Player[client].session[Stats_Assists]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Deaths", client, g_Player[client].session[Stats_Deaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Suicides", client, g_Player[client].session[Stats_Suicides]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_DamageDone", client, g_Player[client].session[Stats_DamageDone]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_AchievementsEarned", client, g_Player[client].session[Stats_Achievements]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			
-			case 2:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Dominations", client, g_Player[client].session[Stats_Dominations]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Revenges", client, g_Player[client].session[Stats_Revenges]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Airshots", client, g_Player[client].session[Stats_Airshots]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Headshots", client, g_Player[client].session[Stats_Headshots]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Noscopes", client, g_Player[client].session[Stats_Noscopes]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Backstabs", client, g_Player[client].session[Stats_Backstabs]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TauntFrags", client, g_Player[client].session[Stats_TauntFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_GibFrags", client, g_Player[client].session[Stats_GibFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_DeflectFrags", client, g_Player[client].session[Stats_Deflects]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleFrags", client, g_Player[client].session[Stats_TeleFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Collaterals", client, g_Player[client].session[Stats_Collaterals]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MidAirFrags", client, g_Player[client].session[Stats_MidAirFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CritFrags", client, g_Player[client].session[Stats_CritFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MiniCritFrags", client, g_Player[client].session[Stats_MiniCritFrags]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			
-			case 3:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Scout", client, g_Player[client].session[Stats_ScoutFrags], g_Player[client].session[Stats_ScoutDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Soldier", client, g_Player[client].session[Stats_SoldierFrags], g_Player[client].session[Stats_SoldierDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Pyro", client, g_Player[client].session[Stats_PyroFrags], g_Player[client].session[Stats_PyroDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Demoman", client, g_Player[client].session[Stats_DemoFrags], g_Player[client].session[Stats_DemoDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Heavy", client, g_Player[client].session[Stats_HeavyFrags], g_Player[client].session[Stats_HeavyDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Engineer", client, g_Player[client].session[Stats_EngieFrags], g_Player[client].session[Stats_EngieDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Medic", client, g_Player[client].session[Stats_MedicFrags], g_Player[client].session[Stats_MedicDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Sniper", client, g_Player[client].session[Stats_SniperFrags], g_Player[client].session[Stats_SniperDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Spy", client, g_Player[client].session[Stats_SpyFrags], g_Player[client].session[Stats_SpyDeaths]);			
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			
-			case 4:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Buildings", client, g_Player[client].session[Stats_BuildingsPlaced], g_Player[client].session[Stats_BuildingsDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Dispenser", client, g_Player[client].session[Stats_DispensersPlaced], g_Player[client].session[Stats_DispensersDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_SentryGun", client, g_Player[client].session[Stats_SentryGunsPlaced], g_Player[client].session[Stats_SentryGunsDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleporterEntrance", client, g_Player[client].session[Stats_TeleporterEntrancesPlaced], g_Player[client].session[Stats_TeleporterEntrancesDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleporterExit", client, g_Player[client].session[Stats_TeleporterExitsPlaced], g_Player[client].session[Stats_TeleporterExitsDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MiniSentryGun", client, g_Player[client].session[Stats_MiniSentryGunsPlaced], g_Player[client].session[Stats_MiniSentryGunsDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Sapper", client, g_Player[client].session[Stats_SappersPlaced], g_Player[client].session[Stats_SappersDestroyed]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			
-			case 5:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CP_Captured", client, g_Player[client].session[Stats_PointsCaptured]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CP_Defended", client, g_Player[client].session[Stats_PointsDefended]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Stolen", client, g_Player[client].session[Stats_FlagsStolen]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_PickedUp", client, g_Player[client].session[Stats_FlagsPickedUp]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Captured", client, g_Player[client].session[Stats_FlagsCaptured]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Defended", client, g_Player[client].session[Stats_FlagsDefended]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Dropped", client, g_Player[client].session[Stats_FlagsDropped]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			
-			case 6:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleportersUsed", client, g_Player[client].session[Stats_TeleportersUsed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayersTeleported", client, g_Player[client].session[Stats_PlayersTeleported]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedMilk", client, g_Player[client].session[Stats_CoatedMilk]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedPiss", client, g_Player[client].session[Stats_CoatedPiss]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Coated", client, g_Player[client].session[Stats_Coated]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Extinguished", client, g_Player[client].session[Stats_Extinguished]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Ignited", client, g_Player[client].session[Stats_Ignited]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Ubercharged", client, g_Player[client].session[Stats_Ubercharged]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_SandvichesStolen", client, g_Player[client].session[Stats_SandvichesStolen]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			
-			case 7:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_Monoculus", client, g_Player[client].session[Stats_MonoculusFragged], g_Player[client].session[Stats_MonoculusStunned]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_Merasmus", client, g_Player[client].session[Stats_MerasmusFragged], g_Player[client].session[Stats_MerasmusStunned]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_HHH", client, g_Player[client].session[Stats_HHHFragged]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_SkeletonKing", client, g_Player[client].session[Stats_SkeletonKingsFragged]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			
-			case 8:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_TanksDestroyed", client, g_Player[client].session[Stats_TanksDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_SentryBustersFragged", client, g_Player[client].session[Stats_SentryBustersFragged]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_BombsResetted", client, g_Player[client].session[Stats_BombsResetted]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				//PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-		}
+		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].session);
 		
 		panel.Send(client, StatsMenu_Session, MENU_TIME_FOREVER);
 		delete panel;
@@ -259,146 +121,7 @@ enum struct StatsMenuInfo
 		, g_Player[client].topstatsname
 		, "#SMStats_Menu_Page", client, page);
 		
-		switch(page)
-		{
-			case 1:
-			{
-				char country[64], last_connected[128], play_time[255];
-				GeoipCountryName(client, g_Player[client].topstatsip, country, sizeof(country));
-				GetLastConnectedFormat(client, g_Player[client].topstatsip, g_Player[client].toplastconnected, last_connected, sizeof(last_connected));
-				GetPlayTimeFormat(client, g_Player[client].topstats[Stats_PlayTime], play_time, sizeof(play_time));
-				
-				//PanelItem(panel, "  %T", "#SMStats_MenuInfo_Profile", client); // need a working Steam32 (STEAM_0:0:123456 => 7655168912398123456)
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, play_time);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Country", client, country);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_LastConnected", client, last_connected);
-				switch(g_Player[client].topstats[Stats_Points] >= 0)
-				{
-					case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, g_Player[client].topstats[Stats_Points]);
-					case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, g_Player[client].topstats[Stats_Points]);
-				}
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Frags", client, g_Player[client].topstats[Stats_Frags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Assists", client, g_Player[client].topstats[Stats_Assists]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Deaths", client, g_Player[client].topstats[Stats_Deaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Suicides", client, g_Player[client].topstats[Stats_Suicides]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_DamageDone", client, g_Player[client].topstats[Stats_DamageDone]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_AchievementsEarned", client, g_Player[client].topstats[Stats_Achievements]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			case 2:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Dominations", client, g_Player[client].topstats[Stats_Dominations]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Revenges", client, g_Player[client].topstats[Stats_Revenges]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Airshots", client, g_Player[client].topstats[Stats_Airshots]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Headshots", client, g_Player[client].topstats[Stats_Headshots]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Noscopes", client, g_Player[client].topstats[Stats_Noscopes]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Backstabs", client, g_Player[client].topstats[Stats_Backstabs]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TauntFrags", client, g_Player[client].topstats[Stats_TauntFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_GibFrags", client, g_Player[client].topstats[Stats_GibFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_DeflectFrags", client, g_Player[client].topstats[Stats_Deflects]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleFrags", client, g_Player[client].topstats[Stats_TeleFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Collaterals", client, g_Player[client].topstats[Stats_Collaterals]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MidAirFrags", client, g_Player[client].topstats[Stats_MidAirFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CritFrags", client, g_Player[client].topstats[Stats_CritFrags]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MiniCritFrags", client, g_Player[client].topstats[Stats_MiniCritFrags]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			case 3:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Scout", client, g_Player[client].topstats[Stats_ScoutFrags], g_Player[client].topstats[Stats_ScoutDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Soldier", client, g_Player[client].topstats[Stats_SoldierFrags], g_Player[client].topstats[Stats_SoldierDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Pyro", client, g_Player[client].topstats[Stats_PyroFrags], g_Player[client].topstats[Stats_PyroDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Demoman", client, g_Player[client].topstats[Stats_DemoFrags], g_Player[client].topstats[Stats_DemoDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Heavy", client, g_Player[client].topstats[Stats_HeavyFrags], g_Player[client].topstats[Stats_HeavyDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Engineer", client, g_Player[client].topstats[Stats_EngieFrags], g_Player[client].topstats[Stats_EngieDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Medic", client, g_Player[client].topstats[Stats_MedicFrags], g_Player[client].topstats[Stats_MedicDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Sniper", client, g_Player[client].topstats[Stats_SniperFrags], g_Player[client].topstats[Stats_SniperDeaths]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Spy", client, g_Player[client].topstats[Stats_SpyFrags], g_Player[client].topstats[Stats_SpyDeaths]);			
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			case 4:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Buildings", client, g_Player[client].topstats[Stats_BuildingsPlaced], g_Player[client].topstats[Stats_BuildingsDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Dispenser", client, g_Player[client].topstats[Stats_DispensersPlaced], g_Player[client].topstats[Stats_DispensersDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_SentryGun", client, g_Player[client].topstats[Stats_SentryGunsPlaced], g_Player[client].topstats[Stats_SentryGunsDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleporterEntrance", client, g_Player[client].topstats[Stats_TeleporterEntrancesPlaced], g_Player[client].topstats[Stats_TeleporterEntrancesDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleporterExit", client, g_Player[client].topstats[Stats_TeleporterExitsPlaced], g_Player[client].topstats[Stats_TeleporterExitsDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MiniSentryGun", client, g_Player[client].topstats[Stats_MiniSentryGunsPlaced], g_Player[client].topstats[Stats_MiniSentryGunsDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Sapper", client, g_Player[client].topstats[Stats_SappersPlaced], g_Player[client].topstats[Stats_SappersDestroyed]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			case 5:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CP_Captured", client, g_Player[client].topstats[Stats_PointsCaptured]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CP_Defended", client, g_Player[client].topstats[Stats_PointsDefended]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Stolen", client, g_Player[client].topstats[Stats_FlagsStolen]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_PickedUp", client, g_Player[client].topstats[Stats_FlagsPickedUp]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Captured", client, g_Player[client].topstats[Stats_FlagsCaptured]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Defended", client, g_Player[client].topstats[Stats_FlagsDefended]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Dropped", client, g_Player[client].topstats[Stats_FlagsDropped]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			case 6:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleportersUsed", client, g_Player[client].topstats[Stats_TeleportersUsed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayersTeleported", client, g_Player[client].topstats[Stats_PlayersTeleported]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedMilk", client, g_Player[client].topstats[Stats_CoatedMilk]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedPiss", client, g_Player[client].topstats[Stats_CoatedPiss]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Coated", client, g_Player[client].topstats[Stats_Coated]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Extinguished", client, g_Player[client].topstats[Stats_Extinguished]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Ignited", client, g_Player[client].topstats[Stats_Ignited]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_Ubercharged", client, g_Player[client].topstats[Stats_Ubercharged]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_SandvichesStolen", client, g_Player[client].topstats[Stats_SandvichesStolen]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			case 7:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_Monoculus", client, g_Player[client].topstats[Stats_MonoculusFragged], g_Player[client].topstats[Stats_MonoculusStunned]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_Merasmus", client, g_Player[client].topstats[Stats_MerasmusFragged], g_Player[client].topstats[Stats_MerasmusStunned]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_HHH", client, g_Player[client].topstats[Stats_HHHFragged]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_SkeletonKing", client, g_Player[client].topstats[Stats_SkeletonKingsFragged]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-			case 8:
-			{
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_TanksDestroyed", client, g_Player[client].topstats[Stats_TanksDestroyed]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_SentryBustersFragged", client, g_Player[client].topstats[Stats_SentryBustersFragged]);
-				PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_BombsResetted", client, g_Player[client].topstats[Stats_BombsResetted]);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
-				//PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
-				panel.DrawText(" ");
-				PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
-			}
-		}
+		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].topstats, true);
 		
 		panel.Send(client, StatsMenu_TopStatsInfo, MENU_TIME_FOREVER);
 		delete panel;
@@ -444,30 +167,35 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 	{
 		case 1:
 		{
+			g_Player[client].active_mainmenu = true;
 			g_Player[client].active_page_session = -1;
 			g_Player[client].active_page_topstats = -1;
 			StatsMenu.Main(client);
 		}
 		case 2:
 		{
+			g_Player[client].active_mainmenu = false;
 			g_Player[client].active_page_session = 1;
 			g_Player[client].active_page_topstats = -1;
 			StatsMenu.Session(client, 1);
 		}
 		case 3:
 		{
+			g_Player[client].active_mainmenu = false;
 			g_Player[client].active_page_session = -1;
 			g_Player[client].active_page_topstats = -1;
 			StatsMenu.Main(client);
 		}
 		case 4:
 		{
+			g_Player[client].active_mainmenu = false;
 			g_Player[client].active_page_session = -1;
 			g_Player[client].active_page_topstats = -1;
 			StatsMenu.TopStats(client);
 		}
 		case 5:
 		{
+			g_Player[client].active_mainmenu = false;
 			g_Player[client].active_page_session = -1;
 			g_Player[client].active_page_topstats = -1;
 		}
@@ -494,24 +222,28 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 1);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = true;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Main(client);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 2;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 2);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 				}
@@ -532,24 +264,28 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 2;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 2);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 1);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 3;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 3);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 				}
@@ -570,24 +306,28 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 3;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 3);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 2;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 2);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 4;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 4);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 				}
@@ -608,24 +348,28 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 4;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 4);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 3;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 3);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 5;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 5);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 				}
@@ -646,24 +390,28 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 5;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 5);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 4;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 4);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 6;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 6);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 				}
@@ -684,24 +432,28 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 6;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 6);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 5;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 5);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 7;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 7);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 				}
@@ -722,24 +474,28 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 7;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 7);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 6;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 6);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 8;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 8);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 				}
@@ -759,18 +515,21 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 8;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 8);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = 7;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 7);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 				}
@@ -809,6 +568,7 @@ int StatsMenu_TopStats(Menu menu, MenuAction action, int client, int select)
 		{
 			if(select == MenuCancel_ExitBack)
 			{
+				g_Player[client].active_mainmenu = true;
 				StatsMenu.Main(client);
 			}
 		}
@@ -837,6 +597,7 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 1;
 					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
@@ -844,6 +605,7 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				/*
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 1;
 					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
@@ -856,18 +618,21 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				*/
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.TopStats(client, g_Player[client].active_page_menu);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 2;
 					StatsMenu.TopStatsInfo(client, 2, g_Player[client].toppos);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();
 				}
@@ -888,24 +653,28 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 2;
 					StatsMenu.TopStatsInfo(client, 2, g_Player[client].toppos);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 1;
 					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 3;
 					StatsMenu.TopStatsInfo(client, 3, g_Player[client].toppos);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();
 				}
@@ -926,24 +695,28 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 3;
 					StatsMenu.TopStatsInfo(client, 3, g_Player[client].toppos);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 2;
 					StatsMenu.TopStatsInfo(client, 2, g_Player[client].toppos);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 4;
 					StatsMenu.TopStatsInfo(client, 4, g_Player[client].toppos);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();
 				}
@@ -964,24 +737,28 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 4;
 					StatsMenu.TopStatsInfo(client, 4, g_Player[client].toppos);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 3;
 					StatsMenu.TopStatsInfo(client, 3, g_Player[client].toppos);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 5;
 					StatsMenu.TopStatsInfo(client, 5, g_Player[client].toppos);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();
 				}
@@ -1002,24 +779,28 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 5;
 					StatsMenu.TopStatsInfo(client, 5, g_Player[client].toppos);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 4;
 					StatsMenu.TopStatsInfo(client, 4, g_Player[client].toppos);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 6;
 					StatsMenu.TopStatsInfo(client, 6, g_Player[client].toppos);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();
 				}
@@ -1040,24 +821,28 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 6;
 					StatsMenu.TopStatsInfo(client, 6, g_Player[client].toppos);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 5;
 					StatsMenu.TopStatsInfo(client, 5, g_Player[client].toppos);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 7;
 					StatsMenu.TopStatsInfo(client, 7, g_Player[client].toppos);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();
 				}
@@ -1078,24 +863,28 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 7;
 					StatsMenu.TopStatsInfo(client, 7, g_Player[client].toppos);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 6;
 					StatsMenu.TopStatsInfo(client, 6, g_Player[client].toppos);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 8;
 					StatsMenu.TopStatsInfo(client, 8, g_Player[client].toppos);
 				}
 				case 4:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();
 				}
@@ -1115,18 +904,21 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 			{
 				case 1:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 8;
 					StatsMenu.TopStatsInfo(client, 8, g_Player[client].toppos);
 				}
 				case 2:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].active_page_topstats = 7;
 					StatsMenu.TopStatsInfo(client, 7, g_Player[client].toppos);
 				}
 				case 3:
 				{
+					g_Player[client].active_mainmenu = false;
 					g_Player[client].active_page_session = -1;
 					g_Player[client].ResetTopStats();
 				}
@@ -1255,7 +1047,11 @@ Action StatsMenuCmd(int client, int args)
 {
 	switch(client == 0)
 	{
-		case false: StatsMenu.Main(client);
+		case false:
+		{
+			g_Player[client].active_mainmenu = true;
+			StatsMenu.Main(client);
+		}
 		case true: ReplyToCommand(client, "%s This command may only be used in-game!", core_chattag);
 	}
 	return Plugin_Handled;
@@ -1322,7 +1118,11 @@ Action StatsCmd(int client, int args)
 						}
 					}
 				}
-				case true: StatsMenu.Main(client);
+				case true:
+				{
+					g_Player[client].active_mainmenu = true;
+					StatsMenu.Main(client);
+				}
 			}
 		}
 		case true: ReplyToCommand(client, "%s This command may only be used in-game!", core_chattag);
@@ -1590,4 +1390,157 @@ bool TF2_GetTopSQLInformation(int client, const char[] auth, bool bTopPlayerCust
 	SQL_UnlockDatabase(sql);
 	
 	return bSuccess;
+}
+
+void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stats, bool top_player=false)
+{
+	switch(page)
+	{
+		case 1:
+		{
+			char play_time[255];
+			GetTimeFormat(client, stats[Stats_PlayTime], play_time, sizeof(play_time));
+			
+			switch(top_player)
+			{
+				case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, play_time);
+				case true:
+				{
+					char country[64], last_connected[128];
+					GeoipCountryName(client, g_Player[client].topstatsip, country, sizeof(country));
+					GetLastConnectedFormat(client, g_Player[client].topstatsip, g_Player[client].toplastconnected, last_connected, sizeof(last_connected));
+					
+					//PanelItem(panel, "  %T", "#SMStats_MenuInfo_Profile", client); // need a working Steam32 (STEAM_0:0:123456 => 7655168912398123456)
+					PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, play_time);
+					PanelText(panel, "  %T", "#SMStats_MenuInfo_Country", client, country);
+					PanelText(panel, "  %T", "#SMStats_MenuInfo_LastConnected", client, last_connected);
+				}
+			}
+			switch(stats[Stats_Points] >= 0)
+			{
+				case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, stats[Stats_Points]);
+				case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, stats[Stats_Points]);
+			}
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Frags", client, stats[Stats_Frags]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Assists", client, stats[Stats_Assists]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Deaths", client, stats[Stats_Deaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Suicides", client, stats[Stats_Suicides]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_DamageDone", client, stats[Stats_DamageDone]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_AchievementsEarned", client, stats[Stats_Achievements]);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
+			PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+		case 2:
+		{
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Dominations", client, stats[Stats_Dominations]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Revenges", client, stats[Stats_Revenges]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Airshots", client, stats[Stats_Airshots]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Headshots", client, stats[Stats_Headshots]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Noscopes", client, stats[Stats_Noscopes]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Backstabs", client, stats[Stats_Backstabs]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_TauntFrags", client, stats[Stats_TauntFrags]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_GibFrags", client, stats[Stats_GibFrags]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_DeflectFrags", client, stats[Stats_Deflects]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleFrags", client, stats[Stats_TeleFrags]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Collaterals", client, stats[Stats_Collaterals]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_MidAirFrags", client, stats[Stats_MidAirFrags]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CritFrags", client, stats[Stats_CritFrags]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_MiniCritFrags", client, stats[Stats_MiniCritFrags]);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
+			PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+		case 3:
+		{
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Scout", client, stats[Stats_ScoutFrags], stats[Stats_ScoutDeaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Soldier", client, stats[Stats_SoldierFrags], stats[Stats_SoldierDeaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Pyro", client, stats[Stats_PyroFrags], stats[Stats_PyroDeaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Demoman", client, stats[Stats_DemoFrags], stats[Stats_DemoDeaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Heavy", client, stats[Stats_HeavyFrags], stats[Stats_HeavyDeaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Engineer", client, stats[Stats_EngieFrags], stats[Stats_EngieDeaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Medic", client, stats[Stats_MedicFrags], stats[Stats_MedicDeaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Sniper", client, stats[Stats_SniperFrags], stats[Stats_SniperDeaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Spy", client, stats[Stats_SpyFrags], stats[Stats_SpyDeaths]);			
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
+			PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+		case 4:
+		{
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Buildings", client, stats[Stats_BuildingsPlaced], stats[Stats_BuildingsDestroyed]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Dispenser", client, stats[Stats_DispensersPlaced], stats[Stats_DispensersDestroyed]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_SentryGun", client, stats[Stats_SentryGunsPlaced], stats[Stats_SentryGunsDestroyed]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleporterEntrance", client, stats[Stats_TeleporterEntrancesPlaced], stats[Stats_TeleporterEntrancesDestroyed]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleporterExit", client, stats[Stats_TeleporterExitsPlaced], stats[Stats_TeleporterExitsDestroyed]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_MiniSentryGun", client, stats[Stats_MiniSentryGunsPlaced], stats[Stats_MiniSentryGunsDestroyed]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Sapper", client, stats[Stats_SappersPlaced], stats[Stats_SappersDestroyed]);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
+			PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+		case 5:
+		{
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CP_Captured", client, stats[Stats_PointsCaptured]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CP_Defended", client, stats[Stats_PointsDefended]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Stolen", client, stats[Stats_FlagsStolen]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_PickedUp", client, stats[Stats_FlagsPickedUp]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Captured", client, stats[Stats_FlagsCaptured]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Defended", client, stats[Stats_FlagsDefended]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CTF_Dropped", client, stats[Stats_FlagsDropped]);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
+			PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+		case 6:
+		{
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleportersUsed", client, stats[Stats_TeleportersUsed]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayersTeleported", client, stats[Stats_PlayersTeleported]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedMilk", client, stats[Stats_CoatedMilk]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedPiss", client, stats[Stats_CoatedPiss]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Coated", client, stats[Stats_Coated]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Extinguished", client, stats[Stats_Extinguished]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Ignited", client, stats[Stats_Ignited]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_Ubercharged", client, stats[Stats_Ubercharged]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_SandvichesStolen", client, stats[Stats_SandvichesStolen]);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
+			PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+		case 7:
+		{
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_Monoculus", client, stats[Stats_MonoculusFragged], stats[Stats_MonoculusStunned]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_Merasmus", client, stats[Stats_MerasmusFragged], stats[Stats_MerasmusStunned]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_HHH", client, stats[Stats_HHHFragged]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_HWN_SkeletonKing", client, stats[Stats_SkeletonKingsFragged]);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
+			PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+		case 8:
+		{
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_TanksDestroyed", client, stats[Stats_TanksDestroyed]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_SentryBustersFragged", client, stats[Stats_SentryBustersFragged]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_MvM_BombsResetted", client, stats[Stats_BombsResetted]);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
+			//PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
+			panel.DrawText(" ");
+			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+	}
 }

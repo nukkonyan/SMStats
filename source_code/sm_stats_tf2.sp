@@ -49,8 +49,9 @@
 #define query_error_uniqueid_UpdatePlayTime 80
 #define query_error_uniqueid_UpdateMapTimeInserting 81
 #define query_error_uniqueid_UpdateMapTimeUpdating 82
-#define query_error_uniqueid_OnPlayerNameUpdate 83
-#define query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected 84
+#define query_error_uniqueid_UpdateMapTimeUpdatingSeconds 83
+#define query_error_uniqueid_OnPlayerNameUpdate 84
+#define query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected 85
 
 #include <sm_stats>
 #include <sm_stats_core>
@@ -83,16 +84,15 @@ public Plugin myinfo =
 }
 
 #include "sm_stats_tf2/menus.sp"
+#include "sm_stats_tf2/functions.sp"
+#include "sm_stats_tf2/game.sp"
+//#include "sm_stats_tf2/forwards.sp"
 
 #include "sm_stats/functions.sp"
 #include "sm_stats/damage_done.sp"
 #include "sm_stats/natives.sp"
 #include "sm_stats/assister.sp"
 #include "sm_stats/forwards.sp"
-
-#include "sm_stats_tf2/functions.sp"
-#include "sm_stats_tf2/game.sp"
-//#include "sm_stats_tf2/forwards.sp"
 
 // updater
 //#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"

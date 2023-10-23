@@ -2695,32 +2695,34 @@ Action OnPlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playe
 
 public void OnGameFrame()
 {
-	if(!bLoaded)
+	if(bLoaded)
 	{
-		return;
-	}
-	
-	// better than a for() loop.
-	int client;
-	while((client = FindEntityByClassname(client, "player")) > 0)
-	{
-		if(IsValidClient(client))
+		// better than a for() loop.
+		int client;
+		while((client = FindEntityByClassname(client, "player")) > 0)
 		{
-			char dummy[11];
-			FloatToString(GetClientTime(client), dummy, sizeof(dummy));
-			g_Player[client].session[Stats_PlayTime] = StringToInt(dummy);
-			if(g_Player[client].active_page_session == 1)
+			if(IsValidClient(client))
 			{
-				StatsMenu.Session(client, g_Player[client].active_page_session);
+				char dummy[11];
+				FloatToString(GetClientTime(client), dummy, sizeof(dummy));
+				g_Player[client].session[Stats_PlayTime] = StringToInt(dummy);
+				if(g_Player[client].active_mainmenu)
+				{
+					StatsMenu.Main(client);
+				}
+				else if(g_Player[client].active_page_session == 1)
+				{
+					StatsMenu.Session(client, g_Player[client].active_page_session);
+				}
 			}
 		}
+		
+		//CheckActivePlayers();
+		
+		// this is because it's called a little bit too early when you pull multiple frags within a short span,
+		// causing independant 'events' when it was within one 'event'.
+		CreateTimer(0.1, Timer_OnGameFrame);
 	}
-	
-	//CheckActivePlayers();
-	
-	// this is because it's called a little bit too early when you pull multiple frags within a short span,
-	// causing independant 'events' when it was within one 'event'.
-	CreateTimer(0.1, Timer_OnGameFrame);
 }
 
 Action Timer_OnGameFrame(Handle timer)

@@ -106,7 +106,7 @@ stock int GetClientPosition(const char[] auth)
 		SQL_LockDatabase(sql);
 		
 		char query[256];
-		Format(query, sizeof(query), "select Points from `%s` where SteamID = '%s' and ServerID = %i", sql_table_playerlist, auth, g_ServerID);
+		Format(query, sizeof(query), "select Points from `" ... sql_table_playerlist ... "` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
 		DBResultSet results = SQL_Query(sql, query);
 		
 		switch(!!results && results.FetchRow())
@@ -119,7 +119,7 @@ stock int GetClientPosition(const char[] auth)
 				SQL_GetError(sql, error, sizeof(error));
 				SQL_UnlockDatabase(sql);
 				
-				LogError("[SM Stats] GetClientPosition error: Failed retrieving points for steam auth '%s' of sql table '%s' (%s)", auth, sql_table_playerlist, error);
+				LogError("%s GetClientPosition error: Failed retrieving points for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
 				return -1;
 			}
 			
@@ -127,7 +127,7 @@ stock int GetClientPosition(const char[] auth)
 			{
 				int points = results.FetchInt(0);
 				
-				Format(query, sizeof(query), "select count(*) from `%s` where Points >= %i and ServerID = %i", sql_table_playerlist, points, g_ServerID);
+				Format(query, sizeof(query), "select count(*) from `"...sql_table_playerlist..."` where Points >= %i and ServerID = %i", points, g_ServerID);
 				results = SQL_Query(sql, query);
 				
 				if(!results)
@@ -138,7 +138,7 @@ stock int GetClientPosition(const char[] auth)
 					SQL_GetError(sql, error, sizeof(error));
 					SQL_UnlockDatabase(sql);
 					
-					LogError("[SM Stats] GetClientPosition error: Failed retrieving position for steam auth '%s' of sql table '%s' (%s)", auth, sql_table_playerlist, error);
+					LogError("%s GetClientPosition error: Failed retrieving position for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
 					return -1;
 				}
 				
@@ -1192,12 +1192,12 @@ int ConvertHoursToDays(int hours)
 	return days;
 }
 
-int ConvertSecondsBecauseMinutes(int playtime_seconds)
+int ConvertSecondsBecauseMinutes(int time_seconds)
 {
-	int minutes = (playtime_seconds / 60);
+	int minutes = (time_seconds / 60);
 	int minutes_sec = minutes * 60;
 	
-	return (playtime_seconds - minutes_sec);
+	return (time_seconds - minutes_sec);
 }
 
 void GetCountStr(int count, char[] yes, int no)
@@ -1209,12 +1209,12 @@ void GetCountStr(int count, char[] yes, int no)
 	}
 }
 
-stock void GetPlayTimeFormat(int client, int playtime_seconds, char[] time_format, int maxlen)
+stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int maxlen)
 {
 	// convert seconds into Year/s Day/s Hour/s Minute/s Second/s
 	
-	int seconds = ConvertSecondsBecauseMinutes(playtime_seconds);
-	int minutes = (playtime_seconds / 60);
+	int seconds = ConvertSecondsBecauseMinutes(time_seconds);
+	int minutes = (time_seconds / 60);
 	int hours = (minutes / 60);
 	int days = ConvertHoursToDays(hours);
 	int months;
