@@ -451,6 +451,10 @@ public void OnMapStart()
 	{
 		hMapTimerSeconds = CreateTimer(1.0, MapTimer_OnMapStart_Seconds, _, TIMER_REPEAT);
 	}
+	if(hGameTimer == null)
+	{
+		hGameTimer = CreateTimer(0.215751257555125, MapTimer_GameTimer, _, TIMER_REPEAT);
+	}
 }
 
 public void OnMapEnd()
@@ -467,6 +471,12 @@ public void OnMapEnd()
 		hMapTimerSeconds = null;
 		UpdateMapTimerSeconds(cMap, iMapTimerSeconds);
 		iMapTimerSeconds = 0;
+	}
+	
+	if(hGameTimer != null)
+	{
+		KillTimer(hGameTimer);
+		hGameTimer = null;
 	}
 }
 

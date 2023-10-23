@@ -64,7 +64,7 @@ bool GetPlayerName(int client, char[] name, int maxlen)
  *	@param	itemdef		The weapon definition index to read.
  *	@param	classname	The weapon classname to read.
  */
-void CorrectWeaponClassname(TFClassType class, char[] weapon, int maxlen, int itemdef, const char[] classname)
+stock void CorrectWeaponClassname(TFClassType class, char[] weapon, int maxlen, int itemdef, const char[] classname)
 {
 	switch(itemdef)
 	{
@@ -686,7 +686,7 @@ void CorrectWeaponClassname(TFClassType class, char[] weapon, int maxlen, int it
 	}
 }
 
-bool AssistedKills(Transaction txn
+stock bool AssistedKills(Transaction txn
 					, const int[] list
 					, const int[] list_assister
 					, const bool[] list_assister_dominate

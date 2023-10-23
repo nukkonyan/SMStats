@@ -1176,28 +1176,46 @@ stock int IsValidDeveloperType(const char[] auth)
 	return false;
 }
 
-//
+// time formats, these needs to be fixed and corrected.
 
-int ConvertHoursToDays(int hours)
+int TimeFormat_ConvertSeconds(int time_seconds)
 {
-	int days;
-	int divider = ( hours / 24 );
+	int minutes = (time_seconds / 60 );
+	int minutes_sec = minutes * 60;
 	
-	while(divider >= 24)
+	return (time_seconds - minutes_sec);
+}
+int TimeFormat_ConvertMinutes(int time_seconds)
+{
+	int divider = time_seconds;
+	int minutes;
+	
+	while(divider >= (60 * 60))
+	{
+		minutes++;
+		divider -= (60 * 60);
+	}
+	
+	return minutes++;
+}
+int TimeFormat_ConvertHours(int minutes)
+{
+	int hours = ( minutes / 60 );
+	
+	return hours;
+}
+int TimeFormat_ConvertDays(int hours)
+{
+	int divider = ( hours / 24 );
+	int days;
+	
+	while(divider >= 24) // temporary workaround spaghetti code.
 	{
 		days++;
 		divider -= 24;
 	}
 	
 	return days;
-}
-
-int ConvertSecondsBecauseMinutes(int time_seconds)
-{
-	int minutes = (time_seconds / 60);
-	int minutes_sec = minutes * 60;
-	
-	return (time_seconds - minutes_sec);
 }
 
 void GetCountStr(int count, char[] yes, int no)
@@ -1213,12 +1231,14 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 {
 	// convert seconds into Year/s Day/s Hour/s Minute/s Second/s
 	
-	int seconds = ConvertSecondsBecauseMinutes(time_seconds);
-	int minutes = (time_seconds / 60);
-	int hours = (minutes / 60);
-	int days = ConvertHoursToDays(hours);
+	int seconds = TimeFormat_ConvertSeconds(time_seconds);
+	int minutes = TimeFormat_ConvertMinutes(time_seconds);
+	int hours = TimeFormat_ConvertHours(minutes);
+	int days = TimeFormat_ConvertDays(hours);
 	int months;
 	int years;
+	
+	PrintToServer("%i seconds %i minutes %i hours %i days", seconds, minutes, hours, days);
 	
 	char szYear[2][32];
 	bool bYearPlural = false;
