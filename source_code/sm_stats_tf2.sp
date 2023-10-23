@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 #pragma tabsize 0
-#define Version "1.0.0a"
+#define Version "1.0.0@pre-testing1"
 #define VersionAlt "v" ... Version
 #define MaxPlayers 65 // 101 cuz -unrestricted_maxplayers ?
 #define MaxItemDef 30758 // will later be updated to use indexes instead of itemdef
@@ -95,5 +95,5 @@ public Plugin myinfo =
 //#include "sm_stats_tf2/forwards.sp"
 
 // updater
-#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
-#include "sm_stats/updater.sp"
+//#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
+//#include "sm_stats/updater.sp"
