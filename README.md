@@ -27,7 +27,13 @@ Some things may not work as intended at the very moment, but will get working so
         - Implement functional time played (Convert x minutes to 1 day 1 hour, etc.)
 		- Implement a ban feature which detects if the player has been banned from the server, the player's details on SMStats will be removed.
         - ~~Fix playtime timer. Right now it is buggy and not working correctly.~~
-        - Support more source games.
+        - Support more source games in the future. such as:
+          - Team Fortress 2 Classic.
+          - Counter-Strike: Source.
+          - Counter-Strike: Global Offensive.
+          - Counter-Strike 2.
+          - Left 4 Dead 2.
+          - and many other.
         - Create website.
 
 ## Lookin to assist in development?
