@@ -396,14 +396,17 @@ Action Timer_TimePlayed(Handle timer, int userid)
 		return Plugin_Handled;
 	}
 	
-	char query[255];
-	Format(query, sizeof(query), "select PlayTime from `" ... sql_table_playerlist ..."` where SteamID = '%s' and ServerID = %i"
-	, g_Player[client].auth, g_ServerID);
-	sql.Query(DBQuery_TimePlayed, query, userid);
-	
-	if(g_Player[client].active_page_session == 1)
+	if(sql != null)
 	{
-		StatsMenu.Session(client, 1);
+		char query[255];
+		Format(query, sizeof(query), "select PlayTime from `" ... sql_table_playerlist ..."` where SteamID = '%s' and ServerID = %i"
+		, g_Player[client].auth, g_ServerID);
+		sql.Query(DBQuery_TimePlayed, query, userid);
+		
+		if(g_Player[client].active_page_session == 1)
+		{
+			StatsMenu.Session(client, 1);
+		}
 	}
 	
 	return Plugin_Continue;
@@ -465,8 +468,6 @@ public void OnMapEnd()
 		UpdateMapTimerSeconds(cMap, iMapTimerSeconds);
 		iMapTimerSeconds = 0;
 	}
-	
-	
 }
 
 Action MapTimer_OnMapStart_Minutes(Handle timer)
@@ -523,14 +524,17 @@ void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, any 
 
 void UpdateMapTimerSeconds(const char[] map, int seconds)
 {
-	char query[255];
-	Format(query, sizeof(query), "select PlayTime from `"...sql_table_maps_log..."` where MapName = '%s' and ServerID = %i", map, g_ServerID);
-	DataPack pack = new DataPack();
-	pack.WriteCell(strlen(map)+1);
-	pack.WriteString(map);
-	pack.WriteCell(seconds);
-	pack.Reset();
-	sql.Query(DBQuery_UpdateMapTimerSeconds, query, pack);
+	if(sql != null)
+	{
+		char query[255];
+		Format(query, sizeof(query), "select PlayTime from `"...sql_table_maps_log..."` where MapName = '%s' and ServerID = %i", map, g_ServerID);
+		DataPack pack = new DataPack();
+		pack.WriteCell(strlen(map)+1);
+		pack.WriteString(map);
+		pack.WriteCell(seconds);
+		pack.Reset();
+		sql.Query(DBQuery_UpdateMapTimerSeconds, query, pack);
+	}
 }
 
 void DBQuery_UpdateMapTimerSeconds(Database db, DBResultSet results, const char[] error, DataPack pack)
