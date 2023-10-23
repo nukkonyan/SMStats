@@ -105,6 +105,86 @@ enum struct SMStats_PlayerInfo
 	}
 }
 
+enum struct SMStats_TF2GameInfo
+{
+	ArrayList aFragEvent;
+	
+	bool bObjectPlaced[6];
+	ArrayList aObjectPlaced;
+	
+	bool bObjectDestroyed[6];
+	ArrayList aObjectDestroyed;
+	
+	bool bUbercharged;
+	
+	bool bUsedTeleporter;
+	bool bPlayerUsedTeleporter;
+	
+	bool bStolenSandvich;
+	
+	bool bStunned;
+	
+	bool bPassBallEvent[6];
+	
+	int iRobotFragEvent;
+	
+	//
+	
+	bool bPlayerJarated;
+	bool bPlayerMilked;
+	ArrayList aJarEvent;
+	
+	bool bExtEvent;
+	ArrayList aExtEvent;
+	
+	//
+	
+	void Reset()
+	{
+		if(!!this.aFragEvent)
+		{
+			delete this.aFragEvent;
+		}
+		
+		if(!!this.aObjectPlaced)
+		{
+			delete this.aObjectPlaced;
+		}
+		
+		if(!!this.aObjectDestroyed)
+		{
+			delete this.aObjectDestroyed;
+		}
+		
+		if(!!this.aJarEvent)
+		{
+			delete this.aJarEvent;
+		}
+		
+		if(!!this.aExtEvent)
+		{
+			delete this.aExtEvent;
+		}
+		
+		for(int i = 0; i < 6; i++)
+		{
+			this.bObjectPlaced[i] = false;		
+			this.bObjectDestroyed[i] = false;
+			this.bPassBallEvent[i] = false;
+		}
+		
+		this.bUbercharged = false;
+		this.bUsedTeleporter = false;
+		this.bPlayerUsedTeleporter = false;
+		this.bStolenSandvich = false;
+		this.bStunned = false;
+		this.bPlayerJarated = false;
+		this.bPlayerMilked = false;
+		this.bExtEvent = false;
+		this.iRobotFragEvent = -1;
+	}
+}
+
 methodmap SMStatsInfo __nullable__
 {
 	/*
@@ -112,16 +192,51 @@ methodmap SMStatsInfo __nullable__
 	 *	Obtain the current player stats.
 	 *
 	 *	@param client		The user index.
-	 *	@param player_info	The SMStats_PlayerInfo array to store the obtained information.
+	 *	@param player_stats	The SMStats_PlayerInfo array to store the obtained statistics.
 	 */
-	public static native void Get(int client, any[] player_info);
+	public static native void GetStats(int client, any[] player_stats);
 	
 	/*
 	 *	SourceMod Statistics.
 	 *	Save the current player stats.
 	 *
 	 *	@param client		The user index.
-	 *	@param player_info	The SMStats_PlayerInfo array to to obtain the information.
+	 *	@param player_stats	The SMStats_PlayerInfo array to obtain the statistics.
 	 */
-	public static native void Save(int client, any[] player_info);
+	public static native void SaveStats(int client, any[] player_stats);
+	
+	/*
+	 *	SourceMod Statistics.
+	 *	Resets the player stats.
+	 *
+	 *	@param client		The user index.
+	 */
+	public static native void ResetStats(int client);
+	
+	
+	/*
+	 *	SourceMod Statistics.
+	 *	Obtain the current player game stats.
+	 *
+	 *	@param client		The user index.
+	 *	@param game_stats	The SMStats GameInfo array to store the obtained statistics.
+	 */
+	public static native void GetGameStats(int client, any[] game_stats);
+	
+	/*
+	 *	SourceMod Statistics.
+	 *	Save the current player game stats.
+	 *
+	 *	@param client		The user index.
+	 *	@param game_stats	The SMStats GameInfo array to obtain the statistics.
+	 */
+	public static native void SaveGameStats(int client, any[] game_stats);
+	
+	/*
+	 *	SourceMod Statistics.
+	 *	Resets the player game stats.
+	 *
+	 *	@param client		The user index.
+	 */
+	public static native void ResetGameStats(int client);
 }

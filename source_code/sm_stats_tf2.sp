@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 #pragma tabsize 0
-#define Version "1.0.0"
+#define Version "1.0.0a"
 #define VersionAlt "v" ... Version
 #define MaxPlayers 65 // 101 cuz -unrestricted_maxplayers ?
 #define MaxItemDef 30758 // will later be updated to use indexes instead of itemdef
@@ -10,7 +10,9 @@
 #define core_chattag2 "SM Stats: TF2"
 #define load_menus
 #define load_forwards
+#define load_players
 #define updater_info
+#define updater_gamestats
 
 #define query_error_uniqueid_CP_OnCapturedPoint 1
 #define query_error_uniqueid_CP_OnCaptureBlocked 2
@@ -54,10 +56,6 @@
 #include <sm_stats_core>
 #include <tf2_stocks>
 
-// updater
-#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
-#include "sm_stats/updater.sp"
-
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	char gamefolder[16];
@@ -95,3 +93,7 @@ public Plugin myinfo =
 #include "sm_stats_tf2/functions.sp"
 #include "sm_stats_tf2/game.sp"
 //#include "sm_stats_tf2/forwards.sp"
+
+// updater
+#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
+#include "sm_stats/updater.sp"

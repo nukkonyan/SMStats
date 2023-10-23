@@ -104,13 +104,11 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 		if(strlen(g_Player[client].name2) < 1)
 		{
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
-			SMStatsInfo.Save(client, g_Player[client]);
 		}
 		// duplicate runs of same event.
 		else if(!StrEqual(name, g_Player[client].name2))
 		{
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
-			SMStatsInfo.Save(client, g_Player[client]);
 			
 			CallbackQuery("update `%s` set PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
 			, query_error_uniqueid_OnPlayerNameUpdate
@@ -294,7 +292,7 @@ public void OnClientDisconnect_Post(int client)
 	}
 	
 	g_Player[client].Reset();
-	SMStatsInfo.Reset(client);
+	SMStatsInfo.ResetStats(client);
 	
 	CheckActivePlayers();
 	
@@ -353,7 +351,7 @@ void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const 
 	if(results.FetchRow())
 	{
 		int PlayTime = results.FetchInt(0);
-		int calculate = PlayTime - session_PlayTime;
+		int calculate = session_PlayTime - PlayTime;
 		
 		CallbackQuery("update `" ... sql_table_playerlist ... "` set LastConnected = %i, PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = '%s'"
 		, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected
@@ -427,8 +425,7 @@ void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] err
 	if(results.FetchRow())
 	{
 		int PlayTime = results.FetchInt(0);
-		int calculate = PlayTime - g_Player[client].session[Stats_PlayTime];
-		
+		int calculate = g_Player[client].session[Stats_PlayTime] - PlayTime;
 		CallbackQuery("update `" ... sql_table_playerlist ..."` set PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = %i"
 		, query_error_uniqueid_UpdatePlayTime
 		, calculate

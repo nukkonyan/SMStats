@@ -104,6 +104,28 @@ public void OnPluginStart()
 	g_DeathPoints = CreateConVar("sm_stats_points_death", "10", "SM Stats - Points taken when dying.", _, true);
 	
 	AutoExecConfig(true);
+	
+	RegAdminCmd("sm_stats_reload", SMStatsReloadCmd, ADMFLAG_ROOT, "SM Stats - Reload core plugin.");
+}
+
+Action SMStatsReloadCmd(int client, int args)
+{
+	ReplyToCommand(client, "[SM Stats: Core] Forced reloading SMStats core, expect SQL errors..");
+	
+	if(sql != null)
+	{
+		delete sql;
+	}
+	
+	CheckDatabase(true);
+	CreateTimer(1.0, Timer_SMStats_ReloadCmd);
+	return Plugin_Continue;
+}
+
+Action Timer_SMStats_ReloadCmd(Handle timer)
+{
+	OnAllPluginsLoaded();
+	return Plugin_Continue;
 }
 
 public void OnAllPluginsLoaded()

@@ -45,7 +45,7 @@ public void Updater_OnPluginUpdating()
 	int client = 0;
 	
 	while((client = FindEntityByClassname(client, "player")) > 0)
-	{		
+	{
 		if(IsClientInGame(client))
 		{
 			if(!IsFakeClient(client))
@@ -55,7 +55,10 @@ public void Updater_OnPluginUpdating()
 		}
 		
 		#if defined updater_info
-		SMStatsInfo.Save(client, g_Player[client]);
+		SMStatsInfo.SaveStats(client, g_Player[client]);
+		#endif
+		#if defined updater_gamestats
+		SMStatsInfo.SaveGameStats(client, g_Game[client]);
 		#endif
 	}
 }
@@ -75,7 +78,10 @@ public void Updater_OnPluginUpdated()
 		}
 		
 		#if defined updater_info
-		SMStatsInfo.Get(client, g_Player[client]);
+		SMStatsInfo.GetStats(client, g_Player[client]);
+		#endif
+		#if defined updater_gamestats
+		SMStatsInfo.GetGameStats(client, g_Game[client]);
 		#endif
 	}
 }

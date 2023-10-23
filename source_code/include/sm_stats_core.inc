@@ -7,10 +7,13 @@
 
 bool DEBUG = false;
 
+stock char str_statsCmd[][] =
+{
+	"sm_stat",
+	"sm_stats",
+};
 stock char str_cmdMenu[][] =
 {
-	"sm_stats",
-	"sm_stat",
 	"sm_rank",
 	"sm_ranks",
 	"sm_top10",
@@ -147,7 +150,9 @@ public void _sm_stats_core_loaded()
 	bAllowBots = _sm_stats_get_allowbots();
 	g_MinPlayers = _sm_stats_get_minplayers();
 	
-	CreateTimer(5.0, Timer_LoadCurrentInGamePlayers);
+	#if defined load_players
+	CreateTimer(5.0, Timer_PluginLoaded);
+	#endif
 }
 
 void PrepareTranslations()
@@ -202,21 +207,6 @@ public void OnPluginStart()
 	#if defined assister_func
 	LoadAssisterEvents();
 	#endif
-	
-	RegAdminCmd("sm_utest1", utest1, ADMFLAG_ROOT);
-	RegAdminCmd("sm_utest2", utest2, ADMFLAG_ROOT);
-}
-
-Action utest1(int client, int args)
-{
-	Updater_OnPluginUpdating();
-	return Plugin_Continue;
-}
-
-Action utest2(int client, int args)
-{
-	Updater_OnPluginUpdated();
-	return Plugin_Continue;
 }
 
 //
@@ -366,24 +356,29 @@ stock void DBQuery_Callback(Database database, DBResultSet results, const char[]
 stock void TXN_Callback_Failure(Database db, int unique_query_id, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
 	LogError("\n%s Failed to query id %i"
-	... "\nMake sure the database connection is available."
+	... "\nMake sure the database connection is available and/or stable."
 	... "\nError reason below:"
 	... "\n%s", core_chattag, unique_query_id, error);
 }
 
 //
 
-Action Timer_LoadCurrentInGamePlayers(Handle timer)
+stock Action Timer_PluginLoaded(Handle timer)
 {
 	// plugin may have just reloaded.
 	
 	int client = 0;
 	while((client = FindEntityByClassname(client, "player")) != -1)
 	{
-		if(IsValidClient(client, false, true))
+		if(IsValidClient(client, false))
 		{
 			// obtain the names.
 			GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
+			
+			if(!IsFakeClient(client))
+			{
+				CPrintToChat(client, "{lightgreen}%s %T", core_chattag, "#SMStats_GameLoaded", client, Version);
+			}
 		}
 	}
 	
