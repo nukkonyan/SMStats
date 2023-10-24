@@ -235,8 +235,11 @@ stock bool IsWarmupActive()
 stock void OnRoundStarted(Event event, const char[] event_name, bool dontBroadcast)
 {
 	bRoundActive = true;
+	_sm_stats_info_update_round_active(true);
 	
-	if((bWarmupActive = IsWarmupActive()))
+	bWarmupActive = IsWarmupActive();
+	
+	if(bWarmupActive)
 	{
 		int player = 0;
 		while(IsValidClient((player = FindEntityByClassname(player, "player"))))
@@ -247,7 +250,7 @@ stock void OnRoundStarted(Event event, const char[] event_name, bool dontBroadca
 		return;
 	}
 	
-	if(_sm_stats_get_disableafterroundend())
+	if(bDisableAfterRoundEnd)
 	{
 		int needed = g_MinPlayers;
 		int players = GetPlayerCount(bAllowBots);
@@ -272,10 +275,13 @@ stock void OnRoundStarted(Event event, const char[] event_name, bool dontBroadca
 stock void OnRoundEnded(Event event, const char[] event_name, bool dontBroadcast)
 {
 	bRoundActive = false;
+	_sm_stats_info_update_round_active(false);
 	
-	if((bWarmupActive = IsWarmupActive()))
+	bWarmupActive = IsWarmupActive();
+	
+	if(bWarmupActive)
 	{
-		if(_sm_stats_get_disableafterroundend())
+		if(bDisableAfterRoundEnd)
 		{
 			bStatsActive = false;
 			
@@ -293,16 +299,16 @@ stock void OnRoundEnded(Event event, const char[] event_name, bool dontBroadcast
 
 void CheckActivePlayers()
 {
-	int needed = g_MinPlayers;
 	int players = GetPlayerCount(bAllowBots);
 	
 	switch(bStatsActive)
 	{
 		case false:
 		{
-			if(players >= needed && bRoundActive)
+			if(players >= g_MinPlayers && bRoundActive)
 			{
 				bStatsActive = true;
+				_sm_stats_info_update_stats_active(true);
 				
 				int player = 0;
 				while((player = FindEntityByClassname(player, "player")) > 0)
@@ -313,7 +319,7 @@ void CheckActivePlayers()
 						, g_ChatTag
 						, "#SMStats_EnoughPlayers", player
 						, players
-						, needed);
+						, g_MinPlayers);
 					}
 				}
 			}
@@ -321,9 +327,10 @@ void CheckActivePlayers()
 		
 		case true:
 		{
-			if(players < needed)
+			if(players < g_MinPlayers)
 			{
 				bStatsActive = false;
+				_sm_stats_info_update_stats_active(false);
 				
 				int player = 0;
 				while((player = FindEntityByClassname(player, "player")) > 0)
@@ -334,7 +341,7 @@ void CheckActivePlayers()
 						, g_ChatTag
 						, "#SMStats_NotEnoughPlayers", player
 						, players
-						, needed);
+						, g_MinPlayers);
 					}
 				}
 			}
@@ -344,7 +351,7 @@ void CheckActivePlayers()
 	if(DEBUG) PrintToServer("CheckActivePlayers() : %i players out of required %i"
 	... "\n bStatsActive : %s"
 	... "\n bRoundActive : %s"
-	, players, needed
+	, players, g_MinPlayers
 	, bStatsActive ? "true" : "false"
 	, bRoundActive ? "true" : "false");
 }
@@ -368,7 +375,7 @@ stock bool IsValidStats()
 	}
 	else if(bWarmupActive)
 	{
-		if(!_sm_stats_get_allowwarmup())
+		if(!bAllowWarmup)
 		{
 			if(DEBUG) PrintToServer("IsValidstats() - bWarmupActive : false (not allowed)");
 			return false;
@@ -1238,7 +1245,7 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 	int months;
 	int years;
 	
-	PrintToServer("%i seconds %i minutes %i hours %i days", seconds, minutes, hours, days);
+	//PrintToServer("%i seconds %i minutes %i hours %i days", seconds, minutes, hours, days);
 	
 	char szYear[2][32];
 	bool bYearPlural = false;
@@ -1606,4 +1613,12 @@ stock void GetLastConnectedFormat(int client, char[] timezone_ip, int last_conne
 		Format(dummy, sizeof(dummy), "%02d", second);
 		ReplaceString(time_format, maxlen, "{SECOND}", dummy);
 	}
+}
+
+//
+
+stock int SecondsCheckPenalty(int timestamp)
+{
+	int time = timestamp - GetTime();
+	return time - 60 * (time / 60);
 }

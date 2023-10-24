@@ -25,9 +25,9 @@ enum
 
 /* ========== Convars ========= */
 /* other */
-stock ConVar g_TeleFrag;
-stock ConVar g_SuicideAssisted;
-stock ConVar g_Collateral;
+ConVar g_TeleFrag;
+ConVar g_SuicideAssisted;
+ConVar g_Collateral;
 
 /* capture point */
 ConVar g_PointCaptured;
@@ -49,10 +49,10 @@ ConVar g_Teleported;
 
 ConVar g_SandvichStolen;
 
-stock ConVar g_Jarated;
-stock ConVar g_Milked;
+ConVar g_Jarated;
+ConVar g_Milked;
 
-stock ConVar g_Extinguished;
+ConVar g_Extinguished;
 
 ConVar g_Stunned;
 
@@ -381,7 +381,6 @@ stock float g_Time_PassBallEvent = 5.0;
 stock float g_Time_PlayerJarated = 5.0;
 stock float g_Time_PlayerMilked = 5.0;
 stock float g_Time_ExtEvent = 5.0;
-SMStats_TF2GameInfo g_Game[MaxPlayers+1];
 
 //
 
@@ -737,11 +736,14 @@ void PrepareGame()
 
 Action asdfCmd(int client, int args)
 {
+	char penalty_time[128];
+	GetTimeFormat(client, g_PenaltySeconds, penalty_time, sizeof(penalty_time));
+	
 	CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_Player_Penalty", client
 	, g_Player[client].name
 	, g_Player[client].position
 	, g_Player[client].points
-	, "5 minutes"
+	, penalty_time
 	, 69);
 	return Plugin_Continue;
 }
@@ -3810,7 +3812,7 @@ Action MapTimer_GameTimer(Handle timer)
 
 // timers
 
-stock Action Timer_bObjectPlaced(Handle timer, DataPack pack)
+Action Timer_bObjectPlaced(Handle timer, DataPack pack)
 {
 	int userid = pack.ReadCell();
 	int objects = pack.ReadCell();
@@ -3830,7 +3832,7 @@ stock Action Timer_bObjectPlaced(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bObjectDestroyed(Handle timer, DataPack pack)
+Action Timer_bObjectDestroyed(Handle timer, DataPack pack)
 {
 	int userid = pack.ReadCell();
 	int objects = pack.ReadCell();
@@ -3850,7 +3852,7 @@ stock Action Timer_bObjectDestroyed(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bUbercharged(Handle timer, int userid)
+Action Timer_bUbercharged(Handle timer, int userid)
 {
 	int client = 0;
 	if(IsValidClient((client = GetClientOfUserId(userid))))
@@ -3861,7 +3863,7 @@ stock Action Timer_bUbercharged(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bUsedTeleporter(Handle timer, int userid)
+Action Timer_bUsedTeleporter(Handle timer, int userid)
 {
 	int client = 0;
 	if(IsValidClient((client = GetClientOfUserId(userid))))
@@ -3872,7 +3874,7 @@ stock Action Timer_bUsedTeleporter(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bPlayerUsedTeleporter(Handle timer, int userid)
+Action Timer_bPlayerUsedTeleporter(Handle timer, int userid)
 {
 	int client = 0;
 	if(IsValidClient((client = GetClientOfUserId(userid))))
@@ -3883,7 +3885,7 @@ stock Action Timer_bPlayerUsedTeleporter(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bStolenSandvich(Handle timer, int userid)
+Action Timer_bStolenSandvich(Handle timer, int userid)
 {
 	int client = 0;
 	if(IsValidClient((client = GetClientOfUserId(userid))))
@@ -3894,7 +3896,7 @@ stock Action Timer_bStolenSandvich(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bStunned(Handle timer, int userid)
+Action Timer_bStunned(Handle timer, int userid)
 {
 	int client = 0;
 	if(IsValidClient((client = GetClientOfUserId(userid))))
@@ -3905,7 +3907,7 @@ stock Action Timer_bStunned(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bPassBallEvent(Handle timer, DataPack pack)
+Action Timer_bPassBallEvent(Handle timer, DataPack pack)
 {
 	int userid = pack.ReadCell();
 	int type = pack.ReadCell();
@@ -3919,7 +3921,7 @@ stock Action Timer_bPassBallEvent(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bPlayerMilked(Handle timer, int userid)
+Action Timer_bPlayerMilked(Handle timer, int userid)
 {
 	int client = 0;
 	if(IsValidClient((client = GetClientOfUserId(userid))))
@@ -3930,7 +3932,7 @@ stock Action Timer_bPlayerMilked(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bPlayerJarated(Handle timer, int userid)
+Action Timer_bPlayerJarated(Handle timer, int userid)
 {
 	int client = 0;
 	if((IsValidClient((client = GetClientOfUserId(userid)))))
@@ -3941,7 +3943,7 @@ stock Action Timer_bPlayerJarated(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-stock Action Timer_bExtEvent(Handle timer, int userid)
+Action Timer_bExtEvent(Handle timer, int userid)
 {
 	int client = 0;
 	if(IsValidClient((client = GetClientOfUserId(userid))))

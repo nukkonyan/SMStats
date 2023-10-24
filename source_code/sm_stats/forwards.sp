@@ -280,6 +280,8 @@ void OnPlayerConnected(Event event, const char[] event_name, bool dontBroadcast)
 
 public void OnClientDisconnect_Post(int client)
 {
+	SMStatsInfo.ResetPlayerStats(client);
+	
 	if(!IsValidStats())
 	{
 		return;
@@ -291,7 +293,6 @@ public void OnClientDisconnect_Post(int client)
 	}
 	
 	g_Player[client].Reset();
-	SMStatsInfo.ResetStats(client);
 	
 	CheckActivePlayers();
 	
@@ -489,6 +490,7 @@ Action MapTimer_OnMapStart_Minutes(Handle timer)
 Action MapTimer_OnMapStart_Seconds(Handle timer)
 {
 	iMapTimerSeconds++;
+	_sm_stats_info_update_maptimer(iMapTimerSeconds);
 	return Plugin_Continue;
 }
 

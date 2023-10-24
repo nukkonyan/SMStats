@@ -19,13 +19,19 @@ enum struct StatsMenuInfo
 		GeoipCountryName(client, g_Player[client].ip, country, sizeof(country));
 		GetTimeFormat(client, iMapTimerSeconds, map_time, sizeof(map_time));
 		
+		if(!g_Player[client].bMenuCheckPosition)
+		{
+			g_Player[client].position = GetClientPosition(g_Player[client].auth);
+			g_Player[client].bMenuCheckPosition = true; // avoid sql overload.
+		}
+		
 		Panel panel = new Panel();
 		panel.DrawItem("SourceMod Stats - " ... VersionAlt ... " by Teamkiller324 ( Work in progress )");
 		
 		PanelText(panel, "%T", "#SMStats_Menu_Playername", client, client);
 		PanelText(panel, "%T", "#SMStats_MenuInfo_Country", client, country);
 		PanelText(panel, "%T", "#SMStats_MenuInfo_MapTime", client, map_time);
-		PanelText(panel, "%T\n ", "#SMStats_Menu_Positioned", client, (g_Player[client].position = GetClientPosition(g_Player[client].auth)), g_TotalTablePlayers);		
+		PanelText(panel, "%T\n ", "#SMStats_Menu_Positioned", client, g_Player[client].position, g_TotalTablePlayers);		
 		PanelItem(panel, "%T"
 		... "\n  > %T"
 		... "\n "
@@ -175,6 +181,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 			g_Player[client].active_mainmenu = false;
 			g_Player[client].active_page_session = 1;
 			g_Player[client].active_page_topstats = -1;
+			g_Player[client].bMenuCheckPosition = false;
 			StatsMenu.Session(client, 1);
 		}
 		case 3:
@@ -182,6 +189,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 			g_Player[client].active_mainmenu = false;
 			g_Player[client].active_page_session = -1;
 			g_Player[client].active_page_topstats = -1;
+			g_Player[client].bMenuCheckPosition = false;
 			StatsMenu.Main(client);
 		}
 		case 4:
@@ -189,6 +197,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 			g_Player[client].active_mainmenu = false;
 			g_Player[client].active_page_session = -1;
 			g_Player[client].active_page_topstats = -1;
+			g_Player[client].bMenuCheckPosition = false;
 			StatsMenu.TopStats(client);
 		}
 		case 5:
@@ -196,6 +205,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 			g_Player[client].active_mainmenu = false;
 			g_Player[client].active_page_session = -1;
 			g_Player[client].active_page_topstats = -1;
+			g_Player[client].bMenuCheckPosition = false;
 		}
 	}
 	
@@ -968,6 +978,8 @@ void StatsMenu_TopPlayerId(Database database, DBResultSet results, const char[] 
 	g_Player[client].toppos = top_player_id;
 	if(TF2_GetTopSQLInformation(client, auth, true, true))
 	{
+		g_Player[client].active_mainmenu = false;
+		g_Player[client].active_page_session = -1;
 		g_Player[client].active_page_topstats = 1;
 		strcopy(g_Player[client].topstatsauth, sizeof(g_Player[].topstatsauth), auth);
 		StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
@@ -1020,6 +1032,8 @@ void StatsMenu_TopPlayerAuth(Database database, DBResultSet results, const char[
 	strcopy(g_Player[client].topstatsauth, sizeof(g_Player[].topstatsauth), auth);
 	if(TF2_GetTopSQLInformation(client, auth, true))
 	{
+		g_Player[client].active_mainmenu = false;
+		g_Player[client].active_page_session = -1;
 		g_Player[client].active_page_topstats = 1;
 		g_Player[client].toppos = top_player_id;
 		StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
@@ -1048,6 +1062,8 @@ Action StatsMenuCmd(int client, int args)
 		case false:
 		{
 			g_Player[client].active_mainmenu = true;
+			g_Player[client].active_page_session = -1;
+			g_Player[client].active_page_topstats = -1;
 			StatsMenu.Main(client);
 		}
 		case true: ReplyToCommand(client, "%s This command may only be used in-game!", core_chattag);

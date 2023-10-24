@@ -52,6 +52,7 @@
 #define query_error_uniqueid_UpdateMapTimeUpdatingSeconds 83
 #define query_error_uniqueid_OnPlayerNameUpdate 84
 #define query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected 85
+SMStats_TF2GameInfo g_Game[MaxPlayers+1];
 
 #include <sm_stats>
 #include <sm_stats_core>
@@ -95,5 +96,5 @@ public Plugin myinfo =
 #include "sm_stats/forwards.sp"
 
 // updater
-//#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
-//#include "sm_stats/updater.sp"
+#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
+#include "sm_stats/updater.sp"

@@ -212,6 +212,11 @@
 		"en" "{1} (Pos #{2}, {3} points) {red}was given {yellow}{4} {red}penalty due to abusing spam. Your recent abused {5} points was reverted. You will not be able to gain points during penalty."
 		"sv" "{1} (Pos #{2}, {3} poäng) {red}Blev given en {yellow}{4} {red}staff på grund av att missbruka spam. Dina senaste missbrukade {5} poäng blev återställd. Du kan ej få poäng medans straffad."
 	}
+	"#SMStats_Points_Penalty"
+	{
+		"en" "(Penalty)"
+		"sv" "(Straffad)"
+	}
 
 	//================================//
 	// Connected.
@@ -453,7 +458,7 @@
 	{
 		"#format" "{1:s}"
 		"en" "New {lightgreen}Update {orange}Version {1} {default}has been loaded!"
-		"jp" "{lightgreen}新しいアップデート{orange}バーション{1}{defualt}がロードされました！"
+		"jp" "{lightgreen}新しいアップデート{orange}バーション{1}{default}がロードされました！"
 		"sv" "Ny {lightgreen}Uppdatering {orange}Version {1} {default}har laddats!"
 	}
 
@@ -540,7 +545,7 @@
 	"#SMStats_FeatureUnavailable"
 	{
 		"en" "Feature is currently unavailable."
-		"jp" "この機能が利用出来ません。"
+		"jp" "この機能が利用できません。"
 		"sv" "Funktionen är förnuvarande otillgänglig."
 	}
 	

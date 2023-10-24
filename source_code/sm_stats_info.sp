@@ -19,38 +19,51 @@ public Plugin myinfo = {
 #define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/updater/SMStats_Info.txt"
 #include "sm_stats/updater.sp"
 
+// game related
 SMStats_PlayerInfo g_Player[MAXPLAYERS+1];
-
 SMStats_TF2GameInfo g_TF2GameStats[MAXPLAYERS+1];
+
+// crucial stuff
+bool bLoaded;
+bool bStatsActive;
+bool bRoundActive;
+int iMapTimerSeconds;
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	RegPluginLibrary("SMStatsInfo");
 	
-	CreateNative("SMStatsInfo.GetStats", Native_GetStats);
-	CreateNative("SMStatsInfo.SaveStats", Native_SaveStats);
-	CreateNative("SMStatsInfo.ResetStats", Native_ResetStats);
+	CreateNative("SMStatsInfo.GetPlayerStats", Native_GetPlayerStats);
+	CreateNative("SMStatsInfo.SavePlayerStats", Native_SavePlayerStats);
+	CreateNative("SMStatsInfo.ResetPlayerStats", Native_ResetPlayerStats);
 	
 	CreateNative("SMStatsInfo.GetGameStats", Native_GetGameStats);
 	CreateNative("SMStatsInfo.SaveGameStats", Native_SaveGameStats);
 	CreateNative("SMStatsInfo.ResetGameStats", Native_ResetGameStats);
 	
+	CreateNative("_sm_stats_info_update_loaded_active", Native_UpdateLoadedActive);
+	CreateNative("_sm_stats_info_update_stats_active", Native_UpdateStatsActive);
+	CreateNative("_sm_stats_info_update_round_active", Native_UpdateRoundActive);
+	CreateNative("_sm_stats_info_update_maptimer", Native_UpdateMapTimer);
+	CreateNative("_sm_stats_info_get_crucial_stuff", Native_GetCrucialStuff);
+	CreateNative("_sm_stats_info_save_crucial_stuff", Native_SaveCrucialStuff);
+	
 	return APLRes_Success;
 }
 
-int Native_GetStats(Handle plugin, int params)
+any Native_GetPlayerStats(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);
 	SetNativeArray(2, g_Player[client], sizeof(g_Player[]));
 	return -69;
 }
-int Native_SaveStats(Handle plugin, int params)
+any Native_SavePlayerStats(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);
 	GetNativeArray(2, g_Player[client], sizeof(g_Player[]));
 	return -69;
 }
-int Native_ResetStats(Handle plugin, int params)
+any Native_ResetPlayerStats(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);
 	g_Player[client].Reset();
@@ -83,4 +96,43 @@ int Native_ResetGameStats(Handle plugin, int params)
 		case Engine_TF2: g_TF2GameStats[client].Reset();
 	}
 	return -69;
+}
+
+any Native_UpdateLoadedActive(Handle plugin, int params)
+{
+	bLoaded = view_as<bool>(GetNativeCell(1));
+	return 0;
+}
+any Native_UpdateStatsActive(Handle plugin, int params)
+{
+	bStatsActive = view_as<bool>(GetNativeCell(1));
+	return 0;
+}
+any Native_UpdateRoundActive(Handle plugin, int params)
+{
+	bRoundActive = view_as<bool>(GetNativeCell(1));
+	return 0;
+}
+any Native_UpdateMapTimer(Handle plugin, int params)
+{
+	iMapTimerSeconds = view_as<bool>(GetNativeCell(1));
+	return 0;
+}
+any Native_GetCrucialStuff(Handle plugin, int params)
+{
+	SMStatsInfo_CrucialStuff stuff;
+	stuff.bLoaded = bLoaded;
+	stuff.bStatsActive = bStatsActive;
+	stuff.bRoundActive = bRoundActive;
+	stuff.iMapTimerSeconds = iMapTimerSeconds;
+	SetNativeArray(1, stuff, sizeof(stuff));
+	return 0;
+}
+any Native_SaveCrucialStuff(Handle plugin, int params)
+{
+	bLoaded = view_as<bool>(GetNativeCell(1));
+	bStatsActive = view_as<bool>(GetNativeCell(2));
+	bRoundActive = view_as<bool>(GetNativeCell(3));
+	iMapTimerSeconds = GetNativeCell(3);
+	return 0;
 }

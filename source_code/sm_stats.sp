@@ -21,38 +21,31 @@ public Plugin myinfo = {
 Database sql; // internal database.
 
 GlobalForward g_fwdLoaded; // internal call to start addons.
-GlobalForward g_fwdDBLoaded; // internal database connection.
-
-GlobalForward g_fwdChatTagUpdated; // chat tag was updated.
-GlobalForward g_fwdServerIDUpdated; // server id was updated.
-GlobalForward g_fwdAllowBotsUpdated; // allow bots was updated.
-GlobalForward g_fwdMinPlayersUpdated; // min players was updated.
-GlobalForward g_fwdAllowAbuseUpdated; // allow abuse was updated.
+GlobalForward g_fwdDBLoaded; // internal call to initialize database connection.
+GlobalForward g_fwdTypeUpdated; // internal call to forward updated values.
 
 GlobalForward g_fwdPlayerDeath; // built in player_death event based forward.
 
-char g_ChatTag[96]; // global chat tag prefix
-ConVar g_ServerID; // server id
-ConVar g_AllowBots; // allow bots
+char g_ChatTag[96]; // global chat tag prefix.
+ConVar g_ServerID; // server id.
 ConVar g_MinPlayers; // minimum required players for statistical tracking.
+ConVar g_AllowBots; // allow bots.
 ConVar g_AllowAbuse; // allow abuse of commands during events.
 ConVar g_AllowWarmup; // allow tracking during warmup.
 ConVar g_DisableAfterRoundEnd; // disable tracking after round end.
-ConVar g_DeathPoints; // death points
+ConVar g_DeathPoints; // death points.
+ConVar g_AssistPoints; // assist points.
+ConVar g_PenaltySeconds; // seconds for the penalty.
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
 	RegPluginLibrary("SMStats");
 	
 	// forwards
-	g_fwdLoaded = new GlobalForward("_sm_stats_core_loaded", ET_Ignore);
-	g_fwdDBLoaded = new GlobalForward("_sm_stats_sql_loaded", ET_Ignore, Param_Cell, Param_Cell);
+	g_fwdLoaded = new GlobalForward("_sm_stats_loaded_core", ET_Ignore);
+	g_fwdDBLoaded = new GlobalForward("_sm_stats_loaded_sql", ET_Ignore, Param_Cell, Param_Cell);
 	
-	g_fwdChatTagUpdated = new GlobalForward("_sm_stats_chattag_updated", ET_Ignore, Param_String);
-	g_fwdServerIDUpdated = new GlobalForward("_sm_stats_serverid_updated", ET_Ignore, Param_Cell);
-	g_fwdAllowBotsUpdated = new GlobalForward("_sm_stats_allowbots_updated", ET_Ignore, Param_Cell);
-	g_fwdMinPlayersUpdated = new GlobalForward("_sm_stats_minplayers_updated", ET_Ignore, Param_Cell);
-	g_fwdAllowAbuseUpdated = new GlobalForward("sm_stats_allowabuse_updated", ET_Ignore, Param_Cell);
+	g_fwdTypeUpdated = new GlobalForward("_sm_stats_updatedfwd", ET_Ignore, Param_Cell, Param_String);
 	
 	g_fwdPlayerDeath = new GlobalForward("SMStats_OnPlayerDeath", ET_Ignore, Param_Cell, Param_Cell, Param_Array, Param_Array, Param_String, Param_Array);
 	
@@ -60,9 +53,11 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("_sm_stats_get_chattag", Native_GetChatTag);
 	CreateNative("_sm_stats_get_serverid", Native_GetServerID);
 	CreateNative("_sm_stats_get_sql", Native_GetSQL);
-	CreateNative("_sm_stats_get_allowbots", Native_GetAllowBots);
 	CreateNative("_sm_stats_get_minplayers", Native_GetMinPlayers);
 	CreateNative("_sm_stats_get_deathpoints", Native_GetDeathPoints);
+	CreateNative("_sm_stats_get_assistpoints", Native_GetAssistPoints);
+	CreateNative("_sm_stats_get_penaltyseconds", Native_GetPenaltySeconds);
+	CreateNative("_sm_stats_get_allowbots", Native_GetAllowBots);
 	CreateNative("_sm_stats_get_allowabuse", Native_GetAllowAbuse);
 	CreateNative("_sm_stats_get_allowwarmup", Native_GetAllowWarmup);
 	CreateNative("_sm_stats_get_disableafterroundend", Native_GetDisableAfterRoundEnd);
@@ -79,29 +74,38 @@ public void OnPluginStart()
 	CheckDatabase(true);
 	
 	ConVar cvar = CreateConVar("sm_stats_chattag", "{green}[SM Stats]", "SM Stats - Chat tag prefix.");
-	cvar.AddChangeHook(OnChatTagUpdated);
+	cvar.AddChangeHook(OnUpdatedChatTag);
 	cvar.GetString(g_ChatTag, sizeof(g_ChatTag));
 	Format(g_ChatTag, sizeof(g_ChatTag), "%s{default}", g_ChatTag);
 	
 	//
 	
 	g_ServerID = CreateConVar("sm_stats_serverid", "1", "SM Stats - Server ID.", _, true, 1.0);
-	g_ServerID.AddChangeHook(OnServerIDUpdated);
+	g_ServerID.AddChangeHook(OnUpdatedServerID);
 	
 	g_AllowBots = CreateConVar("sm_stats_allow_bots", "1", "SM Stats - Allow bots.", _, true, _, true, 1.0);
-	g_AllowBots.AddChangeHook(OnAllowBotsUpdated);
+	g_AllowBots.AddChangeHook(OnUpdatedAllowBots);
 	
 	g_MinPlayers = CreateConVar("sm_stats_min_players", "4", "SM Stats - Minimum players required for statistical tracking.", _, true, 1.0);
-	g_MinPlayers.AddChangeHook(OnMinPlayersUpdated);
+	g_MinPlayers.AddChangeHook(OnUpdatedMinPlayers);
 	
 	g_AllowAbuse = CreateConVar("sm_stats_allow_abuse", "0", "SM Stats - Allow abuse of commands during events such as Noclip or sv_cheats 1.", _, true, _, true, 1.0);
-	g_AllowAbuse.AddChangeHook(OnAllowAbuseUpdated);
+	g_AllowAbuse.AddChangeHook(OnUpdatedAllowAbuse);
 	
 	g_AllowWarmup = CreateConVar("sm_stats_allow_warmup", "0", "SM Stats - Allow tracking during warmup.", _, true, _, true, 1.0);
+	g_AllowWarmup.AddChangeHook(OnUpdatedAllowWarmup);
 	
 	g_DisableAfterRoundEnd = CreateConVar("sm_stats_disable_after_round_end", "1", "SM Stats - Disable after round end.", _, true, _, true, 1.0);
+	g_AllowWarmup.AddChangeHook(OnUpdatedDisableAfterRoundEnd);
 	
 	g_DeathPoints = CreateConVar("sm_stats_points_death", "10", "SM Stats - Points taken when dying.", _, true);
+	g_DeathPoints.AddChangeHook(OnUpdatedDeathPoints);
+	
+	g_AssistPoints = CreateConVar("sm_stats_points_assist", "5", "SM Stats - Points given when assisting.", _, true);
+	g_DeathPoints.AddChangeHook(OnUpdatedAssistPoints);
+	
+	g_PenaltySeconds = CreateConVar("sm_stats_penalty_seconds", "3600", "SM Stats - Seconds of the points-spam penalty.", _, true);
+	g_PenaltySeconds.AddChangeHook(OnUpdatedPenaltySeconds);
 	
 	AutoExecConfig(true);
 	
@@ -110,64 +114,78 @@ public void OnPluginStart()
 
 Action SMStatsReloadCmd(int client, int args)
 {
-	ReplyToCommand(client, "[SM Stats: Core] Forced reloading SMStats core, expect SQL errors..");
+	ReplyToCommand(client, "[SM Stats: Core] Forced reloading SMStats core plugin, expect SQL errors..");
 	
-	if(sql != null)
-	{
-		delete sql;
-	}
-	
-	CheckDatabase(true);
-	CreateTimer(1.0, Timer_SMStats_ReloadCmd);
+	char plugin_name[64];
+	GetPluginFilename(null, plugin_name, sizeof(plugin_name));
+	ServerCommand("sm plugins reload \"%s\"", plugin_name);
 	return Plugin_Continue;
 }
 
-Action Timer_SMStats_ReloadCmd(Handle timer)
-{
-	OnAllPluginsLoaded();
-	return Plugin_Continue;
-}
-
-public void OnAllPluginsLoaded()
+public void OnConfigsExecuted()
 {
 	Call_StartForward(g_fwdLoaded);
 	Call_Finish();
 }
 
-void OnChatTagUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+void OnUpdatedChatTag(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
 	Format(g_ChatTag, sizeof(g_ChatTag), "%s{default}", newvalue);
-	Call_StartForward(g_fwdChatTagUpdated);
-	Call_PushString(g_ChatTag);
-	Call_Finish();
+	SendUpdatedFwdValue(SMStatsUpdated_ChatTag, g_ChatTag);
 }
-
-void OnServerIDUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+void OnUpdatedServerID(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
-	Call_StartForward(g_fwdServerIDUpdated);
-	Call_PushCell(cvar.IntValue);
-	Call_Finish();
+	char str_value[11];
+	IntToString(cvar.IntValue, str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_ServerID, str_value);
 }
-
-void OnAllowBotsUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+void OnUpdatedAllowBots(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
-	Call_StartForward(g_fwdAllowBotsUpdated);
-	Call_PushCell(cvar.IntValue);
-	Call_Finish();
+	char str_value[2];
+	IntToString(view_as<int>(cvar.BoolValue), str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_AllowBots, str_value);
 }
-
-void OnMinPlayersUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+void OnUpdatedMinPlayers(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
-	Call_StartForward(g_fwdMinPlayersUpdated);
-	Call_PushCell(cvar.IntValue);
-	Call_Finish();
+	char str_value[11];
+	IntToString(cvar.IntValue, str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_MinPlayers, str_value);
 }
-
-void OnAllowAbuseUpdated(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+void OnUpdatedAllowAbuse(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
-	Call_StartForward(g_fwdAllowAbuseUpdated);
-	Call_PushCell(cvar.IntValue);
-	Call_Finish();
+	char str_value[2];
+	IntToString(view_as<bool>(cvar.BoolValue), str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_AllowAbuse, str_value);
+}
+void OnUpdatedAllowWarmup(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	char str_value[2];
+	IntToString(view_as<bool>(cvar.BoolValue), str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_AllowWarmup, str_value);
+}
+void OnUpdatedDisableAfterRoundEnd(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	char str_value[2];
+	IntToString(view_as<bool>(cvar.BoolValue), str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_DisableAfterRoundEnd, str_value);
+}
+void OnUpdatedDeathPoints(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	char str_value[11];
+	IntToString(cvar.IntValue, str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_DeathPoints, str_value);
+}
+void OnUpdatedAssistPoints(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	char str_value[11];
+	IntToString(cvar.IntValue, str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_AssistPoints, str_value);
+}
+void OnUpdatedPenaltySeconds(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	char str_value[24];
+	IntToString(cvar.IntValue, str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_PenaltySeconds, str_value);
 }
 
 public void OnMapStart()
@@ -228,47 +246,46 @@ any Native_GetChatTag(Handle plugin, int params)
 {
 	return SetNativeString(1, g_ChatTag, GetNativeCell(2));
 }
-
 any Native_GetServerID(Handle plugin, int params)
 {
 	return g_ServerID.IntValue;
 }
-
 any Native_GetSQL(Handle plugin, int params)
 {
 	return sql;
 }
-
 any Native_GetAllowBots(Handle plugin, int params)
 {
 	return g_AllowBots.BoolValue;
 }
-
 any Native_GetMinPlayers(Handle plugin, int params)
 {
 	return g_MinPlayers.IntValue;
 }
-
 any Native_GetDeathPoints(Handle plugin, int params)
 {
 	return g_DeathPoints.IntValue;
 }
-
+any Native_GetAssistPoints(Handle plugin, int params)
+{
+	return g_AssistPoints.IntValue;
+}
+any Native_GetPenaltySeconds(Handle plugin, int params)
+{
+	return g_PenaltySeconds.IntValue;
+}
 any Native_GetAllowAbuse(Handle plugin, int params)
 {
 	return g_AllowAbuse.BoolValue;
 }
-
 any Native_GetAllowWarmup(Handle plugin, int params)
 {
 	return g_AllowWarmup.BoolValue;
 }
-
 any Native_GetDisableAfterRoundEnd(Handle plugin, int params)
 {
 	return g_DisableAfterRoundEnd.BoolValue;
 }
-
 any Native_PlayerDeathFwd(Handle plugin, int params)
 {
 	int attacker = GetNativeCell(1);
@@ -298,6 +315,18 @@ any Native_PlayerDeathFwd(Handle plugin, int params)
 	
 	return 0;
 }
+
+//
+
+void SendUpdatedFwdValue(SMStatsUpdatedFwdType type, const char[] value)
+{
+	Call_StartForward(g_fwdTypeUpdated);
+	Call_PushCell(type);
+	Call_PushString(value);
+	Call_Finish();
+}
+
+//
 
 /**
  *	Retrieves the actual string length from a native parameter string.

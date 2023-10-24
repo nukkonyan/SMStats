@@ -696,8 +696,6 @@ stock bool AssistedKills(Transaction txn
 					, const int[] list_healercount
 					, const int[][] list_healer)
 {
-	int assist_points = 10; // placeholder
-	
 	// spaghetti code
 	
 	ArrayList assisters;
@@ -804,24 +802,24 @@ stock bool AssistedKills(Transaction txn
 				{
 					len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", assister_revenges[i]);
 				}
-				if(assist_points > 0)
+				if(g_AssistPoints > 0)
 				{
-					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", assist_points*assister_count[i]);
+					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", g_AssistPoints*assister_count[i]);
 				}
 				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[assist].auth, g_ServerID);
 				txn.AddQuery(query, queryId_frag_assister);
 				
-				if(assist_points > 0)
+				if(g_AssistPoints > 0)
 				{
-					g_Player[assist].session[Stats_Points] += assist_points*assister_count[i];
-					g_Player[assist].points += assist_points*assister_count[i];
+					g_Player[assist].session[Stats_Points] += g_AssistPoints*assister_count[i];
+					g_Player[assist].points += g_AssistPoints*assister_count[i];
 						
 					CPrintToChat(assist, "%s %T"
 					, g_ChatTag
 					, "#SMStats_FragEvent_Assisted", assist
 					, g_Player[assist].name
 					, g_Player[assist].points
-					, assist_points*assister_count[i]
+					, g_AssistPoints*assister_count[i]
 					, g_Player[client].name
 					, dummy);
 				}
@@ -903,18 +901,17 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 				}
 			}
 			
-			int death_points = _sm_stats_get_deathpoints();
-			if(death_points > 0)
+			if(g_DeathPoints > 0)
 			{
-				len += Format(query[len], sizeof(query)-len, ", Points = Points-%i", death_points);
+				len += Format(query[len], sizeof(query)-len, ", Points = Points-%i", g_DeathPoints);
 				
-				g_Player[victim].session[Stats_Points] -= death_points;
-				g_Player[victim].points -= death_points;
+				g_Player[victim].session[Stats_Points] -= g_DeathPoints;
+				g_Player[victim].points -= g_DeathPoints;
 				
 				CPrintToChat(victim, "%s %T"
 				, g_ChatTag
 				, "#SMStats_FragEvent_Death", victim
-				, g_Player[victim].name, g_Player[victim].points, death_points);
+				, g_Player[victim].name, g_Player[victim].points, g_DeathPoints);
 			}
 			
 			len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[victim].auth, g_ServerID);

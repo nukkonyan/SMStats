@@ -42,10 +42,29 @@ public void OnLibraryAdded(const char[] name)
 
 public void Updater_OnPluginUpdating()
 {
-	int client = 0;
+	#if defined updater_info
+	_sm_stats_info_save_crucial_stuff(bLoaded, bStatsActive, bRoundActive, iMapTimerSeconds);
+	if(DEBUG) PrintToServer("Updater_OnPluginUpdated()"
+	... "\nbLoaded : %s"
+	... "\nbStatsActive : %s"
+	... "\nbRoundActive : %s"
+	... "\niMapTimerSeconds : %i"
+	, bLoaded ? "true" : "false"
+	, bStatsActive ? "true" : "false"
+	, bRoundActive ? "true" : "false"
+	, iMapTimerSeconds);
+	#endif
 	
+	int client = 0;
 	while((client = FindEntityByClassname(client, "player")) > 0)
 	{
+		#if defined updater_info
+		SMStatsInfo.SavePlayerStats(client, g_Player[client]);
+		#endif
+		#if defined updater_gamestats
+		SMStatsInfo.SaveGameStats(client, g_Game[client]);
+		#endif
+		
 		if(IsClientInGame(client))
 		{
 			if(!IsFakeClient(client))
@@ -53,20 +72,12 @@ public void Updater_OnPluginUpdating()
 				CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFound", client);
 			}
 		}
-		
-		#if defined updater_info
-		SMStatsInfo.SaveStats(client, g_Player[client]);
-		#endif
-		#if defined updater_gamestats
-		SMStatsInfo.SaveGameStats(client, g_Game[client]);
-		#endif
 	}
 }
 
 public void Updater_OnPluginUpdated()
 {
 	int client = 0;
-	
 	while((client = FindEntityByClassname(client, "player")) > 0)
 	{
 		if(IsClientInGame(client))
@@ -76,13 +87,6 @@ public void Updater_OnPluginUpdated()
 				CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFinished", client, Version);
 			}
 		}
-		
-		#if defined updater_info
-		SMStatsInfo.GetStats(client, g_Player[client]);
-		#endif
-		#if defined updater_gamestats
-		SMStatsInfo.GetGameStats(client, g_Game[client]);
-		#endif
 	}
 }
 
