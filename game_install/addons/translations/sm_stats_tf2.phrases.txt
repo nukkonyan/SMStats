@@ -281,6 +281,11 @@
 		"en" "Sandviches stolen : {1}"
 		"sv" "Smörgåsar stulna : {1}"
 	}
+	"#SMStats_MenuInfo_StunnedPlayers"
+	{
+		"#format" "{1:i},{2:i}"
+		"en" "Stunned players : {1} / {2} Moon Shots"
+	}
 
 	"#SMStats_MenuInfo_HWN_Monoculus"
 	{
