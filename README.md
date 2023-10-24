@@ -35,6 +35,9 @@ Some things may not work as intended at the very moment, but will get working so
           - Left 4 Dead 2.
           - and many other.
         - Create website.
+	- Expected early testing build
+	    - Somewhere between end of october and possibly as late as early december.
+		  - This will begin with Team Fortress 2 due to stability reasons.
 
 ## Lookin to assist in development?
    - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
