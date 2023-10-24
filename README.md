@@ -13,20 +13,20 @@ Some things may not work as intended at the very moment, but will get working so
 ```
 
 ### To-do
-   - Team Fortress 2
-        - Implement spam-detection (exploiting to farm points such as spamming CTF Flag being picked up).
    - stats menu
         - ~~Implement sm_stats <top index | steamid > to manually check statistics of a particular player.~~ Added
-             -  ~~Example sm_stats 30 displays Top 30 current player.
+             -  ~~Example sm_stats 30 displays Top 30 current player.~~
              -  ~~Example sm_stats "STEAM_0:0:1234" displays the player through steamid.~~
    - overall
+        - Implement spam-detection with a penalty (exploiting loopholes to farm points).
         - Implement custom achievements functionality.
         - Implement leaderboard ban functionality (Prevented from gaining points).
         - Implement functional K-A-D ratio (Kill-Assist-Death ratio).
         - Implement functional K/D Ratio (Kill-Death ratio).
         - Implement functional time played (Convert x minutes to 1 day 1 hour, etc.)
-		- Implement a ban feature which detects if the player has been banned from the server, the player's details on SMStats will be removed.
-        - ~~Fix playtime timer. Right now it is buggy and not working correctly.~~
+	- Implement a ban feature which detects if the player has been banned from the server, the player's details on SMStats will be removed.
+        - Fix playtime timer. Right now it is buggy and not working correctly. **(At the moment somewhat fixed.)**
+        - Deprecate SMStats Info (It's a temporary solution) and instead use temporary KeyValue file storing. **(Or use SQLite)**
         - Support more source games in the future. such as:
           - Team Fortress 2 Classic.
           - Counter-Strike: Source.
@@ -35,9 +35,10 @@ Some things may not work as intended at the very moment, but will get working so
           - Left 4 Dead 2.
           - and many other.
         - Create website.
-	- Expected early testing build
-	    - Somewhere between end of october and possibly as late as early december.
-		  - This will begin with Team Fortress 2 due to stability reasons.
+
+## Expected early testing build
+   - Somewhere between end of October and possibly as late as early December.
+   - This will begin with Team Fortress 2 due to stability reasons.
 
 ## Lookin to assist in development?
    - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
