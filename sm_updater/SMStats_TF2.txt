@@ -4,11 +4,12 @@
 	{
 		"Version"
 		{
-			"Latest" "1.0.0a"
+			"Latest" "1.0.0testing1"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/SMStats"
-		"Notes"	"Initial github release."
+		"Notes"	"Initial testing 1 phase."
+		"Notes" "This is a testing build, issues and bugs found shall be fixed."
 	}
 	
 	"Files"
