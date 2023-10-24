@@ -75,21 +75,6 @@ public void Updater_OnPluginUpdating()
 	}
 }
 
-public void Updater_OnPluginUpdated()
-{
-	int client = 0;
-	while((client = FindEntityByClassname(client, "player")) > 0)
-	{
-		if(IsClientInGame(client))
-		{
-			if(!IsFakeClient(client))
-			{
-				CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFinished", client, Version);
-			}
-		}
-	}
-}
-
 Action Timer_CheckForUpdate(Handle timer)
 {
 	Updater_ForceUpdate();

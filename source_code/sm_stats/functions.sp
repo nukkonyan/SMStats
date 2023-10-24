@@ -194,17 +194,9 @@ stock int GetPlayerCount(bool count_bots=false)
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) > 0)
 	{
-		if(!IsClientConnected(player))
+		if(!IsValidClient(player, !count_bots ? true : false))
 		{
 			continue;
-		}
-		
-		if(!count_bots)
-		{
-			if(IsFakeClient(player))
-			{
-				continue;
-			}
 		}
 		
 		count++;
