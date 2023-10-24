@@ -97,4 +97,4 @@ public Plugin myinfo =
 
 // updater
 #define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
-#include "sm_stats/updater.sp"
+//#include "sm_stats/updater.sp"
