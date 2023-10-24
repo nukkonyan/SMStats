@@ -4,7 +4,7 @@
 	{
 		"Version"
 		{
-			"Latest" "1.0.0testing1"
+			"Latest" "1.0.0@testing1"
 		}
 		
 		"Notes"	"More info @ https://github.com/Teamkiller324/SMStats"
