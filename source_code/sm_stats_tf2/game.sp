@@ -1705,8 +1705,8 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(userid))
+	int client;
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
 		return;
 	}
@@ -1741,22 +1741,41 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
+	int weapon;
+	char weapon_classname[64];
+	bool big_stun = false;
+	if(IsValidEntity((weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))))
+	{
+		GetEntityClassname(weapon, weapon_classname, sizeof(weapon_classname));
+	}
+	if(StrEqual(weapon_classname, ""))
+	{
+		if(IsValidEntity((weapon = GetPlayerWeaponSlot(client, 2))))
+		{
+			GetEntityClassname(weapon, weapon_classname, sizeof(weapon_classname));
+		}
+	}
+	
+	// Sandman used by the class Scout.
+	if(StrEqual(weapon_classname, "tf_weapon_bat_wood", false))
+	{
+		// Moon shot stun with The Sandman used by class Scout.
+		big_stun = event.GetBool("big_stun");
+	}
+	
 	g_Player[client].session[Stats_Points] += points;
 	g_Player[client].session[Stats_StunnedPlayers]++;
-	
-	/* Moon shot stun with The Sandman used by class Scout. */
-	int big_stun = event.GetBool("big_stun");
 	
 	char query[256];
 	int len = 0;
 	
 	len += Format(query[len], sizeof(query)-len, "update `%s` set", sql_table_playerlist);
-	len += Format(query[len], sizeof(query)-len, " Points = Points+%i,", points);
-	len += Format(query[len], sizeof(query)-len, " StunnedPlayers = StunnedPlayers+1,");
+	len += Format(query[len], sizeof(query)-len, " Points = Points+%i", points);
+	len += Format(query[len], sizeof(query)-len, ", StunnedPlayers = StunnedPlayers+1");
 	
 	switch(big_stun)
 	{
-		/* Stunned */
+		// Stunned
 		case false:
 		{
 			CPrintToChat(client, "%s %T"
@@ -1768,7 +1787,7 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 			, g_Player[victim].name);
 		}
 		
-		/* Moon shot */
+		// Stunned with a Moon shot using a baseball bat
 		case true:
 		{
 			g_Player[client].session[Stats_MoonShotStunnedPlayers]++;
@@ -1781,7 +1800,7 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 			, points
 			, g_Player[victim].name);
 			
-			len += Format(query[len], sizeof(query)-len, "MoonShotStunnedPlayers = MoonShotStunnedPlayers+1");
+			len += Format(query[len], sizeof(query)-len, ", MoonShotStunnedPlayers = MoonShotStunnedPlayers+1");
 		}
 	}
 	
@@ -1790,7 +1809,6 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 	CallbackQuery(query, query_error_uniqueid_OnPlayerStunned);
 	
 	g_Player[client].points += points;
-	
 	g_Game[client].bStunned = true;
 	CreateTimer(g_Time_Stunned, Timer_bStunned, GetClientUserId(client));
 }

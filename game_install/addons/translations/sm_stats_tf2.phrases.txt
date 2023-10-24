@@ -589,17 +589,18 @@
 		"en" "{1} ({2}) Earned {3} points for stealing a sandvich."
 		"sv" "{1} ({2}) Belönades med {3} poäng för att stulit en smörgås."
 	}
+
 	"#SMStats_Player_StunScenario0"
-	{
-		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} ({2}) Earned {3} points for {green}Stunning {4} with a {green}Moon Shot{default}."
-		"sv" "{1} ({2}) Belönades med {3} poäng för att {green}Stunnat {4} med {green}Månskott{default}."
-	}
-	"#SMStats_Player_StunScenario1"
 	{
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} points for {green}Stunning {4}"
 		"sv" "{1} ({2}) Belönades med {3} poäng för att {green}Stunnat {4}"
+	}
+	"#SMStats_Player_StunScenario1"
+	{
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Earned {3} points for {green}Stunning {4} with a {green}Moon Shot{default}."
+		"sv" "{1} ({2}) Belönades med {3} poäng för att {green}Stunnat {4} med {green}Månskott{default}."
 	}
 	
 	"#SMStats_Player_CoatedPiss" //Pissed opponent.
