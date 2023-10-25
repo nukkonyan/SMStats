@@ -301,6 +301,13 @@
 		"en" "Players teleported : {1}"
 		"sv" "Spelare teleporterad : {1}"
 	}
+	"#SMStats_MenuInfo_CoatedPiss"
+	{
+		// {1} players coated with piss count
+		"#format" "{1:i}"
+		"en" "Players coated with piss : {1}"
+		"sv" "Spelare täckt med urin : {1}"
+	}
 	"#SMStats_MenuInfo_CoatedMilk"
 	{
 		// {1} players counted with milk count
@@ -308,12 +315,12 @@
 		"en" "Players coated with milk : {1}"
 		"sv" "Spelare täckt med mjölk : {1}"
 	}
-	"#SMStats_MenuInfo_CoatedPiss"
+	"#SMStats_MenuInfo_CoatedGasoline"
 	{
-		// {1} players coated with piss count
+		// {1} players counted with gasoline count
 		"#format" "{1:i}"
-		"en" "Players coated with piss : {1}"
-		"sv" "Spelare täckt med urin : {1}"
+		"en" "Players coated with gasoline : {1}"
+		"sv" "Spelare täckt med bensin : {1}"
 	}
 	"#SMStats_MenuInfo_Coated"
 	{
@@ -790,8 +797,8 @@
 		// {3} earned points
 		// {4} victim name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for coating {4} with piss."
-		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med urin."
+		"en" "{1} ({2}) Earned {3} for coating {4} with {green}Piss{default}."
+		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med {green}Urin{default}."
 	}
 	"#SMStats_Player_CoatedMilk" //Milked opponent.
 	{
@@ -800,8 +807,18 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for coating {4} with milk."
-		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med mjölk."
+		"en" "{1} ({2}) Earned {3} for coating {4} with {green}Milk{default}."
+		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med {green}Mjölk{default}."
+	}
+	"#SMStats_Player_CoatedGasoline" //Gasolined opponent.
+	{
+		// {1} player name
+		// {2} player points
+		// {3} earned points
+		// {4} target name
+		"#format" "{1:s},{2:i},{3:s},{4:s}"
+		"en" "{1} ({2}) Earned {3} for coating {4} with {green}Gasoline{default}."
+		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med {green}Bensin{default}."
 	}
 	
 	"#SMStats_Player_Extinguished" // extinguished

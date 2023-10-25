@@ -111,6 +111,7 @@ create table if not exists `playerlist_tf2`
 	`Coated` int not null default '0',
 	`CoatedPiss` int not null default '0',
 	`CoatedMilk` int not null default '0',
+	`CoatedGasoline` int not null default '0',
 	`Extinguished` int not null default '0',
 	
 	`TanksDestroyed` int not null default '0',

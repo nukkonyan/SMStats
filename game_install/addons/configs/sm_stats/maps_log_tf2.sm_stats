@@ -101,6 +101,12 @@ create table if not exists `maps_log_tf2`
 	`Coated` int not null default '0',
 	`Jarated` int not null default '0',
 	`MadMilked` int not null default '0',
+	`CoatedGasoline` int not null default '0',
 	`Extinguished` int not null default '0',
+
+	`TanksDestroyed` int not null default '0',
+	`RobotsFragged` int not null default '0',
+	`SentryBustersFragged` int not null default '0',
+	`BombsResetted` int not null default '0',
 	primary key (`ID`)
 )

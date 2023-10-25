@@ -117,36 +117,37 @@ enum SMStats_Type
 	Stats_MonoculusStunned = 89,
 	Stats_MerasmusStunned = 90,
 	
-	Stats_CoatedMilk = 91,
-	Stats_CoatedPiss = 92,
-	Stats_Ignited = 93,
+	Stats_CoatedPiss = 91,
+	Stats_CoatedMilk = 92,
+	Stats_CoatedGasoline = 93,
+	Stats_Ignited = 92,
 	
 	/* TF2 MvM */
-	Stats_PumpkinBombFrags = 94,
-	Stats_TanksDestroyed = 95,
-	Stats_RobotsFragged = 96,
-	Stats_SentryBustersFragged = 97,
-	Stats_BombsResetted = 98,
+	Stats_PumpkinBombFrags = 95,
+	Stats_TanksDestroyed = 96,
+	Stats_RobotsFragged = 97,
+	Stats_SentryBustersFragged = 98,
+	Stats_BombsResetted = 99,
 	
 	/* CS:GO */
-	Stats_BlindedFrags = 99,
-	Stats_ThroughSmokeFrags = 100,
-	Stats_Wipes = 101,
-	Stats_ChickenFrags = 102,
+	Stats_BlindedFrags = 100,
+	Stats_ThroughSmokeFrags = 101,
+	Stats_Wipes = 102,
+	Stats_ChickenFrags = 103,
 	
 	/* counter-strike overall */
-	Stats_MVPs = 103,
-	Stats_BombsPlanted = 104,
-	Stats_BombsDefused = 105,
-	Stats_BombsExploded = 106,
-	Stats_BombFrags = 107,
-	Stats_MoneySpent = 108,
-	Stats_FlashedOpponents = 109,
-	Stats_KnifeFrags = 110,
-	Stats_HostagesRescued = 111,
-	Stats_HostagesFragged = 112,
+	Stats_MVPs = 104,
+	Stats_BombsPlanted = 105,
+	Stats_BombsDefused = 106,
+	Stats_BombsExploded = 107,
+	Stats_BombFrags = 108,
+	Stats_MoneySpent = 109,
+	Stats_FlashedOpponents = 110,
+	Stats_KnifeFrags = 111,
+	Stats_HostagesRescued = 112,
+	Stats_HostagesFragged = 113,
 }
-#define SMStats_StatsSize 113
+#define SMStats_StatsSize 114
 enum SMStatsUpdatedFwdType
 {
 	SMStatsUpdated_ChatTag = 0,

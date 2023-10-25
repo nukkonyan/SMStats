@@ -108,8 +108,9 @@ enum struct StatsMenuInfo
 		
 		for(int i = 0; i < Players; i++)
 		{
-			char dummy[96];
-			Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_TopPlayer", client, i+1, PlayerName[i], Points[i]);
+			char dummy[96], points_plural[32];
+			PointsPluralSplitter(client, Points[i], points_plural, sizeof(points_plural));
+			Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_TopPlayer", client, i+1, PlayerName[i], points_plural);
 			menu.AddItem(SteamID[i], dummy);
 		}
 		
@@ -1258,27 +1259,28 @@ bool TF2_GetTopSQLInformation(int client, const char[] auth, bool bTopPlayerCust
 	
 	/*65*/... "TeleportersUsed,"
 	/*66*/... "PlayersTeleported,"
-	/*67*/... "CoatedMilk,"
-	/*68*/... "CoatedPiss,"
-	/*69*/... "Coated,"
-	/*70*/... "Extinguished,"
+	/*67*/... "CoatedPiss,"
+	/*68*/... "CoatedMilk,"
+	/*69*/... "CoatedGasoline,"
+	/*70*/... "Coated,"
+	/*71*/... "Extinguished,"
 	/*XX*///... "Ignited,"
-	/*71*/... "Ubercharged,"
-	/*72*/... "SandvichesStolen,"
-	/*73*/... "StunnedPlayers,"
-	/*74*/... "MoonShotStunnedPlayers,"
+	/*72*/... "Ubercharged,"
+	/*73*/... "SandvichesStolen,"
+	/*74*/... "StunnedPlayers,"
+	/*75*/... "MoonShotStunnedPlayers,"
 	
-	/*75*/... "MonoculusStunned,"
-	/*76*/... "MerasmusStunned,"
-	/*77*/... "MonoculusFragged,"
-	/*78*/... "MerasmusFragged,"
-	/*79*/... "HHHFragged,"
-	/*80*/... "SkeletonKingsFragged,"
+	/*76*/... "MonoculusStunned,"
+	/*77*/... "MerasmusStunned,"
+	/*78*/... "MonoculusFragged,"
+	/*79*/... "MerasmusFragged,"
+	/*80*/... "HHHFragged,"
+	/*81*/... "SkeletonKingsFragged,"
 	
 	/*XX*///... "RobotsFragged,"
-	/*81*/... "TanksDestroyed,"
-	/*82*/... "SentryBustersFragged,"
-	/*83*/... "BombsResetted"
+	/*82*/... "TanksDestroyed,"
+	/*83*/... "SentryBustersFragged,"
+	/*84*/... "BombsResetted"
 	
 	... " from `%s` where SteamID = '%s' and ServerID = %i"
 	, sql_table_playerlist, auth, g_ServerID);
@@ -1378,27 +1380,28 @@ bool TF2_GetTopSQLInformation(int client, const char[] auth, bool bTopPlayerCust
 			
 			g_Player[client].topstats[Stats_TeleportersUsed] = results.FetchInt(65);
 			g_Player[client].topstats[Stats_PlayersTeleported] = results.FetchInt(66);
-			g_Player[client].topstats[Stats_CoatedMilk] = results.FetchInt(67);
-			g_Player[client].topstats[Stats_CoatedPiss] = results.FetchInt(68);
-			g_Player[client].topstats[Stats_Coated] = results.FetchInt(69);
-			g_Player[client].topstats[Stats_Extinguished] = results.FetchInt(70);
+			g_Player[client].topstats[Stats_CoatedPiss] = results.FetchInt(67);
+			g_Player[client].topstats[Stats_CoatedMilk] = results.FetchInt(68);
+			g_Player[client].topstats[Stats_CoatedGasoline] = results.FetchInt(69);
+			g_Player[client].topstats[Stats_Coated] = results.FetchInt(70);
+			g_Player[client].topstats[Stats_Extinguished] = results.FetchInt(71);
 			//g_Player[client].topstats[Stats_Ignited] = results.FetchInt(XX);
-			g_Player[client].topstats[Stats_Ubercharged] = results.FetchInt(71);
-			g_Player[client].topstats[Stats_SandvichesStolen] = results.FetchInt(72);
-			g_Player[client].topstats[Stats_StunnedPlayers] = results.FetchInt(73);
-			g_Player[client].topstats[Stats_MoonShotStunnedPlayers] = results.FetchInt(74);
+			g_Player[client].topstats[Stats_Ubercharged] = results.FetchInt(72);
+			g_Player[client].topstats[Stats_SandvichesStolen] = results.FetchInt(73);
+			g_Player[client].topstats[Stats_StunnedPlayers] = results.FetchInt(74);
+			g_Player[client].topstats[Stats_MoonShotStunnedPlayers] = results.FetchInt(75);
 			
-			g_Player[client].topstats[Stats_MonoculusStunned] = results.FetchInt(75);
-			g_Player[client].topstats[Stats_MerasmusStunned] = results.FetchInt(76);
-			g_Player[client].topstats[Stats_MonoculusFragged] = results.FetchInt(77);
-			g_Player[client].topstats[Stats_MerasmusFragged] = results.FetchInt(78);
-			g_Player[client].topstats[Stats_HHHFragged] = results.FetchInt(79);
-			g_Player[client].topstats[Stats_SkeletonKingsFragged] = results.FetchInt(80);
+			g_Player[client].topstats[Stats_MonoculusStunned] = results.FetchInt(76);
+			g_Player[client].topstats[Stats_MerasmusStunned] = results.FetchInt(77);
+			g_Player[client].topstats[Stats_MonoculusFragged] = results.FetchInt(78);
+			g_Player[client].topstats[Stats_MerasmusFragged] = results.FetchInt(79);
+			g_Player[client].topstats[Stats_HHHFragged] = results.FetchInt(80);
+			g_Player[client].topstats[Stats_SkeletonKingsFragged] = results.FetchInt(81);
 			
 			//g_Player[client].topstats[Stats_RobotsFragged] = results.FetchInt(XX);
-			g_Player[client].topstats[Stats_TanksDestroyed] = results.FetchInt(81);
-			g_Player[client].topstats[Stats_SentryBustersFragged] = results.FetchInt(82);
-			g_Player[client].topstats[Stats_BombsResetted] = results.FetchInt(83);
+			g_Player[client].topstats[Stats_TanksDestroyed] = results.FetchInt(82);
+			g_Player[client].topstats[Stats_SentryBustersFragged] = results.FetchInt(83);
+			g_Player[client].topstats[Stats_BombsResetted] = results.FetchInt(84);
 			
 			//
 			
@@ -1527,8 +1530,9 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 		{
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleportersUsed", client, stats[Stats_TeleportersUsed]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayersTeleported", client, stats[Stats_PlayersTeleported]);
-			PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedMilk", client, stats[Stats_CoatedMilk]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedPiss", client, stats[Stats_CoatedPiss]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedMilk", client, stats[Stats_CoatedMilk]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_CoatedGasoline", client, stats[Stats_CoatedGasoline]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Coated", client, stats[Stats_Coated]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Extinguished", client, stats[Stats_Extinguished]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Ignited", client, stats[Stats_Ignited]);

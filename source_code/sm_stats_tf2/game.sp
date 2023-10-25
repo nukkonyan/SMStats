@@ -52,6 +52,7 @@ ConVar g_SandvichStolen;
 
 ConVar g_Jarated;
 ConVar g_Milked;
+ConVar g_GasPassed;
 
 ConVar g_Extinguished;
 
@@ -382,6 +383,7 @@ float g_Time_Stunned = 5.0;
 float g_Time_PassBallEvent = 5.0;
 float g_Time_PlayerJarated = 5.0;
 float g_Time_PlayerMilked = 5.0;
+float g_Time_PlayerGasPassed = 5.0;
 float g_Time_ExtEvent = 5.0;
 
 //
@@ -430,6 +432,7 @@ void PrepareGame()
 	
 	g_Jarated = CreateConVar("sm_stats_points_jar_jarated", "2", "SM Stats: TF2 - Points earned when coating opponents with piss.", _, true);
 	g_Milked = CreateConVar("sm_stats_points_jar_milked", "2", "SM Stats: TF2 - Points earned when coating opponents with milk.", _, true);
+	g_GasPassed = CreateConVar("sm_stats_points_jar_gaspassed", "2", "SM Stats: TF2 - Points earned when coating opponents with flammable gas.", _, true);
 	
 	g_Extinguished = CreateConVar("sm_stats_points_extinguished", "3", "SM Stats: TF2 - Points earned when extinguishing a teammate.", _, true);
 	
@@ -2531,7 +2534,7 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 	bool bProceed = true;
 	int iType = -1;
 	
-	/* Coated with piss */
+	// Coated with piss
 	if(StrEqual(item_class, "tf_weapon_jar", false))
 	{
 		if(g_Game[client].bPlayerJarated)
@@ -2541,7 +2544,7 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 		
 		iType = 1;
 	}
-	/* Coated with milk */
+	// Coated with milk
 	else if(StrEqual(item_class, "tf_weapon_jar_milk", false))
 	{
 		if(g_Game[client].bPlayerMilked)
@@ -2550,6 +2553,16 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 		}
 		
 		iType = 2;
+	}
+	// Coated with flammable gasoline
+	else if(StrEqual(item_class, "tf_weapon_jar_gas", false))
+	{
+		if(g_Game[client].bPlayerGasPassed)
+		{
+			bProceed = false;
+		}
+		
+		iType = 3;
 	}
 	else
 	{
@@ -2564,7 +2577,7 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 	event.SetInt("itemdefindex", itemdef);
 	event.Fire();
 	
-	if(!bLoaded)
+	if(!IsValidStats())
 	{
 		return Plugin_Handled;
 	}
@@ -3718,6 +3731,41 @@ Action MapTimer_GameTimer(Handle timer)
 								}
 							}
 						}
+						// Coated with gasoline
+						case 3:
+						{
+							g_Player[client].session[Stats_CoatedGasoline] += jars;
+							
+							if(!g_Game[client].bPlayerGasPassed)
+							{
+								if((points = g_GasPassed.IntValue * jars) > 0)
+								{
+									g_Player[client].session[Stats_Points] += points;
+									g_Player[client].points += points;
+									
+									CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+%i, CoatedGasoline = CoatedGasoline+%i where SteamID = '%s' and ServerID = %i"
+									, query_error_uniqueid_OnPlayerGasPassed
+									, sql_table_playerlist, points, jars, jars, g_Player[client].auth, g_ServerID);
+								}
+								
+								g_Game[client].bPlayerGasPassed = true;
+								CreateTimer(g_Time_PlayerGasPassed, Timer_bPlayerGasPassed, GetClientUserId(client));
+								
+								if(points > 0)
+								{
+									char points_plural[32];
+									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+									
+									CPrintToChat(client, "%s %T"
+									, g_ChatTag
+									, "#SMStats_Player_CoatedGasoline", client
+									, g_Player[client].name
+									, g_Player[client].points-points
+									, points_plural
+									, dummy);
+								}
+							}
+						}
 					}
 				}
 			}
@@ -3924,6 +3972,17 @@ Action Timer_bPassBallEvent(Handle timer, DataPack pack)
 	return Plugin_Continue;
 }
 
+Action Timer_bPlayerJarated(Handle timer, int userid)
+{
+	int client = 0;
+	if((IsValidClient((client = GetClientOfUserId(userid)))))
+	{
+		g_Game[client].bPlayerJarated = false;
+	}
+	
+	return Plugin_Continue;
+}
+
 Action Timer_bPlayerMilked(Handle timer, int userid)
 {
 	int client = 0;
@@ -3935,12 +3994,12 @@ Action Timer_bPlayerMilked(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
-Action Timer_bPlayerJarated(Handle timer, int userid)
+Action Timer_bPlayerGasPassed(Handle timer, int userid)
 {
 	int client = 0;
 	if((IsValidClient((client = GetClientOfUserId(userid)))))
 	{
-		g_Game[client].bPlayerJarated = false;
+		g_Game[client].bPlayerGasPassed = false;
 	}
 	
 	return Plugin_Continue;

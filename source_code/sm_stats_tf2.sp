@@ -36,7 +36,8 @@
 #define query_error_uniqueid_OnPlayerExtinguished 54
 #define query_error_uniqueid_OnPlayerJarated 57
 #define query_error_uniqueid_OnPlayerMilked 58
-#define query_error_uniqueid_MvM_OnBombResetted 59
+#define query_error_uniqueid_OnPlayerGasPassed 59
+#define query_error_uniqueid_MvM_OnBombResetted 60
 #define query_error_uniqueid_MvM_OnSentryBusterFragged 61
 #define query_error_uniqueid_MvM_OnTankDestroyed 62
 #define query_error_uniqueid_PassBall_Get 71

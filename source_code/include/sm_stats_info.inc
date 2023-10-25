@@ -139,6 +139,7 @@ enum struct SMStats_TF2GameInfo
 	
 	bool bPlayerJarated;
 	bool bPlayerMilked;
+	bool bPlayerGasPassed;
 	ArrayList aJarEvent;
 	
 	bool bExtEvent;
@@ -187,6 +188,7 @@ enum struct SMStats_TF2GameInfo
 		this.bStunned = false;
 		this.bPlayerJarated = false;
 		this.bPlayerMilked = false;
+		this.bPlayerGasPassed = false;
 		this.bExtEvent = false;
 		this.iRobotFragEvent = -1;
 	}
