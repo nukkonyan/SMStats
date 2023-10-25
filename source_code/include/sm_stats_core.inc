@@ -83,6 +83,12 @@ native int _sm_stats_get_deathpoints();
 
 /*
  *	SourceMod Stats: Core.
+ *	Retrieve the active assist points.
+ */
+native int _sm_stats_get_assistpoints();
+
+/*
+ *	SourceMod Stats: Core.
  *	Retrieve the boolean status of warmup being allowed.
  */
 native bool _sm_stats_get_allowwarmup();
@@ -180,6 +186,7 @@ public void _sm_stats_loaded_core()
 	bDisableAfterRoundEnd = _sm_stats_get_disableafterroundend();
 	g_MinPlayers = _sm_stats_get_minplayers();
 	g_DeathPoints = _sm_stats_get_deathpoints();
+	g_AssistPoints = _sm_stats_get_assistpoints();
 	g_PenaltySeconds = _sm_stats_get_penaltyseconds();
 	
 	#if defined load_players
@@ -271,6 +278,7 @@ public void OnPluginStart()
 				bDisableAfterRoundEnd = _sm_stats_get_disableafterroundend();
 				g_MinPlayers = _sm_stats_get_minplayers();
 				g_DeathPoints = _sm_stats_get_deathpoints();
+				g_AssistPoints = _sm_stats_get_assistpoints();
 				g_PenaltySeconds = _sm_stats_get_penaltyseconds();
 				
 				PrintToServer("%s Crucial information Re-instated from detected restart.", core_chattag);
