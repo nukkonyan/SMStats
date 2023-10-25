@@ -281,8 +281,6 @@ public void OnPluginStart()
 				
 				PrintToServer("%s Crucial information Re-instated from detected restart.", core_chattag);
 				
-				CheckActivePlayers();
-				
 				switch(SMStats.IsLoaded())
 				{
 					case false: ThrowError("%s Error: SMStats: Core seems to not be loaded.\nUnable to re-instate SQL Connection, problems to be expected.", core_chattag);
@@ -296,10 +294,17 @@ public void OnPluginStart()
 					}
 				}
 				
-				CreateTimer(0.85, Timer_PluginLoaded);
+				CreateTimer(1.25, Timer_OnRestarted);
 			}
 		}
 	}
+}
+
+Action Timer_OnRestarted(Handle timer)
+{
+	CheckActivePlayers();
+	CreateTimer(0.5, Timer_PluginLoaded);
+	return Plugin_Continue;
 }
 
 //

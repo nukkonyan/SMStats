@@ -192,7 +192,7 @@ stock int GetPlayerCount(bool count_bots=false)
 	int count = 0;
 	
 	int player = 0;
-	while((player = FindEntityByClassname(player, "player")) > 0)
+	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
 		if(!IsValidClient(player, !count_bots ? true : false))
 		{
@@ -303,7 +303,7 @@ void CheckActivePlayers()
 				_sm_stats_info_update_stats_active(true);
 				
 				int player = 0;
-				while((player = FindEntityByClassname(player, "player")) > 0)
+				while((player = FindEntityByClassname(player, "player")) != -1)
 				{
 					if(IsValidClient(player))
 					{
@@ -325,7 +325,7 @@ void CheckActivePlayers()
 				_sm_stats_info_update_stats_active(false);
 				
 				int player = 0;
-				while((player = FindEntityByClassname(player, "player")) > 0)
+				while((player = FindEntityByClassname(player, "player")) != -1)
 				{
 					if(IsValidClient(player))
 					{
