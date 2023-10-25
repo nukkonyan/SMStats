@@ -167,12 +167,14 @@
 	}
 	"#SMStats_StatsCmd_InvalidTopPlayer"
 	{
+		// {1} top player position
 		"#format" "{1:i}"
 		"en" "{yellow}Error: {default}The enter top player position {lightgreen}{1} {default}you entered is invalid. The value must be 1 or greater."
 		"sv" "{yellow}Fel: {default}Det angivna toppspelarplaceringen {lightgreen}{1} {default}är ej giltigt. Värdet bör vara 1 eller högre."
 	}
 	"#SMStats_StatsCmd_InvalidSteamID"
 	{
+		// {1} steamid
 		"#format" "{1:s}"
 		"en" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
 		"sv" "{yellow}Fel: {default}steamidn {lightgreen}{1} {default}är ej giltigt. steamidn bör se ut någonting likt {lightgreen}STEAM_0:0:12345{default}."
@@ -193,12 +195,14 @@
 	}
 	"#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist"
 	{
+		// {1} top player position
 		"#format" "{1:i}"
 		"en" "{yellow}Error: {default}Top player placed {lightgreen}#{1} {default}does not exist on the leaderboard."
 		"sv" "{yellow}Fel: {default}Toppspelaren placerad {lightgreen}#{1} {default}finns ej på leaderboardet."
 	}
 	"#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist"
 	{
+		// {1} steamid
 		"#format" "{1:s}"
 		"en" "{yellow}Error: {default}Top player with steamid {lightgreen}{1} {default}does not exist on the leaderboard."
 		"sv" "{yellow}Fel: {default}Toppspelaren med steamid {lightgreen}{1} {default}finns ej på leaderboardet."
@@ -209,9 +213,14 @@
 	//===================//
 	"#SMStats_Player_Penalty"
 	{
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:i}"
-		"en" "{1} (Pos #{2}, {3} points) {red}was given {yellow}{4} {red}penalty due to abusing spam. Your recent abused {5} points was reverted. You will not be able to gain points during penalty."
-		"sv" "{1} (Pos #{2}, {3} poäng) {red}Blev given en {yellow}{4} {red}staff på grund av att missbruka spam. Dina senaste missbrukade {5} poäng blev återställd. Du kan ej få poäng medans straffad."
+		// {1} player name
+		// {2} player position
+		// {3} player points
+		// {4} penalty time format
+		// {5} points reverted
+		"#format" "{1:s},{2:i},{3:s},{4:s},{5:i}"
+		"en" "{1} (Pos #{2}, {3}) {red}was given {yellow}{4} {red}penalty due to abusing spam. Your recent abused {5} points was reverted. You will not be able to gain points during penalty."
+		"sv" "{1} (Pos #{2}, {3}) {red}Blev given en {yellow}{4} {red}staff på grund av att missbruka spam. Dina senaste missbrukade {5} poäng blev återställd. Du kan ej få poäng medans straffad."
 	}
 	"#SMStats_Points_Penalty"
 	{
@@ -224,21 +233,30 @@
 	//================================//
 	"#SMStats_Player_Connected"
 	{
-		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} (Pos #{2}, {3} points) has joined the game from {4}."
-		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からを参加しました。"
-		"nl" "{1} (Pos #{2}, {3} punten) neemt deel aan het spel van {4}."
-		"no" "{1} (Pos #{2}, {3} poeng) er blitt med i spillet fra {4}."
-		"sv" "{1} (Pos #{2}, {3} poäng) har gått med i spelet från {4}."
+		// {1} player name
+		// {2} player position
+		// {3} player points
+		// {4} country name
+		"#format" "{1:s},{2:i},{3:s},{4:s}"
+		"en" "{1} (Pos #{2}, {3}) has joined the game from {4}."
+		"jp" "{1} （立{2}場、{3}）が{orange}{4}{default}からを参加しました。"
+		"nl" "{1} (Pos #{2}, {3}) neemt deel aan het spel van {4}."
+		"no" "{1} (Pos #{2}, {3}) er blitt med i spillet fra {4}."
+		"sv" "{1} (Pos #{2}, {3}) har gått med i spelet från {4}."
 	}
 	"#SMStats_Player_Disconnected"
 	{
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} (Pos #{2}, {3} points) has left the game from {4}. {grey}({5})"
-		"jp" "{1} （立{2}場、{3}ポイント）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
-		"nl" "{1} (Pos #{2}, {3} punten) heeft het spel verlaten van {4} {grey}({5})"
-		"no" "{1} (Pos #{2}, {3} poeng) har forlatt spillet fra {4}. {grey}({5})"
-		"sv" "{1} (Pos #{2}, {3} poäng) har lämnat spelet från {4}. {grey}({5})"
+		// {1} player name
+		// {2} player position
+		// {3} player points
+		// {4} country name
+		// {5} disconnect reason
+		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
+		"en" "{1} (Pos #{2}, {3}) has left the game from {4}. {grey}({5})"
+		"jp" "{1} （立{2}場、{3}）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
+		"nl" "{1} (Pos #{2}, {3}) heeft het spel verlaten van {4} {grey}({5})"
+		"no" "{1} (Pos #{2}, {3}) har forlatt spillet fra {4}. {grey}({5})"
+		"sv" "{1} (Pos #{2}, {3}) har lämnat spelet från {4}. {grey}({5})"
 	}
 
 	//================================//
@@ -246,6 +264,7 @@
 	//================================//
 	"#SMStats_Menu_Playername"
 	{
+		// {1} player name
 		"#format" "{1:N}"
 		"en" "Playername: {1}"
 		"jp" "プレイヤー名： {1}"
@@ -254,6 +273,8 @@
 	}
 	"#SMStats_Menu_Positioned"
 	{
+		// {1} placed position
+		// {2} total players
 		"#format" "{1:i},{2:i}"
 		"en" "Placed #{1} of {2} players."
 		"no" "Plassert #{1} av {2} spillere."
@@ -310,6 +331,7 @@
 	}
 	"#SMStats_Menu_Page"
 	{
+		// {1} menu page
 		"#format" "{1:i}"
 		"en" "Page {1}"
 		"jp" "ページ {1}"
@@ -338,6 +360,7 @@
 
 	"#SMStats_MenuInfo_PlayTime"
 	{
+		// {1} play time format
 		"#format" "{1:s}"
 		"en" "Playtime : {1}"
 		"jp" "やる時間 : {1}"
@@ -346,6 +369,7 @@
 	}
 	"#SMStats_MenuInfo_MapTime"
 	{
+		// {1} map time format
 		"#format" "{1:s}"
 		"en" "Maptime: {1}"
 		"jp" "マップ時間 : {1}"
@@ -354,6 +378,7 @@
 	}
 	"#SMStats_MenuInfo_Country"
 	{
+		// {1} country name
 		"#format" "{1:s}"
 		"en" "Country : {1}"
 		"jp" "出身 : {1}"
@@ -362,6 +387,7 @@
 	}
 	"#SMStats_MenuInfo_LastConnected"
 	{
+		// {1} last connected time format
 		"#format" "{1:s}"
 		"en" "Last connected : {1}"
 		"sv" "Senast ansluten : {1}"
@@ -374,24 +400,28 @@
 	}
 	"#SMStats_MenuInfo_PointsEarned"
 	{
+		// {1} points earned
 		"#format" "{1:i}"
 		"en" "Points earned : {1}"
 		"sv" "Poäng belönad : {1}"
 	}
 	"#SMStats_MenuInfo_PointsLost"
 	{
+		// {1} points lost
 		"#format" "{1:i}"
 		"en" "Points lost : {1}"
 		"sv" "Poäng förlorat : {1}"
 	}
 	"#SMStats_MenuInfo_Frags"
 	{
+		// {1} kill count
 		"#format" "{1:i}"
 		"en" "Frags : {1}"
 		"jp" "フラッグ： {1}"
 	}
 	"#SMStats_MenuInfo_Assists"
 	{
+		// {1} assist count
 		"#format" "{1:i}"
 		"en" "Assists : {1}"
 		"no" "Assister : {1}"
@@ -399,6 +429,7 @@
 	}
 	"#SMStats_MenuInfo_Deaths"
 	{
+		// {1} death count
 		"#format" "{1:i}"
 		"en" "Deaths : {1}"
 		"jp" "死亡率： {1}"
@@ -406,24 +437,28 @@
 	}
 	"#SMStats_MenuInfo_Suicides"
 	{
+		// {1} suicide count
 		"#format" "{1:i}"
 		"en" "Suicides : {1}"
 		"sv" "Självmordsantal : {1}"
 	}
 	"#SMStats_MenuInfo_DamageDone"
 	{
+		// {1} damage count
 		"#format" "{1:i}"
 		"en" "Damage done : {1}"
 		"sv" "Skada givet : {1}"
 	}
 	"#SMStats_MenuInfo_AchievementsEarned"
 	{
+		// {1} achievements earned count
 		"#format" "{1:i}"
 		"en" "Achievements Earned : {1}"
 		"sv" "Prestationer uppnått : {1}"
 	}
 	"#SMStats_MenuInfo_Achievement"
 	{
+		// {1} achievement name
 		"#format" "{1:s}"
 		"en" "Achievement:"
 		"nl" "Prestatie:"
@@ -431,6 +466,7 @@
 	}
 	"#SMStats_MenuInfo_Description"
 	{
+		// {1} menu item description
 		"en" "Description:"
 		"nl" "Beschrijving:"
 		"no" "Beskrivelse:"
@@ -438,12 +474,15 @@
 	}
 	"#SMStats_MenuInfo_TopPlayer"
 	{
-		"#format" "{1:i},{2:s},{3:i}"
-		"en" "Top {1} - {2} [{3} points]"
-		"jp" "トップ{1} - {2} [{3}ポイント]"
-		"nl" "Topp {1} - {2} [{3} punten]"
-		"no" "Topp {1} - {2} [{3} poeng]"
-		"sv" "Topp {1} - {2} [{3} poäng]"
+		// {1} top player position
+		// {2} top player name
+		// {3} top player points
+		"#format" "{1:i},{2:s},{3:s}"
+		"en" "Top {1} - {2} [{3}]"
+		"jp" "トップ{1} - {2} [{3}]"
+		"nl" "Topp {1} - {2} [{3}]"
+		"no" "Topp {1} - {2} [{3}]"
+		"sv" "Topp {1} - {2} [{3}]"
 	}
 	
 	//================================//
@@ -465,9 +504,10 @@
 
 	"#SMStats_GameLoaded"
 	{
+		// {1} version
 		"#format" "{1:s}"
 		"en" "{orange}Version {1} has been loaded!"
-		"jp" "{orange}バーション{1}ロードされました！"
+		"jp" "{orange}バーション{1}ロードしました！"
 		"sv" "{orange}Version {1} har laddats!"
 	}
 	
@@ -491,12 +531,16 @@
 	}
 	"#SMStats_NotEnoughPlayers"
 	{
+		// {1} required player count
+		// {2} minimum player count
 		"#format" "{1:i},{2:i}"
 		"en" "Not enough players ({1} out of required {2}), disabling.."
 		"sv" "Inte tillräckligt med spelare ({1} utav krävande {2}), inaktiverar.."
 	}
 	"#SMStats_EnoughPlayers"
 	{
+		// {1} required player count
+		// {2} minimum player count
 		"#format" "{1:i},{2:i}"
 		"en" "Enough Players ({1} out of required {2}), enabling.."
 		"sv" "Tillräckligt med spelare ({1} utav krävande {2}), aktiverar.."
@@ -539,17 +583,20 @@
 	}
 	"#SMStats_Counter"
 	{
+		// {1} counter
 		"#format" "{1:i}"
 		"en" " ({1})"
 		"jp" " （{1}）"
 	}
 	"#SMStats_Points_PluralSplitter" // points plural splitter false#|#true (non-plural#|#plural)
 	{
-		"en" "point#|#points"
-		"jp" "ポイント"
-		"sv" "poäng"
-		"nl" "punt#|#punten"
-		"no" "poeng"
+		// {1} player points
+		"#format" "{1:i}"
+		"en" "{1} point#|#{1} points"
+		"jp" "{1}ポイント"
+		"sv" "{1} poäng"
+		"nl" "{1} punt#|#punten"
+		"no" "{1} poeng"
 	}
 	"#SMStats_FeatureUnavailable"
 	{
@@ -586,12 +633,12 @@
 	"#SMStats_FragEvent_Type4" //Noscope.
 	{
 		"en" "with a {green}Noscope"
-		"sv" "med en {green}icke-zoomingsskott"
+		"sv" "med ett {green}icke-zoomingsskott"
 	}
 	"#SMStats_FragEvent_Type5" //Backstab.
 	{
 		"en" "with a {green}Backstab"
-		"sv" "med {green}Rygghugg"
+		"sv" "med ett {green}Rygghugg"
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
@@ -606,7 +653,7 @@
 	"#SMStats_FragEvent_Type8" //Teleport frag.
 	{
 		"en" "with a {green}Telefrag"
-		"sv" "med {green}Telefrag"
+		"sv" "med ett {green}Telefrag"
 	}
 	"#SMStats_FragEvent_Type9" //Taunt frag.
 	{
@@ -621,17 +668,17 @@
 	"#SMStats_FragEvent_Type11" //Collateral.
 	{
 		"en" "with a {green}Collateral"
-		"sv" "med {green}Kollateral"
+		"sv" "med en {green}Kollateral"
 	}
 	"#SMStats_FragEvent_Type12" //Grenade frag.
 	{
 		"en" "with a {green}Grenade Frag"
-		"sv" "med {green}Granat Frag"
+		"sv" "med en {green}Granat Frag"
 	}
 	"#SMStats_FragEvent_Type13" //Bomb/C4 frag.
 	{
 		"en" "with a {green}Bomb Frag"
-		"sv" "med {green}Bomb Frag"
+		"sv" "med en {green}Bomb Frag"
 	}
 	"#SMStats_FragEvent_Type14" //Blinded frag.
 	{
@@ -645,20 +692,18 @@
 		// {1} player name
 		// {2} player points
 		// {3} points earned
-		// {4} points plural splitter
-		// {5} assister name
-		// {6} victim fragged
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
-		"en" "{1} ({2}) Earned {3} {4} in assisting {5} for fragging {6}."
-		"sv" "{1} ({2}) Belönades med {3} {4} genom att assistera {5} för att fragga {6}."
+		// {4} assister name
+		// {5} victim fragged
+		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
+		"en" "{1} ({2}) Earned {3} in assisting {4} for fragging {5}."
+		"sv" "{1} ({2}) Belönades med {3} genom att assistera {4} för att fragga {5}."
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
 		// {1} player name
 		// {2} player points
 		// {3} points earned
-		// {4} points plural splitter
-		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"#format" "{1:s},{2:i},{3:s}"
 		"en" "{1} ({2}) Lost {3} {4} for dying."
 		"sv" "{1} ({2}) Förlorade {3} {4} på grund av att dö."
 	}
@@ -667,23 +712,21 @@
 		// {1} player name
 		// {2} player points
 		// {3} points earned
-		// {4} points plural splitter
 		// {5} victim name
 		// {6} special frag event
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
-		"en" "{1} ({2}) Earned {3} {4} for fragging {5} {6}."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {5} {6}."
+		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
+		"en" "{1} ({2}) Earned {3} for fragging {4} {5}."
+		"sv" "{1} ({2}) Belönades med {3} för att {4} {5}."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
 		// {1} player name
 		// {2} player points
 		// {3} points earned
-		// {4} points plural splitter
-		// {5} victim name
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} {4} for fragging {5}."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att fragga {5}."
+		// {4} victim name
+		"#format" "{1:s},{2:i},{3:s},{4:s}"
+		"en" "{1} ({2}) Earned {3} for fragging {4}."
+		"sv" "{1} ({2}) Belönades med {3} för att fragga {4}."
 	}
 
 	"#SMStats_FragEventError_NewItem"
@@ -710,6 +753,8 @@
 	//================================//
 	"#SMStats_AchEvent"
 	{
+		// {1} player name
+		// {2} achievement name
 		"#format" "{1:s},{2:s}"
 		"en" "{1} has earned the achievement {olive}{2}"
 		"sv" "{1} har förtjänat uppdraget {olive}{2}"

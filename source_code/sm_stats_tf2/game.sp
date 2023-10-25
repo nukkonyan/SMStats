@@ -739,13 +739,14 @@ void PrepareGame()
 
 Action asdfCmd(int client, int args)
 {
-	char penalty_time[128];
+	char penalty_time[128], points_plural[32];
 	GetTimeFormat(client, g_PenaltySeconds, penalty_time, sizeof(penalty_time));
+	PointsPluralSplitter(client, g_Player[client].points, points_plural, sizeof(points_plural));
 	
 	CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_Player_Penalty", client
 	, g_Player[client].name
 	, g_Player[client].position
-	, g_Player[client].points
+	, points_plural
 	, penalty_time
 	, 69);
 	return Plugin_Continue;
@@ -1070,7 +1071,6 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 			, "#SMStats_CaptureEvent_Default", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, phrase);
 			
@@ -1132,7 +1132,6 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 		, "#SMStats_CaptureEvent_Default", client
 		, g_Player[client].name
 		, g_Player[client].points
-		, points
 		, points_plural
 		, phrase);
 		
@@ -1215,7 +1214,6 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			, "#SMStats_FlagEvent0", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, event_phrase);
 			
@@ -1253,7 +1251,6 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			, "#SMStats_FlagEvent0", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, event_phrase);
 			
@@ -1278,7 +1275,6 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			, "#SMStats_FlagEvent0", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, event_phrase);
 			
@@ -1303,7 +1299,6 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			, "#SMStats_FlagEvent1", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, event_phrase);
 			
@@ -1403,12 +1398,12 @@ void OnObjectDestroyed(Event event, const char[] event_name, bool dontBroadcast)
 	TFBuilding obj = TFBuilding_Invalid;
 	if((obj = TF2_GetBuildingType(index)) == TFBuilding_Invalid)
 	{
-		LogError("[SM Stats: TF2] OnObjectDestroyed error: Failed obtaining object type of object entity index %i!", index);
+		LogError("%s OnObjectDestroyed error: Failed obtaining object type of object entity index %i!", core_chattag, index);
 		return;
 	}
 	else if(!g_Object_Destroyed[obj])
 	{
-		LogError("[SM Stats: TF2] OnObjectDestroyed error: Building type index %i has invalid convar handle!", obj);
+		LogError("%s OnObjectDestroyed error: Building type index %i has invalid convar handle!", core_chattag, obj);
 		return;
 	}
 	else if(g_Game[client].bObjectDestroyed[obj])
@@ -1458,17 +1453,9 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 	}
 	
 	int victim = GetClientOfUserId(userid);
-	if(!IsValidClient(victim, false))
+	if(!IsValidClient(victim, !bAllowBots ? true : false))
 	{
 		return;
-	}
-	
-	if(!bAllowBots)
-	{
-		if(IsFakeClient(victim))
-		{
-			return;
-		}
 	}
 	
 	int points = 0;
@@ -1495,7 +1482,6 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 	, "#SMStats_Player_Ubercharged", client
 	, g_Player[client].name
 	, g_Player[client].points
-	, points
 	, points_plural
 	, g_Player[victim].name);
 	
@@ -1640,31 +1626,14 @@ void OnPlayerStealSandvich(Event event, const char[] event_name, bool dontBroadc
 		return;
 	}
 	
-	bool bValidVictim = false;
-	
-	int victim = GetClientOfUserId(owner);
-	if(IsValidClient(victim, false))
-	{
-		if(!bAllowBots)
-		{
-			if(IsFakeClient(victim))
-			{
-				bValidVictim = false;
-			}
-		}
-		else
-		{
-			bValidVictim = true; //(GetClientTeam(victim) != GetClientTeam(client));
-		}
-	}
-	
 	g_Player[client].session[Stats_SandvichesStolen]++;
 	g_Player[client].session[Stats_Points] += points;
 	
 	char points_plural[32];
 	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
 	
-	switch(bValidVictim)
+	int victim = GetClientOfUserId(owner);
+	switch(IsValidClient(victim, !bAllowBots ? true : false))
 	{
 		case false:
 		{
@@ -1673,7 +1642,6 @@ void OnPlayerStealSandvich(Event event, const char[] event_name, bool dontBroadc
 			, "#SMStats_Player_StealSandvich_Scenario1", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural);
 		}
 		
@@ -1684,7 +1652,6 @@ void OnPlayerStealSandvich(Event event, const char[] event_name, bool dontBroadc
 			, "#SMStats_Player_StealSandvich_Scenario0", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, g_Player[victim].name);
 		}
@@ -1734,17 +1701,9 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 	}
 	
 	int victim = GetClientOfUserId(userid_victim);
-	if(!IsValidClient(userid_victim, false))
+	if(!IsValidClient(userid_victim, bAllowBots ? true : false))
 	{
 		return;
-	}
-	
-	if(!bAllowBots)
-	{
-		if(IsFakeClient(victim))
-		{
-			return;
-		}
 	}
 	
 	int points = 0;
@@ -1798,7 +1757,6 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 			, "#SMStats_Player_StunScenario0", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, g_Player[victim].name);
 		}
@@ -1813,7 +1771,6 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 			, "#SMStats_Player_StunScenario1", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, g_Player[victim].name);
 			
@@ -1886,7 +1843,6 @@ void OnHalloweenBossKill(Event event, const char[] event_name, bool dontBroadcas
 		, "#SMStats_FragEvent_HalloweenBoss", client
 		, g_Player[client].name
 		, g_Player[client].points
-		, points
 		, points_plural
 		, phrase);
 		
@@ -1958,7 +1914,6 @@ void OnHalloweenSkeletonKingKilled(Event event, const char[] event_name, bool do
 		, "#SMStats_FragEvent_HalloweenBoss", client
 		, g_Player[client].name
 		, g_Player[client].points
-		, points
 		, points_plural
 		, phrase);
 		
@@ -2006,7 +1961,6 @@ void OnHalloweenStunned(Event event, const char[] event_name, bool dontBroadcast
 			, "#SMStats_HalloweenBoss_StunEvent", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural
 			, phrase);
 			
@@ -2088,7 +2042,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		, "#SMStats_PassBall_GrabNeutralBall", client
 		, g_Player[client].name
 		, g_Player[client].points
-		, points
 		, points_plural);
 		
 		g_Player[client].points += points;
@@ -2125,7 +2078,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		, "#SMStats_PassBall_ScoreBall", client
 		, g_Player[client].name
 		, g_Player[client].points
-		, points
 		, points_plural);
 		
 		g_Player[client].points += points;
@@ -2162,7 +2114,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		, "#SMStats_PassBall_DropBall", client
 		, g_Player[client].name
 		, g_Player[client].points
-		, points
 		, points_plural);
 		
 		g_Player[client].points -= points;
@@ -2195,20 +2146,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_PassBallsCatched]++;
 		
 		int victim = event.GetInt("victim");
-		bool bValidVictim = false;
-		if(IsValidClient(victim, false))
-		{
-			if(!_sm_stats_get_allowbots() && IsFakeClient(victim))
-			{
-				bValidVictim = false;
-			}
-			else
-			{
-				bValidVictim = true;
-			}
-		}
-		
-		switch(bValidVictim)
+		switch(IsValidClient(victim, bAllowBots ? true : false))
 		{
 			case false:
 			{
@@ -2217,7 +2155,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 				, "#SMStats_PassBall_CatchBall_Scenario0", client
 				, g_Player[client].name
 				, g_Player[client].points
-				, points
 				, points_plural);
 			}
 			
@@ -2228,7 +2165,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 				, "#SMStats_PassBall_CatchBall_Scenario1", client
 				, g_Player[client].name
 				, g_Player[client].points
-				, points
 				, points_plural
 				, g_Player[victim].name);
 			}
@@ -2263,21 +2199,8 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].session[Stats_PassBallsStolen]++;
 		
-		int victim = event.GetInt("victim");
-		bool bValidVictim = false;
-		if(IsValidClient(victim, false))
-		{
-			if(!_sm_stats_get_allowbots() && IsFakeClient(victim))
-			{
-				bValidVictim = false;
-			}
-			else
-			{
-				bValidVictim = true;
-			}
-		}
-		
-		switch(bValidVictim)
+		int victim = event.GetInt("victim");	
+		switch(IsValidClient(victim, bAllowBots ? true : false))
 		{
 			case false:
 			{
@@ -2286,7 +2209,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 				, "#SMStats_PassBall_StealBall_Scenario0", client
 				, g_Player[client].name
 				, g_Player[client].points
-				, points
 				, points_plural);
 			}
 			
@@ -2297,7 +2219,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 				, "#SMStats_PassBall_StealBall_Scenario1", client
 				, g_Player[client].name
 				, g_Player[client].points
-				, points
 				, points_plural
 				, g_Player[victim].name);
 			}
@@ -2333,20 +2254,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_PassBallsBlocked]++;
 		
 		int victim = event.GetInt("victim");
-		bool bValidVictim = false;
-		if(IsValidClient(victim, false))
-		{
-			if(!_sm_stats_get_allowbots() && IsFakeClient(victim))
-			{
-				bValidVictim = false;
-			}
-			else
-			{
-				bValidVictim = true;
-			}
-		}
-		
-		switch(bValidVictim)
+		switch(IsValidClient(victim, !bAllowBots ? true : false))
 		{
 			case false:
 			{
@@ -2355,7 +2263,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 				, "#SMStats_PassBall_BlockBall_Scenario0", client
 				, g_Player[client].name
 				, g_Player[client].points
-				, points
 				, points_plural);
 			}
 			
@@ -2366,7 +2273,6 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 				, "#SMStats_PassBall_BlockBall_Scenario1", client
 				, g_Player[client].name
 				, g_Player[client].points
-				, points
 				, points_plural
 				, g_Player[victim].name);
 			}
@@ -2435,7 +2341,6 @@ void MvM_OnTankDestroyed(Event event, const char[] event_name, bool dontBroadcas
 			, "#SMStats_MvM_TeamDestroyedTank", client
 			, g_Player[client].name
 			, g_Player[client].points
-			, points
 			, points_plural);
 			
 			g_Player[client].session[Stats_TanksDestroyed]++;
@@ -2532,7 +2437,6 @@ void MvM_OnRobotDeath(Event event, const char[] event_name, bool dontBroadcast)
 		, "#SMStats_MvM_Player_FragSentryBuster", client 
 		, g_Player[client].name
 		, g_Player[client].points
-		, points
 		, points_plural);
 		
 		g_Player[client].session[Stats_Points] += points;
@@ -2591,7 +2495,6 @@ void MvM_OnBombResetted(Event event, const char[] event_name, bool dontBroadcast
 	, "#SMStats_MvM_Player_ResetBomb", client
 	, g_Player[client].name
 	, g_Player[client].points
-	, points
 	, points_plural);
 	
 	g_Player[client].session[Stats_BombsResetted]++;
@@ -2676,12 +2579,7 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 		return Plugin_Handled;
 	}
 	
-	if(!IsValidClient(victim, false))
-	{
-		return Plugin_Handled;
-	}
-	
-	if(!_sm_stats_get_allowbots() && IsFakeClient(victim))
+	if(!IsValidClient(victim, !bAllowBots ? true : false))
 	{
 		return Plugin_Handled;
 	}
@@ -2733,12 +2631,7 @@ Action OnPlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int 
 		return Plugin_Handled;
 	}
 	
-	if(!IsValidClient(victim, false))
-	{
-		return Plugin_Handled;
-	}
-	
-	if(!_sm_stats_get_allowbots() && IsFakeClient(victim))
+	if(!IsValidClient(victim, !bAllowBots ? true : false))
 	{
 		return Plugin_Handled;
 	}
@@ -2780,12 +2673,7 @@ Action OnPlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playe
 		return Plugin_Handled;
 	}
 	
-	if(!IsValidClient(victim, false))
-	{
-		return Plugin_Handled;
-	}
-	
-	if(!_sm_stats_get_allowbots() && IsFakeClient(victim))
+	if(!IsValidClient(victim, !bAllowBots ? true : false))
 	{
 		return Plugin_Handled;
 	}
@@ -3574,7 +3462,6 @@ Action MapTimer_GameTimer(Handle timer)
 						, "#SMStats_ObjectEvent_Default", client
 						, g_Player[client].name
 						, g_Player[client].points-points
-						, points
 						, points_plural
 						, phrase
 						, dummy);
@@ -3731,7 +3618,6 @@ Action MapTimer_GameTimer(Handle timer)
 						, "#SMStats_ObjectEvent_Default", client
 						, g_Player[client].name
 						, g_Player[client].points-points
-						, points
 						, points_plural
 						, phrase
 						, dummy);
@@ -3827,7 +3713,6 @@ Action MapTimer_GameTimer(Handle timer)
 									, "#SMStats_Player_CoatedMilk", client
 									, g_Player[client].name
 									, g_Player[client].points-points
-									, points 
 									, points_plural
 									, dummy);
 								}
@@ -3882,7 +3767,6 @@ Action MapTimer_GameTimer(Handle timer)
 							, "#SMStats_Player_Extinguished", client
 							, g_Player[client].name
 							, g_Player[client].points-points
-							, points
 							, points_plural
 							, dummy);
 						}
@@ -3900,7 +3784,8 @@ Action MapTimer_GameTimer(Handle timer)
 				int points = 0;
 				if((points = g_MvM[MvM_FragRobot].IntValue) > 0)
 				{
-					char counter[12];
+					char points_plural[32], counter[12];
+					PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
 					if(robots >= 2)
 					{
 						Format(counter, sizeof(counter), " %T", "#SMStats_FragCounter", client, robots);
@@ -3911,7 +3796,7 @@ Action MapTimer_GameTimer(Handle timer)
 					, "#SMStats_MvM_Player_FragRobot", client
 					, g_Player[client].name
 					, g_Player[client].points
-					, points
+					, points_plural
 					, counter);
 					
 					g_Player[client].session[Stats_Points] += points;

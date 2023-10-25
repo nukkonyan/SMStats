@@ -822,7 +822,6 @@ stock bool AssistedKills(Transaction txn
 					, "#SMStats_FragEvent_Assisted", assist
 					, g_Player[assist].name
 					, g_Player[assist].points
-					, g_AssistPoints*assister_count[i]
 					, points_plural
 					, g_Player[client].name
 					, dummy);
@@ -920,7 +919,6 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 				, "#SMStats_FragEvent_Death", victim
 				, g_Player[victim].name
 				, g_Player[victim].points
-				, g_DeathPoints
 				, points_plural);
 			}
 			

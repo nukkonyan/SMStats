@@ -42,19 +42,6 @@ public void OnLibraryAdded(const char[] name)
 
 public void Updater_OnPluginUpdating()
 {
-	#if defined updater_info
-	_sm_stats_info_save_crucial_stuff(bLoaded, bStatsActive, bRoundActive, iMapTimerSeconds);
-	if(DEBUG) PrintToServer("Updater_OnPluginUpdated()"
-	... "\nbLoaded : %s"
-	... "\nbStatsActive : %s"
-	... "\nbRoundActive : %s"
-	... "\niMapTimerSeconds : %i"
-	, bLoaded ? "true" : "false"
-	, bStatsActive ? "true" : "false"
-	, bRoundActive ? "true" : "false"
-	, iMapTimerSeconds);
-	#endif
-	
 	int client = 0;
 	while((client = FindEntityByClassname(client, "player")) > 0)
 	{

@@ -1079,7 +1079,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen)
 {
 	char fmt_points_plural[32], points_plural[2][32];
-	Format(fmt_points_plural, sizeof(fmt_points_plural), "%T", "#SMStats_Points_PluralSplitter", client);
+	Format(fmt_points_plural, sizeof(fmt_points_plural), "%T", "#SMStats_Points_PluralSplitter", client, points);
 	if(StrContains(fmt_points_plural, "#|#") != -1)
 	{
 		ExplodeString(fmt_points_plural, "#|#", points_plural, sizeof(points_plural), 32);
@@ -1126,15 +1126,16 @@ stock void Send_Player_Connected(SMStats_PlayerInfo info)
 	{
 		if(IsValidClient(player))
 		{
-			char country_name[64];
+			char country_name[64], points_plural[32];
 			GeoipCountryName(player, info.ip, country_name, sizeof(country_name));
+			PointsPluralSplitter(player, info.points, points_plural, sizeof(points_plural));
 			
 			CPrintToChat(player, "%s %T"
 			, g_ChatTag
 			, "#SMStats_Player_Connected", player
 			, info.name
 			, position
-			, info.points
+			, points_plural
 			, country_name);
 		}
 	}
@@ -1149,15 +1150,16 @@ stock void Send_Player_Disconnected(SMStats_PlayerInfo info, const char[] event_
 	{
 		if(IsValidClient(player))
 		{
-			char country_name[64];
+			char country_name[64], points_plural[32];
 			GeoipCountryName(player, info.ip, country_name, sizeof(country_name));
+			PointsPluralSplitter(player, info.points, points_plural, sizeof(points_plural));
 			
 			CPrintToChat(player, "%s %T"
 			, g_ChatTag
 			, "#SMStats_Player_Disconnected", player
 			, info.name
 			, position
-			, info.points
+			, points_plural
 			, country_name
 			, event_reason);
 		}
