@@ -356,7 +356,7 @@
 	{
 		"#format" "{1:s}"
 		"en" "Country : {1}"
-		"jp" "国 : {1}"
+		"jp" "出身 : {1}"
 		"no" "Land : {1}"
 		"sv" "Land : {1}"
 	}
@@ -672,7 +672,7 @@
 		// {6} special frag event
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
 		"en" "{1} ({2}) Earned {3} {4} for fragging {5} {6}."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {5} blev fraggad {6}."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {5} {6}."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
@@ -683,23 +683,26 @@
 		// {5} victim name
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} {4} for fragging {5}."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {5} blev fraggad."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att fragga {5}."
 	}
 
 	"#SMStats_FragEventError_NewItem"
 	{
 		"#format" "{1:i},{2:s},{3:s}"
-		"en" "{yellow}Error: The weapon itemdef {1} (classname '{2}') is new to current version ({3}) and needs to be updated."
+		"en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is new to current version ({3}) and needs to be updated."
+		"sv" "{yellow}Fel: {default}itemdef {1} (classname '{2}') Vapnet är ny till nuvarande version ({3}) och borde uppdateras."
 	}
 	"#SMStats_FragEventError_InvalidItem"
 	{
 		"#format" "{1:i},{2:s}"
 		"en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is invalid."
+		"sv" "{yellow}Fel: {default}{1} (classname '{2}') Vapnet är ogiltig."
 	}
 	"#SMStats_FragEventError_InvalidItemCvar"
 	{
 		"#format" "{1:i},{2:s}"
 		"en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') seems to be invalid! (New item perhaps?)"
+		"sv" "{yellow}Fel: {default}{1} (classname '{2}') Vapnet verkar ogiltig! (Nytt förmål möjligtvis?)"
 	}
 
 	//================================//
