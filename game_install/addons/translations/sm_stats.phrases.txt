@@ -695,16 +695,16 @@
 		// {2} player points
 		// {3} points earned
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Lost {3} {4} for dying."
-		"sv" "{1} ({2}) Förlorade {3} {4} på grund av att dö."
+		"en" "{1} ({2}) Lost {3} for dying."
+		"sv" "{1} ({2}) Förlorade {3} på grund av att dö."
 	}
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
 		// {1} player name
 		// {2} player points
 		// {3} points earned
-		// {5} victim name
-		// {6} special frag event
+		// {4} victim name
+		// {5} special frag event
 		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} for fragging {4} {5}."
 		"sv" "{1} ({2}) Belönades med {3} för att {4} {5}."
