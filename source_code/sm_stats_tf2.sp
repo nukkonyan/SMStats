@@ -87,7 +87,6 @@ public Plugin myinfo =
 #include "sm_stats_tf2/menus.sp"
 #include "sm_stats_tf2/functions.sp"
 #include "sm_stats_tf2/game.sp"
-//#include "sm_stats_tf2/forwards.sp"
 
 #include "sm_stats/functions.sp"
 #include "sm_stats/damage_done.sp"
