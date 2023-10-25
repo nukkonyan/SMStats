@@ -1049,7 +1049,6 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			, "#SMStats_FragEvent_Default", client
 			, g_Player[client].name
 			, g_Player[client].points-points
-			, points
 			, points_plural
 			, victim
 			, (frags > 4) ? str_counter : "");
@@ -1066,7 +1065,6 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			, "#SMStats_FragEvent_Special", client
 			, g_Player[client].name
 			, g_Player[client].points-points
-			, points
 			, points_plural
 			, victim
 			, buffer);
@@ -1078,17 +1076,24 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 
 stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen)
 {
-	char fmt_points_plural[32], points_plural[2][32];
+	char fmt_points_plural[32]
 	Format(fmt_points_plural, sizeof(fmt_points_plural), "%T", "#SMStats_Points_PluralSplitter", client, points);
-	if(StrContains(fmt_points_plural, "#|#") != -1)
+	switch(StrContains(fmt_points_plural, "#|#") != -1)
 	{
-		ExplodeString(fmt_points_plural, "#|#", points_plural, sizeof(points_plural), 32);
-		ReplaceString(points_plural[0], sizeof(points_plural[]), "#|#", "");
-		strcopy(translation, maxlen, points_plural[view_as<int>(points < -1 || points > 1)]);
-		return;
+		// this language defies the 'point' and 'points' with one word as both singular and plural.
+		case false:
+		{
+			strcopy(translation, maxlen, fmt_points_plural);
+		}
+		// this language defies the 'point' and 'points' with one word as inflection-based singular and plural.
+		case true:
+		{
+			char points_plural[2][32];
+			ExplodeString(fmt_points_plural, "#|#", points_plural, sizeof(points_plural), 32);
+			ReplaceString(points_plural[0], sizeof(points_plural[]), "#|#", "");
+			strcopy(translation, maxlen, points_plural[view_as<int>(points < -1 || points > 1)]);
+		}
 	}
-	
-	strcopy(translation, maxlen, fmt_points_plural);
 }
 
 //
