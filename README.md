@@ -1,6 +1,9 @@
 ### SMStats
    - 100% translation supported.
       - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
+   - Updater support
+      - The updating process is automatic.
+      - When update is detected, information are saved to **'SMStats Info'** module, to prevent loss of data.
    - Tracks:
       - Players (Total playtime, dominations, headshots and much much more.)
       - Weapons (Tracks all kind of weapons, self-explanatory..)
