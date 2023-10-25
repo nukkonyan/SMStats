@@ -21,16 +21,14 @@
           - Some things may not work as intended at the very moment, but will get working sooner or later.
       - Games supported so far:
           - Team Fortress 2 (works very well, some bugs and issues are to be expected)
-
-## Lookin to assist in development?
-   - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
-   - Translations are very welcome and would be very much appreciated ヽ(*・ω・)ﾉ
-   - Active SMStats development testing server, come in here to see for yourself how the plugin is doing:
-        - 83.253.75.203:27018 (Team Fortress 2)
-
-## Expected early testing build
-   - Somewhere between end of October and possibly as late as early December.
-   - This will begin with Team Fortress 2 due to stability reasons.
+      - Expected early testing build
+          - Somewhere between end of October and possibly as late as early December.
+          - This will begin with Team Fortress 2 due to stability reasons.
+      - Lookin to assist in development?
+          - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
+          - Translations are very welcome and would be very much appreciated ヽ(*・ω・)ﾉ
+          - Active SMStats development testing server, come in here to see for yourself how the plugin is doing:
+            - 83.253.75.203:27018 (Team Fortress 2)
 
 ### To-do
    - stats menu
