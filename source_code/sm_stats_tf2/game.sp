@@ -438,10 +438,10 @@ void PrepareGame()
 	/* pass ball mode */
 	g_PassBall[PassBall_GrabbingNeutralBall] = CreateConVar("sm_stats_points_pass_get", "1", "SM Stats: TF2 - Points earned when grabbing the neutral ball.", _, true);
 	g_PassBall[PassBall_ScoringBall] = CreateConVar("sm_stats_points_pass_score", "2", "SM Stats: TF2 - Points earned when scoring the ball.", _, true);
-	g_PassBall[PassBall_DroppingBall] = CreateConVar("sm_stats_points_dropball", "1" , "SM Stats: TF2 - Points taken when dropping the ball", _, true);
-	g_PassBall[PassBall_CatchingBall] = CreateConVar("sm_stats_points_caught", "1", "SM Stats: TF2 - Points earned when catching the ball.", _, true);
-	g_PassBall[PassBall_StealingBall] = CreateConVar("sm_stats_points_steal", "2", "SM Stats: TF2 - Points earned when stealing the ball.", _, true);
-	g_PassBall[PassBall_BlockingBall] = CreateConVar("sm_stats_points_block", "1", "SM Stats: TF2 - Points earned when blocking the ball.", _, true);
+	g_PassBall[PassBall_DroppingBall] = CreateConVar("sm_stats_points_pass_dropball", "1" , "SM Stats: TF2 - Points taken when dropping the ball", _, true);
+	g_PassBall[PassBall_CatchingBall] = CreateConVar("sm_stats_points_pass_caught", "1", "SM Stats: TF2 - Points earned when catching the ball.", _, true);
+	g_PassBall[PassBall_StealingBall] = CreateConVar("sm_stats_points_pass_steal", "2", "SM Stats: TF2 - Points earned when stealing the ball.", _, true);
+	g_PassBall[PassBall_BlockingBall] = CreateConVar("sm_stats_points_pass_block", "1", "SM Stats: TF2 - Points earned when blocking the ball.", _, true);
 	
 	/* bosses */
 	g_BossFragged[Boss_HHH] = CreateConVar("sm_stats_points_boss_hhh", "5", "SM Stats: TF2 - Points earned when fragging Headless Horseless Horsemann.", _, true);
