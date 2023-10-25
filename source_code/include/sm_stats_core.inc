@@ -298,17 +298,9 @@ public void OnPluginStart()
 					}
 				}
 				
-				int client = 0;
-				while((client = FindEntityByClassname(client, "player")) > 0)
-				{
-					if(IsClientInGame(client))
-					{
-						if(!IsFakeClient(client))
-						{
-							CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_VersionLoaded", client, Version);
-						}
-					}
-				}
+				#if defined load_players
+				CreateTimer(0.85, Timer_PluginLoaded);
+				#endif
 			}
 		}
 	}
@@ -468,7 +460,7 @@ stock void TXN_Callback_Failure(Database db, int unique_query_id, int numQueries
 
 //
 
-stock Action Timer_PluginLoaded(Handle timer)
+Action Timer_PluginLoaded(Handle timer)
 {
 	// plugin may have just reloaded.
 	
