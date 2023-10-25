@@ -1,15 +1,3 @@
-
-```
-Currently in active re-writing process from scratch with better more efficient code-base
-and SQL-code as 'SM Stats' (renamed from XStats) with full extended translation support.
-The new code is more efficient and impacts less on server performance.
-
-Games supported so far:
-Team Fortress 2 (works very well, some bugs and issues are to be expected)
-
-Some functions yet implemented and sooner or later will be.
-Some things may not work as intended at the very moment, but will get working sooner or later.
-```
 ### SMStats
    - 100% translation supported.
       - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
@@ -23,6 +11,13 @@ Some things may not work as intended at the very moment, but will get working so
       - This project is only just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.
       - [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
       - No Web panel currently exists yet.
+      - Currently in active re-writing process from scratch:
+          - Better more efficient code-base and SQL-code as 'SM Stats' (renamed from XStats) with full extended translation support.
+          - The new code is more efficient and impacts less on server performance.
+          - Some functions yet implemented and sooner or later will be.
+          - Some things may not work as intended at the very moment, but will get working sooner or later.
+      - Games supported so far:
+          - Team Fortress 2 (works very well, some bugs and issues are to be expected)
 
 ## Lookin to assist in development?
    - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
