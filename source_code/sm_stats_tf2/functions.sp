@@ -813,6 +813,9 @@ stock bool AssistedKills(Transaction txn
 				{
 					g_Player[assist].session[Stats_Points] += g_AssistPoints*assister_count[i];
 					g_Player[assist].points += g_AssistPoints*assister_count[i];
+					
+					char points_plural[32];
+					PointsPluralSplitter(assist, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural));
 						
 					CPrintToChat(assist, "%s %T"
 					, g_ChatTag
@@ -820,6 +823,7 @@ stock bool AssistedKills(Transaction txn
 					, g_Player[assist].name
 					, g_Player[assist].points
 					, g_AssistPoints*assister_count[i]
+					, points_plural
 					, g_Player[client].name
 					, dummy);
 				}
@@ -908,10 +912,16 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 				g_Player[victim].session[Stats_Points] -= g_DeathPoints;
 				g_Player[victim].points -= g_DeathPoints;
 				
+				char points_plural[32];
+				PointsPluralSplitter(victim, g_DeathPoints, points_plural, sizeof(points_plural));
+				
 				CPrintToChat(victim, "%s %T"
 				, g_ChatTag
 				, "#SMStats_FragEvent_Death", victim
-				, g_Player[victim].name, g_Player[victim].points, g_DeathPoints);
+				, g_Player[victim].name
+				, g_Player[victim].points
+				, g_DeathPoints
+				, points_plural);
 			}
 			
 			len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[victim].auth, g_ServerID);

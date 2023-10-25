@@ -1,6 +1,7 @@
 "Phrases"
 {
 	// if several languages share same translation as english, it will be used by auto if no translation is specified the other language.
+	// The ' #|# ' is the plural-splitter. For proper translations. Inspired by Counter-Strike 2 source 2 translation syntaxing.
 
 	//================================//
 	// Core.
@@ -18,7 +19,7 @@
 	}
 
 	//================================//
-	// Time format. // The ' #|# ' is the plural-splitter.
+	// Time format.
 	//================================//
 	"#SMStats_TimeFormat_Year"
 	{
@@ -542,6 +543,14 @@
 		"en" " ({1})"
 		"jp" " （{1}）"
 	}
+	"#SMStats_Points_PluralSplitter" // points plural splitter false#|#true (non-plural#|#plural)
+	{
+		"en" "point#|#points"
+		"jp" "ポイント"
+		"sv" "poäng"
+		"nl" "punt#|#punten"
+		"no" "poeng"
+	}
 	"#SMStats_FeatureUnavailable"
 	{
 		"en" "Feature is currently unavailable."
@@ -633,28 +642,48 @@
 	//Kill events
 	"#SMStats_FragEvent_Assisted" //Assist
 	{
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} points in assisting {4} for fragging {5}."
-		"sv" "{1} ({2}) Belönades med {3} poäng genom att assistera {4} för att fragga {5}."
+		// {1} player name
+		// {2} player points
+		// {3} points earned
+		// {4} points plural splitter
+		// {5} assister name
+		// {6} victim fragged
+		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
+		"en" "{1} ({2}) Earned {3} {4} in assisting {5} for fragging {6}."
+		"sv" "{1} ({2}) Belönades med {3} {4} genom att assistera {5} för att fragga {6}."
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
-		"#format" "{1:s},{2:i},{3:i}"
-		"en" "{1} ({2}) Lost {3} points for dying."
-		"sv" "{1} ({2}) Förlorade {3} poäng på grund av att dö."
+		// {1} player name
+		// {2} player points
+		// {3} points earned
+		// {4} points plural splitter
+		"#format" "{1:s},{2:i},{3:i},{4:s}"
+		"en" "{1} ({2}) Lost {3} {4} for dying."
+		"sv" "{1} ({2}) Förlorade {3} {4} på grund av att dö."
 	}
-	
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} points for fragging {4} {5}."
-		"sv" "{1} ({2}) Belönades med {3} poäng för att {4} blev fraggad {5}."
+		// {1} player name
+		// {2} player points
+		// {3} points earned
+		// {4} points plural splitter
+		// {5} victim name
+		// {6} special frag event
+		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
+		"en" "{1} ({2}) Earned {3} {4} for fragging {5} {6}."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {5} blev fraggad {6}."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
-		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} ({2}) Earned {3} points for fragging {4}."
-		"sv" "{1} ({2}) Belönades med {3} poäng för att {4} blev fraggad."
+		// {1} player name
+		// {2} player points
+		// {3} points earned
+		// {4} points plural splitter
+		// {5} victim name
+		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
+		"en" "{1} ({2}) Earned {3} {4} for fragging {5}."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {5} blev fraggad."
 	}
 
 	"#SMStats_FragEventError_NewItem"

@@ -1031,6 +1031,9 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		, Frag_Type[Frag_MidAir], client);
 	}
 	
+	char points_plural[32];
+	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+	
 	switch(strlen(buffer) > 0)
 	{
 		case false:
@@ -1047,8 +1050,9 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			, g_Player[client].name
 			, g_Player[client].points-points
 			, points
+			, points_plural
 			, victim
-			, (strlen(str_counter) > 0) ? str_counter : "");
+			, (frags > 4) ? str_counter : "");
 		}
 		case true:
 		{
@@ -1063,12 +1067,28 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			, g_Player[client].name
 			, g_Player[client].points-points
 			, points
+			, points_plural
 			, victim
 			, buffer);
 		}
 	}
 	
 	g_Player[client].fragmsg.Reset();
+}
+
+stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen)
+{
+	char fmt_points_plural[32], points_plural[2][32];
+	Format(fmt_points_plural, sizeof(fmt_points_plural), "%T", "#SMStats_Points_PluralSplitter", client);
+	if(StrContains(fmt_points_plural, "#|#") != -1)
+	{
+		ExplodeString(fmt_points_plural, "#|#", points_plural, sizeof(points_plural), 32);
+		ReplaceString(points_plural[0], sizeof(points_plural[]), "#|#", "");
+		strcopy(translation, maxlen, points_plural[view_as<int>(points < -1 || points > 1)]);
+		return;
+	}
+	
+	strcopy(translation, maxlen, fmt_points_plural);
 }
 
 //
