@@ -215,8 +215,8 @@
 	}
 	"#SMStats_Points_Penalty"
 	{
-		"en" "(Penalty)"
-		"sv" "(Straffad)"
+		"en" " (Penalty)"
+		"sv" " (Straffad)"
 	}
 
 	//================================//
