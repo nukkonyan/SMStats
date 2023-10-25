@@ -43,7 +43,7 @@
         - Implement functional K-A-D ratio (Kill-Assist-Death ratio).
         - Implement functional K/D Ratio (Kill-Death ratio).
         - Implement functional time played (Convert x minutes to 1 day 1 hour, etc.)
-	- Implement a ban feature which detects if the player has been banned from the server, the player's details on SMStats will be removed.
+        - Implement a ban feature which detects if the player has been banned from the server, the player's details on SMStats will be removed.
         - Fix playtime timer. Right now it is buggy and not working correctly. **(At the moment somewhat fixed.)**
         - Deprecate SMStats Info (It's a temporary solution) and instead use temporary KeyValue file storing. **(Or use SQLite)**
         - Support more source games in the future. such as:
