@@ -122,30 +122,44 @@ enum SMStats_Type
 	Stats_Ignited = 93,
 	
 	/* TF2 MvM */
-	Stats_TanksDestroyed = 94,
-	Stats_RobotsFragged = 95,
-	Stats_SentryBustersFragged = 96,
-	Stats_BombsResetted = 97,
+	Stats_PumpkinBombFrags = 94,
+	Stats_TanksDestroyed = 95,
+	Stats_RobotsFragged = 96,
+	Stats_SentryBustersFragged = 97,
+	Stats_BombsResetted = 98,
 	
 	/* CS:GO */
-	Stats_BlindedFrags = 98,
-	Stats_ThroughSmokeFrags = 99,
-	Stats_Wipes = 100,
-	Stats_ChickenFrags = 101,
+	Stats_BlindedFrags = 99,
+	Stats_ThroughSmokeFrags = 100,
+	Stats_Wipes = 101,
+	Stats_ChickenFrags = 102,
 	
 	/* counter-strike overall */
-	Stats_MVPs = 102,
-	Stats_BombsPlanted = 103,
-	Stats_BombsDefused = 104,
-	Stats_BombsExploded = 105,
-	Stats_BombFrags = 106,
-	Stats_MoneySpent = 107,
-	Stats_FlashedOpponents = 108,
-	Stats_KnifeFrags = 109,
-	Stats_HostagesRescued = 110,
-	Stats_HostagesFragged = 111,
+	Stats_MVPs = 103,
+	Stats_BombsPlanted = 104,
+	Stats_BombsDefused = 105,
+	Stats_BombsExploded = 106,
+	Stats_BombFrags = 107,
+	Stats_MoneySpent = 108,
+	Stats_FlashedOpponents = 109,
+	Stats_KnifeFrags = 110,
+	Stats_HostagesRescued = 111,
+	Stats_HostagesFragged = 112,
 }
-#define SMStats_StatsSize 112
+#define SMStats_StatsSize 113
+enum SMStatsUpdatedFwdType
+{
+	SMStatsUpdated_ChatTag = 0,
+	SMStatsUpdated_ServerID = 1,
+	SMStatsUpdated_AllowBots = 2,
+	SMStatsUpdated_AllowAbuse = 3,
+	SMStatsUpdated_AllowWarmup = 4,
+	SMStatsUpdated_DisableAfterRoundEnd = 5,
+	SMStatsUpdated_MinPlayers = 6,
+	SMStatsUpdated_DeathPoints = 7,
+	SMStatsUpdated_AssistPoints = 8,
+	SMStatsUpdated_PenaltySeconds = 9,
+}
 
 typeset SMStats_Callback
 {

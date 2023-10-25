@@ -85,6 +85,11 @@
 		"#format" "{1:i}"
 		"en" "Mini-Crit frags : {1}"
 	}
+	"#SMStats_MenuInfo_PumpkinBombFrags"
+	{
+		"#format" "{1:i}"
+		"en" "Pumpkin bomb frags : {1}"
+	}
 
 	"#SMStats_MenuInfo_Scout"
 	{

@@ -28,6 +28,7 @@ enum
 ConVar g_TeleFrag;
 ConVar g_SuicideAssisted;
 ConVar g_Collateral;
+ConVar g_PumpkinBomb;
 
 /* capture point */
 ConVar g_PointCaptured;
@@ -360,6 +361,7 @@ enum struct FragEventInfo
 	bool collateral;
 	bool deflectfrag;
 	bool tauntfrag;
+	bool pumpkinbombfrag;
 	bool telefrag;
 	bool midair;
 	bool airshot;
@@ -390,6 +392,7 @@ void PrepareGame()
 	g_TeleFrag = CreateConVar("sm_stats_points_telefrag", "5", "SM Stats: TF2 - Points earned when Telefragging an opponent.", _, true);
 	g_SuicideAssisted = CreateConVar("sm_stats_points_assisted_suicide", "1", "SM Stats: TF2 - Points earned when assisted in an opponents suicide.", _, true);
 	g_Collateral = CreateConVar("sm_stats_points_collateral", "2", "SM Stats: TF2 - Points earned when doing a collateral frag. Paired with frag event.", _, true);
+	g_PumpkinBomb = CreateConVar("sm_stats_points_pumpkinbomb", "5", "SM Stats: TF2 - Points earned when fragging using Pumpkin Bomb.", _, true);
 	
 	/* capture point */
 	g_PointCaptured = CreateConVar("sm_stats_points_point_captured", "5", "SM Stats: TF2 - Points earned when capturing a capture point.", _, true);
@@ -795,17 +798,9 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	}
 	
 	int victim = GetClientOfUserId(userid);
-	if(!IsValidClient(victim, false))
+	if(!IsValidClient(victim, !bAllowBots ? true : false))
 	{
 		return;
-	}
-	
-	if(!bAllowBots)
-	{
-		if(IsFakeClient(victim))
-		{
-			return;
-		}
 	}
 	
 	if(client == victim)
@@ -1003,6 +998,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	|| StrContains(classname, "gas_blast", false) != -1
 	|| customkill == 13);
 	
+	frag.pumpkinbombfrag = (StrEqual(classname, "tf_pumpkin_bomb", false));
 	frag.telefrag = (StrEqual(classname, "telefrag", false));
 	frag.midair = IsClientMidAir(client);
 	frag.airshot = (GetClientFlags(victim) == 258);
@@ -1110,7 +1106,7 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 	}
 	
 	int victim = event.GetInt("victim");
-	if(!IsValidClient(client, false))
+	if(!IsValidClient(victim, !bAllowBots ? true : false))
 	{
 		return;
 	}
@@ -1118,14 +1114,6 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 	if(IsValidAbuse(client))
 	{
 		return;
-	}
-	
-	if(!bAllowBots)
-	{
-		if(IsFakeClient(victim))
-		{
-			return;
-		}
 	}
 	
 	g_Player[client].session[Stats_PointsDefended]++;
@@ -2758,7 +2746,7 @@ Action MapTimer_GameTimer(Handle timer)
 			{
 				int frags;
 				if((frags = g_Game[client].aFragEvent.Length) > 0)
-				{	
+				{
 					FragEventInfo event;
 					int[] list = new int[frags];
 					int[] list_assister = new int[frags];
@@ -2778,6 +2766,7 @@ Action MapTimer_GameTimer(Handle timer)
 					int iRevenges;
 					int iNoscopes;
 					int iTauntFrags;
+					int iPumpkinBombFrags;
 					int iDeflectFrags;
 					int iGibFrags;
 					int iAirshots;
@@ -2816,6 +2805,7 @@ Action MapTimer_GameTimer(Handle timer)
 					bool bPrev_revenge;
 					bool bPrev_noscope;
 					bool bPrev_tauntfrag;
+					bool bPrev_pumpkinbombfrag;
 					bool bPrev_deflectfrag;
 					bool bPrev_gibfrag;
 					bool bPrev_airshot;
@@ -2837,7 +2827,7 @@ Action MapTimer_GameTimer(Handle timer)
 						strcopy(list_classname[i], 64, event.classname);
 						
 						// override medic assister, count all healers as assisters.
-						if(event.healers != null)
+						if(!!event.healers)
 						{
 							for(int x = 0; x < event.healers.Length; x++)
 							{
@@ -2852,24 +2842,13 @@ Action MapTimer_GameTimer(Handle timer)
 						{
 							case false:
 							{
-								int itemdef = event.itemdef;
-								ConVar cvar_points;
-								switch((cvar_points = array_GetWeapon(itemdef)) == null)
+								if(event.telefrag)
 								{
-									case false: points += cvar_points.IntValue;
-									case true:
-									{
-										PrintToServer("%s itemdef %i has invalid convar!"
-										... "\nattacker userid : %i"
-										... "\nvictim userid : %i"
-										... "\nvictim class : %i"
-										... "\n "
-										, core_chattag, itemdef
-										, GetClientUserId(client)
-										, list[i]
-										, list_class[i]);
-										continue;
-									}
+									points += g_TeleFrag.IntValue;
+								}
+								else if(event.pumpkinbombfrag)
+								{
+									points += g_PumpkinBomb.IntValue;
 								}
 							}
 							case true: points += g_SuicideAssisted.IntValue;
@@ -2939,7 +2918,7 @@ Action MapTimer_GameTimer(Handle timer)
 								bPrev_noscope = true;
 							}
 						}
-						switch((g_Player[client].fragmsg.TauntFrag = event.tauntfrag))
+						switch((g_Player[client].fragmsg.Taunt = event.tauntfrag))
 						{
 							case false: bPrev_tauntfrag = false;
 							case true:
@@ -2947,9 +2926,22 @@ Action MapTimer_GameTimer(Handle timer)
 								iTauntFrags++;
 								if(frags > 1 && !bPrev_tauntfrag)
 								{
-									g_Player[client].fragmsg.TauntFrag = false;
+									g_Player[client].fragmsg.Taunt = false;
 								}
 								bPrev_tauntfrag = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.PumpkinBomb = event.pumpkinbombfrag))
+						{
+							case false: bPrev_tauntfrag = false;
+							case true:
+							{
+								iPumpkinBombFrags++;
+								if(frags > 1 && !bPrev_pumpkinbombfrag)
+								{
+									g_Player[client].fragmsg.PumpkinBomb = false;
+								}
+								bPrev_pumpkinbombfrag = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Deflected = event.deflectfrag))
@@ -2965,7 +2957,7 @@ Action MapTimer_GameTimer(Handle timer)
 								bPrev_deflectfrag = true;
 							}
 						}
-						switch((g_Player[client].fragmsg.GibFrag = event.gibfrag))
+						switch((g_Player[client].fragmsg.Gibbed = event.gibfrag))
 						{
 							case false: bPrev_gibfrag = false;
 							case true:
@@ -2973,7 +2965,7 @@ Action MapTimer_GameTimer(Handle timer)
 								iGibFrags++;
 								if(frags > 1 && !bPrev_gibfrag)
 								{
-									g_Player[client].fragmsg.GibFrag = false;
+									g_Player[client].fragmsg.Gibbed = false;
 								}
 								bPrev_gibfrag = true;
 							}
@@ -3044,8 +3036,31 @@ Action MapTimer_GameTimer(Handle timer)
 								{
 									case false:
 									{
-										iWepFrags++;
-										list_wepfrag[i] = true;
+										if(!event.pumpkinbombfrag)
+										{
+											iWepFrags++;
+											list_wepfrag[i] = true;
+											
+											int itemdef = event.itemdef;
+											ConVar cvar_points;
+											switch((cvar_points = array_GetWeapon(itemdef)) == null)
+											{
+												case false: points += cvar_points.IntValue;
+												case true:
+												{
+													PrintToServer("%s itemdef %i has invalid convar!"
+													... "\nattacker userid : %i"
+													... "\nvictim userid : %i"
+													... "\nvictim class : %i"
+													... "\n "
+													, core_chattag, itemdef
+													, GetClientUserId(client)
+													, list[i]
+													, list_class[i]);
+													continue;
+												}
+											}
+										}
 									}
 									case true: iTeleFrags++;
 								}
@@ -3108,7 +3123,6 @@ Action MapTimer_GameTimer(Handle timer)
 							}
 						}
 					}
-								
 					if(iTeleFrags > 0)
 					{
 						g_Player[client].session[Stats_TeleFrags] += iTeleFrags;
@@ -3116,14 +3130,12 @@ Action MapTimer_GameTimer(Handle timer)
 						len += Format(query[len], sizeof(query)-len, ", TeleFrags = TeleFrags+%i", iTeleFrags);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleFrags = TeleFrags+%i", iTeleFrags);
 					}
-					
 					if(iDispensers > 0)
 					{
 						PrintToServer("%s frag event (user index %i, userid %i) caught a dispenser somehow"
 						, core_chattag
 						, client, GetClientUserId(client), core_chattag);
 					}
-					
 					if(iSentries > 0)
 					{
 						g_Player[client].session[Stats_SentryFrags] += iSentries;
@@ -3146,77 +3158,72 @@ Action MapTimer_GameTimer(Handle timer)
 							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentriesLVL3);
 						}
 					}
-								
 					if(iMiniSentries > 0)
 					{
 						g_Player[client].session[Stats_MiniSentryFrags] += iMiniSentries;
 						len += Format(query[len], sizeof(query)-len, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentries);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentries);
 					}
-					
 					if(iHeadshots > 0)
 					{
 						g_Player[client].session[Stats_Headshots] += iHeadshots;
 						len += Format(query[len], sizeof(query)-len, ", Headshots = Headshots+%i", iHeadshots);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Headshots = Headshots+%i", iHeadshots);
 					}
-					
 					if(iBackstabs > 0)
 					{
 						g_Player[client].session[Stats_Backstabs] += iBackstabs;
 						len += Format(query[len], sizeof(query)-len, ", Backstabs = Backstabs+%i", iBackstabs);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Backstabs = Backstabs+%i", iBackstabs);
 					}
-					
 					if(iDominated > 0)
 					{
 						g_Player[client].session[Stats_Dominations] += iDominated;
 						len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", iDominated);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Dominations = Dominations+%i", iDominated);
 					}
-					
 					if(iRevenges > 0)
 					{
 						g_Player[client].session[Stats_Revenges] += iRevenges;
 						len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", iRevenges);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Revenges = Revenges+%i", iRevenges);
 					}
-					
 					if(iNoscopes > 0)
 					{
 						g_Player[client].session[Stats_Noscopes] += iNoscopes;
 						len += Format(query[len], sizeof(query)-len, ", Noscopes = Noscopes+%i", iNoscopes);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Noscopes = Noscopes+%i", iNoscopes);
 					}
-					
 					if(iTauntFrags > 0)
 					{
 						g_Player[client].session[Stats_TauntFrags] += iTauntFrags;
 						len += Format(query[len], sizeof(query)-len, ", TauntFrags = TauntFrags+%i", iTauntFrags);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TauntFrags = TauntFrags+%i", iTauntFrags);
 					}
-					
+					if(iPumpkinBombFrags > 0)
+					{
+						g_Player[client].session[Stats_PumpkinBombFrags] += iPumpkinBombFrags;
+						len += Format(query[len], sizeof(query)-len, ", PumpkinBombFrags = PumpkinBombFrags+%i", iPumpkinBombFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", PumpkinBombFrags = PumpkinBombFrags+%i", iPumpkinBombFrags);
+					}
 					if(iDeflectFrags > 0)
 					{
 						g_Player[client].session[Stats_Deflects] += iDeflectFrags;
 						len += Format(query[len], sizeof(query)-len, ", DeflectFrags = DeflectFrags+%i", iDeflectFrags);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DeflectFrags = DeflectFrags+%i", iDeflectFrags);
 					}
-					
 					if(iGibFrags > 0)
 					{
 						g_Player[client].session[Stats_GibFrags] += iGibFrags;
 						len += Format(query[len], sizeof(query)-len, ", GibFrags = GibFrags+%i", iGibFrags);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", GibFrags = GibFrags+%i", iGibFrags);
 					}
-					
 					if(iAirshots > 0)
 					{
 						g_Player[client].session[Stats_Airshots] += iAirshots;
 						len += Format(query[len], sizeof(query)-len, ", Airshots = Airshots+%i", iAirshots);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Airshots = Airshots+%i", iAirshots);
 					}
-					
 					if(iCollaterals > 0)
 					{
 						g_Player[client].session[Stats_Collaterals] += iCollaterals;
@@ -3228,14 +3235,12 @@ Action MapTimer_GameTimer(Handle timer)
 							points += g_Collateral.IntValue;
 						}
 					}
-					
 					if(iMidAirFrags > 0)
 					{
 						g_Player[client].session[Stats_MidAirFrags] += iMidAirFrags;
 						len += Format(query[len], sizeof(query)-len, ", MidAirFrags = MidAirFrags+%i", iMidAirFrags);
 						len_map += Format(query[len_map], sizeof(query_map)-len_map, ", MidAirFrags = MidAirFrags+%i", iMidAirFrags);
 					}
-					
 					// mini-crit
 					if(iMiniCrits > 0)
 					{
@@ -3243,7 +3248,6 @@ Action MapTimer_GameTimer(Handle timer)
 						len += Format(query[len], sizeof(query)-len, ", MiniCritFrags = MiniCritFrags+%i", frags);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniCritFrags = MiniCritFrags+%i", frags);
 					}
-					
 					// crit 
 					if(iCrits > 0)
 					{
@@ -3251,7 +3255,6 @@ Action MapTimer_GameTimer(Handle timer)
 						len += Format(query[len], sizeof(query)-len, ", CritFrags = CritFrags+%i", frags);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", CritFrags = CritFrags+%i", frags);
 					}
-					
 					// classes
 					if(iScouts > 0)
 					{
@@ -3976,5 +3979,6 @@ Action Timer_bExtEvent(Handle timer, int userid)
 
 void OnClientDisconnect_Post_Game(int client)
 {
+	SMStatsInfo.ResetGameStats(client);
 	g_Game[client].Reset();
 }

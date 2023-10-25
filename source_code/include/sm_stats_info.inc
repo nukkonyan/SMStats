@@ -9,13 +9,14 @@ enum struct SMStats_FragMsgInfo
 	bool Backstab;
 	bool Airshot;
 	bool Deflected;
-	bool GibFrag;
+	bool Gibbed;
 	bool TeleFrag;
-	bool TauntFrag;
+	bool Taunt;
 	bool Collateral;
 	bool Grenade;
 	bool Bomb;
 	bool Blinded;
+	bool PumpkinBomb;
 	
 	void Reset()
 	{
@@ -28,13 +29,14 @@ enum struct SMStats_FragMsgInfo
 		this.Backstab = false;
 		this.Airshot = false;
 		this.Deflected = false;
-		this.GibFrag = false;
+		this.Gibbed = false;
 		this.TeleFrag = false;
-		this.TauntFrag = false;
+		this.Taunt = false;
 		this.Collateral = false;
 		this.Grenade = false;
 		this.Bomb = false;
 		this.Blinded = false;
+		this.PumpkinBomb = false;
 	}
 }
 
@@ -48,10 +50,12 @@ enum struct SMStats_PlayerInfo
 	//bool bAlreadyConnected;
 	int points;
 	int position;
+	bool active_mainmenu;
 	int active_page_menu;
 	int active_page_session;
 	int active_page_total;
 	int active_page_topstats;
+	bool bMenuCheckPosition;
 	
 	int session[SMStats_StatsSize];
 	int totalstats[SMStats_StatsSize];
@@ -72,6 +76,7 @@ enum struct SMStats_PlayerInfo
 		//this.bAlreadyConnected = false;
 		this.points = -1;
 		this.position = -1;
+		this.active_mainmenu = false;
 		this.active_page_menu = -1;
 		this.active_page_session = -1;
 		this.active_page_total = -1;
@@ -185,6 +190,14 @@ enum struct SMStats_TF2GameInfo
 	}
 }
 
+enum struct SMStatsInfo_CrucialStuff
+{
+	bool bLoaded;
+	bool bStatsActive;
+	bool bRoundActive;
+	int iMapTimerSeconds;
+}
+
 methodmap SMStatsInfo __nullable__
 {
 	/*
@@ -194,7 +207,7 @@ methodmap SMStatsInfo __nullable__
 	 *	@param client		The user index.
 	 *	@param player_stats	The SMStats_PlayerInfo array to store the obtained statistics.
 	 */
-	public static native void GetStats(int client, any[] player_stats);
+	public static native void GetPlayerStats(int client, any[] player_stats);
 	
 	/*
 	 *	SourceMod Statistics.
@@ -203,7 +216,7 @@ methodmap SMStatsInfo __nullable__
 	 *	@param client		The user index.
 	 *	@param player_stats	The SMStats_PlayerInfo array to obtain the statistics.
 	 */
-	public static native void SaveStats(int client, any[] player_stats);
+	public static native void SavePlayerStats(int client, any[] player_stats);
 	
 	/*
 	 *	SourceMod Statistics.
@@ -211,7 +224,7 @@ methodmap SMStatsInfo __nullable__
 	 *
 	 *	@param client		The user index.
 	 */
-	public static native void ResetStats(int client);
+	public static native void ResetPlayerStats(int client);
 	
 	
 	/*
@@ -239,4 +252,9 @@ methodmap SMStatsInfo __nullable__
 	 *	@param client		The user index.
 	 */
 	public static native void ResetGameStats(int client);
+	
+	public static bool IsLoaded()
+	{
+		return LibraryExists("SMStatsInfo");
+	}
 }

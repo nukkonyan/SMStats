@@ -107,9 +107,23 @@ native int _sm_stats_get_minplayers();
 
 /*
  *	SourceMod Stats: Core.
+ *	Retrieve the seconds for penalty.
+ */
+native int _sm_stats_get_penaltyseconds();
+
+/*
+ *	SourceMod Stats: Core.
  *	Call the player death forward.
  */
 native void _sm_stats_player_death_fwd(int attacker, int frags, int[] userids, int[] assisters, const char[] classname, int[] itemdef);
+
+// crucial stuff, re-instate lost data after restart.
+native void _sm_stats_info_update_loaded_active(bool bLoaded);
+native void _sm_stats_info_update_stats_active(bool bStatsActive);
+native void _sm_stats_info_update_round_active(bool bRoundActive);
+native void _sm_stats_info_update_maptimer(int iMapTimerSeconds);
+native void _sm_stats_info_save_crucial_stuff(bool bLoaded, bool bStatsActive, bool bRoundActive, int iMapTimerSeconds);
+native void _sm_stats_info_get_crucial_stuff(any[] this_way_with_arrays_sucks_pls_add_SetNativeCell);
 
 // default important things
 
@@ -130,25 +144,43 @@ bool bLoaded = false;
 bool bStatsActive = false;
 bool bRoundActive = false;
 bool bWarmupActive = false;
+bool bDisableAfterRoundEnd = false;
 bool bAllowBots = false;
 bool bAllowAbuse = false;
+bool bAllowWarmup = false;
 int g_ServerID = -1;
 stock int g_TotalTablePlayers = -1;
 int g_MinPlayers = -1;
+int g_DeathPoints = -1;
+int g_AssistPoints = -1;
+int g_PenaltySeconds = -1;
 
 SMStats_PlayerInfo g_Player[MaxPlayers+1];
 
 stock PrivateForward g_GetPlayerSessionInfoFwd;
 
-public void _sm_stats_core_loaded()
+// map load event
+int iMapTimerSeconds = 0;
+Handle hMapTimerSeconds = null
+Handle hMapTimer = null;
+Handle hGameTimer = null;
+char cMap[64];
+
+public void _sm_stats_loaded_core()
 {
 	PrintToServer("%s loading..", core_chattag);
 	bLoaded = true;
+	_sm_stats_info_update_loaded_active(true);
 	
 	_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
 	g_ServerID = _sm_stats_get_serverid();
 	bAllowBots = _sm_stats_get_allowbots();
+	bAllowAbuse = _sm_stats_get_allowabuse();
+	bAllowWarmup = _sm_stats_get_allowwarmup();
+	bDisableAfterRoundEnd = _sm_stats_get_disableafterroundend();
 	g_MinPlayers = _sm_stats_get_minplayers();
+	g_DeathPoints = _sm_stats_get_deathpoints();
+	g_PenaltySeconds = _sm_stats_get_penaltyseconds();
 	
 	#if defined load_players
 	CreateTimer(5.0, Timer_PluginLoaded);
@@ -162,33 +194,28 @@ void PrepareTranslations()
 	GeoipCountryLoadTranslation();
 }
 
-public void _sm_stats_chattag_updated(const char[] tag)
+public void _sm_stats_updatedfwd(SMStatsUpdatedFwdType type, const char[] value)
 {
-	strcopy(g_ChatTag, sizeof(g_ChatTag), tag);
-}
-
-public void _sm_stats_serverid_updated(int server_id)
-{
-	g_ServerID = server_id;
-}
-
-public void _sm_stats_allowbots_updated(bool value)
-{
-	bAllowBots = value;
-	
-	CheckActivePlayers();
-}
-
-public void _sm_stats_minplayers_updated(int value)
-{
-	g_MinPlayers = value;
-	
-	CheckActivePlayers();
-}
-
-public void _sm_stats_allowabuse_updated(bool value)
-{
-	bAllowAbuse = value;
+	switch(type)
+	{
+		case SMStatsUpdated_ChatTag: strcopy(g_ChatTag, sizeof(g_ChatTag), value);
+		case SMStatsUpdated_ServerID: g_ServerID = StringToInt(value);
+		case SMStatsUpdated_AllowBots:
+		{
+			bAllowBots = view_as<bool>(StringToInt(value));
+			CheckActivePlayers();
+		}
+		case SMStatsUpdated_AllowAbuse: bAllowAbuse = view_as<bool>(StringToInt(value));
+		case SMStatsUpdated_AllowWarmup: bAllowWarmup = view_as<bool>(StringToInt(value));
+		case SMStatsUpdated_DisableAfterRoundEnd: bDisableAfterRoundEnd = view_as<bool>(StringToInt(value));
+		case SMStatsUpdated_MinPlayers:
+		{
+			g_MinPlayers = StringToInt(value);
+			CheckActivePlayers();
+		}
+		case SMStatsUpdated_DeathPoints: g_DeathPoints = view_as<int>(StringToInt(value));
+		case SMStatsUpdated_AssistPoints: g_AssistPoints = view_as<int>(StringToInt(value));
+	}
 }
 
 public void OnPluginStart()
@@ -207,6 +234,76 @@ public void OnPluginStart()
 	#if defined assister_func
 	LoadAssisterEvents();
 	#endif
+	
+	// plugin was restarted, manually or via update.
+	if(!bLoaded)
+	{
+		// make sure the natives are loaded.
+		switch(SMStatsInfo.IsLoaded())
+		{
+			case false: ThrowError("%s Error: SMStats: Info doesn't seem to be loaded.\nUnable to re-instate crucial information, problems are to be expected.", core_chattag);
+			case true:
+			{
+				SMStatsInfo_CrucialStuff this_way_with_arrays_sucks_pls_add_SetNativeCell;
+				_sm_stats_info_get_crucial_stuff(this_way_with_arrays_sucks_pls_add_SetNativeCell);
+				if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bLoaded)
+				{
+					bLoaded = true;
+				}
+				if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bStatsActive)
+				{
+					bStatsActive = true;
+				}
+				if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bRoundActive)
+				{
+					bRoundActive = true;
+				}
+				if(this_way_with_arrays_sucks_pls_add_SetNativeCell.iMapTimerSeconds > 0)
+				{
+					iMapTimerSeconds = this_way_with_arrays_sucks_pls_add_SetNativeCell.iMapTimerSeconds;
+				}
+				
+				_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
+				g_ServerID = _sm_stats_get_serverid();
+				bAllowBots = _sm_stats_get_allowbots();
+				bAllowAbuse = _sm_stats_get_allowabuse();
+				bAllowWarmup = _sm_stats_get_allowwarmup();
+				bDisableAfterRoundEnd = _sm_stats_get_disableafterroundend();
+				g_MinPlayers = _sm_stats_get_minplayers();
+				g_DeathPoints = _sm_stats_get_deathpoints();
+				g_PenaltySeconds = _sm_stats_get_penaltyseconds();
+				
+				PrintToServer("%s Crucial information Re-instated from detected restart.", core_chattag);
+				
+				CheckActivePlayers();
+				
+				switch(SMStats.IsLoaded())
+				{
+					case false: ThrowError("%s Error: SMStats: Core seems to not be loaded.\nUnable to re-instate SQL Connection, problems to be expected.", core_chattag);
+					case true:
+					{
+						PrintToServer("%s SQL connection re-instated from detected restart.", core_chattag);
+						if((sql = _sm_stats_get_sql()) != null)
+						{
+							_sm_stats_loaded_sql(sql, true);
+						}
+					}
+				}
+				
+				int client = 0;
+				while((client = FindEntityByClassname(client, "player")) > 0)
+				{
+					if(IsClientInGame(client))
+					{
+						if(!IsFakeClient(client))
+						{
+							CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFinished", client, Version);
+						}
+					}
+				}
+			}
+		}
+	}
 }
 
 //
@@ -221,7 +318,7 @@ char g_strTableName[][] =
 	/*5*/,sql_table_achievements
 };
 
-public void _sm_stats_sql_loaded(Database database, bool bOnPluginStart)
+public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 {
 	sql = database;
 	
@@ -386,15 +483,12 @@ stock Action Timer_PluginLoaded(Handle timer)
 }
 
 // weapons
-
 enum struct CvarWeapon
 {
 	int itemdef;
 	ConVar cvar;
 }
-
 ArrayList g_arrayWeapons;
-
 stock void array_InitializeWeapons()
 {
 	g_arrayWeapons = new ArrayList(sizeof(CvarWeapon));

@@ -604,22 +604,27 @@
 		"en" "with a {green}Taunt Frag"
 		"sv" "med {green}Hånsfrag"
 	}
-	"#SMStats_FragEvent_Type10" //Collateral.
+	"#SMStats_FragEvent_Type10" // Pumpkin Bomb frag.
+	{
+		"en" "with a {green}Pumpkin Bomb"
+		"sv" "med en {green}Pumpa Bomb"
+	}
+	"#SMStats_FragEvent_Type11" //Collateral.
 	{
 		"en" "with a {green}Collateral"
 		"sv" "med {green}Kollateral"
 	}
-	"#SMStats_FragEvent_Type11" //Grenade frag.
+	"#SMStats_FragEvent_Type12" //Grenade frag.
 	{
 		"en" "with a {green}Grenade Frag"
 		"sv" "med {green}Granat Frag"
 	}
-	"#SMStats_FragEvent_Type12" //Bomb/C4 frag.
+	"#SMStats_FragEvent_Type13" //Bomb/C4 frag.
 	{
 		"en" "with a {green}Bomb Frag"
 		"sv" "med {green}Bomb Frag"
 	}
-	"#SMStats_FragEvent_Type13" //Blinded frag.
+	"#SMStats_FragEvent_Type14" //Blinded frag.
 	{
 		"en" "while {green}Blinded"
 		"sv" "medans {green}Förblindad"

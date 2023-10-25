@@ -410,6 +410,51 @@ stock bool IsValidAbuse(int client)
 
 /* ============================================================== */
 
+stock void GetMultipleTargets(int client, const int[] list, int counter, char[] dummy, int maxlen)
+{
+	if(counter == 1)
+	{
+		int userid = list[0];
+		int target = GetClientOfUserId(userid);
+		strcopy(dummy, maxlen, g_Player[target].name);
+	}
+	else if(counter == 2)
+	{
+		int userid1 = list[0];
+		int target1 = GetClientOfUserId(userid1);
+		
+		int userid2 = list[1];
+		int target2 = GetClientOfUserId(userid2);
+		
+		Format(dummy, maxlen, "%s%T%s%T", g_Player[target1].name, "#SMStats_And", client, g_Player[target2].name, "#SMStats_Counter", client, counter);
+	}
+	else if(counter > 2 && counter <= 4)
+	{
+		for(int i = 0; i < counter-1; i++)
+		{
+			int userid = list[i];
+			int target = GetClientOfUserId(userid);
+			
+			if(dummy[0] != '\0')
+			{
+				Format(dummy, maxlen, "%s%T", dummy, "#SMStats_Comma", client);
+			}
+			
+			Format(dummy, maxlen, "%s%s", dummy, g_Player[target].name);
+		}
+		
+		int target = GetClientOfUserId(list[counter-1]);
+		Format(dummy, maxlen, "%s%T%s%T", dummy, "#SMStats_And", client, g_Player[target].name, "#SMStats_Counter", client, counter);
+		// outputs the "and last player".
+	}
+	else
+	{
+		Format(dummy, maxlen, "%T", "#SMStats_MultipleTargets", client);
+	}
+}
+
+/* ============================================================== */
+
 /*
  ========================
  ========================
@@ -428,11 +473,12 @@ enum
 	Frag_Airshot = 6,
 	Frag_Deflect = 7,
 	Frag_TeleFrag = 8,
-	Frag_TauntFrag = 9,
-	Frag_Collateral = 10,
-	Frag_Grenade = 11,
-	Frag_Bomb = 12,
-	Frag_Blinded = 13,
+	Frag_Taunt = 9,
+	Frag_PumpkinBomb = 10,
+	Frag_Collateral = 11,
+	Frag_Grenade = 12,
+	Frag_Bomb = 13,
+	Frag_Blinded = 14,
 }
 
 /**
@@ -451,10 +497,11 @@ char Frag_Type[][] = {
 /*7*/"#SMStats_FragEvent_Type7", //Deflect frag.
 /*8*/"#SMStats_FragEvent_Type8", //Telefrag.
 /*9*/"#SMStats_FragEvent_Type9", //Taunt frag.
-/*10*/"#SMStats_FragEvent_Type10", //Collateral.
-/*11*/"#SMStats_FragEvent_Type11", //Grenade frag.
-/*12*/"#SMStats_FragEvent_Type12", //Bomb frag.
-/*13*/"#SMStats_FragEvent_Type13", //Blinded frag.
+/*10*/"#SMStats_FragEvent_Type10", //Pumpkin Bomb frag.
+/*11*/"#SMStats_FragEvent_Type11", //Collateral.
+/*12*/"#SMStats_FragEvent_Type12", //Grenade frag.
+/*13*/"#SMStats_FragEvent_Type13", //Bomb frag.
+/*14*/"#SMStats_FragEvent_Type14", //Blinded frag.
 };
 
 /**
@@ -934,10 +981,16 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		, Frag_Type[Frag_TeleFrag], client);
 	}
 	/* Taunt Kill */
-	else if(g_Player[client].fragmsg.TauntFrag)
+	else if(g_Player[client].fragmsg.Taunt)
 	{
 		Format(buffer, sizeof(buffer), "%T{default}"
-		, Frag_Type[Frag_TauntFrag], client);
+		, Frag_Type[Frag_Taunt], client);
+	}
+	/* Pumpkin Bomb Frag */
+	else if(g_Player[client].fragmsg.PumpkinBomb)
+	{
+		Format(buffer, sizeof(buffer), "%T{default}"
+		, Frag_Type[Frag_PumpkinBomb], client);
 	}
 	/* Grenade Frag */
 	else if(g_Player[client].fragmsg.Grenade)

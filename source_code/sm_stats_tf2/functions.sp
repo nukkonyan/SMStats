@@ -993,49 +993,6 @@ stock TFBuilding TF2_GetBuildingType(int entity)
 
 //
 
-stock void GetMultipleTargets(int client, const int[] list, int counter, char[] dummy, int maxlen)
-{
-	if(counter == 1)
-	{
-		int userid = list[0];
-		int target = GetClientOfUserId(userid);
-		strcopy(dummy, maxlen, g_Player[target].name);
-	}
-	else if(counter == 2)
-	{
-		int userid1 = list[0];
-		int target1 = GetClientOfUserId(userid1);
-		
-		int userid2 = list[1];
-		int target2 = GetClientOfUserId(userid2);
-		
-		Format(dummy, maxlen, "%s%T%s%T", g_Player[target1].name, "#SMStats_And", client, g_Player[target2].name, "#SMStats_Counter", client, counter);
-	}
-	else if(counter > 2 && counter <= 4)
-	{
-		for(int i = 0; i < counter-1; i++)
-		{
-			int userid = list[i];
-			int target = GetClientOfUserId(userid);
-			
-			if(dummy[0] != '\0')
-			{
-				Format(dummy, maxlen, "%s%T", dummy, "#SMStats_Comma", client);
-			}
-			
-			Format(dummy, maxlen, "%s%s", dummy, g_Player[target].name);
-		}
-		
-		int target = GetClientOfUserId(list[counter-1]);
-		Format(dummy, maxlen, "%s%T%s%T", dummy, "#SMStats_And", client, g_Player[target].name, "#SMStats_Counter", client, counter);
-		// outputs the "and last player".
-	}
-	else
-	{
-		Format(dummy, maxlen, "%T", "#SMStats_MultipleTargets", client);
-	}
-}
-
 stock void GetMultipleObjects(int client, TFBuilding[] list, int objects, char[] dummy, int maxlen)
 {
 	TFBuilding obj_prev;

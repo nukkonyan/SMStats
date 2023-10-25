@@ -1,7 +1,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 #pragma tabsize 0
-#define Version "1.0.0@pre-testing1"
+#define Version "1.0.0@testing1"
 #define VersionAlt "v" ... Version
 #define MaxPlayers 65 // 101 cuz -unrestricted_maxplayers ?
 #define MaxItemDef 30758 // will later be updated to use indexes instead of itemdef
