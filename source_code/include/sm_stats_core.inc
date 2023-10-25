@@ -189,9 +189,7 @@ public void _sm_stats_loaded_core()
 	g_AssistPoints = _sm_stats_get_assistpoints();
 	g_PenaltySeconds = _sm_stats_get_penaltyseconds();
 	
-	#if defined load_players
 	CreateTimer(5.0, Timer_PluginLoaded);
-	#endif
 }
 
 void PrepareTranslations()
@@ -298,9 +296,7 @@ public void OnPluginStart()
 					}
 				}
 				
-				#if defined load_players
 				CreateTimer(0.85, Timer_PluginLoaded);
-				#endif
 			}
 		}
 	}
@@ -472,10 +468,12 @@ Action Timer_PluginLoaded(Handle timer)
 			// obtain the names.
 			GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
 			
+			#if defined load_players
 			if(!IsFakeClient(client))
 			{
 				CPrintToChat(client, "{lightgreen}%s %T", core_chattag, "#SMStats_VersionLoaded", client, Version);
 			}
+			#endif
 		}
 	}
 	
