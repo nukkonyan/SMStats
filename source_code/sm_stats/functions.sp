@@ -1240,19 +1240,29 @@ stock void UpdatePlayerName(int client)
 
 /*
  * Returns the developer role.
+ * 1 - owner & founder.
+ * 2 - developer.
+ * 3 - tester.
+ * 4 - translator.
  */
-stock int IsValidDeveloperType(const char[] auth)
+stock int IsValidDeveloperType(int client)
 {
-	if(StrContains(auth, "29639718") != -1)
-	{
-		return 1; // founder
-	}
-	//else if(StrContains(auth, "example") != -1)
-	//{
-	//	return 2; // developer
-	//}
+	char profile_id[24]; // safest way to check
+	GetClientAuthId(client, AuthId_SteamID64, profile_id, sizeof(profile_id));
 	
-	return false;
+	// founder and creator.
+	if(StrEqual(profile_id, "76561198019545164"))
+	{
+		return 1;
+	}
+	
+	// developer
+	
+	// tester
+	
+	// translator
+	
+	return -1;
 }
 
 // time formats, these needs to be fixed and corrected.

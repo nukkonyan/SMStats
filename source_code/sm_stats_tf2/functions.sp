@@ -12,47 +12,47 @@ char TF2_ClassTypeNameLC[][] = {
 	"civilian"		
 };
 
-bool GetPlayerName(int client, char[] name, int maxlen)
+void GetPlayerName(int client, char[] name, int maxlen)
 {
 	if(!IsClientInGame(client))
 	{
 		Format(name, maxlen, "{grey}%N{default}", client);
-		return true;
+		return;
 	}
 	
-	switch(IsValidDeveloperType(g_Player[client].auth))
+	switch(IsValidDeveloperType(client))
 	{
 		case 1:
 		{
 			Format(name, maxlen, "{unusual}%N{default}", client);
-			return true;
+		}
+		case 2:
+		{
+			Format(name, maxlen, "{cyan}%N{default}", client);
+		}
+		case 3:
+		{
+			Format(name, maxlen, "{orange}%N{default}", client);
+		}
+		case 4:
+		{
+			Format(name, maxlen, "{lightgreen}%N{default}", client);
+		}
+		default:
+		{
+			//int team = GetEntProp(client, Prop_Send, "m_iTeamNum");
+			int team = GetClientTeam(client);
+			
+			switch(team)
+			{
+				case 2: Format(name, maxlen, "{red}%N{default}", client);
+				case 3: Format(name, maxlen, "{blue}%N{default}", client);
+				case 4: Format(name, maxlen, "{green}%N{default}", client);
+				case 5: Format(name, maxlen, "{yellow}%N{default}", client);
+				default: Format(name, maxlen, "{grey}%N{default}", client);
+			}
 		}
 	}
-	
-	//int team = GetEntProp(client, Prop_Send, "m_iTeamNum");
-	int team = GetClientTeam(client);
-	
-	switch(team)
-	{
-		case 2: Format(name, maxlen, "{red}%N{default}", client);
-		case 3: Format(name, maxlen, "{blue}%N{default}", client);
-		case 4: Format(name, maxlen, "{green}%N{default}", client);
-		case 5: Format(name, maxlen, "{yellow}%N{default}", client);
-		default: Format(name, maxlen, "{grey}%N{default}", client);
-	}
-	
-	/*
-	ReplaceString(name, maxlen, "'", "");
-	ReplaceString(name, maxlen, "<?PHP", "");
-	ReplaceString(name, maxlen, "<?php", "");
-	ReplaceString(name, maxlen, "<?", "");
-	ReplaceString(name, maxlen, "?>", "");
-	ReplaceString(name, maxlen, "<", "[");
-	ReplaceString(name, maxlen, ">", "]");
-	ReplaceString(name, maxlen, ",", ".");
-	*/
-	
-	return true;
 }
 
 /**
