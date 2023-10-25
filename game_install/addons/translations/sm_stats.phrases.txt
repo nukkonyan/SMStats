@@ -491,24 +491,15 @@
 	"#SMStats_UpdateFound"
 	{
 		"en" "New {lightgreen}Update {default}was found, restarting.."
-		"jp" "{lightgreen}新しいアップデートが見つかりました... 再起動しています.."
+		"jp" "{lightgreen}新しい更新が見つかりました... 再起動しています.."
 		"sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
 	}
-	"#SMStats_UpdateFinished"
+	"#SMStats_VersionLoaded"
 	{
 		"#format" "{1:s}"
-		"en" "New {lightgreen}Update {orange}Version {1} {default}has been loaded!"
-		"jp" "{lightgreen}新しいアップデート{orange}バーション{1}{default}がロードされました！"
-		"sv" "Ny {lightgreen}Uppdatering {orange}Version {1} {default}har laddats!"
-	}
-
-	"#SMStats_GameLoaded"
-	{
-		// {1} version
-		"#format" "{1:s}"
-		"en" "{orange}Version {1} has been loaded!"
-		"jp" "{orange}バーション{1}ロードしました！"
-		"sv" "{orange}Version {1} har laddats!"
+		"en" "{orange}Version {1} {lightgreen}has been loaded!"
+		"jp" "{orange}バーション{1}{lightgreen}がロードされました！"
+		"sv" "{orange}Version {1} {lightgreen}har laddats!"
 	}
 	
 	//================================//

@@ -297,7 +297,7 @@ public void OnPluginStart()
 					{
 						if(!IsFakeClient(client))
 						{
-							CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_UpdateFinished", client, Version);
+							CPrintToChat(client, "{lightgreen}%s {default}%T", core_chattag, "#SMStats_VersionLoaded", client, Version);
 						}
 					}
 				}
@@ -474,7 +474,7 @@ stock Action Timer_PluginLoaded(Handle timer)
 			
 			if(!IsFakeClient(client))
 			{
-				CPrintToChat(client, "{lightgreen}%s %T", core_chattag, "#SMStats_GameLoaded", client, Version);
+				CPrintToChat(client, "{lightgreen}%s %T", core_chattag, "#SMStats_VersionLoaded", client, Version);
 			}
 		}
 	}
