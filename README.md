@@ -5,12 +5,23 @@ and SQL-code as 'SM Stats' (renamed from XStats) with full extended translation 
 The new code is more efficient and impacts less on server performance.
 
 Games supported so far:
-Team Fortress 2 (works well, several bugs and issues are to be expected)
-Counter-Strike: Source (very buggy, barely worked on yet)
+Team Fortress 2 (works very well, some bugs and issues are to be expected)
 
 Some functions yet implemented and sooner or later will be.
 Some things may not work as intended at the very moment, but will get working sooner or later.
 ```
+### SMStats
+   - 100% translation supported.
+      - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
+   - Tracks:
+      - Players (Total playtime, dominations, headshots and much much more.)
+      - Weapons (Tracks all kind of weapons, self-explanatory..)
+      - Maps (Map total playtime, headshots, backstabs, etc.)
+      - Items (found, traded, etc) (Not added yet)
+      - Custom achievements. (Not added yet, but there are code mentions about it.)
+   - Notes:
+      - This project is only just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.
+      - [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
 
 ### To-do
    - stats menu
@@ -44,11 +55,3 @@ Some things may not work as intended at the very moment, but will get working so
    - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
    - Active SMStats server:
         - 83.253.75.203:27018 (Team Fortress 2)
-
-[Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
-
-``SM Stats`` or ``SourceMod Stats`` is a multi-statistical tracking plugin that tracks frags, events, achievements and offers multi-game support, player connection/disconnection messages, player connect sounds, full translation support and more likely to come.
-
-### This project is only just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.
-
-## GitHub page to be updated.
