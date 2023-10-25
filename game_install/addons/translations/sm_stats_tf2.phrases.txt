@@ -5,142 +5,175 @@
 	//================================//
 	"#SMStats_MenuInfo_Dominations"
 	{
+		// {1} domination count
 		"#format" "{1:i}"
 		"en" "Dominations : {1}"
 		"sv" "Domineringar : {1}"
 	}
 	"#SMStats_MenuInfo_Revenges"
 	{
+		// {1} revenge count
 		"#format" "{1:i}"
 		"en" "Revenges : {1}"
 		"sv" "Hämningar : {1}"
 	}
 	"#SMStats_MenuInfo_Airshots"
 	{
+		// {1} airshot count
 		"#format" "{1:i}"
 		"en" "Airshots : {1}"
 		"sv" "Luftskott : {1}"
 	}
 	"#SMStats_MenuInfo_Headshots"
 	{
+		// {1} headshot count
 		"#format" "{1:i}"
 		"en" "Headshots : {1}"
 		"sv" "Huvudskott : {1}"
 	}
 	"#SMStats_MenuInfo_Noscopes"
 	{
+		// {1} noscope count
 		"#format" "{1:i}"
 		"en" "Noscopes : {1}"
 		"sv" "Icke-zoomingsskott : {1}"
 	}
 	"#SMStats_MenuInfo_Backstabs"
 	{
+		// {1} backstab count
 		"#format" "{1:i}"
 		"en" "Backstabs : {1}"
 		"sv" "Rygghuggningar : {1}"
 	}
 	"#SMStats_MenuInfo_TauntFrags"
 	{
+		// {1} tauntkill count
 		"#format" "{1:i}"
 		"en" "Taunt frags : {1}"
 		"sv" "Hånfrags : {1}"
 	}
 	"#SMStats_MenuInfo_GibFrags"
 	{
+		// {1} gibkill count
 		"#format" "{1:i}"
 		"en" "Gib frags : {1}"
 		"sv" "Gibbfraggade : {1}"
 	}
 	"#SMStats_MenuInfo_DeflectFrags"
 	{
+		// {1} deflectkill count
 		"#format" "{1:i}"
 		"en" "Deflect frags : {1}"
 		"sv" "Deflekteringsfrags : {1}"
 	}
 	"#SMStats_MenuInfo_TeleFrags"
 	{
+		// {1} telefrag count
 		"#format" "{1:i}"
 		"en" "Tele frags : {1}"
 		"sv" "Telefraggade : {1}"
 	}
 	"#SMStats_MenuInfo_Collaterals"
 	{
+		// {1} collateral count
 		"#format" "{1:i}"
 		"en" "Collaterals : {1}"
 	}
 	"#SMStats_MenuInfo_MidAirFrags"
 	{
+		// {1} mid-air kill count
 		"#format" "{1:i}"
 		"en" "Mid Air frags : {1}"
 		"sv" "Mitt-i-luftenfrags : {1}"
 	}
 	"#SMStats_MenuInfo_CritFrags"
 	{
+		// {1} critical kill count
 		"#format" "{1:i}"
 		"en" "Critical frags : {1}"
 		"sv" "Kritiska frags : {1}"
 	}
 	"#SMStats_MenuInfo_MiniCritFrags"
 	{
+		// {1} mini-crit kill count
 		"#format" "{1:i}"
 		"en" "Mini-Crit frags : {1}"
 	}
 	"#SMStats_MenuInfo_PumpkinBombFrags"
 	{
+		// {1} pumpkin bomb kill count
 		"#format" "{1:i}"
 		"en" "Pumpkin bomb frags : {1}"
 	}
 
 	"#SMStats_MenuInfo_Scout"
 	{
+		// {1} scout kill count
+		// {2} scout death count
 		"#format" "{1:i},{2:i}"
 		"en" "Scout : {1} Fragged / {2} Deaths"
 		"sv" "Löpare : {1} Fraggade / {2} Gånger dött"
 	}
 	"#SMStats_MenuInfo_Soldier"
 	{
+		// {1} soldier kill count
+		// {2} soldier death count
 		"#format" "{1:i},{2:i}"
 		"en" "Soldier : {1} Fragged / {2} Deaths"
 		"sv" "Soldat : {1} Fraggade / {2} Gånger dött"
 	}
 	"#SMStats_MenuInfo_Pyro"
 	{
+		// {1} pyro kill count
+		// {2} pyro death count
 		"#format" "{1:i},{2:i}"
 		"en" "Pyro : {1} Fragged / {2} Deaths"
 		"sv" "Pyro : {1} Fraggade / {2} Gånger dött"
 	}
 	"#SMStats_MenuInfo_Demoman"
 	{
+		// {1} demoman kill count
+		// {2} demoman death count
 		"#format" "{1:i},{2:i}"
 		"en" "Demoman : {1} Fragged / {2} Deaths"
 		"sv" "Demoman : {1} Fraggade / {2} Gånger dött"
 	}
 	"#SMStats_MenuInfo_Heavy"
 	{
+		// {1} heavy kill count
+		// {2} heavy death count
 		"#format" "{1:i},{2:i}"
 		"en" "Heavy : {1} Fragged / {2} Deaths"
 		"sv" "Heavy : {1} Fraggade / {2} Gånger dött"
 	}
 	"#SMStats_MenuInfo_Engineer"
 	{
+		// {1} engineer kill count
+		// {2} engineer death count
 		"#format" "{1:i},{2:i}"
 		"en" "Engineer : {1} Fragged / {2} Deaths"
 		"sv" "Ingenjör : {1} Fraggade / {2} Gånger dött"
 	}
 	"#SMStats_MenuInfo_Medic"
 	{
+		// {1} medic kill count
+		// {2} medic death count
 		"#format" "{1:i},{2:i}"
 		"en" "Medic : {1} Fragged / {2} Deaths"
 		"sv" "Sjukvårdare : {1} Fraggade / {2} Gånger dött"
 	}
 	"#SMStats_MenuInfo_Sniper"
 	{
+		// {1} sniper kill count
+		// {2} sniper death count
 		"#format" "{1:i},{2:i}"
 		"en" "Sniper : {1} Fragged / {2} Deaths"
 		"sv" "Krypskyttare : {1} Fraggade / {2} Gånger dött"
 	}
 	"#SMStats_MenuInfo_Spy"
 	{
+		// {1} spy kill count
+		// {2} spy death count
 		"#format" "{1:i},{2:i}"
 		"en" "Spy : {1} Fragged / {2} Deaths"
 		"sv" "Spion : {1} Fraggade / {2} Gånger dött"
@@ -148,42 +181,56 @@
 
 	"#SMStats_MenuInfo_Buildings"
 	{
+		// {1} buildings placed count
+		// {2} buildings destroyed count
 		"#format" "{1:i},{2:i}"
 		"en" "Buildings : {1} Placed / {2} Destroyed"
 		"sv" "Byggnader : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_Dispenser"
 	{
+		// {1} dispensers placed count
+		// {2} dispensers destroyed count
 		"#format" "{1:i},{2:i}"
 		"en" "Dispenser : {1} Placed / {2} Destroyed"
 		"sv" "Utmatare : {1} Placerad / {2} Förstörd"
 	}
 	"#SMStats_MenuInfo_SentryGun"
 	{
+		// {1} sentryguns placed count
+		// {2} sentryguns destroyed count
 		"#format" "{1:i},{2:i}"
 		"en" "Sentry Gun : {1} Placed / {2} Destroyed"
 		"sv" "Vaktgevär : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_TeleporterEntrance"
 	{
+		// {1} teleporter entrances placed count
+		// {2} teleporter entrances destroyed count
 		"#format" "{1:i},{2:i}"
 		"en" "Teleporter Entrance : {1} Placed / {2} Destroyed"
 		"sv" "Ingångsteleporter : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_TeleporterExit"
 	{
+		// {1} teleporter exits placed count
+		// {2} teleporter exits destroyed count
 		"#format" "{1:i},{2:i}"
 		"en" "Teleporter Exit : {1} Placed / {2} Destroyed"
 		"sv" "Utgångsteleporter : {1} Placerade / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_MiniSentryGun"
 	{
+		// {1} mini-sentryguns placed count
+		// {2} mini-sentryguns destroyed count
 		"#format" "{1:i},{2:i}"
 		"en" "Mini-Sentry Gun : {1} Placed / {2} Destroyed"
 		"sv" "Mini-Vaktgevär : {1} Placerad / {2} Förstörda"
 	}
 	"#SMStats_MenuInfo_Sapper"
 	{
+		// {1} sappers placed count
+		// {2} sappers destroyed count
 		"#format" "{1:i},{2:i}"
 		"en" "Sapper : {1} Placed / {2} Destroyed"
 		"sv" "Sapper : {1} Placerade / {2} Förstörda"
@@ -191,42 +238,49 @@
 
 	"#SMStats_MenuInfo_CP_Captured"
 	{
+		// {1} capture points capture count
 		"#format" "{1:i}"
 		"en" "Capture Points captured : {1}"
 		"sv" "Kontrollpunkter Erövrade : {1}"
 	}
 	"#SMStats_MenuInfo_CP_Defended"
 	{
+		// {1} capture points defend count
 		"#format" "{1:i}"
 		"en" "Capture Points defended : {1}"
 		"sv" "Kontrollpunkter försvarade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Stolen"
 	{
+		// {1} ctf flag steal count
 		"#format" "{1:i}"
 		"en" "Flags stolen : {1}"
 		"sv" "Flaggor stulna : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_PickedUp"
 	{
+		// {1} ctf flag pickup count
 		"#format" "{1:i}"
 		"en" "Flags picked up : {1}"
 		"sv" "Flaggor uppplockade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Captured"
 	{
+		// {1} ctf flag capture count
 		"#format" "{1:i}"
 		"en" "Flags captured : {1}"
 		"sv" "Flaggor erövrade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Defended"
 	{
+		// {1} ctf flag defend count
 		"#format" "{1:i}"
 		"en" "Flags defended : {1}"
 		"sv" "Flaggor försvarade : {1}"
 	}
 	"#SMStats_MenuInfo_CTF_Dropped"
 	{
+		// {1} ctf flag drop count
 		"#format" "{1:i}"
 		"en" "Flags dropped : {1}"
 		"sv" "Flaggor tappade : {1}"
@@ -234,84 +288,101 @@
 
 	"#SMStats_MenuInfo_TeleportersUsed"
 	{
+		// {1} teleporters used count
 		"#format" "{1:i}"
 		"en" "Teleporters used : {1}"
 		"sv" "Teleportrar använda : {1}"
 	}
 	"#SMStats_MenuInfo_PlayersTeleported"
 	{
+		// {1} players teleported count count
 		"#format" "{1:i}"
 		"en" "Players teleported : {1}"
 		"sv" "Spelare teleporterade : {1}"
 	}
 	"#SMStats_MenuInfo_CoatedMilk"
 	{
+		// {1} players counted with milk count
 		"#format" "{1:i}"
 		"en" "Players coated with milk : {1}"
 		"sv" "Spelare täckt med mjölk : {1}"
 	}
 	"#SMStats_MenuInfo_CoatedPiss"
 	{
+		// {1} players coated with piss count
 		"#format" "{1:i}"
 		"en" "Players coated with piss : {1}"
 		"sv" "Spelare täckt med urin : {1}"
 	}
 	"#SMStats_MenuInfo_Coated"
 	{
+		// {1} players coated with a jar count
 		"#format" "{1:i}"
 		"en" "Players coated : {1}"
 		"sv" "Spelare täckta : {1}"
 	}
 	"#SMStats_MenuInfo_Extinguished"
 	{
+		// {1} players extinguished count
 		"#format" "{1:i}"
 		"en" "Players extinguished : {1}"
 		"sv" "Spelare släckta : {1}"
 	}
 	"#SMStats_MenuInfo_Ignited"
 	{
+		// {1} players ignited count
 		"#format" "{1:i}"
 		"en" "Players ignited : {1}"
 		"sv" "Spelare påtänd : {1}"
 	}
 	"#SMStats_MenuInfo_Ubercharged"
 	{
+		// {1} players ubercharged count
 		"#format" "{1:i}"
-		"en" "Übercharged : {1}"
-		"sv" "Überladdning : {1}"
+		"en" "Players übercharged : {1}"
+		"sv" "Spelare überladdade : {1}"
 	}
 	"#SMStats_MenuInfo_SandvichesStolen"
 	{
+		// {1} sandviches stolen count
 		"#format" "{1:i}"
 		"en" "Sandviches stolen : {1}"
 		"sv" "Smörgåsar stulna : {1}"
 	}
 	"#SMStats_MenuInfo_StunnedPlayers"
 	{
+		// {1} players stunned count
+		// {2} players stunned with moon shot count
 		"#format" "{1:i},{2:i}"
 		"en" "Stunned players : {1} / {2} Moon Shots"
 	}
 
 	"#SMStats_MenuInfo_HWN_Monoculus"
 	{
+		// {1} monoculus kill count
+		// {2} monoculus stun count
 		"#format" "{1:i},{2:i}"
 		"en" "Monoculus : {1} Fragged / {2} Stunned"
 		"sv" "Monoculus : {1} Fraggade / {2} Stunnade"
 	}
 	"#SMStats_MenuInfo_HWN_Merasmus"
 	{
+		// {1} merasmus kill count
+		// {2} merasmus stun count
 		"#format" "{1:i},{2:i}"
 		"en" "Merasmus : {1} Fragged / {2} Stunned"
 		"sv" "Merasmus : {1} Fraggade / {2} Stunnade"
 	}
 	"#SMStats_MenuInfo_HWN_HHH"
 	{
+		// {1} horseless headless horsemann kill count
 		"#format" "{1:i}"
 		"en" "Horseless Headless Horsemann : {1} Fragged"
 		"sv" "Horseless Headless Horsemann : {1} Fraggade"
 	}
 	"#SMStats_MenuInfo_HWN_SkeletonKing"
 	{
+		// {1} skeleton king kill count
 		"#format" "{1:i}"
 		"en" "Skeleton King : {1} Fragged"
 		"sv" "Skelettkung : {1} Fraggade"
@@ -319,18 +390,21 @@
 
 	"#SMStats_MenuInfo_MvM_TanksDestroyed"
 	{
+		// {1} mvm tank destroy count
 		"#format" "{1:i}"
 		"en" "Tanks destroyed : {1}"
 		"sv" "Tankar förstörda : {1}"
 	}
 	"#SMStats_MenuInfo_MvM_SentryBustersFragged"
 	{
+		// {1} mvm sentry buster kill count
 		"#format" "{1:i}"
 		"en" "Sentry Busters destroyed : {1}"
 		"sv" "Vaktgevärsförgörare förstörda : {1}"
 	}
 	"#SMStats_MenuInfo_MvM_BombsResetted"
 	{
+		// {1} mvm bomb reset count
 		"#format" "{1:i}"
 		"en" "Bombs resetted : {1}"
 		"sv" "Bomber resettade : {1}"
@@ -341,15 +415,17 @@
 	//===================//
 	"#SMStats_CaptureEvent_Type0" //Captured the point.
 	{
+		// {1} capture point name
 		"#format" "{1:s}"
 		"en" "{green}Capturing Point {default}{1}"
-		"sv" "{green}Erövrat Kontrollspunkten {default}{1}"
+		"sv" "{green}Erövra Kontrollspunkten {default}{1}"
 	}
 	"#SMStats_CaptureEvent_Type1" //Defended the point.
 	{
+		// {1} capture point name
 		"#format" "{1:s}"
 		"en" "{green}Defending Point {default}{1}"
-		"sv" "{green}Försvarat Kontrollspunkten"
+		"sv" "{green}Försvara Kontrollspunkten"
 	}
 	"#SMStats_CaptureEvent_Default" 
 	{
@@ -360,7 +436,7 @@
 		// {5} capture event
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} {4} for {5}"
-		"sv" "{1} ({2}) Belönades med {3} {4} för att ha {5}"
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {5}"
 	}
 
 	//===================//
@@ -369,27 +445,27 @@
 	"#SMStats_FlagEvent_Type0" //Picked up opponents intelligence.
 	{
 		"en" "{green}Picking Up Opponents Flag"
-		"sv" "{green}Plockat upp Motståndsflaggan"
+		"sv" "{green}Plocka Upp Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent_Type1" //Stole the opponents intelligence.
 	{
 		"en" "{green}Stealing Opponents Flag"
-		"sv" "{green}Stulit Motståndsflaggan"
+		"sv" "{green}Stjäla Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent_Type2" //Captured the opponents intelligence.
 	{
 		"en" "{green}Capturing Opponents Flag"
-		"sv" "{green}Erövrat Motståndsflaggan"
+		"sv" "{green}Erövra Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent_Type3" //Defended the opponnents intelligence.
 	{
 		"en" "{green}Defending Team Flag"
-		"sv" "{green}Försvarat Lagsflaggan"
+		"sv" "{green}Försvara Lagsflaggan"
 	}
 	"#SMStats_FlagEvent_Type4" //Dropped the opponents intelligence.
 	{
 		"en" "{green}Dropping Opponents Flag"
-		"sv" "{green}Tappat Motståndsflaggan"
+		"sv" "{green}Tappa Motståndsflaggan"
 	}
 	"#SMStats_FlagEvent0" //Earned points on intelligence event.
 	{
@@ -411,7 +487,7 @@
 		// {5} flag event
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Lost {3} {4} for {5}"
-		"sv" "{1} ({2}) Förlorade {3} {4} för att ha {5}"
+		"sv" "{1} ({2}) Förlorade {3} {4} för att {5}"
 	}
 
 	//===================//
@@ -455,12 +531,12 @@
 	"#SMStats_ObjectEvent_Type0" //Object was placed.
 	{
 		"en" "{green}Placing"
-		"sv" "{green}Placerat"
+		"sv" "{green}Placera"
 	}	
 	"#SMStats_ObjectEvent_Type1" //Object was destroyed.
 	{
 		"en" "{green}Destroying"
-		"sv" "{green}Förstört"
+		"sv" "{green}Förstöra"
 	}
 	"#SMStats_ObjectEvent_Default" //Object event.
 	{
@@ -485,8 +561,8 @@
 		// {3} earned points
 		// {4} points plural splitter
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} ({2}) Earned {3} {4} for {green}Grabbing {default}neutral ball."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Greppat {default}den neutrala bollen."
+		"en" "{1} ({2}) Earned {3} {4} for {green}Picking Up {default}neutral ball."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Plocka Upp {default}den neutrala bollen."
 	}
 	"#SMStats_PassBall_ScoreBall"
 	{
@@ -496,7 +572,7 @@
 		// {4} points plural splitter
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} {4} for {green}Scoring {default}the ball."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Gjort mål {default}med bollen."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Göra mål {default}med bollen."
 	}
 	"#SMStats_PassBall_DropBall"
 	{
@@ -506,7 +582,7 @@
 		// {4} points plural splitter
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Lost {3} {4} for {green}Dropping {default}the ball"
-		"sv" "{1} ({2}) Förlorade {3} {4} för att {green}Tappat {default}bollen."
+		"sv" "{1} ({2}) Förlorade {3} {4} för att {green}Tappa {default}bollen."
 	}
 	"#SMStats_PassBall_CatchBall_Scenario0"
 	{
@@ -516,7 +592,7 @@
 		// {4} points plural splitter
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} {4} for {green}Catching {default}the ball."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Tagit Emot {default}bollen."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Ta Emot {default}bollen."
 	}
 	"#SMStats_PassBall_CatchBall_Scenario1"
 	{
@@ -527,7 +603,7 @@
 		// {5} victim name
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} {4} for {green}Catching {default}the ball from {5}."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Tagit Emot {default}bollen ifrån {5}."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Ta Emot {default}bollen ifrån {5}."
 	}
 	"#SMStats_PassBall_StealBall_Scenario0"
 	{
@@ -537,7 +613,7 @@
 		// {4} points plural splitter
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} {4} for {green}Stealing the ball."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att ha {green}Stulit {default}bollen."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Stjäla {default}bollen."
 	}
 	"#SMStats_PassBall_StealBall_Scenario1"
 	{
@@ -548,7 +624,7 @@
 		// {5} victim name
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} ({2}) Earned {3} {4} for {green}Stealing {default}the ball from {5}."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Stulit {default}bollen ifrån {5}."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Stjäla {default}bollen ifrån {5}."
 	}
 	"#SMStats_PassBall_BlockBall_Scenario0"
 	{
@@ -558,7 +634,7 @@
 		// {4} points plural splitter
 		"#format" "{1:s},{2:i},{3:i}"
 		"en" "{1} ({2}) Earned {3} {4} for {green}Blocking the ball"
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Blockerat {default}bollen."
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Blockera {default}bollen."
 	}
 	"#SMStats_PassBall_BlockBall_Scenario1"
 	{
@@ -569,7 +645,7 @@
 		// {5} victim name
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
 		"en" "{1} ({2}) Earned {3} {4} for {green}Blocking {default}the ball from {5}"
-		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Blockerat {default}bollen ifrån {5}"
+		"sv" "{1} ({2}) Belönades med {3} {4} för att {green}Blockera {default}bollen ifrån {5}"
 	}
 
 	//===================//
