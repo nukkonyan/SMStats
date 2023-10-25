@@ -1,16 +1,35 @@
-
-```
-Currently in active re-writing process from scratch with better more efficient code-base
-and SQL-code as 'SM Stats' (renamed from XStats) with full extended translation support.
-The new code is more efficient and impacts less on server performance.
-
-Games supported so far:
-Team Fortress 2 (works well, several bugs and issues are to be expected)
-Counter-Strike: Source (very buggy, barely worked on yet)
-
-Some functions yet implemented and sooner or later will be.
-Some things may not work as intended at the very moment, but will get working sooner or later.
-```
+### SMStats
+   - 100% translation supported.
+      - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
+   - Updater support
+      - The updating process is automatic.
+      - When update is detected, update message are sent to the chat and information are saved to **'SMStats Info'** module, to prevent loss of data.
+   - Tracks:
+      - Players (Total playtime, dominations, headshots and much much more.)
+      - Weapons (Tracks all kind of weapons, self-explanatory..)
+      - Maps (Map total playtime, headshots, backstabs, etc.)
+      - Items (found, traded, etc) (Not added yet)
+      - Custom achievements. (Not added yet, but there are code mentions about it.)
+   - Notes:
+      - **This project is only just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.**
+      - [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
+      - No Web panel currently exists yet.
+      - Currently in active re-writing process from scratch:
+          - Better more efficient code-base and SQL-code as 'SM Stats' (renamed from XStats) with full extended translation support.
+          - The new code is more efficient and impacts less on server performance.
+          - Some functions yet implemented and sooner or later will be.
+          - Some things may not work as intended at the very moment, but will get working sooner or later.
+      - Games supported so far:
+          - Team Fortress 2 (works very well, some bugs and issues are to be expected)
+      - Expected early testing build
+          - Somewhere between end of October and somewhere early-mid november.
+          - This will begin with Team Fortress 2 due to stability reasons.
+      - Lookin to assist in development?
+          - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
+          - Translations are very welcome and would be very much appreciated! ヽ(*・ω・)ﾉ
+             - Translator will be granted a custom name colour (´｡• ω •｡`)
+          - Active SMStats development testing server, come in here to see for yourself how the plugin is doing:
+            - 83.253.75.203:27018 (Team Fortress 2)
 
 ### To-do
    - stats menu
@@ -35,20 +54,3 @@ Some things may not work as intended at the very moment, but will get working so
           - Left 4 Dead 2.
           - and many other.
         - Create website.
-
-## Expected early testing build
-   - Somewhere between end of October and possibly as late as early December.
-   - This will begin with Team Fortress 2 due to stability reasons.
-
-## Lookin to assist in development?
-   - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
-   - Active SMStats server:
-        - 83.253.75.203:27018 (Team Fortress 2)
-
-[Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
-
-``SM Stats`` or ``SourceMod Stats`` is a multi-statistical tracking plugin that tracks frags, events, achievements and offers multi-game support, player connection/disconnection messages, player connect sounds, full translation support and more likely to come.
-
-### This project is only just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.
-
-## GitHub page to be updated.
