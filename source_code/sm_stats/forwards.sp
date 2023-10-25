@@ -35,13 +35,23 @@ public void OnClientConnected(int client)
 	
 	if(!GetClientAuthId(client, AuthId_Steam2, g_Player[client].auth, sizeof(g_Player[].auth), false))
 	{
-		PrintToServer("%s OnClientConnected error: Failed to authenticate user index %i (userid %i)", core_chattag, client, userid);
+		PrintToServer("%s OnClientConnected error: Failed to authenticate steamid of user index %i (userid %i)", core_chattag, client, userid);
+		return;
+	}
+	if(!GetClientAuthId(client, AuthId_SteamID64, g_Player[client].profileid, sizeof(g_Player[].profileid), false))
+	{
+		PrintToServer("%s OnClientConnected error: Failed to authenticate profileid of user index %i (userid %i)", core_chattag, client, userid);
 		return;
 	}
 	
 	if(strlen(g_Player[client].auth) < 1)
 	{
 		PrintToServer("%s OnClientConnected error: Obtained an empty steamid of user index (userid %i)", core_chattag, client, userid);
+		return;
+	}
+	if(strlen(g_Player[client].profileid) < 1)
+	{
+		PrintToServer("%s OnClientConnected error: Obtained an empty profileid of user index (userid %i)", core_chattag, client, userid);
 		return;
 	}
 	

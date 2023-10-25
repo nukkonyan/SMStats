@@ -1247,11 +1247,11 @@ stock void UpdatePlayerName(int client)
  */
 stock int IsValidDeveloperType(int client)
 {
-	char profile_id[24]; // safest way to check
-	GetClientAuthId(client, AuthId_SteamID64, profile_id, sizeof(profile_id));
+	//char profile_id[24]; // safest way to check
+	//GetClientAuthId(client, AuthId_SteamID64, profile_id, sizeof(profile_id));
 	
 	// founder and creator.
-	if(StrEqual(profile_id, "76561198019545164"))
+	if(StrEqual(g_Player[client].profileid, "76561198019545164"))
 	{
 		return 1;
 	}

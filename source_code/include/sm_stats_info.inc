@@ -44,6 +44,7 @@ enum struct SMStats_PlayerInfo
 {
 	int userid;
 	char auth[64];
+	char profileid[32];
 	char name[64];
 	char name2[64];
 	char ip[16];
@@ -71,6 +72,7 @@ enum struct SMStats_PlayerInfo
 	{
 		this.userid = -1;
 		this.auth = "";
+		this.profileid = ""
 		this.name = "";
 		this.name2 = "";
 		//this.bAlreadyConnected = false;

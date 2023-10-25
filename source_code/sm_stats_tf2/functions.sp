@@ -14,12 +14,6 @@ char TF2_ClassTypeNameLC[][] = {
 
 void GetPlayerName(int client, char[] name, int maxlen)
 {
-	if(!IsClientInGame(client))
-	{
-		Format(name, maxlen, "{grey}%N{default}", client);
-		return;
-	}
-	
 	switch(IsValidDeveloperType(client))
 	{
 		case 1:
@@ -40,6 +34,11 @@ void GetPlayerName(int client, char[] name, int maxlen)
 		}
 		default:
 		{
+			if(!IsClientInGame(client))
+			{
+				Format(name, maxlen, "{grey}%N{default}", client);
+				return;
+			}
 			//int team = GetEntProp(client, Prop_Send, "m_iTeamNum");
 			int team = GetClientTeam(client);
 			
