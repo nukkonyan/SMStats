@@ -41,7 +41,6 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("SMStatsInfo.SaveGameStats", Native_SaveGameStats);
 	CreateNative("SMStatsInfo.ResetGameStats", Native_ResetGameStats);
 	
-	CreateNative("_sm_stats_info_update_loaded_active", Native_UpdateLoadedActive);
 	CreateNative("_sm_stats_info_update_stats_active", Native_UpdateStatsActive);
 	CreateNative("_sm_stats_info_update_round_active", Native_UpdateRoundActive);
 	CreateNative("_sm_stats_info_update_maptimer", Native_UpdateMapTimer);
@@ -103,11 +102,6 @@ int Native_ResetGameStats(Handle plugin, int params)
 	return -69;
 }
 
-any Native_UpdateLoadedActive(Handle plugin, int params)
-{
-	bLoaded = view_as<bool>(GetNativeCell(1));
-	return 0;
-}
 any Native_UpdateStatsActive(Handle plugin, int params)
 {
 	bStatsActive = view_as<bool>(GetNativeCell(1));

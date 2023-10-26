@@ -19,7 +19,7 @@ enum struct StatsMenuInfo
 		GeoipCountryName(client, g_Player[client].ip, country, sizeof(country));
 		GetTimeFormat(client, iMapTimerSeconds, map_time, sizeof(map_time));
 		
-		if(!g_Player[client].bMenuCheckPosition)
+		if(!g_Player[client].bMenuCheckPosition && g_Player[client].position < 1)
 		{
 			g_Player[client].position = GetClientPosition(g_Player[client].auth);
 			g_Player[client].bMenuCheckPosition = true; // avoid sql overload.
@@ -1652,7 +1652,7 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 			switch(stats[Stats_Points] >= 0)
 			{
 				case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, stats[Stats_Points]);
-				case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, stats[Stats_Points]);
+				case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, stats[Stats_Points]*2);
 			}
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Frags", client, stats[Stats_Frags]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Assists", client, stats[Stats_Assists]);

@@ -220,7 +220,7 @@
 		// {5} points reverted
 		"#format" "{1:s},{2:i},{3:s},{4:s},{5:i}"
 		"en" "{1} (Pos #{2}, {3}) {red}was given {yellow}{4} {red}penalty due to abusing spam. Your recent abused {5} points was reverted. You will not be able to gain points during penalty."
-		"sv" "{1} (Pos #{2}, {3}) {red}Blev given en {yellow}{4} {red}staff på grund av att missbruka spam. Dina senaste missbrukade {5} poäng blev återställd. Du kan ej få poäng medans straffad."
+		"sv" "{1} (Pos #{2}, {3}) {red}blev given en {yellow}{4} {red}staff på grund av att missbruka spam. Dina senaste missbrukade {5} poäng blev återställd. Du kan ej få poäng medans straffad."
 	}
 	"#SMStats_Points_Penalty"
 	{
@@ -229,7 +229,7 @@
 	}
 
 	//================================//
-	// Connected.
+	// Connection.
 	//================================//
 	"#SMStats_Player_Connected"
 	{
@@ -238,11 +238,11 @@
 		// {3} player points
 		// {4} country name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} (Pos #{2}, {3}) has joined the game from {4}."
+		"en" "{1} (Pos #{2}, {3}) from {4} has joined the game."
 		"jp" "{1} （立{2}場、{3}）が{orange}{4}{default}からを参加しました。"
-		"nl" "{1} (Pos #{2}, {3}) neemt deel aan het spel van {4}."
-		"no" "{1} (Pos #{2}, {3}) er blitt med i spillet fra {4}."
-		"sv" "{1} (Pos #{2}, {3}) har gått med i spelet från {4}."
+		"nl" "{1} (Pos #{2}, {3}) van {4} neemt deel aan het spel."
+		"no" "{1} (Pos #{2}, {3}) fra {4} er blitt med i spillet."
+		"sv" "{1} (Pos #{2}, {3}) från {4} har gått med i spelet."
 	}
 	"#SMStats_Player_Disconnected"
 	{
@@ -252,11 +252,21 @@
 		// {4} country name
 		// {5} disconnect reason
 		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-		"en" "{1} (Pos #{2}, {3}) has left the game from {4}. {grey}({5})"
+		"en" "{1} (Pos #{2}, {3}) from {4} has left the game. {grey}({5})"
 		"jp" "{1} （立{2}場、{3}）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
-		"nl" "{1} (Pos #{2}, {3}) heeft het spel verlaten van {4} {grey}({5})"
-		"no" "{1} (Pos #{2}, {3}) har forlatt spillet fra {4}. {grey}({5})"
-		"sv" "{1} (Pos #{2}, {3}) har lämnat spelet från {4}. {grey}({5})"
+		"nl" "{1} (Pos #{2}, {3}) van {4} heeft het spel verlaten {grey}({5})"
+		"no" "{1} (Pos #{2}, {3}) fra {4} har forlatt spillet. {grey}({5})"
+		"sv" "{1} (Pos #{2}, {3}) från {4} har lämnat spelet. {grey}({5})"
+	}
+	"#SMStats_Player_Connected_TopPlayer"
+	{
+		// {1} top player position
+		// {2} player name
+		// {3} country name
+		"#format" "{1:i},{2:s},{3:s}"
+		"en" "Top {1} player {2} from 3} {default}has connected!"
+		"jp" "トップ{1}プレイヤー {2} が{orange}{3}{default}からを接続しました！"
+		"sv" "Topp {1} spelare {2} från {3} {default}har anslutit!"
 	}
 
 	//================================//
@@ -650,13 +660,12 @@
 	}
 	"#SMStats_Points_PluralSplitter" // points plural splitter false#|#true (non-plural#|#plural)
 	{
-		// {1} player points
-		"#format" "{1:i}"
-		"en" "{1} point#|#{1} points"
-		"jp" "{1}ポイント"
-		"sv" "{1} poäng"
-		"nl" "{1} punt#|#punten"
-		"no" "{1} poeng"
+		// {POINTS} player points
+		"en" "{POINTS} point#|#{POINTS} points"
+		"jp" "{POINTS}ポイント"
+		"sv" "{POINTS} poäng"
+		"nl" "{POINTS} punt#|#{POINTS} punten"
+		"no" "{POINTS} poeng"
 	}
 	"#SMStats_FeatureUnavailable"
 	{

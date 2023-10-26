@@ -91,6 +91,14 @@ public void OnClientPutInServer(int client)
 	CreateTimer(60.0, Timer_TimePlayed, GetClientUserId(client), TIMER_REPEAT);
 }
 
+public void OnClientPostAdminCheck(int client)
+{
+	if(IsValidClient(client))
+	{
+		Send_Player_Connected_CheckTop10(client);
+	}
+}
+
 public void OnClientSettingsChanged(int client)
 {
 	if(!bLoaded)
@@ -266,7 +274,8 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 			{
 				g_TotalTablePlayers = GetTablePlayerCount();
 				g_Player[client].points = _sm_stats_default_points;
-				Send_Player_Connected(g_Player[client]);
+				g_Player[client].position = GetClientPosition(g_Player[client].auth);
+				Send_Player_Connected(client);
 			}
 			
 			// read weapons table
@@ -296,7 +305,7 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 			// inserted settings table
 			case 6:
 			{
-				g_Player[client].bPlayConSnd = false
+				g_Player[client].bPlayConSnd = true
 				g_Player[client].bShowFragMsg = true;
 				g_Player[client].bShowAssistMsg = true;
 				g_Player[client].bShowDeathMsg = true;
@@ -318,7 +327,8 @@ void DBQuery_CheckUserSQL_Points(Database db, DBResultSet results, const char[] 
 		case true:
 		{
 			g_Player[client].points = results.FetchInt(0);
-			Send_Player_Connected(g_Player[client]);
+			g_Player[client].position = GetClientPosition(g_Player[client].auth);
+			Send_Player_Connected(client);
 		}
 	}
 }
@@ -383,7 +393,7 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 				pack.Reset();
 				sql.Query(DBQuery_OnPlayerDisconnected, query, pack);
 				
-				Send_Player_Disconnected(g_Player[client], event_reason);
+				Send_Player_Disconnected(client, event_reason);
 			}
 		}
 	}

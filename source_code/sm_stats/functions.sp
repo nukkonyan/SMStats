@@ -108,16 +108,15 @@ stock int GetClientPosition(const char[] auth)
 		char query[256];
 		Format(query, sizeof(query), "select Points from `" ... sql_table_playerlist ... "` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
 		DBResultSet results = SQL_Query(sql, query);
+		SQL_UnlockDatabase(sql);
 		
 		switch(!!results && results.FetchRow())
 		{
 			case false:
 			{
 				delete results;
-				
 				char error[256];
 				SQL_GetError(sql, error, sizeof(error));
-				SQL_UnlockDatabase(sql);
 				
 				LogError("%s GetClientPosition error: Failed retrieving points for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
 				return -1;
@@ -127,16 +126,16 @@ stock int GetClientPosition(const char[] auth)
 			{
 				int points = results.FetchInt(0);
 				
+				SQL_LockDatabase(sql);
 				Format(query, sizeof(query), "select count(*) from `"...sql_table_playerlist..."` where Points >= %i and ServerID = %i", points, g_ServerID);
 				results = SQL_Query(sql, query);
+				SQL_UnlockDatabase(sql);
 				
 				if(!results)
 				{
 					delete results;
-					
 					char error[256];
 					SQL_GetError(sql, error, sizeof(error));
-					SQL_UnlockDatabase(sql);
 					
 					LogError("%s GetClientPosition error: Failed retrieving position for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
 					return -1;
@@ -150,7 +149,6 @@ stock int GetClientPosition(const char[] auth)
 		}
 		
 		delete results;
-		SQL_UnlockDatabase(sql);
 	}
 	
 	return position;
@@ -1076,8 +1074,10 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 
 stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen)
 {
-	char fmt_points_plural[32]
-	Format(fmt_points_plural, sizeof(fmt_points_plural), "%T", "#SMStats_Points_PluralSplitter", client, points);
+	char fmt_points_plural[32], str_points[11];
+	Format(fmt_points_plural, sizeof(fmt_points_plural), "%T", "#SMStats_Points_PluralSplitter", client);
+	IntToString(points, str_points, sizeof(str_points));
+	ReplaceString(fmt_points_plural, sizeof(fmt_points_plural), "{POINTS}", str_points, false);
 	switch(StrContains(fmt_points_plural, "#|#") != -1)
 	{
 		// this language defies the 'point' and 'points' with one word as both singular and plural.
@@ -1135,9 +1135,18 @@ stock void CPrintToChatAll2(const char[] message, any ...)
 
 //
 
-stock void Send_Player_Connected(SMStats_PlayerInfo info)
+stock void Send_Player_Connected(int client)
 {
-	int position = GetClientPosition(info.auth);
+	char auth[28], ip[16], name[64];
+	strcopy(auth, sizeof(auth), g_Player[client].auth);
+	strcopy(ip, sizeof(ip), g_Player[client].ip);
+	strcopy(name, sizeof(name), g_Player[client].name);
+	int points = g_Player[client].points
+	int position = g_Player[client].position;
+	if(position < 1)
+	{
+		position = (g_Player[client].position = GetClientPosition(auth));
+	}
 	
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
@@ -1145,31 +1154,13 @@ stock void Send_Player_Connected(SMStats_PlayerInfo info)
 		if(IsValidClient(player))
 		{
 			char country_name[64], points_plural[32];
-			GeoipCountryName(player, info.ip, country_name, sizeof(country_name));
-			PointsPluralSplitter(player, info.points, points_plural, sizeof(points_plural));
-			
-			if(g_Player[player].bPlayConSnd)
-			{
-				if(position == 1)
-				{
-					if(strlen(g_sndConnectedTop1) > 0)
-					{
-						EmitSoundToClient(player, g_sndConnectedTop1);
-					}
-				}
-				else if(position >= 2 && position <= 10)
-				{
-					if(strlen(g_sndConnectedTop10) > 0)
-					{
-						EmitSoundToClient(player, g_sndConnectedTop10);
-					}
-				}
-			}
+			GeoipCountryName(player, ip, country_name, sizeof(country_name));
+			PointsPluralSplitter(player, points, points_plural, sizeof(points_plural));
 			
 			CPrintToChat(player, "%s %T"
 			, g_ChatTag
 			, "#SMStats_Player_Connected", player
-			, info.name
+			, name
 			, position
 			, points_plural
 			, country_name);
@@ -1177,9 +1168,58 @@ stock void Send_Player_Connected(SMStats_PlayerInfo info)
 	}
 }
 
-stock void Send_Player_Disconnected(SMStats_PlayerInfo info, const char[] event_reason)
+stock void Send_Player_Connected_CheckTop10(int client)
 {
-	int position = GetClientPosition(info.auth);
+	if(!(g_Player[client].position >= 1 && g_Player[client].position <= 10))
+	{
+		return;
+	}
+	
+	int player = 0;
+	while((player = FindEntityByClassname(player, "player")) != -1)
+	{
+		if(IsValidClient(player))
+		{
+			if(g_Player[player].bPlayConSnd)
+			{
+				if(g_Player[client].position == 1)
+				{
+					if(strlen(g_sndConnectedTop1) > 0)
+					{
+						EmitSoundToClient(player, g_sndConnectedTop1);
+					}
+				} else {
+					if(strlen(g_sndConnectedTop10) > 0)
+					{
+						EmitSoundToClient(player, g_sndConnectedTop10);
+					}
+				}
+			}
+			
+			char country_name[64];
+			GeoipCountryName(player, g_Player[client].ip, country_name, sizeof(country_name));
+			CPrintToChat(player, "%s %T"
+			, g_ChatTag
+			, "#SMStats_Player_Connected_TopPlayer", player
+			, g_Player[client].position
+			, g_Player[client].name
+			, country_name);
+		}
+	}
+}
+
+stock void Send_Player_Disconnected(int client, const char[] event_reason)
+{
+	char auth[28], ip[16], name[64];
+	strcopy(auth, sizeof(auth), g_Player[client].auth);
+	strcopy(ip, sizeof(ip), g_Player[client].ip);
+	strcopy(name, sizeof(name), g_Player[client].name);
+	int points = g_Player[client].points
+	int position = g_Player[client].position;
+	if(position < 1)
+	{
+		position = GetClientPosition(auth);
+	}
 	
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) > 0)
@@ -1187,13 +1227,13 @@ stock void Send_Player_Disconnected(SMStats_PlayerInfo info, const char[] event_
 		if(IsValidClient(player))
 		{
 			char country_name[64], points_plural[32];
-			GeoipCountryName(player, info.ip, country_name, sizeof(country_name));
-			PointsPluralSplitter(player, info.points, points_plural, sizeof(points_plural));
+			GeoipCountryName(player, ip, country_name, sizeof(country_name));
+			PointsPluralSplitter(player, points, points_plural, sizeof(points_plural));
 			
 			CPrintToChat(player, "%s %T"
 			, g_ChatTag
 			, "#SMStats_Player_Disconnected", player
-			, info.name
+			, name
 			, position
 			, points_plural
 			, country_name
@@ -1639,10 +1679,14 @@ stock void GetLastConnectedFormat(int client, char[] timezone_ip, int last_conne
 	char str_timezone[32];
 	switch(GeoipTimezone(timezone_ip, str_timezone, sizeof(str_timezone)))
 	{
-		case false: PrintToServer("%s GetLastConnectedFormat() Error: Failed to get timezone, using server timezone instead.", core_chattag);
+		case false:
+		{
+			PrintToServer("%s GetLastConnectedFormat() Error: Failed to get timezone, using server timezone instead.", core_chattag);
+		}
 		case true:
 		{
-			PrintToServer("%s GetLastConnectedFormat() Timezone : %s", core_chattag, str_timezone);
+			// we need a way to convert the time to the clients timezone.
+			//PrintToServer("%s GetLastConnectedFormat() Timezone : %s", core_chattag, str_timezone);
 		}
 	}
 	

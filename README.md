@@ -45,10 +45,11 @@
         - Implement functional time played (Convert x secobds to 1 day 1 hour, etc.)
         - Implement a ban feature which detects if the player has been banned from the server, the player's details on SMStats will be removed.
         - Fix playtime timer. Right now it is buggy and not working correctly. **(At the moment somewhat fixed.)**
-        - Add connect sounds (when a top 10 and top 1 player connects. Will be disabled by default.)
+        - ~~Add connect sounds (when a top 10 and top 1 player connects.~~ Added
         - Deprecate SMStats Info (It's a temporary solution) and instead use temporary KeyValue file storing. **(Or use SQLite)**
         - Support more source games in the future. such as:
           - Team Fortress 2 Classic.
+          - Open Fortress.
           - Counter-Strike: Source.
           - Counter-Strike: Global Offensive.
           - Counter-Strike 2.

@@ -113,12 +113,12 @@ public void OnPluginStart()
 	g_PenaltySeconds = CreateConVar("sm_stats_penalty_seconds", "3600", "SM Stats - Seconds of the points-spam penalty.", _, true);
 	g_PenaltySeconds.AddChangeHook(OnUpdatedPenaltySeconds);
 	
-	g_ConSndTop10 = CreateConVar("sm_stats_connectsound_top10", "sound/sm_stats/connect_top10.wav", "SM Stats - Sound to play to players when a top 10 player has connected.");
+	g_ConSndTop10 = CreateConVar("sm_stats_connectsound_top10", "sm_stats/connect_top10.wav", "SM Stats - Sound from game/sound/ directory to play to players when a top 10 player has connected.");
 	g_ConSndTop10.AddChangeHook(OnUpdatedConSndTop10);
 	g_ConSndTop10.GetString(g_sndConnectedTop10, sizeof(g_sndConnectedTop10));
 	CacheConnectSound(g_sndConnectedTop10, true, true);
 
-	g_ConSndTop1 = CreateConVar("sm_stats_connectsound_top1", "sound/sm_stats/connect_top10.wav", "SM Stats - Sound to play to players when the top 1 player has connected.");
+	g_ConSndTop1 = CreateConVar("sm_stats_connectsound_top1", "sm_stats/connect_top10.wav", "SM Stats - Sound from game/sound/ directory to play to players when the top 1 player has connected. ");
 	g_ConSndTop1.AddChangeHook(OnUpdatedConSndTop1);
 	g_ConSndTop1.GetString(g_sndConnectedTop1, sizeof(g_sndConnectedTop1));
 	CacheConnectSound(g_sndConnectedTop1, false, true);
@@ -402,6 +402,7 @@ bool CacheConnectSound(const char[] sound_path, bool top_10, bool bPluginStart=f
 			case false: bCachedSndConTop1 = false;
 			case true: bCachedSndConTop10 = false;
 		}
+		return false;
 	}
 	
 	switch(top_10)
