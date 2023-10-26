@@ -34,8 +34,8 @@
 ### To-do
    - stats menu
         - ~~Implement sm_stats <top index | steamid > to manually check statistics of a particular player.~~ Added
-             -  ~~Example sm_stats 30 displays Top 30 current player.~~
-             -  ~~Example sm_stats "STEAM_0:0:1234" displays the player through steamid.~~
+             -  sm_stats 30 displays **Top 30 current player.**
+             -  sm_stats "STEAM_0:0:1234" **displays the player through steamid.**
    - overall
         - Implement spam-detection with a penalty (exploiting loopholes to farm points).
         - Implement custom achievements functionality.
