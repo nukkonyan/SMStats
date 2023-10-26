@@ -411,7 +411,10 @@ bool CacheConnectSound(const char[] sound_path, bool top_10, bool bPluginStart=f
 		{
 			if(!bCachedSndConTop1)
 			{
-				PrecacheSound(sound_path);
+				int maxlen = strlen(sound_path)+6; // character lenth of 'sound/' + 1 for correct string length.
+				char[] snd_fmt = new char[maxlen];
+				Format(snd_fmt, maxlen, "sound/%s", snd_fmt);
+				PrecacheSound(snd_fmt);
 				bCachedSndConTop1 = true;
 			}
 		}
@@ -419,7 +422,10 @@ bool CacheConnectSound(const char[] sound_path, bool top_10, bool bPluginStart=f
 		{
 			if(!bCachedSndConTop10)
 			{
-				PrecacheSound(sound_path);
+				int maxlen = strlen(sound_path)+6;
+				char[] snd_fmt = new char[maxlen];
+				Format(snd_fmt, maxlen, "sound/%s", snd_fmt);
+				PrecacheSound(snd_fmt);
 				bCachedSndConTop10 = true;
 			}
 		}
