@@ -51,6 +51,11 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	return APLRes_Success;
 }
 
+public void _sm_stats_loaded_core()
+{
+	bLoaded = true;
+}
+
 any Native_GetPlayerStats(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);

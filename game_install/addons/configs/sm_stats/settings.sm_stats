@@ -1,0 +1,9 @@
+create table if not exists `settings`
+(
+	`SteamID` varchar(28) not null default '',
+	`PlayConnectSnd` bool not null default '0',
+	`ShowFragMsg` bool not null default '1',
+	`ShowAssistMsg` bool not null default '1',
+	`ShowDeathMsg` bool not null default '1',
+	primary key (`SteamID`)
+)

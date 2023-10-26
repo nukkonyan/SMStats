@@ -5,9 +5,10 @@
 #define VersionAlt "v" ... Version
 #define MaxPlayers 65 // 101 cuz -unrestricted_maxplayers ?
 #define MaxItemDef 30758 // will later be updated to use indexes instead of itemdef
-#define GameTag "tf2"
+#define GameType "tf2"
 #define core_chattag "[SM Stats: TF2]"
 #define core_chattag2 "SM Stats: TF2"
+#define load_plugin_core
 #define load_menus
 #define load_forwards
 #define load_players
@@ -53,6 +54,7 @@
 #define query_error_uniqueid_UpdateMapTimeUpdatingSeconds 83
 #define query_error_uniqueid_OnPlayerNameUpdate 84
 #define query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected 85
+#define query_error_uniqueid_OnUpdatedMenuSettingValue 86
 SMStats_TF2GameInfo g_Game[MaxPlayers+1];
 
 #include <sm_stats>

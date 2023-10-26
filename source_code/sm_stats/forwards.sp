@@ -46,18 +46,18 @@ public void OnClientConnected(int client)
 	
 	if(strlen(g_Player[client].auth) < 1)
 	{
-		PrintToServer("%s OnClientConnected error: Obtained an empty steamid of user index (userid %i)", core_chattag, client, userid);
+		PrintToServer("%s OnClientConnected error: Obtained an empty steamid from user index (userid %i)", core_chattag, client, userid);
 		return;
 	}
 	if(strlen(g_Player[client].profileid) < 1)
 	{
-		PrintToServer("%s OnClientConnected error: Obtained an empty profileid of user index (userid %i)", core_chattag, client, userid);
+		PrintToServer("%s OnClientConnected error: Obtained an empty profileid from user index (userid %i)", core_chattag, client, userid);
 		return;
 	}
 	
 	g_Player[client].userid = userid;
 	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
-	GetClientName(client, g_Player[client].name2, sizeof(g_Player[].name2));
+	Format(g_Player[client].name2, sizeof(g_Player[].name2), "%N", client);
 	
 	if(!GetClientIP(client, g_Player[client].ip, sizeof(g_Player[].ip)))
 	{
@@ -66,15 +66,18 @@ public void OnClientConnected(int client)
 	}
 	
 	Transaction txn = new Transaction();
-	char query[256];
+	char query[255];
 	
-	Format(query, sizeof(query), "select ServerID from `" ... sql_table_playerlist ... "` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	Format(query, sizeof(query), "select ServerID from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
 	txn.AddQuery(query, 1);
 	
-	Format(query, sizeof(query), "select ServerID from `" ... sql_table_weapons ... "` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	Format(query, sizeof(query), "select ServerID from `"...sql_table_weapons..."` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
 	txn.AddQuery(query, 2);
 	
-	sql.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, g_Player[client].userid);
+	Format(query, sizeof(query), "select * from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
+	txn.AddQuery(query, 3);
+	
+	sql.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, userid);
 	
 	//g_Player[client].bAlreadyConnected = true;
 }
@@ -120,9 +123,9 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 		{
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
 			
-			CallbackQuery("update `%s` set PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
+			CallbackQuery("update `"...sql_table_playerlist..."` set PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
 			, query_error_uniqueid_OnPlayerNameUpdate
-			, sql_table_playerlist, name, g_Player[client].auth, g_ServerID);
+			, name, g_Player[client].auth, g_ServerID);
 		}
 	}
 	
@@ -147,6 +150,7 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 		
 		switch(query_id)
 		{
+			// playerlist
 			case 1:
 			{
 				// we have to do this way, as transaction sql query is bugged with 'valid' null results.
@@ -164,19 +168,19 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				if(server_id >= 0)
 				{
 					// found table, update it.
-					Format(query, sizeof(query), "update `%s` set LastConnected = %i, IPAddress = '%s', PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
-					, sql_table_playerlist, GetTime(), g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnected = %i, IPAddress = '%s', PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
+					, GetTime(), g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 1);
 				}
 				else
 				{
 					// table not found, insert it.
-					Format(query, sizeof(query), "insert into `%s` (LastConnected, IPAddress, PlayerName, SteamID, ServerID) values (%i, '%s', '%s', '%s', %i)"
-					, sql_table_playerlist, GetTime(), g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "insert into `"...sql_table_playerlist..."` (LastConnected, IPAddress, PlayerName, SteamID, ServerID) values (%i, '%s', '%s', '%s', %i)"
+					, GetTime(), g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 2);
 				}
 			}
-			
+			// weapons
 			case 2:
 			{
 				int server_id = -1;
@@ -188,14 +192,36 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				
 				if(server_id >= 0)
 				{
-					
+					// query 3
 				}
 				else
 				{
 					// table not found, insert it.
-					Format(query, sizeof(query), "insert into `%s` (SteamID, ServerID) values ('%s', %i)"
-					, sql_table_weapons, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "insert into `"...sql_table_weapons..."` (SteamID, ServerID) values ('%s', %i)", g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 4);
+				}
+			}
+			// settings
+			case 3:
+			{
+				int row_count = results[i].RowCount;
+				
+				if(row_count > 0)
+				{
+					char sQuery[1024];
+					Format(sQuery, sizeof(sQuery), "select"
+					/*0*/..." PlayConnectSnd"
+					/*1*/...",ShowFragMsg"
+					/*2*/...",ShowAssistMsg"
+					/*3*/...",ShowDeathMsg"
+					..." from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
+					txn.AddQuery(sQuery, 5);
+				}
+				else
+				{
+					// table not found, insert it.
+					Format(query, sizeof(query), "insert into `"...sql_table_settings..."` (SteamID) values ('%s')", g_Player[client].auth);
+					txn.AddQuery(query, 6);
 				}
 			}
 		}
@@ -211,8 +237,8 @@ void CheckUserSQL_Failed(Database db, int userid, int numQueries, const char[] e
 
 void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResultSet[] results, int[] queryData)
 {
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
+	int client;
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
 		PrintToServer("%s CheckUserSQL_Query error: Attempted reading invalid userid %i (Disconnected during query?)", core_chattag, userid);
 		return;
@@ -230,8 +256,8 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 				g_TotalTablePlayers = GetTablePlayerCount();
 				
 				char query[256];
-				Format(query, sizeof(query), "select Points from `%s` where SteamID = '%s' and ServerID = %i"
-				, sql_table_playerlist, g_Player[client].auth, g_ServerID);
+				Format(query, sizeof(query), "select Points from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
+				, g_Player[client].auth, g_ServerID);
 				sql.Query(DBQuery_CheckUserSQL_Points, query, client);
 			}
 			
@@ -243,7 +269,7 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 				Send_Player_Connected(g_Player[client]);
 			}
 			
-			// updated weapons table
+			// read weapons table
 			case 3:
 			{
 				
@@ -253,6 +279,27 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 			case 4:
 			{
 				
+			}
+			
+			// read settings table
+			case 5:
+			{
+				if(results[i].FetchRow())
+				{
+					g_Player[client].bPlayConSnd = view_as<bool>(results[i].FetchInt(0));
+					g_Player[client].bShowFragMsg = view_as<bool>(results[i].FetchInt(1));
+					g_Player[client].bShowAssistMsg = view_as<bool>(results[i].FetchInt(2));
+					g_Player[client].bShowDeathMsg = view_as<bool>(results[i].FetchInt(3));
+				}
+			}
+			
+			// inserted settings table
+			case 6:
+			{
+				g_Player[client].bPlayConSnd = false
+				g_Player[client].bShowFragMsg = true;
+				g_Player[client].bShowAssistMsg = true;
+				g_Player[client].bShowDeathMsg = true;
 			}
 		}
 	}
@@ -326,7 +373,7 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 				int timestamp = GetTime();
 				
 				char query[255];
-				Format(query, sizeof(query), "select PlayTime from `" ... sql_table_playerlist ..."` where SteamID = '%s' and ServerID = %i"
+				Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
 				, auth, g_ServerID);
 				DataPack pack = new DataPack();
 				pack.WriteCell(strlen(auth)+1);

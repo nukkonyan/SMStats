@@ -815,15 +815,18 @@ stock bool AssistedKills(Transaction txn
 					
 					char points_plural[32];
 					PointsPluralSplitter(assist, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural));
-						
-					CPrintToChat(assist, "%s %T"
-					, g_ChatTag
-					, "#SMStats_FragEvent_Assisted", assist
-					, g_Player[assist].name
-					, g_Player[assist].points
-					, points_plural
-					, g_Player[client].name
-					, dummy);
+					
+					if(g_Player[assist].bShowAssistMsg)
+					{
+						CPrintToChat(assist, "%s %T"
+						, g_ChatTag
+						, "#SMStats_FragEvent_Assisted", assist
+						, g_Player[assist].name
+						, g_Player[assist].points
+						, points_plural
+						, g_Player[client].name
+						, dummy);
+					}
 				}
 			}
 		}
@@ -903,13 +906,19 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 				}
 			}
 			
-			if(g_DeathPoints > 0)
+			if(g_DeathPoints >= 1)
 			{
 				len += Format(query[len], sizeof(query)-len, ", Points = Points-%i", g_DeathPoints);
 				
 				g_Player[victim].session[Stats_Points] -= g_DeathPoints;
 				g_Player[victim].points -= g_DeathPoints;
-				
+			}
+			
+			len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[victim].auth, g_ServerID);
+			txn.AddQuery(query, queryId_frag_victim_death);
+			
+			if(g_DeathPoints >= 1 && g_Player[victim].bShowDeathMsg)
+			{
 				char points_plural[32];
 				PointsPluralSplitter(victim, g_DeathPoints, points_plural, sizeof(points_plural));
 				
@@ -920,9 +929,6 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 				, g_Player[victim].points
 				, points_plural);
 			}
-			
-			len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[victim].auth, g_ServerID);
-			txn.AddQuery(query, queryId_frag_victim_death);
 		}
 	}
 }

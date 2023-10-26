@@ -27,6 +27,10 @@ GlobalForward g_fwdTypeUpdated; // internal call to forward updated values.
 GlobalForward g_fwdPlayerDeath; // built in player_death event based forward.
 
 char g_ChatTag[96]; // global chat tag prefix.
+char g_sndConnectedTop10[96]; // play a sound when a top 10 player connects.
+char g_sndConnectedTop1[96]; // play a sound when the top 1 player connects.
+bool bCachedSndConTop10;
+bool bCachedSndConTop1;
 ConVar g_ServerID; // server id.
 ConVar g_MinPlayers; // minimum required players for statistical tracking.
 ConVar g_AllowBots; // allow bots.
@@ -36,6 +40,8 @@ ConVar g_DisableAfterRoundEnd; // disable tracking after round end.
 ConVar g_DeathPoints; // death points.
 ConVar g_AssistPoints; // assist points.
 ConVar g_PenaltySeconds; // seconds for the penalty.
+ConVar g_ConSndTop10; // Top 10 player connected.
+ConVar g_ConSndTop1; // Top 1 player connected.
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
@@ -107,6 +113,16 @@ public void OnPluginStart()
 	g_PenaltySeconds = CreateConVar("sm_stats_penalty_seconds", "3600", "SM Stats - Seconds of the points-spam penalty.", _, true);
 	g_PenaltySeconds.AddChangeHook(OnUpdatedPenaltySeconds);
 	
+	g_ConSndTop10 = CreateConVar("sm_stats_connectsound_top10", "sound/sm_stats/connect_top10.wav", "SM Stats - Sound to play to players when a top 10 player has connected.");
+	g_ConSndTop10.AddChangeHook(OnUpdatedConSndTop10);
+	g_ConSndTop10.GetString(g_sndConnectedTop10, sizeof(g_sndConnectedTop10));
+	CacheConnectSound(g_sndConnectedTop10, true, true);
+
+	g_ConSndTop1 = CreateConVar("sm_stats_connectsound_top1", "sound/sm_stats/connect_top10.wav", "SM Stats - Sound to play to players when the top 1 player has connected.");
+	g_ConSndTop1.AddChangeHook(OnUpdatedConSndTop1);
+	g_ConSndTop1.GetString(g_sndConnectedTop1, sizeof(g_sndConnectedTop1));
+	CacheConnectSound(g_sndConnectedTop1, false, true);
+
 	AutoExecConfig(true);
 	
 	RegAdminCmd("sm_stats_reload", SMStatsReloadCmd, ADMFLAG_ROOT, "SM Stats - Reload core plugin.");
@@ -130,6 +146,7 @@ public void OnConfigsExecuted()
 
 void OnUpdatedChatTag(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
+	cvar.GetString(g_ChatTag, sizeof(g_ChatTag));
 	Format(g_ChatTag, sizeof(g_ChatTag), "%s{default}", newvalue);
 	SendUpdatedFwdValue(SMStatsUpdated_ChatTag, g_ChatTag);
 }
@@ -187,10 +204,35 @@ void OnUpdatedPenaltySeconds(ConVar cvar, const char[] oldvalue, const char[] ne
 	IntToString(cvar.IntValue, str_value, sizeof(str_value));
 	SendUpdatedFwdValue(SMStatsUpdated_PenaltySeconds, str_value);
 }
+void OnUpdatedConSndTop10(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	cvar.GetString(g_sndConnectedTop10, sizeof(g_sndConnectedTop10));
+	if(CacheConnectSound(g_sndConnectedTop10, true))
+	{
+		SendUpdatedFwdValue(SMStatsUpdated_SndConnectedTop10, g_sndConnectedTop10);
+	}
+}
+void OnUpdatedConSndTop1(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	cvar.GetString(g_sndConnectedTop1, sizeof(g_sndConnectedTop1));
+	if(CacheConnectSound(g_sndConnectedTop1, false))
+	{
+		SendUpdatedFwdValue(SMStatsUpdated_SndConnectedTop1, g_sndConnectedTop1);
+	}
+}
 
 public void OnMapStart()
 {
 	CheckDatabase();
+	
+	if(bCachedSndConTop10)
+	{
+		AddFileToDownloadsTable(g_sndConnectedTop10);
+	}
+	if(bCachedSndConTop1)
+	{
+		AddFileToDownloadsTable(g_sndConnectedTop1);
+	}
 }
 
 /* ================================================================ */
@@ -343,4 +385,44 @@ int GetNativeStrLen(int param)
 	int length;
 	GetNativeStringLength(param, length);
 	return length+1;
+}
+
+//
+
+bool CacheConnectSound(const char[] sound_path, bool top_10, bool bPluginStart=false)
+{
+	if(strlen(sound_path) < 1)
+	{
+		if(!bPluginStart)
+		{
+			PrintToServer("%s Top %i player connect sound file path '%s' is NULL, disabling..", core_chattag, top_10?10:1, sound_path);
+		}
+		switch(top_10)
+		{
+			case false: bCachedSndConTop1 = false;
+			case true: bCachedSndConTop10 = false;
+		}
+	}
+	
+	switch(top_10)
+	{
+		case false:
+		{
+			if(!bCachedSndConTop1)
+			{
+				PrecacheSound(sound_path);
+				bCachedSndConTop1 = true;
+			}
+		}
+		case true:
+		{
+			if(!bCachedSndConTop10)
+			{
+				PrecacheSound(sound_path);
+				bCachedSndConTop10 = true;
+			}
+		}
+	}
+	
+	return true;
 }

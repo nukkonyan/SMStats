@@ -43,20 +43,30 @@ enum struct SMStats_FragMsgInfo
 enum struct SMStats_PlayerInfo
 {
 	int userid;
-	char auth[64];
-	char profileid[32];
+	char auth[28];
+	char profileid[24];
 	char name[64];
 	char name2[64];
 	char ip[16];
 	//bool bAlreadyConnected;
 	int points;
 	int position;
-	bool active_mainmenu;
+	int active_page_mainmenu;
 	int active_page_menu;
 	int active_page_session;
 	int active_page_total;
 	int active_page_topstats;
 	bool bMenuCheckPosition;
+	
+	// settings
+	bool bPlayConSnd;
+	bool bPlayConSndUpdated;
+	bool bShowFragMsg;
+	bool bShowFragMsgUpdated;
+	bool bShowAssistMsg;
+	bool bShowAssistMsgUpdated;
+	bool bShowDeathMsg;
+	bool bShowDeathMsgUpdated;
 	
 	int session[SMStats_StatsSize];
 	int totalstats[SMStats_StatsSize];
@@ -78,7 +88,7 @@ enum struct SMStats_PlayerInfo
 		//this.bAlreadyConnected = false;
 		this.points = -1;
 		this.position = -1;
-		this.active_mainmenu = false;
+		this.active_page_mainmenu = -1;
 		this.active_page_menu = -1;
 		this.active_page_session = -1;
 		this.active_page_total = -1;
@@ -88,6 +98,18 @@ enum struct SMStats_PlayerInfo
 		this.topstatsip = "";
 		this.toppos = -1;
 		this.toplastconnected = -1;
+		
+		this.bPlayConSnd = false;
+		this.bPlayConSndUpdated = false;
+		
+		this.bShowFragMsg = false;
+		this.bShowFragMsgUpdated = false;
+		
+		this.bShowAssistMsg = false;
+		this.bShowAssistMsgUpdated = false;
+		
+		this.bShowDeathMsg = false;
+		this.bShowDeathMsgUpdated = false;
 		
 		for(int type = 0; type < SMStats_StatsSize; type++)
 		{
@@ -118,6 +140,20 @@ enum struct SMStats_TF2GameInfo
 	
 	bool bObjectPlaced[6];
 	ArrayList aObjectPlaced;
+	Action tObjectPlaced(Handle timer, DataPack pack)
+	{
+		int objects = pack.ReadCell();
+		any[] list = new any[objects];
+		pack.ReadCellArray(list, objects);
+		
+		for(int i = 0; i < objects; i++)
+		{
+			int obj = list[i];
+			this.bObjectPlaced[obj] = false;
+		}
+		
+		return Plugin_Continue;
+	}
 	
 	bool bObjectDestroyed[6];
 	ArrayList aObjectDestroyed;

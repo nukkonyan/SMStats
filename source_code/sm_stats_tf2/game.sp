@@ -2700,14 +2700,14 @@ Action OnPlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playe
 
 // instead of OnGameFrame, we have custom delayed game timer.
 // For optimization purposes.
-// Workaround with OnGameFrame possible would be great.
+// Workaround with OnGameFrame possible would be greatly appreciated.
 Action MapTimer_GameTimer(Handle timer)
 {
 	if(bLoaded)
 	{
-		// better than a for() loop.
+		// alternative over a for() loop.
 		int client = 0;
-		while((client = FindEntityByClassname(client, "player")) >= 1)
+		while((client = FindEntityByClassname(client, "player")) > 0)
 		{
 			if(!IsValidClient(client))
 			{
@@ -2717,9 +2717,9 @@ Action MapTimer_GameTimer(Handle timer)
 			char str_playtime[11];
 			FloatToString(GetClientTime(client), str_playtime, sizeof(str_playtime));
 			g_Player[client].session[Stats_PlayTime] = StringToInt(str_playtime);
-			if(g_Player[client].active_mainmenu)
+			if(g_Player[client].active_page_mainmenu >= 1)
 			{
-				StatsMenu.Main(client);
+				StatsMenu.Main(client, g_Player[client].active_page_mainmenu);
 			}
 			else if(g_Player[client].active_page_session == 1)
 			{
@@ -3299,7 +3299,7 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					g_Player[client].session[Stats_Frags] += frags;
 					
-					if(points > 0)
+					if(points >= 1)
 					{
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
@@ -3313,7 +3313,7 @@ Action MapTimer_GameTimer(Handle timer)
 					sql.Execute(txn, _, TXNEvent_OnFailed, attacker);
 					
 					// translation, separated instead.
-					if(points > 0)
+					if(points >= 1 && g_Player[client].bShowFragMsg)
 					{
 						PrepareFragMessage(client, dummy, points, frags);
 					}
@@ -3882,7 +3882,6 @@ Action Timer_bObjectPlaced(Handle timer, DataPack pack)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bObjectDestroyed(Handle timer, DataPack pack)
 {
 	int userid = pack.ReadCell();
@@ -3902,7 +3901,6 @@ Action Timer_bObjectDestroyed(Handle timer, DataPack pack)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bUbercharged(Handle timer, int userid)
 {
 	int client = 0;
@@ -3913,7 +3911,6 @@ Action Timer_bUbercharged(Handle timer, int userid)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bUsedTeleporter(Handle timer, int userid)
 {
 	int client = 0;
@@ -3924,7 +3921,6 @@ Action Timer_bUsedTeleporter(Handle timer, int userid)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bPlayerUsedTeleporter(Handle timer, int userid)
 {
 	int client = 0;
@@ -3935,7 +3931,6 @@ Action Timer_bPlayerUsedTeleporter(Handle timer, int userid)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bStolenSandvich(Handle timer, int userid)
 {
 	int client = 0;
@@ -3946,7 +3941,6 @@ Action Timer_bStolenSandvich(Handle timer, int userid)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bStunned(Handle timer, int userid)
 {
 	int client = 0;
@@ -3957,7 +3951,6 @@ Action Timer_bStunned(Handle timer, int userid)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bPassBallEvent(Handle timer, DataPack pack)
 {
 	int userid = pack.ReadCell();
@@ -3971,7 +3964,6 @@ Action Timer_bPassBallEvent(Handle timer, DataPack pack)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bPlayerJarated(Handle timer, int userid)
 {
 	int client = 0;
@@ -3982,7 +3974,6 @@ Action Timer_bPlayerJarated(Handle timer, int userid)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bPlayerMilked(Handle timer, int userid)
 {
 	int client = 0;
@@ -3993,7 +3984,6 @@ Action Timer_bPlayerMilked(Handle timer, int userid)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bPlayerGasPassed(Handle timer, int userid)
 {
 	int client = 0;
@@ -4004,7 +3994,6 @@ Action Timer_bPlayerGasPassed(Handle timer, int userid)
 	
 	return Plugin_Continue;
 }
-
 Action Timer_bExtEvent(Handle timer, int userid)
 {
 	int client = 0;

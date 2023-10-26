@@ -262,24 +262,6 @@
 	//================================//
 	// Menu.
 	//================================//
-	"#SMStats_Menu_Playername"
-	{
-		// {1} player name
-		"#format" "{1:N}"
-		"en" "Playername: {1}"
-		"jp" "プレイヤー名： {1}"
-		"no" "Spillernavn : {1}"
-		"sv" "Spelarnamn: {1}"
-	}
-	"#SMStats_Menu_Positioned"
-	{
-		// {1} placed position
-		// {2} total players
-		"#format" "{1:i},{2:i}"
-		"en" "Placed #{1} of {2} players."
-		"no" "Plassert #{1} av {2} spillere."
-		"sv" "Placerad #{1} av {2} spelare."
-	}
 	"#SMStats_Menu_Session"
 	{
 		"en" "Session."
@@ -309,8 +291,8 @@
 	}
 	"#SMStats_Menu_Top10Info"
 	{
-		"en" "View the top 10 players of this server."
-		"sv" "Kolla dem top 10 spelarna av denna server."
+		"en" "View the current top 10 players on this server."
+		"sv" "Visa nuvarande top 10 spelare on denna server."
 	}
 	"#SMStats_Menu_TopPlayer"
 	{
@@ -326,8 +308,19 @@
 	}
 	"#SMStats_Menu_TopPlayersInfo"
 	{
-		"en" "View the current top players of this server."
-		"sv" "Kolla dem nuvarande topp spelarna på denna server."
+		"en" "View the current top players on this server."
+		"sv" "Visa nuvarande topp spelare på denna server."
+	}
+	"#SMStats_Menu_Settings"
+	{
+		"en" "Settings"
+		"jp" "設定"
+		"sv" "Inställningar"
+	}
+	"#SMStats_Menu_SettingsInfo"
+	{
+		"en" "View your current settings."
+		"sv" "Kolla dina nuvarande inställningar."
 	}
 	"#SMStats_Menu_Page"
 	{
@@ -358,6 +351,40 @@
 		"sv" "Stäng"
 	}
 
+	"#SMStats_MenuInfo_DevType_Founder"
+	{
+		"en" "Creator of SMStats!"
+	}
+	"#SMSTats_MenuInfo_DevType_Contributor"
+	{
+		"en" "Thanks for being a contributor to the project!"
+	}
+	"#SMStats_MenuInfo_DevType_Tester"
+	{
+		"en" "Thanks for being a tester!"
+	}
+	"#SMStats_MenuInfo_DevType_Translator"
+	{
+		"en" "Thanks for being a translator!"
+	}
+	"#SMStats_MenuInfo_Playername"
+	{
+		// {1} player name
+		"#format" "{1:N}"
+		"en" "Playername: {1}"
+		"jp" "プレイヤー名： {1}"
+		"no" "Spillernavn : {1}"
+		"sv" "Spelarnamn: {1}"
+	}
+	"#SMStats_MenuInfo_Positioned"
+	{
+		// {1} placed position
+		// {2} total players
+		"#format" "{1:i},{2:i}"
+		"en" "Placed #{1} of {2} players."
+		"no" "Plassert #{1} av {2} spillere."
+		"sv" "Placerad #{1} av {2} spelare."
+	}
 	"#SMStats_MenuInfo_PlayTime"
 	{
 		// {1} play time format
@@ -484,6 +511,42 @@
 		"no" "Topp {1} - {2} [{3}]"
 		"sv" "Topp {1} - {2} [{3}]"
 	}
+
+	//================================//
+	// Settings.
+	//================================//
+	"#SMStats_MenuInfo_PlayConnectSnd"
+	{
+		// {1} on/off value
+		"#format" "{1:s}"
+		"en" "Top player connect sound : {1}"
+		"jp" "トッププレイヤーの接続音 : {1}"
+		"sv" "Toppspelaranslutningsljud : {1}"
+	}
+	"#SMStats_MenuInfo_ShowFragMsg"
+	{
+		// {1} on/off value
+		"#format" "{1:s}"
+		"en" "Display frag messages: {1}"
+		"jp" "FRAGのメッセージを表示 : {1}"
+		"sv" "Visa fragsmeddelanden: {1}"
+	}
+	"#SMStats_MenuInfo_ShowAssistMsg"
+	{
+		// {1} on/off value
+		"#format" "{1:s}"
+		"en" "Display assist messages : {1}"
+		"jp" "ASSISTのメッセージを表示 : {1}"
+		"sv" "Visa assistmeddelanden: {1}"
+	}
+	"#SMStats_MenuInfo_ShowDeathMsg"
+	{
+		// {1} on/off value
+		"#format" "{1:s}"
+		"en" "Display death messages: {1}"
+		"jp" "死んだのメッセージを表示 : {1}"
+		"sv" "Visa dödsmeddelanden : {1}"
+	}
 	
 	//================================//
 	// Updater.
@@ -578,6 +641,12 @@
 		"#format" "{1:i}"
 		"en" " ({1})"
 		"jp" " （{1}）"
+	}
+	"#SMStats_OffOn"
+	{
+		"en" "Off#|#On"
+		"jp" "OFF#|#ON"
+		"sv" "Av#|#På"
 	}
 	"#SMStats_Points_PluralSplitter" // points plural splitter false#|#true (non-plural#|#plural)
 	{

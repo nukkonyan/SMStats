@@ -1096,6 +1096,19 @@ stock void PointsPluralSplitter(int client, int points, char[] translation, int 
 	}
 }
 
+stock void OnOffPluralSplitter(int client, bool OffOn, char[] translation, int maxlen)
+{
+	char fmt_onoff_plural[24]
+	Format(fmt_onoff_plural, sizeof(fmt_onoff_plural), "%T", "#SMStats_OffOn", client);
+	if(StrContains(fmt_onoff_plural, "#|#") != -1)
+	{
+		char onoff_plural[2][24];
+		ExplodeString(fmt_onoff_plural, "#|#", onoff_plural, sizeof(onoff_plural), 24);
+		ReplaceString(onoff_plural[0], sizeof(onoff_plural[]), "#|#", "");
+		strcopy(translation, maxlen, onoff_plural[view_as<int>(OffOn)]);
+	}
+}
+
 //
 
 /*
@@ -1127,13 +1140,31 @@ stock void Send_Player_Connected(SMStats_PlayerInfo info)
 	int position = GetClientPosition(info.auth);
 	
 	int player = 0;
-	while((player = FindEntityByClassname(player, "player")) > 0)
+	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
 		if(IsValidClient(player))
 		{
 			char country_name[64], points_plural[32];
 			GeoipCountryName(player, info.ip, country_name, sizeof(country_name));
 			PointsPluralSplitter(player, info.points, points_plural, sizeof(points_plural));
+			
+			if(g_Player[player].bPlayConSnd)
+			{
+				if(position == 1)
+				{
+					if(strlen(g_sndConnectedTop1) > 0)
+					{
+						EmitSoundToClient(player, g_sndConnectedTop1);
+					}
+				}
+				else if(position >= 2 && position <= 10)
+				{
+					if(strlen(g_sndConnectedTop10) > 0)
+					{
+						EmitSoundToClient(player, g_sndConnectedTop10);
+					}
+				}
+			}
 			
 			CPrintToChat(player, "%s %T"
 			, g_ChatTag
@@ -1241,7 +1272,7 @@ stock void UpdatePlayerName(int client)
 /*
  * Returns the developer role.
  * 1 - owner & founder.
- * 2 - developer.
+ * 2 - contributor.
  * 3 - tester.
  * 4 - translator.
  */
@@ -1256,7 +1287,7 @@ stock int IsValidDeveloperType(int client)
 		return 1;
 	}
 	
-	// developer
+	// contributor
 	
 	// tester
 	

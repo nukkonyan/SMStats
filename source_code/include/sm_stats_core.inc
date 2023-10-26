@@ -31,7 +31,6 @@ stock char str_cmdMenu[][] =
 #define queryId_object_placed_MapUpdate 6
 #define queryId_object_destroyed 7
 #define queryId_object_destroyed_MapUpdate 8
-
 stock char g_strTXNqueryId[][] = 
 {
 	/*0*/"frag event: assister",
@@ -124,27 +123,31 @@ native int _sm_stats_get_penaltyseconds();
 native void _sm_stats_player_death_fwd(int attacker, int frags, int[] userids, int[] assisters, const char[] classname, int[] itemdef);
 
 // crucial stuff, re-instate lost data after restart.
-native void _sm_stats_info_update_loaded_active(bool bLoaded);
 native void _sm_stats_info_update_stats_active(bool bStatsActive);
 native void _sm_stats_info_update_round_active(bool bRoundActive);
 native void _sm_stats_info_update_maptimer(int iMapTimerSeconds);
 native void _sm_stats_info_save_crucial_stuff(bool bLoaded, bool bStatsActive, bool bRoundActive, int iMapTimerSeconds);
 native void _sm_stats_info_get_crucial_stuff(any[] this_way_with_arrays_sucks_pls_add_SetNativeCell);
 
+#if defined load_plugin_core
+
 // default important things
 
-#define sql_table_playerlist "playerlist_" ... GameTag
-#define sql_table_weapons "weapons_" ... GameTag
-#define sql_table_kill_log "kill_log_" ... GameTag
-#define sql_table_item_found "item_found_" ... GameTag
-#define sql_table_maps_log "maps_log_" ... GameTag
-#define sql_table_achievements "achievements_" ... GameTag
-#define game_translation "sm_stats_" ... GameTag ... ".phrases"
-#define ach_translation "sm_stats_" ... GameTag ... "_achievements.phrases"
+#define sql_table_playerlist "playerlist_"...GameType
+#define sql_table_weapons "weapons_"...GameType
+#define sql_table_kill_log "kill_log_"...GameType
+#define sql_table_item_found "item_found_"...GameType
+#define sql_table_maps_log "maps_log_"... GameType
+#define sql_table_achievements "achievements_"... GameType
+#define sql_table_settings "settings"
+#define game_translation "sm_stats_"... GameType...".phrases"
+#define ach_translation "sm_stats_"... GameType..."_achievements.phrases"
 
 #define ITEMDEF_ASSIST_SUICIDE -69
 
 char g_ChatTag[96];
+char g_sndConnectedTop10[96];
+char g_sndConnectedTop1[96];
 Database sql = null;
 bool bLoaded = false;
 bool bStatsActive = false;
@@ -176,7 +179,6 @@ public void _sm_stats_loaded_core()
 {
 	PrintToServer("%s loading..", core_chattag);
 	bLoaded = true;
-	_sm_stats_info_update_loaded_active(true);
 	
 	_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
 	g_ServerID = _sm_stats_get_serverid();
@@ -220,6 +222,8 @@ public void _sm_stats_updatedfwd(SMStatsUpdatedFwdType type, const char[] value)
 		}
 		case SMStatsUpdated_DeathPoints: g_DeathPoints = view_as<int>(StringToInt(value));
 		case SMStatsUpdated_AssistPoints: g_AssistPoints = view_as<int>(StringToInt(value));
+		case SMStatsUpdated_SndConnectedTop10: strcopy(g_sndConnectedTop10, sizeof(g_sndConnectedTop10), value);
+		case SMStatsUpdated_SndConnectedTop1: strcopy(g_sndConnectedTop1, sizeof(g_sndConnectedTop1), value);
 	}
 }
 
@@ -241,57 +245,50 @@ public void OnPluginStart()
 	#endif
 	
 	// plugin was restarted, manually or via update.
-	if(!bLoaded)
+	// make sure the natives are loaded.
+	if(SMStatsInfo.IsLoaded())
 	{
-		// make sure the natives are loaded.
-		switch(SMStatsInfo.IsLoaded())
+		SMStatsInfo_CrucialStuff this_way_with_arrays_sucks_pls_add_SetNativeCell;
+		_sm_stats_info_get_crucial_stuff(this_way_with_arrays_sucks_pls_add_SetNativeCell);
+		if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bLoaded)
 		{
-			case false: ThrowError("%s Error: SMStats: Info doesn't seem to be loaded.\nUnable to re-instate crucial information, problems are to be expected.", core_chattag);
+			bLoaded = true;
+		}
+		if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bStatsActive)
+		{
+			bStatsActive = true;
+		}
+		if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bRoundActive)
+		{
+			bRoundActive = true;
+		}
+		if(this_way_with_arrays_sucks_pls_add_SetNativeCell.iMapTimerSeconds > 0)
+		{
+			iMapTimerSeconds = this_way_with_arrays_sucks_pls_add_SetNativeCell.iMapTimerSeconds;
+		}
+		
+		_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
+		g_ServerID = _sm_stats_get_serverid();
+		bAllowBots = _sm_stats_get_allowbots();
+		bAllowAbuse = _sm_stats_get_allowabuse();
+		bAllowWarmup = _sm_stats_get_allowwarmup();
+		bDisableAfterRoundEnd = _sm_stats_get_disableafterroundend();
+		g_MinPlayers = _sm_stats_get_minplayers();
+		g_DeathPoints = _sm_stats_get_deathpoints();
+		g_AssistPoints = _sm_stats_get_assistpoints();
+		g_PenaltySeconds = _sm_stats_get_penaltyseconds();
+		
+		PrintToServer("%s Crucial information Re-instated from detected restart.", core_chattag);
+		
+		switch(SMStats.IsLoaded())
+		{
+			case false: ThrowError("%s Error: SMStats: Core seems to not be loaded.\nUnable to re-instate SQL Connection, problems to be expected.", core_chattag);
 			case true:
 			{
-				SMStatsInfo_CrucialStuff this_way_with_arrays_sucks_pls_add_SetNativeCell;
-				_sm_stats_info_get_crucial_stuff(this_way_with_arrays_sucks_pls_add_SetNativeCell);
-				if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bLoaded)
+				PrintToServer("%s SQL connection re-instated from detected restart.", core_chattag);
+				if((sql = _sm_stats_get_sql()) != null)
 				{
-					bLoaded = true;
-				}
-				if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bStatsActive)
-				{
-					bStatsActive = true;
-				}
-				if(this_way_with_arrays_sucks_pls_add_SetNativeCell.bRoundActive)
-				{
-					bRoundActive = true;
-				}
-				if(this_way_with_arrays_sucks_pls_add_SetNativeCell.iMapTimerSeconds > 0)
-				{
-					iMapTimerSeconds = this_way_with_arrays_sucks_pls_add_SetNativeCell.iMapTimerSeconds;
-				}
-				
-				_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
-				g_ServerID = _sm_stats_get_serverid();
-				bAllowBots = _sm_stats_get_allowbots();
-				bAllowAbuse = _sm_stats_get_allowabuse();
-				bAllowWarmup = _sm_stats_get_allowwarmup();
-				bDisableAfterRoundEnd = _sm_stats_get_disableafterroundend();
-				g_MinPlayers = _sm_stats_get_minplayers();
-				g_DeathPoints = _sm_stats_get_deathpoints();
-				g_AssistPoints = _sm_stats_get_assistpoints();
-				g_PenaltySeconds = _sm_stats_get_penaltyseconds();
-				
-				PrintToServer("%s Crucial information Re-instated from detected restart.", core_chattag);
-				
-				switch(SMStats.IsLoaded())
-				{
-					case false: ThrowError("%s Error: SMStats: Core seems to not be loaded.\nUnable to re-instate SQL Connection, problems to be expected.", core_chattag);
-					case true:
-					{
-						PrintToServer("%s SQL connection re-instated from detected restart.", core_chattag);
-						if((sql = _sm_stats_get_sql()) != null)
-						{
-							_sm_stats_loaded_sql(sql, true);
-						}
-					}
+					_sm_stats_loaded_sql(sql, true);
 				}
 				
 				CreateTimer(1.25, Timer_OnRestarted);
@@ -317,6 +314,7 @@ char g_strTableName[][] =
 	/*3*/,sql_table_item_found
 	/*4*/,sql_table_maps_log
 	/*5*/,sql_table_achievements
+	/*6*/,sql_table_settings
 };
 
 public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
@@ -404,7 +402,39 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 					len += Format(query[len], sizeof(query)-len, table);
 				}
 				
-				sql.Query(DBQuery_InsertTables, query, 1);
+				sql.Query(DBQuery_InsertTables, query, 4);
+				
+				query = "";
+				len = 0;
+			}
+		}
+		
+		//
+		
+		// achievements here
+		
+		//
+		
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_settings);
+		switch(!!(file = OpenFile(path, "r")))
+		{
+			case false:
+			{
+				LogError("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for saving settings.), Did you install it correctly?", sql_table_settings);
+			}
+			
+			case true:
+			{
+				while(!file.EndOfFile() && file.ReadLine(table, sizeof(table)))
+				{
+					ReplaceString(table, sizeof(table), "\n", "");
+					ReplaceString(table, sizeof(table), "\r", "");
+					ReplaceString(table, sizeof(table), "\t", "");
+					
+					len += Format(query[len], sizeof(query)-len, table);
+				}
+				
+				sql.Query(DBQuery_InsertTables, query, 6);
 				
 				query = "";
 				len = 0;
@@ -485,6 +515,7 @@ Action Timer_PluginLoaded(Handle timer)
 	return Plugin_Continue;
 }
 
+
 // weapons
 enum struct CvarWeapon
 {
@@ -539,3 +570,4 @@ stock ConVar array_GetWeapon(int itemdef)
 	
 	return null;
 }
+#endif
