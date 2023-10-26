@@ -206,6 +206,7 @@ void OnUpdatedPenaltySeconds(ConVar cvar, const char[] oldvalue, const char[] ne
 }
 void OnUpdatedConSndTop10(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
+	bCachedSndConTop10 = false;
 	cvar.GetString(g_sndConnectedTop10, sizeof(g_sndConnectedTop10));
 	if(CacheConnectSound(g_sndConnectedTop10, true))
 	{
@@ -214,6 +215,7 @@ void OnUpdatedConSndTop10(ConVar cvar, const char[] oldvalue, const char[] newva
 }
 void OnUpdatedConSndTop1(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
+	bCachedSndConTop1 = false;
 	cvar.GetString(g_sndConnectedTop1, sizeof(g_sndConnectedTop1));
 	if(CacheConnectSound(g_sndConnectedTop1, false))
 	{
@@ -227,11 +229,17 @@ public void OnMapStart()
 	
 	if(bCachedSndConTop10)
 	{
-		AddFileToDownloadsTable(g_sndConnectedTop10);
+		int maxlen = strlen(g_sndConnectedTop10)+7;
+		char[] snd_fmt = new char[maxlen];
+		Format(snd_fmt, maxlen, "sound/%s", g_sndConnectedTop10);
+		PrecacheSound(snd_fmt);
 	}
 	if(bCachedSndConTop1)
 	{
-		AddFileToDownloadsTable(g_sndConnectedTop1);
+		int maxlen = strlen(g_sndConnectedTop1)+7;
+		char[] snd_fmt = new char[maxlen];
+		Format(snd_fmt, maxlen, "sound/%s", g_sndConnectedTop1);
+		PrecacheSound(snd_fmt);
 	}
 }
 
@@ -411,9 +419,9 @@ bool CacheConnectSound(const char[] sound_path, bool top_10, bool bPluginStart=f
 		{
 			if(!bCachedSndConTop1)
 			{
-				int maxlen = strlen(sound_path)+6; // character lenth of 'sound/' + 1 for correct string length.
+				int maxlen = strlen(sound_path)+7; // character lenth of 'sound/' + 1 for correct string length.
 				char[] snd_fmt = new char[maxlen];
-				Format(snd_fmt, maxlen, "sound/%s", snd_fmt);
+				Format(snd_fmt, maxlen, "sound/%s", sound_path);
 				PrecacheSound(snd_fmt);
 				bCachedSndConTop1 = true;
 			}
@@ -422,9 +430,9 @@ bool CacheConnectSound(const char[] sound_path, bool top_10, bool bPluginStart=f
 		{
 			if(!bCachedSndConTop10)
 			{
-				int maxlen = strlen(sound_path)+6;
+				int maxlen = strlen(sound_path)+7;
 				char[] snd_fmt = new char[maxlen];
-				Format(snd_fmt, maxlen, "sound/%s", snd_fmt);
+				Format(snd_fmt, maxlen, "sound/%s", sound_path);
 				PrecacheSound(snd_fmt);
 				bCachedSndConTop10 = true;
 			}
