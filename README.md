@@ -10,6 +10,7 @@
       - Maps (Map total playtime, headshots, backstabs, etc.)
       - Items (found, traded, etc) (Not added yet)
       - Custom achievements. (Not added yet, but there are code mentions about it.)
+      - Settings. (Saves settings obviously.)
    - Notes:
       - **This project is only just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.**
       - [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
