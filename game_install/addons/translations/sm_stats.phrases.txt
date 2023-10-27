@@ -529,7 +529,7 @@
 	{
 		// {1} on/off value
 		"#format" "{1:s}"
-		"en" "player connect sound : {1}"
+		"en" "Player connect sound : {1}"
 		"jp" "プレイヤーの接続音 : {1}"
 		"sv" "Spelaranslutningsljud : {1}"
 	}
