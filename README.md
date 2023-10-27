@@ -1,9 +1,10 @@
 ### SMStats
    - 100% translation supported.
       - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
-      - Translation submissions are currently demanded, and would be very appreciated!! (* ^ ω ^)
+      - Translation submissions are welcome and currently is demanded, and would definitely be very appreciating!! ヽ(*・ω・)ﾉ
+      - Translator will be granted a custom name colour (´｡• ω •｡`)
    - Updater support
-      - The updating process is automatic.
+      - The updating process is automatic. (´• ω •`)
       - When update is detected, update message are sent to the chat and information are saved to **'SMStats Info'** module, to prevent loss of data.
    - Tracks:
       - Players (Total playtime, dominations, headshots and much much more.)
@@ -28,8 +29,6 @@
           - This will begin with Team Fortress 2 due to stability reasons.
       - Lookin to assist in development?
           - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
-          - Translations are very welcome and would be very much appreciated! ヽ(*・ω・)ﾉ
-             - Translator will be granted a custom name colour (´｡• ω •｡`)
           - Active SMStats development testing server, come in here to see for yourself how the plugin is doing:
             - 83.253.75.203:27018 (Team Fortress 2)
 
