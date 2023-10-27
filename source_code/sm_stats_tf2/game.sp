@@ -3690,7 +3690,6 @@ Action MapTimer_GameTimer(Handle timer)
 									, "#SMStats_Player_CoatedPiss", client
 									, g_Player[client].name
 									, g_Player[client].points-points
-									, points 
 									, points_plural
 									, dummy);
 								}
