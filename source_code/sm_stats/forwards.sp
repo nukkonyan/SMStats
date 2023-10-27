@@ -219,6 +219,8 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 					char sQuery[1024];
 					Format(sQuery, sizeof(sQuery), "select"
 					/*0*/..." PlayConnectSnd"
+					/*1*/...",ShowConnectMsg"
+					/*2*/...",ShowTopConnectMsg"
 					/*1*/...",ShowFragMsg"
 					/*2*/...",ShowAssistMsg"
 					/*3*/...",ShowDeathMsg"
@@ -296,9 +298,11 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 				if(results[i].FetchRow())
 				{
 					g_Player[client].bPlayConSnd = view_as<bool>(results[i].FetchInt(0));
-					g_Player[client].bShowFragMsg = view_as<bool>(results[i].FetchInt(1));
-					g_Player[client].bShowAssistMsg = view_as<bool>(results[i].FetchInt(2));
-					g_Player[client].bShowDeathMsg = view_as<bool>(results[i].FetchInt(3));
+					g_Player[client].bShowConMsg = view_as<bool>(results[i].FetchInt(1));
+					g_Player[client].bShowTopConMsg = view_as<bool>(results[i].FetchInt(2));
+					g_Player[client].bShowFragMsg = view_as<bool>(results[i].FetchInt(3));
+					g_Player[client].bShowAssistMsg = view_as<bool>(results[i].FetchInt(4));
+					g_Player[client].bShowDeathMsg = view_as<bool>(results[i].FetchInt(5));
 				}
 			}
 			
@@ -306,6 +310,8 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 			case 6:
 			{
 				g_Player[client].bPlayConSnd = true
+				g_Player[client].bShowConMsg = true;
+				g_Player[client].bShowTopConMsg = true;
 				g_Player[client].bShowFragMsg = true;
 				g_Player[client].bShowAssistMsg = true;
 				g_Player[client].bShowDeathMsg = true;

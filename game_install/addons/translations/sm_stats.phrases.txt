@@ -264,7 +264,7 @@
 		// {2} player name
 		// {3} country name
 		"#format" "{1:i},{2:s},{3:s}"
-		"en" "Top {1} player {2} from 3} {default}has connected!"
+		"en" "Top {1} player {2} from {3} {default}has connected!"
 		"jp" "トップ{1}プレイヤー {2} が{orange}{3}{default}からを接続しました！"
 		"sv" "Topp {1} spelare {2} från {3} {default}har anslutit!"
 	}
@@ -529,9 +529,25 @@
 	{
 		// {1} on/off value
 		"#format" "{1:s}"
-		"en" "Top player connect sound : {1}"
-		"jp" "トッププレイヤーの接続音 : {1}"
-		"sv" "Toppspelaranslutningsljud : {1}"
+		"en" "player connect sound : {1}"
+		"jp" "プレイヤーの接続音 : {1}"
+		"sv" "Spelaranslutningsljud : {1}"
+	}
+	"#SMStats_MenuInfo_ShowConnectMsg"
+	{
+		// {1} on/off value
+		"#format" "{1:s}"
+		"en" "Display join messages: {1}"
+		"jp" "接続のメッセージを表示 : {1}"
+		"sv" "Visa anslutningsmeddelanden: {1}"
+	}
+	"#SMStats_MenuInfo_ShowTopConnectMsg"
+	{
+		// {1} on/off value
+		"#format" "{1:s}"
+		"en" "Display top player connect messages: {1}"
+		"jp" "トッププレイヤー接続のメッセージを表示 : {1}"
+		"sv" "Visa toppspelaranslutningsmeddelanden: {1}"
 	}
 	"#SMStats_MenuInfo_ShowFragMsg"
 	{

@@ -61,6 +61,10 @@ enum struct SMStats_PlayerInfo
 	// settings
 	bool bPlayConSnd;
 	bool bPlayConSndUpdated;
+	bool bShowConMsg;
+	bool bShowConMsgUpdated;
+	bool bShowTopConMsg;
+	bool bShowTopConMsgUpdated;
 	bool bShowFragMsg;
 	bool bShowFragMsgUpdated;
 	bool bShowAssistMsg;
@@ -101,6 +105,12 @@ enum struct SMStats_PlayerInfo
 		
 		this.bPlayConSnd = false;
 		this.bPlayConSndUpdated = false;
+		
+		this.bShowConMsg = false;
+		this.bShowConMsgUpdated = false;
+		
+		this.bShowTopConMsg = false;
+		this.bShowTopConMsgUpdated = false;
 		
 		this.bShowFragMsg = false;
 		this.bShowFragMsgUpdated = false;

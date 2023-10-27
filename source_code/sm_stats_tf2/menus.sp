@@ -190,17 +190,25 @@ enum struct StatsMenuInfo
 		Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_PlayConnectSnd", client, dummy);
 		menu.AddItem("0", dummy);
 		
+		OnOffPluralSplitter(client, g_Player[client].bShowConMsg, dummy, sizeof(dummy));
+		Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_ShowConnectMsg", client, dummy);
+		menu.AddItem("1", dummy);
+		
+		OnOffPluralSplitter(client, g_Player[client].bShowTopConMsg, dummy, sizeof(dummy));
+		Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_ShowTopConnectMsg", client, dummy);
+		menu.AddItem("2", dummy);
+		
 		OnOffPluralSplitter(client, g_Player[client].bShowFragMsg, dummy, sizeof(dummy));
 		Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_ShowFragMsg", client, dummy);
-		menu.AddItem("1", dummy);
+		menu.AddItem("3", dummy);
 		
 		OnOffPluralSplitter(client, g_Player[client].bShowAssistMsg, dummy, sizeof(dummy));
 		Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_ShowAssistMsg", client, dummy);
-		menu.AddItem("2", dummy);
+		menu.AddItem("4", dummy);
 		
 		OnOffPluralSplitter(client, g_Player[client].bShowDeathMsg, dummy, sizeof(dummy));
 		Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_ShowDeathMsg", client, dummy);
-		menu.AddItem("3", dummy);
+		menu.AddItem("5", dummy);
 		
 		menu.ExitButton = true;
 		menu.ExitBackButton = true;
@@ -1171,15 +1179,25 @@ int StatsMenu_Settings(Menu menu, MenuAction action, int client, int select)
 				}
 				case 1:
 				{
+					g_Player[client].bShowConMsg = g_Player[client].bShowConMsg ? false : true;
+					g_Player[client].bShowConMsgUpdated = true;
+				}
+				case 2:
+				{
+					g_Player[client].bShowTopConMsg = g_Player[client].bShowTopConMsg ? false : true;
+					g_Player[client].bShowTopConMsgUpdated = true;
+				}
+				case 3:
+				{
 					g_Player[client].bShowFragMsg = g_Player[client].bShowFragMsg ? false : true;
 					g_Player[client].bShowFragMsgUpdated = true;
 				}
-				case 2:
+				case 4:
 				{
 					g_Player[client].bShowAssistMsg = g_Player[client].bShowAssistMsg ? false : true;
 					g_Player[client].bShowAssistMsgUpdated = true;
 				}
-				case 3:
+				case 5:
 				{
 					g_Player[client].bShowDeathMsg = g_Player[client].bShowDeathMsg ? false : true;
 					g_Player[client].bShowDeathMsgUpdated = true;
@@ -1193,6 +1211,8 @@ int StatsMenu_Settings(Menu menu, MenuAction action, int client, int select)
 			if(select == MenuCancel_Exit || select == MenuCancel_ExitBack)
 			{
 				if(g_Player[client].bPlayConSndUpdated
+				|| g_Player[client].bShowConMsgUpdated
+				|| g_Player[client].bShowTopConMsgUpdated
 				|| g_Player[client].bShowFragMsgUpdated
 				|| g_Player[client].bShowAssistMsgUpdated
 				|| g_Player[client].bShowDeathMsgUpdated)
@@ -1206,6 +1226,24 @@ int StatsMenu_Settings(Menu menu, MenuAction action, int client, int select)
 					{
 						len += Format(query[len], sizeof(query)-len, "PlayConnectSnd = %i", g_Player[client].bPlayConSnd);
 						g_Player[client].bPlayConSndUpdated = false
+					}
+					if(g_Player[client].bShowConMsgUpdated)
+					{
+						if(!StrEqual(query[len-1], ","))
+						{
+							len += Format(query[len], sizeof(query)-len, ",");
+						}
+						len += Format(query[len], sizeof(query)-len, "ShowConnectMsg = %i", g_Player[client].bShowConMsg);
+						g_Player[client].bShowConMsgUpdated = false;
+					}
+					if(g_Player[client].bShowTopConMsgUpdated)
+					{
+						if(!StrEqual(query[len-1], ","))
+						{
+							len += Format(query[len], sizeof(query)-len, ",");
+						}
+						len += Format(query[len], sizeof(query)-len, "ShowTopConnectMsg = %i", g_Player[client].bShowTopConMsg);
+						g_Player[client].bShowTopConMsgUpdated = false;
 					}
 					if(g_Player[client].bShowFragMsgUpdated)
 					{

@@ -63,7 +63,8 @@ stock int GetClientFlags(int client)
  */
 stock bool IsClientMidAir(int client)
 {
-	return (GetClientFlags(client) == 256 || GetClientFlags(client) == 258 || GetClientFlags(client) == 262);
+	int flags = GetClientFlags(client);
+	return (flags == 256 || flags == 258 || flags == 262);
 }
 
 stock int GetPlayerWeaponSlotItemdef(int client, int slot)
@@ -102,11 +103,9 @@ stock int GetClientPosition(const char[] auth)
 	
 	if(!!sql)
 	{
-		// lock database as it's non-threaded.
-		SQL_LockDatabase(sql);
-		
 		char query[256];
 		Format(query, sizeof(query), "select Points from `" ... sql_table_playerlist ... "` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+		SQL_LockDatabase(sql); // lock database as it's non-threaded.
 		DBResultSet results = SQL_Query(sql, query);
 		SQL_UnlockDatabase(sql);
 		
@@ -126,8 +125,8 @@ stock int GetClientPosition(const char[] auth)
 			{
 				int points = results.FetchInt(0);
 				
-				SQL_LockDatabase(sql);
 				Format(query, sizeof(query), "select count(*) from `"...sql_table_playerlist..."` where Points >= %i and ServerID = %i", points, g_ServerID);
+				SQL_LockDatabase(sql);
 				results = SQL_Query(sql, query);
 				SQL_UnlockDatabase(sql);
 				
@@ -163,12 +162,12 @@ stock int GetTablePlayerCount()
 	
 	if(!!sql)
 	{
-		SQL_LockDatabase(sql);
-		
 		char query[256];
 		Format(query, sizeof(query), "select count(*) from `%s` where ServerID = %i", sql_table_playerlist, g_ServerID);
 		
+		SQL_LockDatabase(sql);
 		DBResultSet results = SQL_Query(sql, query);
+		SQL_UnlockDatabase(sql);
 		
 		while(!!results && results.FetchRow())
 		{
@@ -176,8 +175,6 @@ stock int GetTablePlayerCount()
 		}
 		
 		delete results;
-		
-		SQL_UnlockDatabase(sql);
 	}
 	
 	return players;
@@ -1153,25 +1150,30 @@ stock void Send_Player_Connected(int client)
 	{
 		if(IsValidClient(player))
 		{
-			char country_name[64], points_plural[32];
-			GeoipCountryName(player, ip, country_name, sizeof(country_name));
-			PointsPluralSplitter(player, points, points_plural, sizeof(points_plural));
-			
-			CPrintToChat(player, "%s %T"
-			, g_ChatTag
-			, "#SMStats_Player_Connected", player
-			, name
-			, position
-			, points_plural
-			, country_name);
+			if(g_Player[player].bShowConMsg)
+			{
+				char country_name[64], points_plural[32];
+				GeoipCountryName(player, ip, country_name, sizeof(country_name));
+				PointsPluralSplitter(player, points, points_plural, sizeof(points_plural));
+				
+				CPrintToChat(player, "%s %T"
+				, g_ChatTag
+				, "#SMStats_Player_Connected", player
+				, name
+				, position
+				, points_plural
+				, country_name);
+			}
 		}
 	}
 }
 
 stock void Send_Player_Connected_CheckTop10(int client)
 {
-	if(!(g_Player[client].position >= 1 && g_Player[client].position <= 10))
+	int position;
+	if((position = g_Player[client].position) < 1)
 	{
+		PrintToServer("%N have invalid position %i", client, position);
 		return;
 	}
 	
@@ -1182,28 +1184,43 @@ stock void Send_Player_Connected_CheckTop10(int client)
 		{
 			if(g_Player[player].bPlayConSnd)
 			{
-				if(g_Player[client].position == 1)
+				if(position == 1)
 				{
 					if(strlen(g_sndConnectedTop1) > 0)
 					{
-						EmitSoundToClient(player, g_sndConnectedTop1);
+						EmitSoundToClient(player, g_sndConnectedTop1, _, _, SNDLEVEL_RUSTLE);
 					}
-				} else {
+				}
+				else if(position <= 10)
+				{
 					if(strlen(g_sndConnectedTop10) > 0)
 					{
-						EmitSoundToClient(player, g_sndConnectedTop10);
+						EmitSoundToClient(player, g_sndConnectedTop10, _, _, SNDLEVEL_RUSTLE);
+					}
+				}
+				else
+				{
+					if(strlen(g_sndConnectedGeneric) > 0)
+					{
+						EmitSoundToClient(player, g_sndConnectedGeneric, _, _, SNDLEVEL_RUSTLE);
 					}
 				}
 			}
 			
-			char country_name[64];
-			GeoipCountryName(player, g_Player[client].ip, country_name, sizeof(country_name));
-			CPrintToChat(player, "%s %T"
-			, g_ChatTag
-			, "#SMStats_Player_Connected_TopPlayer", player
-			, g_Player[client].position
-			, g_Player[client].name
-			, country_name);
+			if(position >= 1 && position <= 10)
+			{
+				if(g_Player[player].bShowTopConMsg)
+				{
+					char country_name[64];
+					GeoipCountryName(player, g_Player[client].ip, country_name, sizeof(country_name));
+					CPrintToChat(player, "%s %T"
+					, g_ChatTag
+					, "#SMStats_Player_Connected_TopPlayer", player
+					, g_Player[client].position
+					, g_Player[client].name
+					, country_name);
+				}
+			}
 		}
 	}
 }
@@ -1226,18 +1243,21 @@ stock void Send_Player_Disconnected(int client, const char[] event_reason)
 	{
 		if(IsValidClient(player))
 		{
-			char country_name[64], points_plural[32];
-			GeoipCountryName(player, ip, country_name, sizeof(country_name));
-			PointsPluralSplitter(player, points, points_plural, sizeof(points_plural));
-			
-			CPrintToChat(player, "%s %T"
-			, g_ChatTag
-			, "#SMStats_Player_Disconnected", player
-			, name
-			, position
-			, points_plural
-			, country_name
-			, event_reason);
+			if(g_Player[player].bShowConMsg)
+			{
+				char country_name[64], points_plural[32];
+				GeoipCountryName(player, ip, country_name, sizeof(country_name));
+				PointsPluralSplitter(player, points, points_plural, sizeof(points_plural));
+				
+				CPrintToChat(player, "%s %T"
+				, g_ChatTag
+				, "#SMStats_Player_Disconnected", player
+				, name
+				, position
+				, points_plural
+				, country_name
+				, event_reason);
+			}
 		}
 	}
 }

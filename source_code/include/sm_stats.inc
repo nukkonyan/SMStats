@@ -161,7 +161,8 @@ enum SMStatsUpdatedFwdType
 	SMStatsUpdated_AssistPoints = 8,
 	SMStatsUpdated_PenaltySeconds = 9,
 	SMStatsUpdated_SndConnectedTop10 = 10,
-	SMStatsUpdated_SndConnectedTop1 = 11
+	SMStatsUpdated_SndConnectedTop1 = 11,
+	SMStatsUpdated_SndConnectedGeneric = 12,
 }
 
 typeset SMStats_Callback

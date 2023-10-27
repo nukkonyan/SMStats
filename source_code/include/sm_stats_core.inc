@@ -118,6 +118,12 @@ native int _sm_stats_get_penaltyseconds();
 
 /*
  *	SourceMod Stats: Core.
+ *	Retrieve the connect sounds.
+ */
+native int _sm_stats_get_connectsounds(char[] snd_top1, char[] snd_top10, char[] snd_generic);
+
+/*
+ *	SourceMod Stats: Core.
  *	Call the player death forward.
  */
 native void _sm_stats_player_death_fwd(int attacker, int frags, int[] userids, int[] assisters, const char[] classname, int[] itemdef);
@@ -148,6 +154,7 @@ native void _sm_stats_info_get_crucial_stuff(any[] this_way_with_arrays_sucks_pl
 char g_ChatTag[96];
 char g_sndConnectedTop10[96];
 char g_sndConnectedTop1[96];
+char g_sndConnectedGeneric[96];
 Database sql = null;
 bool bLoaded = false;
 bool bStatsActive = false;
@@ -181,6 +188,7 @@ public void _sm_stats_loaded_core()
 	bLoaded = true;
 	
 	_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
+	_sm_stats_get_connectsounds(g_sndConnectedTop1, g_sndConnectedTop10, g_sndConnectedGeneric);
 	g_ServerID = _sm_stats_get_serverid();
 	bAllowBots = _sm_stats_get_allowbots();
 	bAllowAbuse = _sm_stats_get_allowabuse();
@@ -224,6 +232,7 @@ public void _sm_stats_updatedfwd(SMStatsUpdatedFwdType type, const char[] value)
 		case SMStatsUpdated_AssistPoints: g_AssistPoints = view_as<int>(StringToInt(value));
 		case SMStatsUpdated_SndConnectedTop10: strcopy(g_sndConnectedTop10, sizeof(g_sndConnectedTop10), value);
 		case SMStatsUpdated_SndConnectedTop1: strcopy(g_sndConnectedTop1, sizeof(g_sndConnectedTop1), value);
+		case SMStatsUpdated_SndConnectedGeneric: strcopy(g_sndConnectedGeneric, sizeof(g_sndConnectedGeneric), value);
 	}
 }
 
@@ -268,6 +277,7 @@ public void OnPluginStart()
 		}
 		
 		_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
+		_sm_stats_get_connectsounds(g_sndConnectedTop1, g_sndConnectedTop10, g_sndConnectedGeneric);
 		g_ServerID = _sm_stats_get_serverid();
 		bAllowBots = _sm_stats_get_allowbots();
 		bAllowAbuse = _sm_stats_get_allowabuse();
@@ -278,21 +288,14 @@ public void OnPluginStart()
 		g_AssistPoints = _sm_stats_get_assistpoints();
 		g_PenaltySeconds = _sm_stats_get_penaltyseconds();
 		
-		PrintToServer("%s Crucial information Re-instated from detected restart.", core_chattag);
-		
-		switch(SMStats.IsLoaded())
+		if(SMStats.IsLoaded())
 		{
-			case false: ThrowError("%s Error: SMStats: Core seems to not be loaded.\nUnable to re-instate SQL Connection, problems to be expected.", core_chattag);
-			case true:
+			if((sql = _sm_stats_get_sql()) != null)
 			{
-				PrintToServer("%s SQL connection re-instated from detected restart.", core_chattag);
-				if((sql = _sm_stats_get_sql()) != null)
-				{
-					_sm_stats_loaded_sql(sql, true);
-				}
-				
-				CreateTimer(1.25, Timer_OnRestarted);
+				_sm_stats_loaded_sql(sql, true);
 			}
+			
+			CreateTimer(1.25, Timer_OnRestarted);
 		}
 	}
 }
