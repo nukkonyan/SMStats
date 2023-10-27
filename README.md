@@ -1,6 +1,7 @@
 ### SMStats
    - 100% translation supported.
       - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
+      - Translation submissions are currently demanded, and would be very appreciated!! (* ^ ω ^)
    - Updater support
       - The updating process is automatic.
       - When update is detected, update message are sent to the chat and information are saved to **'SMStats Info'** module, to prevent loss of data.
