@@ -1188,14 +1188,14 @@ stock void Send_Player_Connected_CheckTop10(int client)
 				{
 					if(strlen(g_sndConnectedTop1) > 0)
 					{
-						EmitSoundToClient(player, g_sndConnectedTop1, _, _, SNDLEVEL_RUSTLE);
+						EmitSoundToClient(player, g_sndConnectedTop1, _, _, SNDLEVEL_LIBRARY);
 					}
 				}
 				else if(position <= 10)
 				{
 					if(strlen(g_sndConnectedTop10) > 0)
 					{
-						EmitSoundToClient(player, g_sndConnectedTop10, _, _, SNDLEVEL_RUSTLE);
+						EmitSoundToClient(player, g_sndConnectedTop10, _, _, SNDLEVEL_LIBRARY);
 					}
 				}
 				else
