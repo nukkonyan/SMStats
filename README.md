@@ -4,7 +4,7 @@
       - Translation submissions are welcome and currently is demanded, and would definitely be very appreciating!! ヽ(*・ω・)ﾉ
       - Translator will be granted a custom name colour (´｡• ω •｡`)
    - Updater support
-      - The updating process is automatic. (´• ω •`)
+      - The updating process is automatic. (* ^ ω ^)
       - When update is detected, update message are sent to the chat and information are saved to **'SMStats Info'** module, to prevent loss of data.
    - Tracks:
       - Players (Total playtime, dominations, headshots and much much more.)
