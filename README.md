@@ -10,6 +10,7 @@
       - Players (Total playtime, dominations, headshots and much much more.)
       - Weapons (Tracks all kind of weapons, self-explanatory..)
       - Maps (Map total playtime, headshots, backstabs, etc.)
+      - Kills (Type of kill, distance, etc)
       - Items (found, traded, etc) (Not added yet)
       - Custom achievements. (Not added yet, but there are code mentions about it.)
       - Settings. (Saves settings obviously.)
