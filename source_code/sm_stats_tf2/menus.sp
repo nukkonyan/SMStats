@@ -19,7 +19,7 @@ enum struct StatsMenuInfo
 		GeoipCountryName(client, g_Player[client].ip, country, sizeof(country));
 		GetTimeFormat(client, iMapTimerSeconds, map_time, sizeof(map_time));
 		
-		if(!g_Player[client].bMenuCheckPosition && g_Player[client].position < 1)
+		if(!g_Player[client].bMenuCheckPosition)
 		{
 			g_Player[client].position = GetClientPosition(g_Player[client].auth);
 			g_Player[client].bMenuCheckPosition = true; // avoid sql overload.
@@ -44,30 +44,20 @@ enum struct StatsMenuInfo
 		{
 			case 1:
 			{
-				PanelItem(panel, "%T"
-				... "\n  > %T"
-				... "\n "
+				PanelItem(panel, "%T\n  > %T\n "
 				, "#SMStats_Menu_Session", client
 				, "#SMStats_Menu_SessionInfo", client);
-				PanelItem(panel, "%T"
-				... "\n  > %T"
-				... "\n  > %T"
-				... "\n "
+				PanelItem(panel, "%T\n  > %T\n "
 				, "#SMStats_Menu_ActiveStats", client
-				, "#SMStats_Menu_ActiveStatsInfo", client
-				, "#SMStats_FeatureUnavailable", client);
+				, "#SMStats_Menu_ActiveStatsInfo", client);
 				PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
 			}
 			case 2:
 			{
-				PanelItem(panel, "%T"
-				... "\n  > %T"
-				... "\n "
+				PanelItem(panel, "%T\n  > %T\n "
 				, "#SMStats_Menu_Top10", client
 				, "#SMStats_Menu_Top10Info", client);
-				PanelItem(panel, "%T"
-				... "\n  > %T"
-				... "\n "
+				PanelItem(panel, "%T\n  > %T\n "
 				, "#SMStats_Menu_Settings", client
 				, "#SMStats_Menu_SettingsInfo", client)
 				PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
@@ -93,6 +83,37 @@ enum struct StatsMenuInfo
 		delete panel;
 	}
 	
+	void ActiveStats(int client)
+	{
+		if(TF2_GetPlayerSQLInfo(client
+		, g_Player[client].auth
+		, g_Player[client].menustats_name
+		, sizeof(g_Player[].menustats_name)
+		, g_Player[client].menustats_ip
+		, sizeof(g_Player[].menustats_ip)
+		, g_Player[client].menustats_lastconnected))
+		{
+			g_Player[client].active_page_mainmenu = -1;
+			g_Player[client].active_page_session = -1;
+			g_Player[client].active_page_activestats = 1;
+			g_Player[client].active_page_topstats = -1;
+			this.ActiveStatsInfo(client, 1);
+		}
+	}
+	
+	void ActiveStatsInfo(int client, int page=1)
+	{
+		Panel panel = new Panel();
+		PanelItem(panel, "SourceMod Stats - " ... VersionAlt ... " > %T > %T"
+		, "#SMStats_Menu_ActiveStats", client
+		, "#SMStats_Menu_Page", client, page);
+		
+		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].menustats);
+		
+		panel.Send(client, StatsMenu_ActiveStatsInfo, MENU_TIME_FOREVER);
+		delete panel;
+	}
+	
 	void TopStats(int client, int display_at=0)
 	{
 		char[][] SteamID = new char[10][64];
@@ -100,12 +121,12 @@ enum struct StatsMenuInfo
 		int Points[10];
 		int Players = 0;
 		
-		SQL_LockDatabase(sql);
 		//char error[256];
+		SQL_LockDatabase(sql);
 		DBResultSet results = SQL_Query(sql, "SELECT PlayerName, SteamID, Points FROM `"... sql_table_playerlist ... "` ORDER BY `" ... sql_table_playerlist ..."`.`Points` DESC LIMIT 10");
+		SQL_UnlockDatabase(sql);
 		if(results == null)
 		{
-			SQL_UnlockDatabase(sql);
 			delete results;
 			CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_ErrorParsing", client);
 			return;
@@ -116,11 +137,9 @@ enum struct StatsMenuInfo
 			results.FetchString(0, PlayerName[Players], 64);
 			results.FetchString(1, SteamID[Players], 64);
 			Points[Players] = results.FetchInt(2);
-			
 			Players++
 		}
 		delete results;
-		SQL_UnlockDatabase(sql);
 		
 		if(Players < 1)
 		{
@@ -148,10 +167,10 @@ enum struct StatsMenuInfo
 		Panel panel = new Panel();
 		PanelItem(panel, "SourceMod Stats - " ... VersionAlt ... " > %T > %s > %T"
 		, "#SMStats_Menu_TopPlayer", client, top
-		, g_Player[client].topstatsname
+		, g_Player[client].menustats_name
 		, "#SMStats_Menu_Page", client, page);
 		
-		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].topstats, true);
+		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].menustats, true);
 		
 		panel.Send(client, StatsMenu_TopStatsInfo, MENU_TIME_FOREVER);
 		delete panel;
@@ -171,7 +190,7 @@ enum struct StatsMenuInfo
 	void TopPlayerAuth(int client, const char[] auth)
 	{
 		char query[255];
-		Format(query, sizeof(query), "SELECT SteamID FROM `"... sql_table_playerlist ... "` ORDER BY `" ... sql_table_playerlist ..."`.`Points` DESC");
+		Format(query, sizeof(query), "SELECT SteamID FROM `"... sql_table_playerlist..."` ORDER BY `"...sql_table_playerlist..."`.`Points` DESC");
 		DataPack pack = new DataPack();
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(strlen(auth)+1);
@@ -238,6 +257,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = 1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Main(client, 1);
 				}
@@ -245,17 +265,19 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					g_Player[client].bMenuCheckPosition = false;
 					StatsMenu.Session(client, 1);
 				}
 				case 3:
 				{
-					g_Player[client].active_page_mainmenu = 1;
+					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 1;
 					g_Player[client].active_page_topstats = -1;
 					g_Player[client].bMenuCheckPosition = false;
-					StatsMenu.Main(client, 1);
+					StatsMenu.ActiveStats(client);
 				}
 				case 4:
 				{
@@ -269,6 +291,7 @@ int StatsMenu_Main(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					g_Player[client].bMenuCheckPosition = false;
 				}
@@ -352,6 +375,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 1);
 				}
@@ -359,6 +383,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = 1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Main(client);
 				}
@@ -366,15 +391,11 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 2;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 2);
 				}
-				case 4:
-				{
-					g_Player[client].active_page_mainmenu = false;
-					g_Player[client].active_page_session = -1;
-					g_Player[client].active_page_topstats = -1;
-				}
+				case 4: g_Player[client].ResetMenuStats();
 			}
 		}
 		
@@ -394,6 +415,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 2;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 2);
 				}
@@ -401,6 +423,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 1);
 				}
@@ -408,15 +431,11 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 3;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 3);
 				}
-				case 4:
-				{
-					g_Player[client].active_page_mainmenu = -1;
-					g_Player[client].active_page_session = -1;
-					g_Player[client].active_page_topstats = -1;
-				}
+				case 4: g_Player[client].ResetMenuStats();
 			}
 		}
 		
@@ -436,6 +455,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 3;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 3);
 				}
@@ -443,6 +463,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 2;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 2);
 				}
@@ -450,15 +471,11 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 4;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 4);
 				}
-				case 4:
-				{
-					g_Player[client].active_page_mainmenu = -1;
-					g_Player[client].active_page_session = -1;
-					g_Player[client].active_page_topstats = -1;
-				}
+				case 4: g_Player[client].ResetMenuStats();
 			}
 		}
 		
@@ -478,6 +495,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 4;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 4);
 				}
@@ -485,6 +503,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 3;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 3);
 				}
@@ -492,15 +511,11 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 5;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 5);
 				}
-				case 4:
-				{
-					g_Player[client].active_page_mainmenu = -1;
-					g_Player[client].active_page_session = -1;
-					g_Player[client].active_page_topstats = -1;
-				}
+				case 4: g_Player[client].ResetMenuStats();
 			}
 		}
 		
@@ -520,6 +535,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 5;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 5);
 				}
@@ -527,6 +543,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 4;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 4);
 				}
@@ -534,15 +551,11 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 6;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 6);
 				}
-				case 4:
-				{
-					g_Player[client].active_page_mainmenu = -1;
-					g_Player[client].active_page_session = -1;
-					g_Player[client].active_page_topstats = -1;
-				}
+				case 4: g_Player[client].ResetMenuStats();
 			}
 		}
 		
@@ -562,6 +575,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 6;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 6);
 				}
@@ -569,6 +583,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 5;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 5);
 				}
@@ -576,15 +591,11 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 7;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 7);
 				}
-				case 4:
-				{
-					g_Player[client].active_page_mainmenu = -1;
-					g_Player[client].active_page_session = -1;
-					g_Player[client].active_page_topstats = -1;
-				}
+				case 4: g_Player[client].ResetMenuStats();
 			}
 		}
 		
@@ -604,6 +615,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 7;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 7);
 				}
@@ -611,6 +623,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 6;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 6);
 				}
@@ -618,15 +631,11 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 8;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 8);
 				}
-				case 4:
-				{
-					g_Player[client].active_page_mainmenu = -1;
-					g_Player[client].active_page_session = -1;
-					g_Player[client].active_page_topstats = -1;
-				}
+				case 4: g_Player[client].ResetMenuStats();
 			}
 		}
 		
@@ -645,6 +654,7 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 8;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 8);
 				}
@@ -652,15 +662,329 @@ int StatsMenu_Session(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = 7;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.Session(client, 7);
+				}
+				case 3: g_Player[client].ResetMenuStats();
+			}
+		}
+	}
+	
+	return 0;
+}
+
+int StatsMenu_ActiveStatsInfo(Menu menu, MenuAction action, int client, int select)
+{
+	switch(g_Player[client].active_page_activestats)
+	{
+		case 1:
+		{
+			/*
+			 * Active stats page 1
+			 * 1 : Menu title.
+			 * 2 : Previous page.
+			 * 3 : Next page.
+			 * 4 : Exit.
+			 */
+			
+			switch(select)
+			{
+				case 1:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 1;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 1);
+				}
+				case 2:
+				{
+					g_Player[client].active_page_mainmenu = 1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.Main(client, g_Player[client].active_page_menu);
 				}
 				case 3:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 2;
 					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 2);
 				}
+				case 4: g_Player[client].ResetMenuStats();
+			}
+		}
+		
+		case 2:
+		{
+			/*
+			 * Active stats 2
+			 * 1 : Menu title.
+			 * 2 : Previous page.
+			 * 3 : Next page.
+			 * 4 : Exit.
+			 */
+			
+			switch(select)
+			{
+				case 1:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 2;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 2);
+				}
+				case 2:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 1;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 1);
+				}
+				case 3:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 3;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 3);
+				}
+				case 4: g_Player[client].ResetMenuStats();
+			}
+		}
+		
+		case 3:
+		{
+			/*
+			 * Active stats page 3
+			 * 1 : Menu title.
+			 * 2 : Previous page.
+			 * 3 : Next page.
+			 * 4 : Exit.
+			 */
+			
+			switch(select)
+			{
+				case 1:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 3;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 3);
+				}
+				case 2:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 2;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 2);
+				}
+				case 3:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 4;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 4);
+				}
+				case 4: g_Player[client].ResetMenuStats();
+			}
+		}
+		
+		case 4:
+		{
+			/*
+			 * Active stats page 4
+			 * 1 : Menu title.
+			 * 2 : Previous page.
+			 * 3 : Next page.
+			 * 4 : Exit.
+			 */
+			
+			switch(select)
+			{
+				case 1:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 4;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 4);
+				}
+				case 2:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 3;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 3);
+				}
+				case 3:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 5;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 5);
+				}
+				case 4: g_Player[client].ResetMenuStats();
+			}
+		}
+		
+		case 5:
+		{
+			/*
+			 * Active stats page 5
+			 * 1 : Menu title.
+			 * 2 : Previous page.
+			 * 3 : Next page.
+			 * 4 : Exit.
+			 */
+			
+			switch(select)
+			{
+				case 1:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 5;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 5);
+				}
+				case 2:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 4;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 4);
+				}
+				case 3:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_topstats = 6;
+					StatsMenu.ActiveStatsInfo(client, 6);
+				}
+				case 4: g_Player[client].ResetMenuStats();
+			}
+		}
+		
+		case 6:
+		{
+			/*
+			 * Active stats page 6
+			 * 1 : Menu title.
+			 * 2 : Previous page.
+			 * 3 : Next page.
+			 * 4 : Exit.
+			 */
+			
+			switch(select)
+			{
+				case 1:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 6;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 6);
+				}
+				case 2:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 5;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 5);
+				}
+				case 3:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 7;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 7);
+				}
+				case 4: g_Player[client].ResetMenuStats();
+			}
+		}
+		
+		case 7:
+		{
+			/*
+			 * Active stats page 7
+			 * 1 : Menu title.
+			 * 2 : Previous page.
+			 * 3 : Next page.
+			 * 4 : Exit.
+			 */
+			
+			switch(select)
+			{
+				case 1:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 7;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 7);
+				}
+				case 2:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 6;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 6);
+				}
+				case 3:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 8;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 8);
+				}
+				case 4: g_Player[client].ResetMenuStats();
+			}
+		}
+		
+		case 8:
+		{
+			/*
+			 * Active stats page 8
+			 * 1 : Menu title.
+			 * 2 : Previous page.
+			 * 3 : Exit.
+			 */
+			
+			switch(select)
+			{
+				case 1:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 8;
+					g_Player[client].active_page_topstats = 8;
+					StatsMenu.ActiveStatsInfo(client, 8);
+				}
+				case 2:
+				{
+					g_Player[client].active_page_mainmenu = -1;
+					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = 7;
+					g_Player[client].active_page_topstats = -1;
+					StatsMenu.ActiveStatsInfo(client, 7);
+				}
+				case 3: g_Player[client].ResetMenuStats();
 			}
 		}
 	}
@@ -683,13 +1007,20 @@ int StatsMenu_TopStats(Menu menu, MenuAction action, int client, int select)
 				return 0;
 			}
 			
-			if(TF2_GetTopSQLInformation(client, auth))
+			strcopy(g_Player[client].menustats_auth, sizeof(g_Player[].menustats_auth), auth);
+			
+			if(TF2_GetPlayerSQLInfo(client
+			, g_Player[client].menustats_auth
+			, g_Player[client].menustats_name
+			, sizeof(g_Player[].menustats_name)
+			, g_Player[client].menustats_ip)
+			, sizeof(g_Player[].menustats_ip)
+			, g_Player[client].menustats_lastconnected)
 			{
 				g_Player[client].active_page_menu = menu.Selection;
 				g_Player[client].active_page_topstats = 1;
-				g_Player[client].toppos = select+1;
-				strcopy(g_Player[client].topstatsauth, sizeof(g_Player[].topstatsauth), auth);
-				StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
+				g_Player[client].menustats_pos = select+1;
+				StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
 			}
 		}
 		case MenuAction_Cancel:
@@ -727,16 +1058,18 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 1;
-					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
 				}
 				/*
 				case 2:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 1;
-					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
 					
 					//char profile[128];
 					//Format(profile, sizeof(profile), "https://steamcommunity.com/profiles/%i");
@@ -748,6 +1081,7 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = -1;
 					StatsMenu.TopStats(client, g_Player[client].active_page_menu);
 				}
@@ -755,14 +1089,16 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 2;
-					StatsMenu.TopStatsInfo(client, 2, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 2, g_Player[client].menustats_pos);
 				}
 				case 4:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
-					g_Player[client].ResetTopStats();
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].ResetMenuStats();
 				}
 			}
 		}
@@ -783,28 +1119,32 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 2;
-					StatsMenu.TopStatsInfo(client, 2, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 2, g_Player[client].menustats_pos);
 				}
 				case 2:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 1;
-					StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
 				}
 				case 3:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 3;
-					StatsMenu.TopStatsInfo(client, 3, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 3, g_Player[client].menustats_pos);
 				}
 				case 4:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
-					g_Player[client].ResetTopStats();
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].ResetMenuStats();
 				}
 			}
 		}
@@ -825,28 +1165,32 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 3;
-					StatsMenu.TopStatsInfo(client, 3, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 3, g_Player[client].menustats_pos);
 				}
 				case 2:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 2;
-					StatsMenu.TopStatsInfo(client, 2, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 2, g_Player[client].menustats_pos);
 				}
 				case 3:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 4;
-					StatsMenu.TopStatsInfo(client, 4, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 4, g_Player[client].menustats_pos);
 				}
 				case 4:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
-					g_Player[client].ResetTopStats();
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].ResetMenuStats();
 				}
 			}
 		}
@@ -867,28 +1211,32 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 4;
-					StatsMenu.TopStatsInfo(client, 4, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 4, g_Player[client].menustats_pos);
 				}
 				case 2:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 3;
-					StatsMenu.TopStatsInfo(client, 3, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 3, g_Player[client].menustats_pos);
 				}
 				case 3:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 5;
-					StatsMenu.TopStatsInfo(client, 5, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 5, g_Player[client].menustats_pos);
 				}
 				case 4:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
-					g_Player[client].ResetTopStats();
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].ResetMenuStats();
 				}
 			}
 		}
@@ -909,28 +1257,32 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 5;
-					StatsMenu.TopStatsInfo(client, 5, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 5, g_Player[client].menustats_pos);
 				}
 				case 2:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 4;
-					StatsMenu.TopStatsInfo(client, 4, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 4, g_Player[client].menustats_pos);
 				}
 				case 3:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 6;
-					StatsMenu.TopStatsInfo(client, 6, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 6, g_Player[client].menustats_pos);
 				}
 				case 4:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
-					g_Player[client].ResetTopStats();
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].ResetMenuStats();
 				}
 			}
 		}
@@ -951,28 +1303,32 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 6;
-					StatsMenu.TopStatsInfo(client, 6, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 6, g_Player[client].menustats_pos);
 				}
 				case 2:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 5;
-					StatsMenu.TopStatsInfo(client, 5, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 5, g_Player[client].menustats_pos);
 				}
 				case 3:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 7;
-					StatsMenu.TopStatsInfo(client, 7, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 7, g_Player[client].menustats_pos);
 				}
 				case 4:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
-					g_Player[client].ResetTopStats();
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].ResetMenuStats();
 				}
 			}
 		}
@@ -993,28 +1349,32 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 7;
-					StatsMenu.TopStatsInfo(client, 7, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 7, g_Player[client].menustats_pos);
 				}
 				case 2:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 6;
-					StatsMenu.TopStatsInfo(client, 6, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 6, g_Player[client].menustats_pos);
 				}
 				case 3:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 8;
-					StatsMenu.TopStatsInfo(client, 8, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 8, g_Player[client].menustats_pos);
 				}
 				case 4:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
-					g_Player[client].ResetTopStats();
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].ResetMenuStats();
 				}
 			}
 		}
@@ -1034,21 +1394,24 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 8;
-					StatsMenu.TopStatsInfo(client, 8, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 8, g_Player[client].menustats_pos);
 				}
 				case 2:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
+					g_Player[client].active_page_activestats = -1;
 					g_Player[client].active_page_topstats = 7;
-					StatsMenu.TopStatsInfo(client, 7, g_Player[client].toppos);
+					StatsMenu.TopStatsInfo(client, 7, g_Player[client].menustats_pos);
 				}
 				case 3:
 				{
 					g_Player[client].active_page_mainmenu = -1;
 					g_Player[client].active_page_session = -1;
-					g_Player[client].ResetTopStats();
+					g_Player[client].active_page_activestats = -1;
+					g_Player[client].ResetMenuStats();
 				}
 			}
 		}
@@ -1095,14 +1458,24 @@ void StatsMenu_TopPlayerId(Database database, DBResultSet results, const char[] 
 		return;
 	}
 	
-	g_Player[client].toppos = top_player_id;
-	if(TF2_GetTopSQLInformation(client, auth, true, true))
+	g_Player[client].menustats_pos = top_player_id;
+	strcopy(g_Player[client].menustats_auth, sizeof(g_Player[].menustats_auth), auth);
+	
+	if(TF2_GetPlayerSQLInfo(client
+	, g_Player[client].menustats_auth
+	, g_Player[client].menustats_name
+	, sizeof(g_Player[].menustats_name)
+	, g_Player[client].menustats_ip
+	, sizeof(g_Player[].menustats_ip)
+	, g_Player[client].menustats_lastconnected)
+	, true
+	, true)
 	{
 		g_Player[client].active_page_mainmenu = -1;
 		g_Player[client].active_page_session = -1;
+		g_Player[client].active_page_activestats = -1;
 		g_Player[client].active_page_topstats = 1;
-		strcopy(g_Player[client].topstatsauth, sizeof(g_Player[].topstatsauth), auth);
-		StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
+		StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
 	}
 }
 
@@ -1149,14 +1522,22 @@ void StatsMenu_TopPlayerAuth(Database database, DBResultSet results, const char[
 		return;
 	}
 	
-	strcopy(g_Player[client].topstatsauth, sizeof(g_Player[].topstatsauth), auth);
-	if(TF2_GetTopSQLInformation(client, auth, true))
+	strcopy(g_Player[client].menustats_auth, sizeof(g_Player[].menustats_auth), auth);
+	if(TF2_GetPlayerSQLInfo(client
+	, g_Player[client].menustats_auth
+	, g_Player[client].menustats_name
+	, sizeof(g_Player[].menustats_name)
+	, g_Player[client].menustats_ip
+	, sizeof(g_Player[].menustats_ip)
+	, g_Player[client].menustats_lastconnected
+	, true))
 	{
 		g_Player[client].active_page_mainmenu = -1;
 		g_Player[client].active_page_session = -1;
+		g_Player[client].active_page_activestats = -1;
 		g_Player[client].active_page_topstats = 1;
-		g_Player[client].toppos = top_player_id;
-		StatsMenu.TopStatsInfo(client, 1, g_Player[client].toppos);
+		g_Player[client].menustats_pos = top_player_id;
+		StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
 	}
 }
 
@@ -1429,16 +1810,33 @@ stock bool StrHasNumbers(const char[] str) {
  *	@param client	The user index of the fetcher.
  *	@param auth		The authentication steamid to read.
  */
-bool TF2_GetTopSQLInformation(int client, const char[] auth, bool bTopPlayerCustom=false, bool bTopPlayerId=false)
+bool TF2_GetPlayerSQLInfo(int client
+						, const char[] auth
+						, char[] szPlayerName=""
+						, int lenPlayerName=0
+						, char[] szPlayerIP=""
+						, int lenPlayerIP=0
+						, int &LastConnected=0
+						, bool bTopPlayerCustom=false
+						, bool bTopPlayerId=false)
 {
-	bool bSuccess = false;
+	if(!sql)
+	{
+		PrintToServer("%s TF2_GetPlayerSQLInfo() error : Invalid SQL Connection.", core_chattag);
+		return false;
+	}
+	else if(!bLoaded)
+	{
+		PrintToServer("%s TF2_GetPlayerSQLInfo() error : SMStats Core not loaded.", core_chattag);
+		return false;
+	}
 	
 	char query[2048];
 	Format(query, sizeof(query), "select "
 	/* 0*/... "PlayerName,"
 	/* 1*/... "IPAddress,"
-	/* 2*/... "PlayTime,"
-	/* 3*/... "LastConnected,"
+	/* 2*/... "LastConnected,"
+	/* 3*/... "PlayTime,"
 	/* 4*/... "Points,"
 	/* 5*/... "Frags,"
 	/* 6*/... "Assists,"
@@ -1530,137 +1928,135 @@ bool TF2_GetTopSQLInformation(int client, const char[] auth, bool bTopPlayerCust
 	/*83*/... "SentryBustersFragged,"
 	/*84*/... "BombsResetted"
 	
-	... " from `%s` where SteamID = '%s' and ServerID = %i"
-	, sql_table_playerlist, auth, g_ServerID);
+	... " from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
+	, auth, g_ServerID);
 	
 	SQL_LockDatabase(sql);
 	DBResultSet results = SQL_Query(sql, query);
+	SQL_UnlockDatabase(sql); // not unlocking will cause server to freeze or crash on the next sql call, due to accessing what it thinks exists but doesn't anymore.
 	switch(results != null && results.FetchRow())
 	{
 		case false:
 		{
 			//char error[255];
 			//SQL_GetError(sql, error, sizeof(error));
-			SQL_UnlockDatabase(sql); // not unlocking will cause server to freeze or crash on the next sql call, due to accessing what it thinks exists but doesn't anymore.
 			delete results;
 			
 			if(bTopPlayerCustom)
 			{
 				switch(bTopPlayerId)
 				{
-					case true: CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist", client, g_Player[client].toppos);
-					case false: CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist", client, g_Player[client].topstatsauth);
+					case true: CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist", client, g_Player[client].menustats_pos);
+					case false: CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist", client, g_Player[client].menustats_auth);
 				}
 			}
 			return false;
 		}
 		case true:
 		{
-			results.FetchString(0, g_Player[client].topstatsname, sizeof(g_Player[].topstatsname));
-			results.FetchString(1, g_Player[client].topstatsip, sizeof(g_Player[].topstatsip));
-			g_Player[client].topstats[Stats_PlayTime] = results.FetchInt(2);
-			g_Player[client].toplastconnected = results.FetchInt(3);
-			g_Player[client].topstats[Stats_Points] = results.FetchInt(4);
-			g_Player[client].topstats[Stats_Frags] = results.FetchInt(5);
-			g_Player[client].topstats[Stats_Assists] = results.FetchInt(6);
-			g_Player[client].topstats[Stats_Deaths] = results.FetchInt(7);
-			g_Player[client].topstats[Stats_Suicides] = results.FetchInt(8);
-			g_Player[client].topstats[Stats_DamageDone] = results.FetchInt(9);
-			g_Player[client].topstats[Stats_Achievements] = results.FetchInt(10);
+			results.FetchString(0, szPlayerName, lenPlayerName);
+			results.FetchString(1, szPlayerIP, lenPlayerIP);
+			LastConnected = results.FetchInt(2);
+			g_Player[client].menustats[Stats_PlayTime] = results.FetchInt(3);
+			g_Player[client].menustats[Stats_Points] = results.FetchInt(4);
+			g_Player[client].menustats[Stats_Frags] = results.FetchInt(5);
+			g_Player[client].menustats[Stats_Assists] = results.FetchInt(6);
+			g_Player[client].menustats[Stats_Deaths] = results.FetchInt(7);
+			g_Player[client].menustats[Stats_Suicides] = results.FetchInt(8);
+			g_Player[client].menustats[Stats_DamageDone] = results.FetchInt(9);
+			g_Player[client].menustats[Stats_Achievements] = results.FetchInt(10);
 			
-			g_Player[client].topstats[Stats_Dominations] = results.FetchInt(11);
-			g_Player[client].topstats[Stats_Revenges] = results.FetchInt(12);
-			g_Player[client].topstats[Stats_Airshots] = results.FetchInt(13);
-			g_Player[client].topstats[Stats_Headshots] = results.FetchInt(14);
-			g_Player[client].topstats[Stats_Noscopes] = results.FetchInt(15);
-			g_Player[client].topstats[Stats_Backstabs] = results.FetchInt(16);
-			g_Player[client].topstats[Stats_TauntFrags] = results.FetchInt(17);
-			g_Player[client].topstats[Stats_GibFrags] = results.FetchInt(18);
-			g_Player[client].topstats[Stats_Deflects] = results.FetchInt(19);
-			g_Player[client].topstats[Stats_TeleFrags] = results.FetchInt(20);
-			g_Player[client].topstats[Stats_Collaterals] = results.FetchInt(21);
-			g_Player[client].topstats[Stats_MidAirFrags] = results.FetchInt(22);
-			g_Player[client].topstats[Stats_CritFrags] = results.FetchInt(23);
-			g_Player[client].topstats[Stats_MiniCritFrags] = results.FetchInt(24);
-			g_Player[client].topstats[Stats_PumpkinBombFrags] = results.FetchInt(25);
+			g_Player[client].menustats[Stats_Dominations] = results.FetchInt(11);
+			g_Player[client].menustats[Stats_Revenges] = results.FetchInt(12);
+			g_Player[client].menustats[Stats_Airshots] = results.FetchInt(13);
+			g_Player[client].menustats[Stats_Headshots] = results.FetchInt(14);
+			g_Player[client].menustats[Stats_Noscopes] = results.FetchInt(15);
+			g_Player[client].menustats[Stats_Backstabs] = results.FetchInt(16);
+			g_Player[client].menustats[Stats_TauntFrags] = results.FetchInt(17);
+			g_Player[client].menustats[Stats_GibFrags] = results.FetchInt(18);
+			g_Player[client].menustats[Stats_Deflects] = results.FetchInt(19);
+			g_Player[client].menustats[Stats_TeleFrags] = results.FetchInt(20);
+			g_Player[client].menustats[Stats_Collaterals] = results.FetchInt(21);
+			g_Player[client].menustats[Stats_MidAirFrags] = results.FetchInt(22);
+			g_Player[client].menustats[Stats_CritFrags] = results.FetchInt(23);
+			g_Player[client].menustats[Stats_MiniCritFrags] = results.FetchInt(24);
+			g_Player[client].menustats[Stats_PumpkinBombFrags] = results.FetchInt(25);
 			
-			g_Player[client].topstats[Stats_ScoutFrags] = results.FetchInt(26);
-			g_Player[client].topstats[Stats_SoldierFrags] = results.FetchInt(27);
-			g_Player[client].topstats[Stats_PyroFrags] = results.FetchInt(28);
-			g_Player[client].topstats[Stats_DemoFrags] = results.FetchInt(29);
-			g_Player[client].topstats[Stats_HeavyFrags] = results.FetchInt(30);
-			g_Player[client].topstats[Stats_EngieFrags] = results.FetchInt(31);
-			g_Player[client].topstats[Stats_MedicFrags] = results.FetchInt(32);
-			g_Player[client].topstats[Stats_SniperFrags] = results.FetchInt(33);
-			g_Player[client].topstats[Stats_SpyFrags] = results.FetchInt(34);
-			g_Player[client].topstats[Stats_ScoutDeaths] = results.FetchInt(35);
-			g_Player[client].topstats[Stats_SoldierDeaths] = results.FetchInt(36);
-			g_Player[client].topstats[Stats_PyroDeaths] = results.FetchInt(37);
-			g_Player[client].topstats[Stats_DemoDeaths] = results.FetchInt(38);
-			g_Player[client].topstats[Stats_HeavyDeaths] = results.FetchInt(39);
-			g_Player[client].topstats[Stats_EngieDeaths] = results.FetchInt(40);
-			g_Player[client].topstats[Stats_MedicDeaths] = results.FetchInt(41);
-			g_Player[client].topstats[Stats_SniperDeaths] = results.FetchInt(42);
-			g_Player[client].topstats[Stats_SpyDeaths] = results.FetchInt(43);
+			g_Player[client].menustats[Stats_ScoutFrags] = results.FetchInt(26);
+			g_Player[client].menustats[Stats_SoldierFrags] = results.FetchInt(27);
+			g_Player[client].menustats[Stats_PyroFrags] = results.FetchInt(28);
+			g_Player[client].menustats[Stats_DemoFrags] = results.FetchInt(29);
+			g_Player[client].menustats[Stats_HeavyFrags] = results.FetchInt(30);
+			g_Player[client].menustats[Stats_EngieFrags] = results.FetchInt(31);
+			g_Player[client].menustats[Stats_MedicFrags] = results.FetchInt(32);
+			g_Player[client].menustats[Stats_SniperFrags] = results.FetchInt(33);
+			g_Player[client].menustats[Stats_SpyFrags] = results.FetchInt(34);
+			g_Player[client].menustats[Stats_ScoutDeaths] = results.FetchInt(35);
+			g_Player[client].menustats[Stats_SoldierDeaths] = results.FetchInt(36);
+			g_Player[client].menustats[Stats_PyroDeaths] = results.FetchInt(37);
+			g_Player[client].menustats[Stats_DemoDeaths] = results.FetchInt(38);
+			g_Player[client].menustats[Stats_HeavyDeaths] = results.FetchInt(39);
+			g_Player[client].menustats[Stats_EngieDeaths] = results.FetchInt(40);
+			g_Player[client].menustats[Stats_MedicDeaths] = results.FetchInt(41);
+			g_Player[client].menustats[Stats_SniperDeaths] = results.FetchInt(42);
+			g_Player[client].menustats[Stats_SpyDeaths] = results.FetchInt(43);
 			
-			g_Player[client].topstats[Stats_BuildingsPlaced] = results.FetchInt(44);
-			g_Player[client].topstats[Stats_DispensersPlaced] = results.FetchInt(45);
-			g_Player[client].topstats[Stats_SentryGunsPlaced] = results.FetchInt(46);
-			g_Player[client].topstats[Stats_TeleporterEntrancesPlaced] = results.FetchInt(47);
-			g_Player[client].topstats[Stats_TeleporterExitsPlaced] = results.FetchInt(48);
-			g_Player[client].topstats[Stats_MiniSentryGunsPlaced] = results.FetchInt(49);
-			g_Player[client].topstats[Stats_SappersPlaced] = results.FetchInt(50);
-			g_Player[client].topstats[Stats_BuildingsDestroyed] = results.FetchInt(51);
-			g_Player[client].topstats[Stats_DispensersDestroyed] = results.FetchInt(52);
-			g_Player[client].topstats[Stats_SentryGunsDestroyed] = results.FetchInt(53);
-			g_Player[client].topstats[Stats_TeleporterEntrancesDestroyed] = results.FetchInt(54);
-			g_Player[client].topstats[Stats_TeleporterExitsDestroyed] = results.FetchInt(55);
-			g_Player[client].topstats[Stats_MiniSentryGunsDestroyed] = results.FetchInt(56);
-			g_Player[client].topstats[Stats_SappersDestroyed] = results.FetchInt(57);
+			g_Player[client].menustats[Stats_BuildingsPlaced] = results.FetchInt(44);
+			g_Player[client].menustats[Stats_DispensersPlaced] = results.FetchInt(45);
+			g_Player[client].menustats[Stats_SentryGunsPlaced] = results.FetchInt(46);
+			g_Player[client].menustats[Stats_TeleporterEntrancesPlaced] = results.FetchInt(47);
+			g_Player[client].menustats[Stats_TeleporterExitsPlaced] = results.FetchInt(48);
+			g_Player[client].menustats[Stats_MiniSentryGunsPlaced] = results.FetchInt(49);
+			g_Player[client].menustats[Stats_SappersPlaced] = results.FetchInt(50);
+			g_Player[client].menustats[Stats_BuildingsDestroyed] = results.FetchInt(51);
+			g_Player[client].menustats[Stats_DispensersDestroyed] = results.FetchInt(52);
+			g_Player[client].menustats[Stats_SentryGunsDestroyed] = results.FetchInt(53);
+			g_Player[client].menustats[Stats_TeleporterEntrancesDestroyed] = results.FetchInt(54);
+			g_Player[client].menustats[Stats_TeleporterExitsDestroyed] = results.FetchInt(55);
+			g_Player[client].menustats[Stats_MiniSentryGunsDestroyed] = results.FetchInt(56);
+			g_Player[client].menustats[Stats_SappersDestroyed] = results.FetchInt(57);
 			
-			g_Player[client].topstats[Stats_PointsCaptured] = results.FetchInt(58);
-			g_Player[client].topstats[Stats_PointsDefended] = results.FetchInt(59);
-			g_Player[client].topstats[Stats_FlagsPickedUp] = results.FetchInt(60);
-			g_Player[client].topstats[Stats_FlagsCaptured] = results.FetchInt(61);
-			g_Player[client].topstats[Stats_FlagsStolen] = results.FetchInt(62);
-			g_Player[client].topstats[Stats_FlagsDefended] = results.FetchInt(63);
-			g_Player[client].topstats[Stats_FlagsDropped] = results.FetchInt(64);
+			g_Player[client].menustats[Stats_PointsCaptured] = results.FetchInt(58);
+			g_Player[client].menustats[Stats_PointsDefended] = results.FetchInt(59);
+			g_Player[client].menustats[Stats_FlagsPickedUp] = results.FetchInt(60);
+			g_Player[client].menustats[Stats_FlagsCaptured] = results.FetchInt(61);
+			g_Player[client].menustats[Stats_FlagsStolen] = results.FetchInt(62);
+			g_Player[client].menustats[Stats_FlagsDefended] = results.FetchInt(63);
+			g_Player[client].menustats[Stats_FlagsDropped] = results.FetchInt(64);
 			
-			g_Player[client].topstats[Stats_TeleportersUsed] = results.FetchInt(65);
-			g_Player[client].topstats[Stats_PlayersTeleported] = results.FetchInt(66);
-			g_Player[client].topstats[Stats_CoatedPiss] = results.FetchInt(67);
-			g_Player[client].topstats[Stats_CoatedMilk] = results.FetchInt(68);
-			g_Player[client].topstats[Stats_CoatedGasoline] = results.FetchInt(69);
-			g_Player[client].topstats[Stats_Coated] = results.FetchInt(70);
-			g_Player[client].topstats[Stats_Extinguished] = results.FetchInt(71);
-			//g_Player[client].topstats[Stats_Ignited] = results.FetchInt(XX);
-			g_Player[client].topstats[Stats_Ubercharged] = results.FetchInt(72);
-			g_Player[client].topstats[Stats_SandvichesStolen] = results.FetchInt(73);
-			g_Player[client].topstats[Stats_StunnedPlayers] = results.FetchInt(74);
-			g_Player[client].topstats[Stats_MoonShotStunnedPlayers] = results.FetchInt(75);
+			g_Player[client].menustats[Stats_TeleportersUsed] = results.FetchInt(65);
+			g_Player[client].menustats[Stats_PlayersTeleported] = results.FetchInt(66);
+			g_Player[client].menustats[Stats_CoatedPiss] = results.FetchInt(67);
+			g_Player[client].menustats[Stats_CoatedMilk] = results.FetchInt(68);
+			g_Player[client].menustats[Stats_CoatedGasoline] = results.FetchInt(69);
+			g_Player[client].menustats[Stats_Coated] = results.FetchInt(70);
+			g_Player[client].menustats[Stats_Extinguished] = results.FetchInt(71);
+			//g_Player[client].menustats[Stats_Ignited] = results.FetchInt(XX);
+			g_Player[client].menustats[Stats_Ubercharged] = results.FetchInt(72);
+			g_Player[client].menustats[Stats_SandvichesStolen] = results.FetchInt(73);
+			g_Player[client].menustats[Stats_StunnedPlayers] = results.FetchInt(74);
+			g_Player[client].menustats[Stats_MoonShotStunnedPlayers] = results.FetchInt(75);
 			
-			g_Player[client].topstats[Stats_MonoculusStunned] = results.FetchInt(76);
-			g_Player[client].topstats[Stats_MerasmusStunned] = results.FetchInt(77);
-			g_Player[client].topstats[Stats_MonoculusFragged] = results.FetchInt(78);
-			g_Player[client].topstats[Stats_MerasmusFragged] = results.FetchInt(79);
-			g_Player[client].topstats[Stats_HHHFragged] = results.FetchInt(80);
-			g_Player[client].topstats[Stats_SkeletonKingsFragged] = results.FetchInt(81);
+			g_Player[client].menustats[Stats_MonoculusStunned] = results.FetchInt(76);
+			g_Player[client].menustats[Stats_MerasmusStunned] = results.FetchInt(77);
+			g_Player[client].menustats[Stats_MonoculusFragged] = results.FetchInt(78);
+			g_Player[client].menustats[Stats_MerasmusFragged] = results.FetchInt(79);
+			g_Player[client].menustats[Stats_HHHFragged] = results.FetchInt(80);
+			g_Player[client].menustats[Stats_SkeletonKingsFragged] = results.FetchInt(81);
 			
-			//g_Player[client].topstats[Stats_RobotsFragged] = results.FetchInt(XX);
-			g_Player[client].topstats[Stats_TanksDestroyed] = results.FetchInt(82);
-			g_Player[client].topstats[Stats_SentryBustersFragged] = results.FetchInt(83);
-			g_Player[client].topstats[Stats_BombsResetted] = results.FetchInt(84);
+			//g_Player[client].menustats[Stats_RobotsFragged] = results.FetchInt(XX);
+			g_Player[client].menustats[Stats_TanksDestroyed] = results.FetchInt(82);
+			g_Player[client].menustats[Stats_SentryBustersFragged] = results.FetchInt(83);
+			g_Player[client].menustats[Stats_BombsResetted] = results.FetchInt(84);
 			
 			//
 			
-			bSuccess = true;
+			return true;
 		}
 	}
 	
 	delete results;
-	SQL_UnlockDatabase(sql);
-	
-	return bSuccess;
+	return false;
 }
 
 void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stats, bool top_player=false)
@@ -1678,8 +2074,8 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 				case true:
 				{
 					char country[64], last_connected[128];
-					GeoipCountryName(client, g_Player[client].topstatsip, country, sizeof(country));
-					GetLastConnectedFormat(client, g_Player[client].topstatsip, g_Player[client].toplastconnected, last_connected, sizeof(last_connected));
+					GeoipCountryName(client, g_Player[client].menustats_ip, country, sizeof(country));
+					GetLastConnectedFormat(client, g_Player[client].menustats_ip, g_Player[client].menustats_lastconnected, last_connected, sizeof(last_connected));
 					
 					//PanelItem(panel, "  %T", "#SMStats_MenuInfo_Profile", client); // need a working Steam32 (STEAM_0:0:123456 => 7655168912398123456)
 					PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, play_time);

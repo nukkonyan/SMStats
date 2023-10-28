@@ -54,7 +54,7 @@ enum struct SMStats_PlayerInfo
 	int active_page_mainmenu;
 	int active_page_menu;
 	int active_page_session;
-	int active_page_total;
+	int active_page_activestats;
 	int active_page_topstats;
 	bool bMenuCheckPosition;
 	
@@ -73,13 +73,12 @@ enum struct SMStats_PlayerInfo
 	bool bShowDeathMsgUpdated;
 	
 	int session[SMStats_StatsSize];
-	int totalstats[SMStats_StatsSize];
-	int topstats[SMStats_StatsSize];
-	char topstatsname[64];
-	char topstatsauth[64];
-	char topstatsip[16];
-	int toppos;
-	int toplastconnected;
+	int menustats[SMStats_StatsSize];
+	char menustats_name[64];
+	char menustats_auth[64];
+	char menustats_ip[16];
+	int menustats_pos;
+	int menustats_lastconnected;
 	SMStats_FragMsgInfo fragmsg;
 	
 	void Reset()
@@ -92,16 +91,7 @@ enum struct SMStats_PlayerInfo
 		//this.bAlreadyConnected = false;
 		this.points = -1;
 		this.position = -1;
-		this.active_page_mainmenu = -1;
 		this.active_page_menu = -1;
-		this.active_page_session = -1;
-		this.active_page_total = -1;
-		this.active_page_topstats = -1;
-		this.topstatsname = "";
-		this.topstatsauth = "";
-		this.topstatsip = "";
-		this.toppos = -1;
-		this.toplastconnected = -1;
 		
 		this.bPlayConSnd = false;
 		this.bPlayConSndUpdated = false;
@@ -121,25 +111,24 @@ enum struct SMStats_PlayerInfo
 		this.bShowDeathMsg = false;
 		this.bShowDeathMsgUpdated = false;
 		
-		for(int type = 0; type < SMStats_StatsSize; type++)
-		{
-			this.session[type] = -1;
-			this.totalstats[type] = -1;
-			this.topstats[type] = -1;
-		}
+		this.ResetMenuStats()
 		this.fragmsg.Reset();
 	}
 	
-	void ResetTopStats()
+	void ResetMenuStats()
 	{
-		this.topstatsname = "";
-		this.topstatsauth = "";
-		this.topstatsip = "";
-		this.toppos = -1;
-		this.toplastconnected = -1;
+		this.active_page_mainmenu = -1;
+		this.active_page_session = -1;
+		this.active_page_activestats = -1;
+		this.active_page_topstats = -1;
+		this.menustats_name = "";
+		this.menustats_auth = "";
+		this.menustats_ip = "";
+		this.menustats_pos = -1;
+		this.menustats_lastconnected = -1;
 		for(int type = 0; type < SMStats_StatsSize; type++)
 		{
-			this.topstats[type] = -1;
+			this.menustats[type] = -1;
 		}
 	}
 }

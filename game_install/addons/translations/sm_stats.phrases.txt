@@ -274,7 +274,7 @@
 	//================================//
 	"#SMStats_Menu_Session"
 	{
-		"en" "Session."
+		"en" "Session"
 		"jp" "セッション"
 	}
 	"#SMStats_Menu_SessionInfo"
@@ -284,7 +284,7 @@
 	}
 	"#SMStats_Menu_ActiveStats"
 	{
-		"en" "Active stats."
+		"en" "Active stats"
 		"sv" "Nuvarande stats."
 	}
 	"#SMStats_Menu_ActiveStatsInfo"
