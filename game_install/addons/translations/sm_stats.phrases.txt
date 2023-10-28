@@ -229,6 +229,19 @@
 	}
 
 	//================================//
+	// Banned.
+	//================================//
+	"#SMStats_Player_Banned"
+	{
+		// {1} player name
+		// {2} player position
+		// {3} player points
+		"#format" "{1:s},{2:i},{3:s}"
+		"en" "{1} (Pos #{2}, {3}) {darkred}has been banned and removed from SMStats completely."
+		"sv" "{1} (Pos #{2}, {3}) {darkred}blev bannad och borttagen från SMStats helt hållet."
+	}
+
+	//================================//
 	// Connection.
 	//================================//
 	"#SMStats_Player_Connected"
