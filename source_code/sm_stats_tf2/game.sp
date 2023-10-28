@@ -737,10 +737,11 @@ void PrepareGame()
 	
 	AutoExecConfig(true);
 	
-	RegAdminCmd("sm_asdf", asdfCmd, ADMFLAG_ROOT);
+	RegAdminCmd("sm_asdf1", asdf1Cmd, ADMFLAG_ROOT);
+	RegAdminCmd("sm_asdf2", asdf2Cmd, ADMFLAG_ROOT);
 }
 
-Action asdfCmd(int client, int args)
+Action asdf1Cmd(int client, int args)
 {
 	char penalty_time[128], points_plural[32];
 	GetTimeFormat(client, g_PenaltySeconds, penalty_time, sizeof(penalty_time));
@@ -752,6 +753,18 @@ Action asdfCmd(int client, int args)
 	, points_plural
 	, penalty_time
 	, 69);
+	return Plugin_Continue;
+}
+
+Action asdf2Cmd(int client, int args)
+{
+	char points_plural[32];
+	PointsPluralSplitter(client, g_Player[client].points, points_plural, sizeof(points_plural));
+	
+	CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_Player_Banned", client
+	, g_Player[client].name
+	, g_Player[client].position
+	, points_plural);
 	return Plugin_Continue;
 }
 

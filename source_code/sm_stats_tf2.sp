@@ -74,6 +74,8 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	}
 	
 	CreateNative("SMStats.Native_GetPlayerSessionInfo", Native_GetPlayerSessionInfo);
+	CreateNative("_sm_stats_detect_ban_player_auth", Native_BanPlayer_Auth);
+	CreateNative("_sm_stats_detect_ban_player_ip", Native_BanPlayer_IPAddress);
 	
 	return APLRes_Success;
 }

@@ -219,8 +219,8 @@
 		// {4} penalty time format
 		// {5} points reverted
 		"#format" "{1:s},{2:i},{3:s},{4:s},{5:i}"
-		"en" "{1} (Pos #{2}, {3}) {red}was given {yellow}{4} {red}penalty due to abusing spam. Your recent abused {5} points was reverted. You will not be able to gain points during penalty."
-		"sv" "{1} (Pos #{2}, {3}) {red}blev given en {yellow}{4} {red}staff på grund av att missbruka spam. Dina senaste missbrukade {5} poäng blev återställd. Du kan ej få poäng medans straffad."
+		"en" "{1} (Pos #{2}, {3}) {yellow}was given {4} penalty due to spam abuse. Abused {5} points were reverted."
+		"sv" "{1} (Pos #{2}, {3}) {yellow}blev straffad {4} på grund av spam-missbruka spam. Missbrukade {5} poäng återställdes."
 	}
 	"#SMStats_Points_Penalty"
 	{
@@ -231,14 +231,21 @@
 	//================================//
 	// Banned.
 	//================================//
-	"#SMStats_Player_Banned"
+	"#SMStats_Player_Detected_Banned"
 	{
 		// {1} player name
-		// {2} player position
-		// {3} player points
-		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} (Pos #{2}, {3}) {darkred}has been banned and removed from SMStats completely."
-		"sv" "{1} (Pos #{2}, {3}) {darkred}blev bannad och borttagen från SMStats helt hållet."
+		// {2} steamid
+		"#format" "{1:s},{2:s}"
+		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got banned and were removed from SMStats completely."
+		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}blev bannad och borttagen från SMStats helt hållet."
+	}
+	"#SMStats_Player_Detected_IPBanned"
+	{
+		// {1} player name
+		// {2} steamid
+		"#format" "{1:s},{2:s}"
+		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got ip-banned and were removed from SMStats completely."
+		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}fick ip-ban och blev borttagen från SMStats helt hållet."
 	}
 
 	//================================//
