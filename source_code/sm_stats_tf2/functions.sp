@@ -693,7 +693,8 @@ stock bool AssistedKills(Transaction txn
 					, int frags
 					, int client
 					, const int[] list_healercount
-					, const int[][] list_healer)
+					, const int[][] list_healer
+					, char[] list_steamid_assister)
 {
 	// spaghetti code
 	
@@ -738,12 +739,12 @@ stock bool AssistedKills(Transaction txn
 		
 		for(int i = 0; i < frags; i++)
 		{
-			int assist = list_assister[i];
-			if(assist > 0)
+			int userid_assist = list_assister[i];
+			if(userid_assist > 0)
 			{
 				for(int x = 0; x < assisters.Length; x++)
 				{
-					if(assisters.Get(x) == assist)
+					if(assisters.Get(x) == userid_assist)
 					{
 						assister_count[x]++;
 						
@@ -764,12 +765,12 @@ stock bool AssistedKills(Transaction txn
 			{
 				for(int x = 0; x < healers; x++)
 				{
-					int healer = list_healer[x][i];
-					if(healer != assist)
+					int userid_healer = list_healer[x][i];
+					if(userid_healer != userid_assist)
 					{
 						for(int y = 0; y < assisters.Length; y++)
 						{
-							if(assisters.Get(y) == healer)
+							if(assisters.Get(y) == userid_healer)
 							{
 								assister_count[y]++;
 							}
@@ -789,6 +790,12 @@ stock bool AssistedKills(Transaction txn
 				
 				char dummy[256];
 				GetMultipleTargets(assist, list, frags, dummy, sizeof(dummy));
+				
+				switch(strlen(list_steamid_assister) < 1)
+				{
+					case false: Format(list_steamid_assister, 28*assisters.Length, ";%s", g_Player[assist].auth);
+					case true: Format(list_steamid_assister, 28*assisters.Length, g_Player[assist].auth);
+				}
 				
 				char query[1024];
 				int len = 0;

@@ -1,0 +1,39 @@
+create table if not exists `kill_log_tf2`
+(
+	`ID` int not null auto_increment,
+	`ServerID` int not null default '1',
+	`SteamID_Attacker` varchar(28) not null default '',
+	`SteamID_Victim` varchar(28) not null default '',
+	`SteamID_Assister` varchar(448) not null default '',
+	`Timestamp` int not null default '0',
+	`WeaponItemdef` int not null default '0',
+	`WeaponClassname` varchar(64) not null default '',
+
+	`Domination` bool not null default '0',
+	`Revenge` bool not null default '0',
+	`Airshot` bool not null default '0',
+	`Headshot` bool not null default '0',
+	`Noscope` bool not null default '0',
+	`Backstab` bool not null default '0',
+	`TauntFrag` bool not null default '0',
+	`GibFrag` bool not null default '0',
+	`DeflectFrag` bool not null default '0',
+	`TeleFrag` bool not null default '0',
+	`Collateral` bool not null default '0',
+	`MidAirFrag` bool not null default '0',
+	`CritFrag` bool not null default '0',
+	`MiniCritFrag` bool not null default '0',
+	`PumpkinBombFrag` bool not null default '0',
+	
+	`MiniSentryFrag` bool not null default '0',
+	`SentryFrag` bool not null default '0',
+	`SentryLVLFrag` int(4) not null default '0',
+	
+	`Ubercharged` bool not null default '0',
+	`VaccinatorTypeUsed` int(3) not null default '-1',
+	
+	`StunnedType` int(2) not null default '-1',
+	`CoatedType` int(3) not null default '-1',
+
+	primary key (`ID`)
+)
