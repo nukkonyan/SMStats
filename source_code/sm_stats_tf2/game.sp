@@ -2752,7 +2752,7 @@ Action MapTimer_GameTimer(Handle timer)
 					bool[] list_assister_dominate = new bool[frags];
 					bool[] list_assister_revenge = new bool[frags];
 					int[] list_healercount = new int[frags];
-					int[][] list_healer = new int[MaxPlayers][frags];
+					int[][] list_healer = new int[MaxPlayers+1][frags];
 					int[] list_inflictor = new int[frags];
 					int[] list_itemdef = new int[frags];
 					any[] list_class = new any[frags];

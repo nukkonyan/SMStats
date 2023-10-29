@@ -49,6 +49,7 @@ enum struct SMStats_PlayerInfo
 	char name2[64];
 	char ip[16];
 	//bool bAlreadyConnected;
+	bool bPenalty;
 	int points;
 	int position;
 	int active_page_mainmenu;
@@ -88,6 +89,7 @@ enum struct SMStats_PlayerInfo
 		this.profileid = ""
 		this.name = "";
 		this.name2 = "";
+		this.bPenalty = false;
 		//this.bAlreadyConnected = false;
 		this.points = -1;
 		this.position = -1;

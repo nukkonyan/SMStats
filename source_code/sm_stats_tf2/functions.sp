@@ -739,12 +739,12 @@ stock bool AssistedKills(Transaction txn
 		
 		for(int i = 0; i < frags; i++)
 		{
-			int userid_assist = list_assister[i];
-			if(userid_assist > 0)
+			int assist = list_assister[i];
+			if(assist > 0)
 			{
 				for(int x = 0; x < assisters.Length; x++)
 				{
-					if(assisters.Get(x) == userid_assist)
+					if(assisters.Get(x) == assist)
 					{
 						assister_count[x]++;
 						
@@ -765,12 +765,12 @@ stock bool AssistedKills(Transaction txn
 			{
 				for(int x = 0; x < healers; x++)
 				{
-					int userid_healer = list_healer[x][i];
-					if(userid_healer != userid_assist)
+					int healer = list_healer[x][i];
+					if(healer != assist)
 					{
 						for(int y = 0; y < assisters.Length; y++)
 						{
-							if(assisters.Get(y) == userid_healer)
+							if(assisters.Get(y) == healer)
 							{
 								assister_count[y]++;
 							}
@@ -793,7 +793,7 @@ stock bool AssistedKills(Transaction txn
 				
 				switch(strlen(list_steamid_assister) < 1)
 				{
-					case false: Format(list_steamid_assister, 28*assisters.Length, ";%s", g_Player[assist].auth);
+					case false: Format(list_steamid_assister, 28*assisters.Length, "%s;%s", list_steamid_assister, g_Player[assist].auth);
 					case true: Format(list_steamid_assister, 28*assisters.Length, g_Player[assist].auth);
 				}
 				

@@ -5,7 +5,7 @@
 #undef REQUIRE_PLUGIN
 #include <sm_stats_info>
 
-bool DEBUG = false;
+stock bool DEBUG = false;
 
 stock char str_statsCmd[][] =
 {
@@ -135,6 +135,30 @@ native void _sm_stats_info_update_maptimer(int iMapTimerSeconds);
 native void _sm_stats_info_save_crucial_stuff(bool bLoaded, bool bStatsActive, bool bRoundActive, int iMapTimerSeconds);
 native void _sm_stats_info_get_crucial_stuff(any[] this_way_with_arrays_sucks_pls_add_SetNativeCell);
 
+/*
+ * Removes the player from the SMStats statistical database.
+ * This is used with a ban plugin such as SourceBans++.
+ * Writes a chat message that the player has been detected banned.
+ *
+ * @param	auth					The users authentication id.
+ * @param	only_same_gameserver	If true, only removes the player from all tracking on same game as the server where player were banned on is using.
+ *
+ * @noreturn
+ */
+native void _sm_stats_detect_ban_player_auth(const char[] auth, bool only_same_gameserver=false);
+
+/*
+ * Removes the player from the SMStats statistical database.
+ * This is used with a ban plugin such as SourceBans++.
+ * Writes a chat message that the player has been detected ip banned.
+ *
+ * @param	ip						ip address.
+ * @param	only_same_gameserver	If true, only removes the player from all tracking on same game as the server where player were banned on is using.
+ *
+ * @noreturn
+ */
+native void _sm_stats_detect_ban_player_ip(const char[] ip, bool only_same_gameserver=false);
+
 #if defined load_plugin_core
 
 // default important things
@@ -142,7 +166,7 @@ native void _sm_stats_info_get_crucial_stuff(any[] this_way_with_arrays_sucks_pl
 #define sql_table_playerlist "playerlist_"...GameType
 #define sql_table_weapons "weapons_"...GameType
 #define sql_table_kill_log "kill_log_"...GameType
-#define sql_table_item_found "item_found_"...GameType
+#define sql_table_item_log "item_log_"...GameType
 #define sql_table_maps_log "maps_log_"... GameType
 #define sql_table_achievements "achievements_"... GameType
 #define sql_table_settings "settings"
@@ -314,7 +338,7 @@ char g_strTableName[][] =
 	/*0*/sql_table_playerlist
 	/*1*/,sql_table_weapons
 	/*2*/,sql_table_kill_log
-	/*3*/,sql_table_item_found
+	/*3*/,sql_table_item_log
 	/*4*/,sql_table_maps_log
 	/*5*/,sql_table_achievements
 	/*6*/,sql_table_settings
@@ -329,9 +353,10 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 	if(bOnPluginStart)
 	{
 		File file;
-		char path[96], query[16177], table[128];
+		char path[64], query[16177], table[128];
 		int len;
 		
+		#if defined sql_loadtable_playerlist
 		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_playerlist);
 		switch(!!(file = OpenFile(path, "r")))
 		{
@@ -357,7 +382,11 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 				len = 0;
 			}
 		}
+		#endif
 		
+		//
+		
+		#if defined sql_loadtable_weapons
 		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_weapons);
 		switch(!!(file = OpenFile(path, "r")))
 		{
@@ -383,9 +412,47 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 				len = 0;
 			}
 		}
+		#endif
 		
 		//
 		
+		#if defined sql_loadtable_kill_log
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_kill_log);
+		switch(!!(file = OpenFile(path, "r")))
+		{
+			case false:
+			{
+				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking frag events.), Did you install it correctly?", sql_table_kill_log);
+			}
+			
+			case true:
+			{
+				while(!file.EndOfFile() && file.ReadLine(table, sizeof(table)))
+				{
+					ReplaceString(table, sizeof(table), "\n", "");
+					ReplaceString(table, sizeof(table), "\r", "");
+					ReplaceString(table, sizeof(table), "\t", "");
+					
+					len += Format(query[len], sizeof(query)-len, table);
+				}
+				
+				sql.Query(DBQuery_InsertTables, query, 1);
+				
+				query = "";
+				len = 0;
+			}
+		}
+		#endif
+		
+		//
+		
+		#if defined sql_loadtable_item_log
+		// item logs here
+		#endif
+		
+		//
+		
+		#if defined sql_loadtable_maps_log
 		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_maps_log);
 		switch(!!(file = OpenFile(path, "r")))
 		{
@@ -411,13 +478,17 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 				len = 0;
 			}
 		}
+		#endif
 		
 		//
 		
+		#if defined sql_loadtable_achievements
 		// achievements here
+		#endif
 		
 		//
 		
+		#if defined sql_loadtable_settings
 		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_settings);
 		switch(!!(file = OpenFile(path, "r")))
 		{
@@ -443,8 +514,10 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 				len = 0;
 			}
 		}
+		#endif
 		
 		//
+		
 		
 		int client = 0;
 		while((client = FindEntityByClassname(client, "player")) > 0)
