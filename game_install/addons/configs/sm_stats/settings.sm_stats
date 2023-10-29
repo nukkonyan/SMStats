@@ -1,6 +1,12 @@
 create table if not exists `settings`
 (
+	`PlayerName` varchar(64) not null default 'ERR_NAME_NOT_FOUND',
 	`SteamID` varchar(28) not null default '',
+	`IPAddress` varchar(16) not null default '',
+	`LastConnectedGame` varchar(16) not null default 'invalid_game',
+	`LastConnectedServerID` int(4) not null default '0',
+	`LastConnectedTime` int not null default '0',
+	`Penalty` bool not null default '0',
 	`PlayConnectSnd` bool not null default '1',
 	`ShowConnectMsg` bool not null default '1',
 	`ShowTopConnectMsg` bool not null default '1',

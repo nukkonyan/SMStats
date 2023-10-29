@@ -19,7 +19,7 @@
 #define sql_loadtable_playerlist
 #define sql_loadtable_weapons
 #define sql_loadtable_kill_log
-//#define sql_loadtable_item_log
+#define sql_loadtable_item_log
 #define sql_loadtable_maps_log
 //#define sql_loadtable_achievements
 #define sql_loadtable_settings
@@ -63,7 +63,8 @@
 #define query_error_uniqueid_UpdateMapTimeUpdatingSeconds 83
 #define query_error_uniqueid_OnPlayerNameUpdate 84
 #define query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected 85
-#define query_error_uniqueid_OnUpdatedMenuSettingValue 86
+#define query_error_uniqueid_OnPlayerDisconnectUpdatePlayTime 86
+#define query_error_uniqueid_OnUpdatedMenuSettingValue 87
 
 SMStats_TF2GameInfo g_Game[MaxPlayers+1];
 

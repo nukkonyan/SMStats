@@ -782,16 +782,16 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	int attacker = event.GetInt("attacker");
-	if(userid < 1
-	|| attacker < 1)
+	int death_flags = event.GetInt("death_flags");
+	if(death_flags & TF_DEATHFLAG_DEADRINGER)
 	{
 		return;
 	}
 	
-	int death_flags = event.GetInt("death_flags");
-	if(death_flags & TF_DEATHFLAG_DEADRINGER)
+	int userid = event.GetInt("userid");
+	int attacker = event.GetInt("attacker");
+	if(userid < 1
+	|| attacker < 1)
 	{
 		return;
 	}
@@ -816,7 +816,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	}
 	
 	int victim = GetClientOfUserId(userid);
-	if(!IsValidClient(victim, !bAllowBots ? true : false))
+	if(!IsValidClient(victim, !bAllowBots))
 	{
 		return;
 	}
@@ -937,7 +937,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	{
 		if(itemdef > MaxItemDef)
 		{
-			PrintToServer("%s An error has occured, itemdef %i (classname '%s') seems to be new to the current version (%s) and needs to be updated."
+			LogError("%s An error has occured, itemdef %i (classname '%s') seems to be new to the current version (%s) and needs to be updated."
 			, core_chattag, itemdef, classname, Version);
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag, "#SMStats_FragEventError_NewItem", client, itemdef, classname, Version);
@@ -945,7 +945,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		else if(itemdef < 0)
 		{
-			PrintToServer("%s An error has occured, itemdef %i (classname '%s') is invalid."
+			LogError("%s An error has occured, itemdef %i (classname '%s') is invalid."
 			, core_chattag, itemdef, classname);
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag, "#SMStats_FragEventError_InvalidItem", client, itemdef, classname);
@@ -953,7 +953,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		else if(!array_GetWeapon(itemdef))
 		{
-			PrintToServer("%s An error has occured, itemdef %i (classname '%s') seems to have invalid convar handle! (New item perhaps?)"
+			LogError("%s An error has occured, itemdef %i (classname '%s') seems to have invalid convar handle! (New item perhaps?)"
 			, core_chattag, itemdef, classname);
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag, "#SMStats_FragEventError_InvalidItemCvar", client, itemdef, classname);

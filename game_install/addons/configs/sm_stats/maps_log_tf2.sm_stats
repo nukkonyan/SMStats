@@ -1,7 +1,6 @@
 create table if not exists `maps_log_tf2`
 (
 	`ID` int not null auto_increment,
-	`ServerID` int not null default '1',
 	`MapName` varchar(64) not null default '',
 	`PlayTime` int not null default '0',
 	`Frags` int not null default '0',
