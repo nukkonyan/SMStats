@@ -77,7 +77,7 @@ enum struct StatsMenuInfo
 		, "#SMStats_Menu_Session", client
 		, "#SMStats_Menu_Page", client, page);
 		
-		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].session);
+		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].session, _, g_Player[client].bPenalty);
 		
 		panel.Send(client, StatsMenu_Session, MENU_TIME_FOREVER);
 		delete panel;
@@ -108,7 +108,7 @@ enum struct StatsMenuInfo
 		, "#SMStats_Menu_ActiveStats", client
 		, "#SMStats_Menu_Page", client, page);
 		
-		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].menustats);
+		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].menustats, _, g_Player[client].menustats_penalty);
 		
 		panel.Send(client, StatsMenu_ActiveStatsInfo, MENU_TIME_FOREVER);
 		delete panel;
@@ -187,7 +187,7 @@ enum struct StatsMenuInfo
 		, g_Player[client].menustats_name
 		, "#SMStats_Menu_Page", client, page);
 		
-		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].menustats, true);
+		TF2_GetStatisticalInformation(panel, client, page, g_Player[client].menustats, true, g_Player[client].menustats_penalty);
 		
 		panel.Send(client, StatsMenu_TopStatsInfo, MENU_TIME_FOREVER);
 		delete panel;
@@ -2094,7 +2094,7 @@ bool TF2_GetPlayerSQLInfo(int client
 	return bReturn;
 }
 
-void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stats, bool top_player=false)
+void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stats, bool top_player=false, bool penalty=false)
 {
 	switch(page)
 	{
@@ -2120,8 +2120,22 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 			}
 			switch(stats[Stats_Points] >= 0)
 			{
-				case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, stats[Stats_Points]);
-				case true: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, stats[Stats_Points]*2);
+				case false:
+				{
+					switch(penalty)
+					{
+						case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, stats[Stats_Points]);
+						case true: PanelText(panel, "  %T%T", "#SMStats_MenuInfo_PointsLost", client, stats[Stats_Points], "#SMStats_Points_Penalty", client);
+					}
+				}
+				case true:
+				{
+					switch(penalty)
+					{
+						case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, stats[Stats_Points]);
+						case true: PanelText(panel, "  %T%T", "#SMStats_MenuInfo_PointsEarned", client, stats[Stats_Points], "#SMStats_Points_Penalty", client);
+					}
+				}
 			}
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Frags", client, stats[Stats_Frags]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Assists", client, stats[Stats_Assists]);

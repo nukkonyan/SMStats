@@ -261,7 +261,7 @@ public void OnMapStart()
 
 void CheckDatabase(bool bOnPluginStart=false)
 {
-	if(!!sql)
+	if(sql != null)
 	{
 		return;
 	}
@@ -277,7 +277,7 @@ void CheckDatabase(bool bOnPluginStart=false)
 
 Action Timer_CheckDatabase(Handle timer, bool bOnPluginStart)
 {
-	if(!sql)
+	if(sql == null)
 	{
 		Database.Connect(DBConnect, _sm_stats_db, bOnPluginStart);
 	}
@@ -287,9 +287,10 @@ Action Timer_CheckDatabase(Handle timer, bool bOnPluginStart)
 
 void DBConnect(Database database, const char[] error, bool bOnPluginStart)
 {
-	if(!database)
+	if(database == null)
 	{
 		SetFailState("%s Database connection failed! (%s)", core_chattag, error);
+		return;
 	}
 	
 	sql = database;
