@@ -1,4 +1,4 @@
-### Testing branch
+### Experimental testing branch
    - This is a temporary testing branch, testing SQL stability.
    - If stability issues are found, this will immediately be reverted back.
 ### SMStats
