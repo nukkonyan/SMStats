@@ -1,4 +1,6 @@
 ### SMStats
+   - This is a temporary testing branch, testing SQL stability.
+      - If stability issues are found, this will immediately be reverted back.
    - 100% translation supported.
       - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
       - Translation submissions are welcome and currently is demanded, and would definitely be very appreciating!! ヽ(*・ω・)ﾉ
