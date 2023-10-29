@@ -1,6 +1,6 @@
 ### Testing branch
    - This is a temporary testing branch, testing SQL stability.
-      - If stability issues are found, this will immediately be reverted back.
+   - If stability issues are found, this will immediately be reverted back.
 ### SMStats
    - 100% translation supported.
       - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
