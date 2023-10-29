@@ -1030,9 +1030,10 @@ int StatsMenu_TopStats(Menu menu, MenuAction action, int client, int select)
 			, g_Player[client].menustats_auth
 			, g_Player[client].menustats_name
 			, sizeof(g_Player[].menustats_name)
-			, g_Player[client].menustats_ip)
+			, g_Player[client].menustats_ip
 			, sizeof(g_Player[].menustats_ip)
-			, g_Player[client].menustats_lastconnected)
+			, g_Player[client].menustats_lastconnected
+			, g_Player[client].menustats_penalty))
 			{
 				g_Player[client].active_page_menu = menu.Selection;
 				g_Player[client].active_page_topstats = 1;
