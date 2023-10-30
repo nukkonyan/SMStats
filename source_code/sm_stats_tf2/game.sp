@@ -3200,8 +3200,8 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
-					len += Format(query[len], sizeof(query)-len, "update `%s` set Frags = Frags+%i", sql_table_playerlist, frags);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set Frags = Frags+%i", sql_table_maps_log, frags);
+					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Frags = Frags+%i", frags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set Frags = Frags+%i", frags);
 					
 					if(iWepFrags > 0)
 					{
@@ -3211,8 +3211,8 @@ Action MapTimer_GameTimer(Handle timer)
 							{
 								char fix_weapon[64], query_wep[256];
 								CorrectWeaponClassname(event.class_attacker, list_classname[i], sizeof(fix_weapon), list_itemdef[i], list_classname_backup[i]);
-								Format(query_wep, sizeof(query_wep), "update `%s` set %s = %s+1 where SteamID = '%s' and ServerID = %i"
-								, sql_table_weapons, list_classname[i], list_classname[i], g_Player[client].auth, g_ServerID);
+								Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set %s = %s+1 where SteamID = '%s' and ServerID = %i"
+								, list_classname[i], list_classname[i], g_Player[client].auth, g_ServerID);
 								txn.AddQuery(query_wep, queryId_frag_weapon);
 							}
 						}
@@ -3613,8 +3613,8 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
-					len += Format(query[len], sizeof(query)-len, "update `%s` set BuildingsPlaced = BuildingsPlaced+%i", sql_table_playerlist, buildings);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set BuildingsPlaced = BuildingsPlaced+%i", sql_table_maps_log, buildings);
+					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set BuildingsPlaced = BuildingsPlaced+%i", buildings);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set BuildingsPlaced = BuildingsPlaced+%i", buildings);
 					if(sentryguns > 0)
 					{
 						len += Format(query[len], sizeof(query)-len, ", SentryGunsPlaced = SentryGunsPlaced+%i", sentryguns);
@@ -3770,8 +3770,8 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
-					len += Format(query[len], sizeof(query)-len, "update `%s` set BuildingsDestroyed = BuildingsDestroyed+%i", sql_table_playerlist, buildings);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set BuildingsDestroyed = BuildingsDestroyed+%i", sql_table_maps_log, buildings);
+					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set BuildingsDestroyed = BuildingsDestroyed+%i", buildings);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set BuildingsDestroyed = BuildingsDestroyed+%i", buildings);
 					if(sentryguns > 0)
 					{
 						len += Format(query[len], sizeof(query)-len, ", SentryGunsDestroyed = SentryGunsDestroyed+%i", sentryguns);
