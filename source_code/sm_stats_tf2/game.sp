@@ -1078,8 +1078,14 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_PointsCaptured]++;
 		
 		int points = 0;
-		if((points = g_PointCaptured.IntValue) > 0)
+		int len = 0;
+		char query[256];
+		len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set");
+		len += Format(query[len], sizeof(query)-len, " PointsCaptured = PointsCaptured+1");
+		if((points = g_PointCaptured.IntValue) > 0 && !g_Player[client].bPenalty)
 		{
+			len += Format(query[len], sizeof(query)-len, " set Points = Points+%i", points);
+			
 			char phrase[64], points_plural[32];
 			Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_CaptureEvent_Type0", client, cpname);
 			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
@@ -1092,14 +1098,12 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 			, points_plural
 			, phrase);
 			
-			char query[256];
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, PointsCaptured = PointsCaptured+1 where SteamID = '%s' and ServerID = %i"
-			, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
-			txn.AddQuery(query, query_error_uniqueid_CP_OnCapturedPoint);
-			
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 		}
+		
+		len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+		txn.AddQuery(query, query_error_uniqueid_CP_OnCapturedPoint);
 	}
 	
 	sql.Execute(txn, _, TXN_Callback_Failure);
@@ -1138,7 +1142,17 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 	g_Player[client].session[Stats_PointsDefended]++;
 	
 	int points = 0;
-	if((points = g_PointBlocked.IntValue) < 1)
+	int len = 0;
+	char query[256];
+	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set PointsDefended = PointsDefended+1");
+	if((points = g_PointBlocked.IntValue) > 0 && !g_Player[client].bPenalty)
+	{
+		len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+	}
+	len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	sql.Query(DBQuery_Callback, query, query_error_uniqueid_CP_OnCapturedPoint);
+	
+	if(points > 0 && !g_Player[client].bPenalty)
 	{
 		char cpname[64], phrase[64], points_plural[32];
 		event.GetString("cpname", cpname, sizeof(cpname));
@@ -1152,10 +1166,6 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 		, g_Player[client].points
 		, points_plural
 		, phrase);
-		
-		CallbackQuery("update `%s` set Points = Points+%i, PointsDefended = PointsDefended+1 where SteamID = '%s' and ServerID = %i"
-		, query_error_uniqueid_CP_OnCaptureBlocked
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
 		
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].points += points;
@@ -1194,6 +1204,10 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	else if((points = g_FlagEvent[event_type-1].IntValue) < 1)
+	{
+		return;
+	}
+	else if(g_Player[client].bPenalty)
 	{
 		return;
 	}
@@ -1470,14 +1484,8 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 		return;
 	}
 	
-	int victim = GetClientOfUserId(userid);
-	if(!IsValidClient(victim, !bAllowBots ? true : false))
-	{
-		return;
-	}
-	
-	int points = 0;
-	if((points = g_Ubercharged.IntValue) < 1)
+	int victim;
+	if(!IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots ? true : false))
 	{
 		return;
 	}
@@ -1490,27 +1498,36 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 		}
 	}
 	
-	g_Player[client].session[Stats_Points] += points;
-	
-	char points_plural[32];
-	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
-	
-	CPrintToChat(client, "%s %T"
-	, g_ChatTag
-	, "#SMStats_Player_Ubercharged", client
-	, g_Player[client].name
-	, g_Player[client].points
-	, points_plural
-	, g_Player[victim].name);
-	
-	g_Player[client].points += points;
-	
-	CallbackQuery("update `%s` set Points = Points+%i, Ubercharged = Ubercharged+1 where SteamID = '%s' and ServerID = %i"
-	, query_error_uniqueid_OnPlayerUbercharged
-	, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+	int points = 0;
+	int len;
+	char query[256];
+	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Ubercharged = Ubercharged+1");
+	if((points = g_Ubercharged.IntValue) > 0 && !g_Player[client].bPenalty)
+	{
+		len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+	}
+	len += Format(query[len], sizeof(query)-len, "where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerUbercharged);
 	
 	g_Game[client].bUbercharged = true;
 	CreateTimer(g_Time_Ubercharged, Timer_bUbercharged, GetClientUserId(client));
+	
+	if(points > 0 && !g_Player[client].bPenalty)
+	{
+		char points_plural[32];
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		
+		CPrintToChat(client, "%s %T"
+		, g_ChatTag
+		, "#SMStats_Player_Ubercharged", client
+		, g_Player[client].name
+		, g_Player[client].points
+		, points_plural
+		, g_Player[victim].name);
+		
+		g_Player[client].session[Stats_Points] += points;
+		g_Player[client].points += points;
+	}
 }
 
 /* Called as soon as a player enters a teleporter. */
@@ -1562,18 +1579,19 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 	
 	if(!g_Game[client].bUsedTeleporter)
 	{
+		txn = new Transaction();
+		
+		int len;
 		int points = 0;
-		if((points = g_Teleported.IntValue) > 0)
+		char query[256];
+		len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set TeleportersUsed = TeleportersUsed+1");
+		if((points = g_Teleported.IntValue) > 0 && !g_Player[client].bPenalty)
 		{
 			g_Player[client].session[Stats_Points] += points;
-			
-			txn = new Transaction();
-			
-			char query[256];
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, TeleportersUsed = TeleportersUsed+1 where SteamID = '%s' and ServerID = %i"
-			, sql_table_playerlist, g_Player[client].auth, g_ServerID);
-			txn.AddQuery(query, query_error_uniqueid_OnPlayerUsedTeleporter);
+			len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
 		}
+		len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+		txn.AddQuery(query, query_error_uniqueid_OnPlayerUsedTeleporter);
 		
 		g_Game[client].bUsedTeleporter = true;
 		CreateTimer(g_Time_UsedTeleporter, Timer_bUsedTeleporter, GetClientUserId(client));
@@ -1638,51 +1656,54 @@ void OnPlayerStealSandvich(Event event, const char[] event_name, bool dontBroadc
 		return;
 	}
 	
-	int points = 0;
-	if((points = g_SandvichStolen.IntValue) < 1)
-	{
-		return;
-	}
-	
 	g_Player[client].session[Stats_SandvichesStolen]++;
-	g_Player[client].session[Stats_Points] += points;
 	
-	char points_plural[32];
-	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
-	
-	int victim = GetClientOfUserId(owner);
-	switch(IsValidClient(victim, !bAllowBots ? true : false))
+	int len;
+	char query[256];
+	int points = 0;
+	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set SandvichesStolen = SandvichesStolen+1");
+	if((points = g_SandvichStolen.IntValue) > 0 && !g_Player[client].bPenalty)
 	{
-		case false:
-		{
-			CPrintToChat(client, "%s %T"
-			, g_ChatTag
-			, "#SMStats_Player_StealSandvich_Scenario1", client
-			, g_Player[client].name
-			, g_Player[client].points
-			, points_plural);
-		}
-		
-		case true:
-		{
-			CPrintToChat(client, "%s %T"
-			, g_ChatTag
-			, "#SMStats_Player_StealSandvich_Scenario0", client
-			, g_Player[client].name
-			, g_Player[client].points
-			, points_plural
-			, g_Player[victim].name);
-		}
+		g_Player[client].session[Stats_Points] += points;
+		g_Player[client].points += points;
+		len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
 	}
-	
-	g_Player[client].points += points;
-	
-	CallbackQuery("update `%s` set Points = Points+%i, SandvichesStolen = SandvichesStolen+1 where SteamID = '%s' and ServerID = %i"
-	, query_error_uniqueid_OnPlayerStealSandvich
-	, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+	len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerStealSandvich);
 	
 	g_Game[client].bStolenSandvich = true;
 	CreateTimer(g_Time_StolenSandvich, Timer_bStolenSandvich, GetClientUserId(client));
+	
+	if(points > 0 && !g_Player[client].bPenalty)
+	{
+		char points_plural[32];
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		
+		int victim = GetClientOfUserId(owner);
+		switch(IsValidClient(victim, !bAllowBots ? true : false))
+		{
+			case false:
+			{
+				CPrintToChat(client, "%s %T"
+				, g_ChatTag
+				, "#SMStats_Player_StealSandvich_Scenario1", client
+				, g_Player[client].name
+				, g_Player[client].points
+				, points_plural);
+			}
+			
+			case true:
+			{
+				CPrintToChat(client, "%s %T"
+				, g_ChatTag
+				, "#SMStats_Player_StealSandvich_Scenario0", client
+				, g_Player[client].name
+				, g_Player[client].points
+				, points_plural
+				, g_Player[victim].name);
+			}
+		}
+	}
 }
 
 /* Called as soon as a player stuns an opponent. */
@@ -1724,12 +1745,6 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int points = 0;
-	if((points = g_Stunned.IntValue) < 1)
-	{
-		return;
-	}
-	
 	int weapon;
 	char weapon_classname[64];
 	bool big_stun = false;
@@ -1752,57 +1767,62 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 		big_stun = event.GetBool("big_stun");
 	}
 	
-	char points_plural[32];
-	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
-	
-	g_Player[client].session[Stats_Points] += points;
 	g_Player[client].session[Stats_StunnedPlayers]++;
 	
-	char query[256];
+	int points = 0;
 	int len = 0;
-	
+	char query[256];
 	len += Format(query[len], sizeof(query)-len, "update `%s` set", sql_table_playerlist);
-	len += Format(query[len], sizeof(query)-len, " Points = Points+%i", points);
-	len += Format(query[len], sizeof(query)-len, ", StunnedPlayers = StunnedPlayers+1");
-	
-	switch(big_stun)
+	if((points = g_Stunned.IntValue) > 0 && !g_Player[client].bPenalty)
 	{
-		// Stunned
-		case false:
-		{
-			CPrintToChat(client, "%s %T"
-			, g_ChatTag
-			, "#SMStats_Player_StunScenario0", client
-			, g_Player[client].name
-			, g_Player[client].points
-			, points_plural
-			, g_Player[victim].name);
-		}
-		
-		// Stunned with a Moon shot using a baseball bat
-		case true:
-		{
-			g_Player[client].session[Stats_MoonShotStunnedPlayers]++;
-			
-			CPrintToChat(client, "%s %T"
-			, g_ChatTag
-			, "#SMStats_Player_StunScenario1", client
-			, g_Player[client].name
-			, g_Player[client].points
-			, points_plural
-			, g_Player[victim].name);
-			
-			len += Format(query[len], sizeof(query)-len, ", MoonShotStunnedPlayers = MoonShotStunnedPlayers+1");
-		}
+		g_Player[client].points += points;
+		g_Player[client].session[Stats_Points] += points;
+		len += Format(query[len], sizeof(query)-len, " Points = Points+%i", points);
 	}
-	
+	if(big_stun)
+	{
+		g_Player[client].session[Stats_MoonShotStunnedPlayers]++;
+		len += Format(query[len], sizeof(query)-len, ", MoonShotStunnedPlayers = MoonShotStunnedPlayers+1");
+	}
+	len += Format(query[len], sizeof(query)-len, ", StunnedPlayers = StunnedPlayers+1");
 	len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerStunned);
 	
-	CallbackQuery(query, query_error_uniqueid_OnPlayerStunned);
-	
-	g_Player[client].points += points;
 	g_Game[client].bStunned = true;
 	CreateTimer(g_Time_Stunned, Timer_bStunned, GetClientUserId(client));
+	
+	if(points > 0 && !g_Player[client].bPenalty)
+	{
+		char points_plural[32];
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		
+		switch(big_stun)
+		{
+			// Stunned
+			case false:
+			{
+				CPrintToChat(client, "%s %T"
+				, g_ChatTag
+				, "#SMStats_Player_StunScenario0", client
+				, g_Player[client].name
+				, g_Player[client].points
+				, points_plural
+				, g_Player[victim].name);
+			}
+			
+			// Stunned with a Moon shot using a baseball bat
+			case true:
+			{
+				CPrintToChat(client, "%s %T"
+				, g_ChatTag
+				, "#SMStats_Player_StunScenario1", client
+				, g_Player[client].name
+				, g_Player[client].points
+				, points_plural
+				, g_Player[victim].name);
+			}
+		}
+	}
 }
 
 /* Called as soon as a player kills an halloween boss. */
@@ -3389,7 +3409,7 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					g_Player[client].session[Stats_Frags] += frags;
 					
-					if(points >= 1)
+					if(points >= 1 && !g_Player[client].bPenalty)
 					{
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
@@ -3647,7 +3667,7 @@ Action MapTimer_GameTimer(Handle timer)
 					pack.Reset();
 					
 					// if translation is invalid, it wont stop middle of query, breaking the plugin.
-					if(points > 0)
+					if(points > 0 && !g_Player[client].bPenalty)
 					{
 						char dummy[255], phrase[64], points_plural[32];
 						GetMultipleObjects(client, list, objects, dummy, sizeof(dummy));
@@ -3803,7 +3823,7 @@ Action MapTimer_GameTimer(Handle timer)
 					pack.WriteCellArray(list, objects);
 					pack.Reset();
 					
-					if(points > 0)
+					if(points > 0 && !g_Player[client].bPenalty)
 					{
 						char dummy[256], phrase[64], points_plural[32];
 						GetMultipleObjects(client, list, objects, dummy, sizeof(dummy));
@@ -3854,17 +3874,23 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							if(!g_Game[client].bPlayerJarated)
 							{
-								if((points = g_Jarated.IntValue * jars) > 0)
+								int len;
+								char query[256];
+								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Coated = Coated+%i", jars);
+								if((points = g_Jarated.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
-									CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+%i, CoatedPiss = CoatedPiss+%i where SteamID = '%s' and ServerID = %i"
-									, query_error_uniqueid_OnPlayerJarated
-									, sql_table_playerlist, points, jars, jars, g_Player[client].auth, g_ServerID);
+									len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+									g_Player[client].session[Stats_Points] += points;
+									g_Player[client].points += points;
 								}
+								len += Format(query[len], sizeof(query)-len, ", CoatedPiss = CoatedPiss+%i", jars);
+								len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerJarated);
 								
 								g_Game[client].bPlayerJarated = true;
-								CreateTimer(g_Time_PlayerJarated, Timer_bPlayerJarated, GetClientUserId(client));
+								CreateTimer(g_Time_PlayerJarated, Timer_bPlayerJarated, g_Player[client].userid);
 								
-								if(points > 0)
+								if(points > 0 && !g_Player[client].bPenalty)
 								{
 									char points_plural[32];
 									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
@@ -3886,20 +3912,23 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							if(!g_Game[client].bPlayerMilked)
 							{
-								if((points = g_Milked.IntValue * jars) > 0)
+								int len;
+								char query[256];
+								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Coated = Coated+%i", jars);
+								if((points = g_Milked.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
+									len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
 									g_Player[client].session[Stats_Points] += points;
 									g_Player[client].points += points;
-									
-									CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+%i, CoatedMilk = CoatedMilk+%i where SteamID = '%s' and ServerID = %i"
-									, query_error_uniqueid_OnPlayerMilked
-									, sql_table_playerlist, points, jars, jars, g_Player[client].auth, g_ServerID);
 								}
+								len += Format(query[len], sizeof(query)-len, ", CoatedMilk = CoatedMilk+%i", jars);
+								len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerMilked);
 								
 								g_Game[client].bPlayerMilked = true;
-								CreateTimer(g_Time_PlayerMilked, Timer_bPlayerMilked, GetClientUserId(client));
+								CreateTimer(g_Time_PlayerMilked, Timer_bPlayerMilked, g_Player[client].userid);
 								
-								if(points > 0)
+								if(points > 0 && !g_Player[client].bPenalty)
 								{
 									char points_plural[32];
 									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
@@ -3921,20 +3950,23 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							if(!g_Game[client].bPlayerGasPassed)
 							{
-								if((points = g_GasPassed.IntValue * jars) > 0)
+								int len;
+								char query[256];
+								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Coated = Coated+%i", jars);
+								if((points = g_GasPassed.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
+									len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
 									g_Player[client].session[Stats_Points] += points;
 									g_Player[client].points += points;
-									
-									CallbackQuery("update `%s` set Points = Points+%i, Coated = Coated+%i, CoatedGasoline = CoatedGasoline+%i where SteamID = '%s' and ServerID = %i"
-									, query_error_uniqueid_OnPlayerGasPassed
-									, sql_table_playerlist, points, jars, jars, g_Player[client].auth, g_ServerID);
 								}
+								len += Format(query[len], sizeof(query)-len, ", CoatedGasoline = CoatedGasoline+%i", jars);
+								len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerGasPassed);
 								
 								g_Game[client].bPlayerGasPassed = true;
-								CreateTimer(g_Time_PlayerGasPassed, Timer_bPlayerGasPassed, GetClientUserId(client));
+								CreateTimer(g_Time_PlayerGasPassed, Timer_bPlayerGasPassed, g_Player[client].userid);
 								
-								if(points > 0)
+								if(points > 0 && !g_Player[client].bPenalty)
 								{
 									char points_plural[32];
 									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
@@ -3974,21 +4006,23 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					if(!g_Game[client].bExtEvent)
 					{
-						int points = 0;
-						if((points = g_Extinguished.IntValue * exts) > 0)
+						int points;
+						int len;
+						char query[256];
+						len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Extinguished = Extinguished+%i", exts);
+						if((points = g_Extinguished.IntValue * exts) > 0 && !g_Player[client].bPenalty)
 						{
+							len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
 							g_Player[client].session[Stats_Points] += points;
 							g_Player[client].points += points;
-							
-							CallbackQuery("update `%s` set Points = Points+%i, Extinguished = Extinguished+%i where SteamID = '%s' and ServerID = %i"
-							, query_error_uniqueid_OnPlayerExtinguished
-							, sql_table_playerlist, points, exts, g_Player[client].auth, g_ServerID);
 						}
+						len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+						sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerExtinguished);
 						
 						g_Game[client].bExtEvent = true;
 						CreateTimer(g_Time_ExtEvent, Timer_bExtEvent, GetClientUserId(client));
 						
-						if(points > 0)
+						if(points > 0 && !g_Player[client].bPenalty)
 						{
 							char points_plural[32];
 							PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
@@ -4012,8 +4046,20 @@ Action MapTimer_GameTimer(Handle timer)
 				
 				g_Player[client].session[Stats_RobotsFragged] += robots;
 				
-				int points = 0;
-				if((points = g_MvM[MvM_FragRobot].IntValue) > 0)
+				int points;
+				int len;
+				char query[256];
+				len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set RobotsFragged = RobotsFragged+%i", robots);
+				if((points = g_MvM[MvM_FragRobot].IntValue * robots) > 0 && !g_Player[client].bPenalty)
+				{
+					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+					g_Player[client].session[Stats_Points] += points;
+					g_Player[client].points += points;
+				}
+				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+				sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnRobotsFragged);
+				
+				if(points > 0 && !g_Player[client].bPenalty)
 				{
 					char points_plural[32], counter[12];
 					PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
@@ -4029,13 +4075,6 @@ Action MapTimer_GameTimer(Handle timer)
 					, g_Player[client].points
 					, points_plural
 					, counter);
-					
-					g_Player[client].session[Stats_Points] += points;
-					g_Player[client].points += points;
-					
-					CallbackQuery("update `%s` set Points = Points+%i, RobotsFragged = RobotsFragged+%i where SteamID = '%s' and ServerID = %i"
-					, query_error_uniqueid_OnRobotsFragged
-					, sql_table_playerlist, points, robots, g_Player[client].auth, g_ServerID);
 				}
 			}
 		}

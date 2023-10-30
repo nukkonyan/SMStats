@@ -642,8 +642,8 @@
 		// {1} required player count
 		// {2} minimum player count
 		"#format" "{1:i},{2:i}"
-		"en" "Enough Players ({1} out of required {2}), enabling.."
-		"sv" "Tillräckligt med spelare ({1} utav krävande {2}), aktiverar.."
+		"en" "Enough Players ({1}/{2}), enabling.."
+		"sv" "Tillräckligt med spelare ({1}/{2}), aktiverar.."
 	}
 	
 	//================================//
