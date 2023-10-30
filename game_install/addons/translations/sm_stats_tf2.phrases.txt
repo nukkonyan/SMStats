@@ -648,7 +648,7 @@
 		// {1} player name
 		// {2} player points
 		// {3} earned points
-		"#format" "{1:s},{2:i,{3:s}"
+		"#format" "{1:s},{2:i},{3:s}"
 		"en" "{1} ({2}) Earned {3} for {green}Scoring {default}the ball."
 		"sv" "{1} ({2}) Belönades med {3} för att {green}Göra mål {default}med bollen."
 		"tr" "{1} ({2}) {green}Gol Atarak {default}{3} kazandı."
