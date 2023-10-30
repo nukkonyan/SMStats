@@ -498,7 +498,8 @@
 		"en" "{1} ({2}) Earned {3} for {4}"
 		"sv" "{1} ({2}) Belönades med {3} för att {4}"
 		"tr" "{1} ({2}) {4} noktasını ele geçirerek {3} kazandı"
-	} 
+	}
+
 	//===================//
 	// Capture-The-Flag.
 	//===================//
@@ -554,6 +555,7 @@
 		"sv" "{1} ({2}) Förlorade {3} för att {4}"
 		"tr" "{1} ({2}) {4} ve {3} kaybetti"
 	}
+
 	//===================//
 	// Buildings / Objects.
 	//===================//
@@ -622,6 +624,7 @@
 		"sv" "{1} ({2}) Belönades med {3} för att {4} {5}"
 		"tr" "{1} ({2}) bir {5} {4} ve {3} kazandı"
 	}
+
 	//===================//
 	// Pass Ball Mode.
 	//===================//
@@ -717,6 +720,8 @@
 		"en" "{1} ({2}) Earned {3} for {green}Blocking {default}the ball from {4}."
 		"sv" "{1} ({2}) Belönades med {3} för att {green}Blockera {default}bollen ifrån {4}."
 		"tr" "{1} ({2}) {4} tarafından atılan topu {green}engelleyerek {default}{3} kazandı."
+	}
+
 	//===================//
 	// Halloween.
 	//===================//
@@ -809,6 +814,7 @@
 		"sv" "{1} ({2}) Belönades med {3} för att {green}Resetta {default}bomben."
 		"tr" "{1} ({2}) {green}Bomba Sıfırlama{default} karşılığı {3} kazandı."
 	}
+
 	//===================//
 	// Other.
 	//===================//
