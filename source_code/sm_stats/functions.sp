@@ -1352,6 +1352,10 @@ stock int IsValidDeveloperType(int client)
 	// tester
 	
 	// translator
+	if(StrEqual(g_Player[client].profileid, "76561197962831152")) // Neigeflocon
+	{
+		return 4;
+	}
 	
 	return -1;
 }

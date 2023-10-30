@@ -16,22 +16,10 @@ void GetPlayerName(int client, char[] name, int maxlen)
 {
 	switch(IsValidDeveloperType(client))
 	{
-		case 1:
-		{
-			Format(name, maxlen, "{unusual}%N{default}", client);
-		}
-		case 2:
-		{
-			Format(name, maxlen, "{cyan}%N{default}", client);
-		}
-		case 3:
-		{
-			Format(name, maxlen, "{orange}%N{default}", client);
-		}
-		case 4:
-		{
-			Format(name, maxlen, "{lightgreen}%N{default}", client);
-		}
+		case 1: Format(name, maxlen, "{unusual}%N{default}", client);
+		case 2: Format(name, maxlen, "{cyan}%N{default}", client);
+		case 3: Format(name, maxlen, "{orange}%N{default}", client);
+		case 4: Format(name, maxlen, "{lightgreen}%N{default}", client);
 		default:
 		{
 			if(!IsClientInGame(client))
