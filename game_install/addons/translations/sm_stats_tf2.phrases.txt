@@ -555,7 +555,7 @@
 		// {2} player points
 		// {3} points earned
 		// {4} flag event
-		"#format" "{1:s},{2:i,{3:s},{4:s}"
+		"#format" "{1:s},{2:i},{3:s},{4:s}"
 		"en" "{1} ({2}) Lost {3} for {4}"
 		"sv" "{1} ({2}) Förlorade {3} för att {4}"
 		"tr" "{1} ({2}) {4} ve {3} kaybetti"
