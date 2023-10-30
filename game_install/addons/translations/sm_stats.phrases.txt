@@ -147,6 +147,16 @@
 	}
 	"#SMStats_TimeFormat_LastConnected"
 	{
+		// Year - {YEAR}
+		// Month - {MONTH}
+		// Day - {DAY}
+		// AM/PM - {AM_PM}
+		// 12 hour - {12HOUR}
+		// 24 hour - {24HOUR}
+		// minutes - {MINUTE}
+		// seconds - {SECOND}
+		// 2023-10-18 PM 2:56:43
+		// {YEAR}-{MONTH}-{DAY} {AM_PM} {12HOUR}-{MINUTE}-{SECOND}
 		"dk" "{YEAR}/{DAY}/{MONTH}"
 		"en" "{YEAR}-{MONTH}-{DAY}"
 		"fi" "{YEAR}/{DAY}/{MONTH}"
@@ -299,7 +309,7 @@
 		// {3} player points
 		// {4} country name
 		// {5} disconnect reason
-		"#format" "{1:s},{2:i,{3:s},{4:s},{5:s}"
+		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}, {3}) from {4} has left the game. {grey}({5})"
 		"jp" "{1} （立{2}場、{3}）が{orange}{4}{default}からをゲームを抜けました。 {grey}（{5}）"
 		"nl" "{1} (Pos #{2}, {3}) van {4} heeft het spel verlaten {grey}({5})"
@@ -712,8 +722,8 @@
 	}
 	"#SMStats_NotEnoughPlayers"
 	{
-	    // {1} required player count
-	    // {2} minimum player count
+	    // {1} current player count in the server
+	    // {2} required player count to start tracking
 	    "#format" "{1:i},{2:i}"
 	    "en" "Not enough players ({1} out of required {2}), disabling.."
 	    "sv" "Inte tillräckligt med spelare ({1} utav krävande {2}), inaktiverar.."
@@ -721,8 +731,8 @@
 	}
 	"#SMStats_EnoughPlayers"
 	{
-	    // {1} required player count
-	    // {2} minimum player count
+	    // {1} current player count in the server
+	    // {2} required player count to start tracking
 	    "#format" "{1:i},{2:i}"
 	    "en" "Enough Players ({1} out of required {2}), enabling.."
 	    "sv" "Tillräckligt med spelare ({1} utav krävande {2}), aktiverar.."
