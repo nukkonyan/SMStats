@@ -423,7 +423,7 @@ stock void GetMultipleTargets(int client, const int[] list, int counter, char[] 
 		
 		Format(dummy, maxlen, "%s%T%s%T", g_Player[target1].name, "#SMStats_And", client, g_Player[target2].name, "#SMStats_Counter", client, counter);
 	}
-	else if(counter > 2 && counter <= 4)
+	else if(counter > 2 && counter < 4)
 	{
 		for(int i = 0; i < counter-1; i++)
 		{
@@ -444,7 +444,7 @@ stock void GetMultipleTargets(int client, const int[] list, int counter, char[] 
 	}
 	else
 	{
-		Format(dummy, maxlen, "%T", "#SMStats_MultipleTargets", client);
+		Format(dummy, maxlen, "%T", "#SMStats_MultiplePlayers", client);
 	}
 }
 
@@ -1050,7 +1050,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		}
 		case true:
 		{
-			if(frags > 4)
+			if(frags >= 4)
 			{
 				Format(buffer, sizeof(buffer), "%s%T", buffer, "#SMStats_Counter", client, frags);
 			}

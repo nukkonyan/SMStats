@@ -10,12 +10,14 @@
 	{
 		"en" "{yellow}Error: {grey}SM Stats: Core {yellow}has yet initialized."
 		"sv" "{yellow}Fel: {grey}SM Stats: Core {yellow}har inte laddats ännu."
+		"tr" "{yellow}Hata: {grey}SM Stats: Core {yellow}daha yüklenmedi."
 	}
 	"#SMStats_Error_SQLNotInitialized"
 	{
 		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
 		"jp" "{yellow}エラー: {grey}SQL 接続できません。"
 		"sv" "{yellow}Fel {grey}SQL Anslutning {yellow}är för tillfället otillgänglig."
+		"tr" "{yellow}Hata: {grey}SQL Bağlantısı {yellow}kurulamadı."
 	}
 
 	//================================//
@@ -26,6 +28,7 @@
 		"en" "{YEAR} year#|#{YEAR} years"
 		"jp" "{YEAR}ヶ年"
 		"sv" "{YEAR}år"
+		"tr" "{YEAR}yıl"
 	}
 	"#SMStats_TimeFormat_Month"
 	{
@@ -33,6 +36,7 @@
 		"jp" "{MONTH}ヶ月"
 		"sv" "{MONTH} måned#|#{MONTH} måneder"
 		"sv" "{MONTH} månad#|#{MONTH} månader"
+		"tr" "{MONTH} ay"
 	}
 	"#SMStats_TimeFormat_Day"
 	{
@@ -40,6 +44,7 @@
 		"jp" "{DAY}日間"
 		"no" "{DAY} dag#|#{DAY} dager"
 		"sv" "{DAY} dag#|#{DAY} dagar"
+		"tr" "{DAY} gün"
 	}
 	"#SMStats_TimeFormat_Hour"
 	{
@@ -47,6 +52,7 @@
 		"jp" "{HOUR}時間"
 		"no" "{HOUR} time#|#{HOUR} timer"
 		"sv" "{HOUR} timme#|#{HOUR} timmar"
+		"tr" "{HOUR} saat"
 	}
 	"#SMStats_TimeFormat_Minute"
 	{
@@ -54,6 +60,7 @@
 		"jp" "{MINUTE}分"
 		"no" "{MINUTE} minut#|#{MINUTE} minuter"
 		"sv" "{MINUTE} minut#|#{MINUTE} minuter"
+		"tr" "{MINUTE} dakika"
 	}
 	"#SMStats_TimeFormat_Second"
 	{
@@ -61,6 +68,7 @@
 		"jp" "{SECOND}秒"
 		"no" "{SECOND} sekund#|#{SECOND} sekunder"
 		"sv" "{SECOND} sekund#|#{SECOND} sekunder"
+		"tr" "{SECOND} saniye"
 	}
 	"#SMStats_TimeFormatShort_Hour"
 	{
@@ -68,11 +76,13 @@
 		"jp" "{HOUR}時間"
 		"no" "{HOUR}hr"
 		"sv" "{HOUR}hr"
+		"tr" "{HOUR}sa"
 	}
 	"#SMStats_TimeFormatShort_Minute"
 	{
 		"en" "{MINUTE}min"
 		"jp" "{MINUTE}分"
+		"tr" "{MINUTE}dk"
 	}
 	"#SMStats_TimeFormatShort_Second"
 	{
@@ -80,6 +90,7 @@
 		"jp" "{SECOND}秒"
 		"no" "{SECOND}sek"
 		"sv" "{SECOND}sek"
+		"tr" "{SECOND}sn"
 	}
 	"#SMStats_TimeFormat_AM_PM"
 	{
@@ -87,6 +98,7 @@
 		"jp" "午前#|#午後"
 		"no" "Morgen#|#Ettermiddag"
 		"sv" "Förmiddag#|#Eftermiddag"
+		"tr" "ÖÖ#|#ÖS"
 	}
 	"#SMStats_PlayTimeFormat_Scenario0"
 	{
@@ -94,6 +106,7 @@
 		"jp" "{YEARS}{MONTHS}{DAYS}{HOURS}{MINUTES}{SECONDS}"
 		"no" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
 		"sv" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
+		"tr" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} ve {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario1"
 	{
@@ -101,6 +114,7 @@
 		"jp" "{MONTHS}{DAYS}{HOURS}{MINUTES}{SECONDS}"
 		"no" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
 		"sv" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
+		"tr" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} ve {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario2"
 	{
@@ -108,6 +122,7 @@
 		"jp" "{DAYS}{HOURS}{MINUTES}{SECONDS}"
 		"no" "{DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
 		"sv" "{DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
+		"tr" "{DAYS}, {HOURS}, {MINUTES} ve {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario3"
 	{
@@ -115,6 +130,7 @@
 		"jp" "{HOURS}{MINUTES}{SECONDS}"
 		"no" "{HOURS}, {MINUTES} og {SECONDS}"
 		"sv" "{HOURS}, {MINUTES} och {SECONDS}"
+		"tr" "{HOURS}, {MINUTES} ve {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario4"
 	{
@@ -122,10 +138,12 @@
 		"jp" "{MINUTES}{SECONDS}"
 		"no" "{MINUTES} og {SECONDS}"
 		"sv" "{MINUTES} och {SECONDS}"
+		"tr" "{MINUTES} ve {SECONDS}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario5"
 	{
 		"en" "{SECONDS}"
+		"tr" "{SECONDS}"
 	}
 	"#SMStats_TimeFormat_LastConnected"
 	{
@@ -145,25 +163,29 @@
 		"jp" "{YEAR}年{MONTH}月{DAY}日"
 		"sv" "{YEAR}/{DAY}/{MONTH}"
 		"no" "{YEAR}/{DAY}/{MONTH}"
+		"tr" "{YEAR}/{MONTH}/{DAY}"
 	}
-
 	//================================//
 	// sm_stats Command.
 	//================================//
+
 	"#SMStats_StatsCmd_Usage"
 	{
 		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid>  {grey}Example below:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 		"sv" "{grey}Använding: {lightgreen}sm_stats <topp spelarplacering | steamid>  {grey}Exempel nedan:\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"tr" "{grey}Kullanım: {lightgreen}sm_stats <Oyuncu sıralaması | steamid>  {grey}Örnek:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 	}
 	"#SMStats_StatsCmd_Error"
 	{
 		"en" "{yellow}Error: {default}You must enter a valid top player position or steamid."
 		"sv" "{yellow}Fel: {default}Du måste ange en giltig spelarplacering eller steamid."
+		"tr" "{yellow}Hata: {default}Geçerli bir sıralama veya steamid girmelisiniz."
 	}
 	"#SMStats_StatsCmd_NULL"
 	{
 		"en" "{yellow}Error: {default}The value may not be {red}NULL{default}."
 		"sv" "{yellow}Fel: {default}Värdet bör ej vara {red}tom{default}."
+		"tr" "{yellow}Hata: {default}Değer {red}BOŞ{default} olamaz."
 	}
 	"#SMStats_StatsCmd_InvalidTopPlayer"
 	{
@@ -171,6 +193,7 @@
 		"#format" "{1:i}"
 		"en" "{yellow}Error: {default}The enter top player position {lightgreen}{1} {default}you entered is invalid. The value must be 1 or greater."
 		"sv" "{yellow}Fel: {default}Det angivna toppspelarplaceringen {lightgreen}{1} {default}är ej giltigt. Värdet bör vara 1 eller högre."
+		"tr" "{yellow}Hata: {default}Girdiğiniz oyuncu sıralaması {lightgreen}{1} {default}geçersizdir. Değer 1 veya daha büyük olmalıdır."
 	}
 	"#SMStats_StatsCmd_InvalidSteamID"
 	{
@@ -178,20 +201,24 @@
 		"#format" "{1:s}"
 		"en" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
 		"sv" "{yellow}Fel: {default}steamidn {lightgreen}{1} {default}är ej giltigt. steamidn bör se ut någonting likt {lightgreen}STEAM_0:0:12345{default}."
+		"tr" "{yellow}Hata: {default}Girdiğiniz steamid {lightgreen}{1} {default}geçersizdir. Steamid, {lightgreen}STEAM_0:0:12345{default} gibi bir şey olmalıdır."
 	}
 
 	//================================//
 	// Top Player SQL Information.
 	//================================//
+
 	"#SMStats_TopSQLInfo_ErrorParsing"
 	{
 		"en" "{yellow}Error: {default}Unable to parse top players of the leaderboard."
 		"sv" "{yellow}Fel: {default}Kunde inte parsa toppspelarna av leaderboardet."
+		"tr" "{yellow}Hata: {default}Lider tablosunun en iyi oyuncuları gösterilemiyor."
 	}
 	"#SMStats_TopSQLInfo_NoPlayers"
 	{
 		"en" "{yellow}Error: {default}No player were found on the leaderboard."
 		"sv" "{yellow}Fel: {default}Ingen spelare var funnen på leaderboardet."
+		"tr" "{yellow}Hata: {default}Lider tablosunda oyuncu bulunamadı."
 	}
 	"#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist"
 	{
@@ -199,6 +226,7 @@
 		"#format" "{1:i}"
 		"en" "{yellow}Error: {default}Top player placed {lightgreen}#{1} {default}does not exist on the leaderboard."
 		"sv" "{yellow}Fel: {default}Toppspelaren placerad {lightgreen}#{1} {default}finns ej på leaderboardet."
+		"tr" "{yellow}Hata: {default}Oyuncu {lightgreen}#{1} {default}lider tablosunda mevcut değil."
 	}
 	"#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist"
 	{
@@ -206,11 +234,13 @@
 		"#format" "{1:s}"
 		"en" "{yellow}Error: {default}Top player with steamid {lightgreen}{1} {default}does not exist on the leaderboard."
 		"sv" "{yellow}Fel: {default}Toppspelaren med steamid {lightgreen}{1} {default}finns ej på leaderboardet."
+		"tr" "{yellow}Hata: {default}Steamid'si {lightgreen}{1} {default}olan oyuncu lider tablosunda mevcut değil."
 	}
 
 	//===================//
 	// Penalty.
 	//===================//
+
 	"#SMStats_Player_Penalty"
 	{
 		// {1} player name
@@ -221,16 +251,19 @@
 		"#format" "{1:s},{2:i},{3:s},{4:s},{5:i}"
 		"en" "{1} (Pos #{2}, {3}) {yellow}was given {4} penalty due to spam abuse. Abused {5} points were reverted."
 		"sv" "{1} (Pos #{2}, {3}) {yellow}blev straffad {4} på grund av spam-missbruka spam. Missbrukade {5} poäng återställdes."
+		"tr" "{1} (Pozisyon #{2}, {3}) spam yüzünden {yellow}{4} süre ceza aldı. Suistimal edilen {5} silindi."
 	}
 	"#SMStats_Points_Penalty"
 	{
 		"en" " (Penalty)"
 		"sv" " (Straffad)"
+		"tr" " (Ceza)"
 	}
 
 	//================================//
 	// Banned.
 	//================================//
+
 	"#SMStats_Player_Detected_Banned"
 	{
 		// {1} player name
@@ -238,6 +271,7 @@
 		"#format" "{1:s},{2:s}"
 		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got banned and were removed from SMStats completely."
 		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}blev bannad och borttagen från SMStats helt hållet."
+		"tr" "{grey}{1} {lightgreen}[{2}] {darkred}yasaklandı ve SMStats'tan tamamen kaldırıldı."
 	}
 	"#SMStats_Player_Detected_IPBanned"
 	{
@@ -246,11 +280,13 @@
 		"#format" "{1:s},{2:s}"
 		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got ip-banned and were removed from SMStats completely."
 		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}fick ip-ban och blev borttagen från SMStats helt hållet."
+		"tr" "{grey}{1} {lightgreen}[{2}] {darkred}IP yasağı aldı ve SMStats'tan tamamen kaldırıldı."
 	}
 
 	//================================//
 	// Connection.
 	//================================//
+
 	"#SMStats_Player_Connected"
 	{
 		// {1} player name
@@ -263,7 +299,9 @@
 		"nl" "{1} (Pos #{2}, {3}) van {4} neemt deel aan het spel."
 		"no" "{1} (Pos #{2}, {3}) fra {4} er blitt med i spillet."
 		"sv" "{1} (Pos #{2}, {3}) från {4} har gått med i spelet."
+		"tr" "{1} ({3} ile {2}. Sıra) {4} ülkesinden oyuna katıldı."
 	}
+
 	"#SMStats_Player_Disconnected"
 	{
 		// {1} player name
@@ -277,7 +315,9 @@
 		"nl" "{1} (Pos #{2}, {3}) van {4} heeft het spel verlaten {grey}({5})"
 		"no" "{1} (Pos #{2}, {3}) fra {4} har forlatt spillet. {grey}({5})"
 		"sv" "{1} (Pos #{2}, {3}) från {4} har lämnat spelet. {grey}({5})"
+		"tr" "{1} ({3} ile {2}. Sıra) {4} ülkesinden oyundan ayrıldı. {grey}({5})"
 	}
+
 	"#SMStats_Player_Connected_TopPlayer"
 	{
 		// {1} top player position
@@ -287,30 +327,36 @@
 		"en" "Top {1} player {2} from {3} {default}has connected!"
 		"jp" "トップ{1}プレイヤー {2} が{orange}{3}{default}からを接続しました！"
 		"sv" "Topp {1} spelare {2} från {3} {default}har anslutit!"
+		"tr" "Sunucunun en iyi {1}. oyuncusu {2} {3} ülkesinden {default}oyuna katıldı!"
 	}
 
 	//================================//
 	// Menu.
 	//================================//
+
 	"#SMStats_Menu_Session"
 	{
 		"en" "Session"
 		"jp" "セッション"
+		"tr" "Oturum"
 	}
 	"#SMStats_Menu_SessionInfo"
 	{
 		"en" "View your current session statistics."
 		"sv" "Kolla dina nuvarande session statistiker."
+		"tr" "Mevcut oturum istatistiklerinizi görüntüleyin."
 	}
 	"#SMStats_Menu_ActiveStats"
 	{
 		"en" "Active stats"
 		"sv" "Nuvarande stats."
+		"tr" "Aktif istatistikler"
 	}
 	"#SMStats_Menu_ActiveStatsInfo"
 	{
 		"en" "View your active statistics."
 		"sv" "Kolla dina nuvarande statistiker."
+		"tr" "Aktif istatistiklerinizi görüntüleyin."
 	}
 	"#SMStats_Menu_Top10"
 	{
@@ -318,11 +364,13 @@
 		"jp" "トップ10プレイヤー"
 		"no" "Topp 10 spillere"
 		"sv" "Topp 10 spelare"
+		"tr" "En İyi 10 Oyuncu"
 	}
 	"#SMStats_Menu_Top10Info"
 	{
 		"en" "View the current top 10 players on this server."
 		"sv" "Visa nuvarande top 10 spelare on denna server."
+		"tr" "Bu sunucudaki en iyi 10 oyuncuyu görüntüleyin."
 	}
 	"#SMStats_Menu_TopPlayer"
 	{
@@ -330,27 +378,32 @@
 		"en" "Top {1} player"
 		"jp" "トップ{1}プレイヤー"
 		"sv" "Topp {1} spelare"
+		"tr" "En İyi {1}. Oyuncu"
 	}
 	"#SMStats_Menu_TopPlayers"
 	{
 		"en" "Current top players"
 		"sv" "Nuvarande topp spelare"
+		"tr" "En iyi oyuncular"
 	}
 	"#SMStats_Menu_TopPlayersInfo"
 	{
 		"en" "View the current top players on this server."
 		"sv" "Visa nuvarande topp spelare på denna server."
+		"tr" "Bu sunucudaki en iyi oyuncuları görüntüleyin."
 	}
 	"#SMStats_Menu_Settings"
 	{
 		"en" "Settings"
 		"jp" "設定"
 		"sv" "Inställningar"
+		"tr" "Ayarlar"
 	}
 	"#SMStats_Menu_SettingsInfo"
 	{
 		"en" "View your current settings."
 		"sv" "Kolla dina nuvarande inställningar."
+		"tr" "Mevcut ayarlarınızı görüntüleyin."
 	}
 	"#SMStats_Menu_Page"
 	{
@@ -360,6 +413,7 @@
 		"jp" "ページ {1}"
 		"no" "Side {1}"
 		"sv" "Sida {1}"
+		"tr" "{1}. Sayfa"
 	}
 	"#SMStats_Menu_PreviousPage"
 	{
@@ -367,35 +421,41 @@
 		"jp" "前へページ"
 		"no" "Forrige siden"
 		"sv" "Förra sidan"
+		"tr" "Önceki sayfa"
 	}
 	"#SMStats_Menu_NextPage"
 	{
 		"en" "Next page"
 		"jp" "次へページ"
 		"sv" "Nästa sida"
+		"tr" "Sonraki sayfa"
 	}
 	"#SMStats_Menu_ExitPage"
 	{
 		"en" "Close"
 		"jp" "閉める"
 		"sv" "Stäng"
+		"tr" "Kapat"
 	}
-
 	"#SMStats_MenuInfo_DevType_Founder"
 	{
 		"en" "Creator of SMStats!"
+		"tr" "SMStats'ın Yaratıcısı!"
 	}
 	"#SMSTats_MenuInfo_DevType_Contributor"
 	{
 		"en" "Thanks for being a contributor to the project!"
+		"tr" "Projemize katkı sağladığınız için teşekkür ederiz!"
 	}
 	"#SMStats_MenuInfo_DevType_Tester"
 	{
 		"en" "Thanks for being a tester!"
+		"tr" "Projemizi test ettiğiniz için teşekkür ederiz!"
 	}
 	"#SMStats_MenuInfo_DevType_Translator"
 	{
 		"en" "Thanks for being a translator!"
+		"tr" "Çevirmen olduğunuz için teşekkür ederiz!"
 	}
 	"#SMStats_MenuInfo_Playername"
 	{
@@ -405,6 +465,7 @@
 		"jp" "プレイヤー名： {1}"
 		"no" "Spillernavn : {1}"
 		"sv" "Spelarnamn: {1}"
+		"tr" "Oyuncu Adı: {1}"
 	}
 	"#SMStats_MenuInfo_Positioned"
 	{
@@ -414,6 +475,7 @@
 		"en" "Placed #{1} of {2} players."
 		"no" "Plassert #{1} av {2} spillere."
 		"sv" "Placerad #{1} av {2} spelare."
+		"tr" "{2} oyuncunun içinde {1}. sırada."
 	}
 	"#SMStats_MenuInfo_PlayTime"
 	{
@@ -423,6 +485,7 @@
 		"jp" "やる時間 : {1}"
 		"no" "Spilletid : {1}"
 		"sv" "Speltid : {1}"
+		"tr" "Oynama Süresi : {1}"
 	}
 	"#SMStats_MenuInfo_MapTime"
 	{
@@ -432,6 +495,7 @@
 		"jp" "マップ時間 : {1}"
 		"no" "Karttid : {1}"
 		"sv" "Karttid : {1}"
+		"tr" "Harita Süresi: {1}"
 	}
 	"#SMStats_MenuInfo_Country"
 	{
@@ -441,6 +505,7 @@
 		"jp" "出身 : {1}"
 		"no" "Land : {1}"
 		"sv" "Land : {1}"
+		"tr" "Ülke : {1}"
 	}
 	"#SMStats_MenuInfo_LastConnected"
 	{
@@ -448,12 +513,14 @@
 		"#format" "{1:s}"
 		"en" "Last connected : {1}"
 		"sv" "Senast ansluten : {1}"
+		"tr" "Son bağlantı : {1}"
 	}
 	"#SMStats_MenuInfo_Profile"
 	{
 		"en" "Visit profile"
 		"jp" "プロフィールに表示"
 		"sv" "Besök profilen"
+		"tr" "Profili Ziyaret Et"
 	}
 	"#SMStats_MenuInfo_PointsEarned"
 	{
@@ -461,6 +528,7 @@
 		"#format" "{1:i}"
 		"en" "Points earned : {1}"
 		"sv" "Poäng belönad : {1}"
+		"tr" "Kazanılan Puanlar : {1}"
 	}
 	"#SMStats_MenuInfo_PointsLost"
 	{
@@ -468,6 +536,7 @@
 		"#format" "{1:i}"
 		"en" "Points lost : {1}"
 		"sv" "Poäng förlorat : {1}"
+		"tr" "Kaybedilen Puanlar : {1}"
 	}
 	"#SMStats_MenuInfo_Frags"
 	{
@@ -475,6 +544,7 @@
 		"#format" "{1:i}"
 		"en" "Frags : {1}"
 		"jp" "フラッグ： {1}"
+		"tr" "Öldürme Sayısı : {1}"
 	}
 	"#SMStats_MenuInfo_Assists"
 	{
@@ -483,6 +553,7 @@
 		"en" "Assists : {1}"
 		"no" "Assister : {1}"
 		"sv" "Assister : {1}"
+		"tr" "Assistler : {1}"
 	}
 	"#SMStats_MenuInfo_Deaths"
 	{
@@ -491,6 +562,7 @@
 		"en" "Deaths : {1}"
 		"jp" "死亡率： {1}"
 		"sv" "Dödsantal : {1}"
+		"tr" "Ölümler : {1}"
 	}
 	"#SMStats_MenuInfo_Suicides"
 	{
@@ -498,6 +570,7 @@
 		"#format" "{1:i}"
 		"en" "Suicides : {1}"
 		"sv" "Självmordsantal : {1}"
+		"tr" "İntiharlar : {1}"
 	}
 	"#SMStats_MenuInfo_DamageDone"
 	{
@@ -505,6 +578,7 @@
 		"#format" "{1:i}"
 		"en" "Damage done : {1}"
 		"sv" "Skada givet : {1}"
+		"tr" "Verilen Hasar : {1}"
 	}
 	"#SMStats_MenuInfo_AchievementsEarned"
 	{
@@ -512,6 +586,7 @@
 		"#format" "{1:i}"
 		"en" "Achievements Earned : {1}"
 		"sv" "Prestationer uppnått : {1}"
+		"tr" "Kazanılan Başarımlar : {1}"
 	}
 	"#SMStats_MenuInfo_Achievement"
 	{
@@ -520,6 +595,7 @@
 		"en" "Achievement:"
 		"nl" "Prestatie:"
 		"sv" "Prestation:"
+		"tr" "Başarım:"
 	}
 	"#SMStats_MenuInfo_Description"
 	{
@@ -528,6 +604,7 @@
 		"nl" "Beschrijving:"
 		"no" "Beskrivelse:"
 		"sv" "Beskrivning:"
+		"tr" "Açıklama:"
 	}
 	"#SMStats_MenuInfo_TopPlayer"
 	{
@@ -540,319 +617,364 @@
 		"nl" "Topp {1} - {2} [{3}]"
 		"no" "Topp {1} - {2} [{3}]"
 		"sv" "Topp {1} - {2} [{3}]"
+		"tr" "Top {1} - {2} [{3}]"
 	}
 
 	//================================//
 	// Settings.
 	//================================//
+
 	"#SMStats_MenuInfo_PlayConnectSnd"
 	{
-		// {1} on/off value
-		"#format" "{1:s}"
-		"en" "Player connect sound : {1}"
-		"jp" "プレイヤーの接続音 : {1}"
-		"sv" "Spelaranslutningsljud : {1}"
+	    // {1} on/off value
+	    "#format" "{1:s}"
+	    "en" "Player connect sound : {1}"
+	    "jp" "プレイヤーの接続音 : {1}"
+	    "sv" "Spelaranslutningsljud : {1}"
+	    "tr" "Oyuncu bağlantı sesi : {1}"
 	}
 	"#SMStats_MenuInfo_ShowConnectMsg"
 	{
-		// {1} on/off value
-		"#format" "{1:s}"
-		"en" "Display join messages: {1}"
-		"jp" "接続のメッセージを表示 : {1}"
-		"sv" "Visa anslutningsmeddelanden: {1}"
+	    // {1} on/off value
+	    "#format" "{1:s}"
+	    "en" "Display join messages: {1}"
+	    "jp" "接続のメッセージを表示 : {1}"
+	    "sv" "Visa anslutningsmeddelanden: {1}"
+	    "tr" "Katılma mesajlarını göster: {1}"
 	}
 	"#SMStats_MenuInfo_ShowTopConnectMsg"
 	{
-		// {1} on/off value
-		"#format" "{1:s}"
-		"en" "Display top player connect messages: {1}"
-		"jp" "トッププレイヤー接続のメッセージを表示 : {1}"
-		"sv" "Visa toppspelaranslutningsmeddelanden: {1}"
+	    // {1} on/off value
+	    "#format" "{1:s}"
+	    "en" "Display top player connect messages: {1}"
+	    "jp" "トッププレイヤー接続のメッセージを表示 : {1}"
+	    "sv" "Visa toppspelaranslutningsmeddelanden: {1}"
+	    "tr" "En iyi oyuncu bağlantı mesajlarını göster: {1}"
 	}
 	"#SMStats_MenuInfo_ShowFragMsg"
 	{
-		// {1} on/off value
-		"#format" "{1:s}"
-		"en" "Display frag messages: {1}"
-		"jp" "FRAGのメッセージを表示 : {1}"
-		"sv" "Visa fragsmeddelanden: {1}"
+	    // {1} on/off value
+	    "#format" "{1:s}"
+	    "en" "Display frag messages: {1}"
+	    "jp" "FRAGのメッセージを表示 : {1}"
+	    "sv" "Visa fragsmeddelanden: {1}"
+	    "tr" "Öldürme mesajlarını göster: {1}"
 	}
 	"#SMStats_MenuInfo_ShowAssistMsg"
 	{
-		// {1} on/off value
-		"#format" "{1:s}"
-		"en" "Display assist messages : {1}"
-		"jp" "ASSISTのメッセージを表示 : {1}"
-		"sv" "Visa assistmeddelanden: {1}"
+	    // {1} on/off value
+	    "#format" "{1:s}"
+	    "en" "Display assist messages : {1}"
+	    "jp" "ASSISTのメッセージを表示 : {1}"
+	    "sv" "Visa assistmeddelanden: {1}"
+	    "tr" "Assist mesajlarını göster : {1}"
 	}
 	"#SMStats_MenuInfo_ShowDeathMsg"
 	{
-		// {1} on/off value
-		"#format" "{1:s}"
-		"en" "Display death messages: {1}"
-		"jp" "死んだのメッセージを表示 : {1}"
-		"sv" "Visa dödsmeddelanden : {1}"
+	    // {1} on/off value
+	    "#format" "{1:s}"
+	    "en" "Display death messages: {1}"
+	    "jp" "死んだのメッセージを表示 : {1}"
+	    "sv" "Visa dödsmeddelanden : {1}"
+	    "tr" "Ölüm mesajlarını göster : {1}"
 	}
-	
+
 	//================================//
 	// Updater.
 	//================================//
 	"#SMStats_UpdateFound"
 	{
-		"en" "New {lightgreen}Update {default}was found, restarting.."
-		"jp" "{lightgreen}新しい更新が見つかりました... 再起動しています.."
-		"sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
-	}
-	"#SMStats_VersionLoaded"
-	{
-		"#format" "{1:s}"
-		"en" "{orange}Version {1} {lightgreen}has been loaded!"
-		"jp" "{orange}バーション{1}{lightgreen}がロードされました！"
-		"sv" "{orange}Version {1} {lightgreen}har laddats!"
+	    "en" "New {lightgreen}Update {default}was found, restarting.."
+	    "jp" "{lightgreen}新しい更新が見つかりました... 再起動しています.."
+	    "sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
+	    "tr" "Yeni {lightgreen}Güncelleme {default}bulundu, yeniden başlatılıyor.."
 	}
 	
+	"#SMStats_VersionLoaded"
+	{
+	    "#format" "{1:s}"
+	    "en" "{orange}Version {1} {lightgreen}has been loaded!"
+	    "jp" "{orange}バージョン{1}{lightgreen}がロードされました！"
+	    "sv" "{orange}Version {1} {lightgreen}har laddats!"
+	    "tr" "{orange}Sürüm {1} {lightgreen}yüklendi!"
+	}
+
 	//================================//
 	// Rounds.
 	//================================//
 	"#SMStats_RoundStart"
 	{
-		"en" "Round Start: Tracking enabled."
-		"sv" "Rundstart: Spårning aktiverad."
+	    "en" "Round Start: Tracking enabled."
+	    "sv" "Rundstart: Spårning aktiverad."
+	    "tr" "Round Başladı: Puanlama aktif."
 	}
 	"#SMStats_RoundStart_Warmup"
 	{
-		"en" "Round Start: Warmup/Waiting for players detected, ignoring statistical tracking."
-		"sv" "Rundstart: Uppvärmning/Väntar på spelare upptäckt, ignorerar statistiskt spårning."
+	    "en" "Round Start: Warmup/Waiting for players detected, ignoring statistical tracking."
+	    "sv" "Rundstart: Uppvärmning/Väntar på spelare upptäckt, ignorerar statistiskt spårning."
+	    "tr" "Hazırlık Süresi/Oyuncular bekleniyor, Puanlama aktif değil."
 	}
 	"#SMStats_RoundEnd"
 	{
-		"en" "Round End: Tracking disabled"
-		"sv" "Rundslut: Spårning inaktiverad."
+	    "en" "Round End: Tracking disabled"
+	    "sv" "Rundslut: Spårning inaktiverad."
+	    "tr" "Round Bitti: Puanlama kapatıldı."
 	}
 	"#SMStats_NotEnoughPlayers"
 	{
-		// {1} required player count
-		// {2} minimum player count
-		"#format" "{1:i},{2:i}"
-		"en" "Not enough players ({1} out of required {2}), disabling.."
-		"sv" "Inte tillräckligt med spelare ({1} utav krävande {2}), inaktiverar.."
+	    // {1} current player count in the server
+	    // {2} required player count to start tracking
+	    "#format" "{1:i},{2:i}"
+	    "en" "Not enough players ({1} out of required {2}), disabling.."
+	    "sv" "Inte tillräckligt med spelare ({1} utav krävande {2}), inaktiverar.."
+	    "tr" "Yeterli oyuncu yok ({1}/{2}), puanlama devre dışı.."
 	}
 	"#SMStats_EnoughPlayers"
 	{
-		// {1} required player count
-		// {2} minimum player count
-		"#format" "{1:i},{2:i}"
-		"en" "Enough Players ({1}/{2}), enabling.."
-		"sv" "Tillräckligt med spelare ({1}/{2}), aktiverar.."
+	    // {1} current player count in the server
+	    // {2} required player count to start tracking
+	    "#format" "{1:i},{2:i}"
+	    "en" "Enough Players ({1} out of required {2}), enabling.."
+	    "sv" "Tillräckligt med spelare ({1} utav krävande {2}), aktiverar.."
+	    "tr" "Yeterli Oyuncu mevcut ({1}/{2}), puanlama etkinleştiriliyor.."
 	}
 	
 	//================================//
 	// Translations.
 	//================================//
-	"#SMStats_MultipleTargets"
+
+	"#SMStats_MultiplePlayers"
 	{
-		"en" "Multiple targets"
-		"dk" "Flere mål"
-		"sv" "Flera mål"
-		"jp" "複数のターゲット"
-		"no" "Flere mål"
+	    "en" "Multiple players"
+	    "dk" "Flere spillere"
+	    "jp" "複数のプレイヤー"
+		"sv" "Flera spelare"
+	    "no" "Flere spelare"
+	    "tr" "Birden çok oyuncu"
 	}
 	"#SMStats_MultipleObjects"
 	{
-		"en" "Multiple objects"
-		"dk" "Flere objekt"
-		"sv" "Flera objekt"
-		"jp" "複数のオブジェクト"
-		"no" "Flere objekt"
+	    "en" "Multiple objects"
+	    "dk" "Flere objekt"
+	    "sv" "Flera objekt"
+	    "jp" "複数のオブジェクト"
+	    "no" "Flere objekt"
+	    "tr" "Birden çok nesne"
 	}
 	"#SMStats_And"
 	{
-		"en" " and "
-		"de" " und "
-		"dk" " og "
-		"jp" " と "
-		"no" " og "
-		"nl" " en "
-		"ru" " и "
-		"sv" " och "
+	    "en" " and "
+	    "de" " und "
+	    "dk" " og "
+	    "jp" " と "
+	    "no" " og "
+	    "nl" " en "
+	    "ru" " и "
+	    "sv" " och "
+	    "tr" " ve "
 	}
 	"#SMStats_Comma"
 	{
-		"en" ", "
-		"jp" "、"
+	    "en" ", "
+	    "jp" "、"
+	    "tr" ", "
 	}
 	"#SMStats_Counter"
 	{
-		// {1} counter
-		"#format" "{1:i}"
-		"en" " ({1})"
-		"jp" " （{1}）"
+	    // {1} counter
+	    "#format" "{1:i}"
+	    "en" " ({1})"
+	    "jp" " （{1}）"
+	    "tr" " ({1})"
 	}
 	"#SMStats_OffOn"
 	{
-		"en" "Off#|#On"
-		"jp" "OFF#|#ON"
-		"sv" "Av#|#På"
+	    "en" "Off#|#On"
+	    "jp" "OFF#|#ON"
+	    "sv" "Av#|#På"
+	    "tr" "Kapalı#|#Açık"
 	}
 	"#SMStats_Points_PluralSplitter" // points plural splitter false#|#true (non-plural#|#plural)
 	{
-		// {POINTS} player points
-		"en" "{POINTS} point#|#{POINTS} points"
-		"jp" "{POINTS}ポイント"
-		"sv" "{POINTS} poäng"
-		"nl" "{POINTS} punt#|#{POINTS} punten"
-		"no" "{POINTS} poeng"
+	    // {POINTS} player points
+	    "en" "{POINTS} point#|#{POINTS} points"
+	    "jp" "{POINTS}ポイント"
+	    "sv" "{POINTS} poäng"
+	    "nl" "{POINTS} punt#|#{POINTS} punten"
+	    "no" "{POINTS} poeng"
+	    "tr" "{POINTS} puan"
 	}
 	"#SMStats_FeatureUnavailable"
 	{
-		"en" "Feature is currently unavailable."
-		"jp" "この機能が利用できません。"
-		"sv" "Funktionen är förnuvarande otillgänglig."
+	    "en" "Feature is currently unavailable."
+	    "jp" "この機能が利用できません。"
+	    "sv" "Funktionen är förnuvarande otillgänglig."
+	    "tr" "Bu özellik şu anda kullanılamıyor."
 	}
 	
 	//================================//
 	// Frag Event.
 	//================================//
-	
+
 	//Kill event types. Will automatically merge with one and another if needed.
 	"#SMStats_FragEvent_Type0" //Mid Air.
 	{
-		"en" "whilst {green}Mid Air"
-		"sv" "medans {green}I Luften"
+	    "en" "whilst {green}Mid Air"
+	    "sv" "medans {green}I Luften"
+	    "tr" "{green}Havada {default}iken"
 	}
 	"#SMStats_FragEvent_Type1" //Noscope
 	{
-		"en" "{green}Through Smoke"
-		"sv" "{green}Genom Röken"
+	    "en" "{green}Through Smoke"
+	    "sv" "{green}Genom Röken"
+	    "tr" "{green}Duman İçinden"
 	}
 	"#SMStats_FragEvent_Type2" //Noscope headshot
 	{
-		"en" "with a {green}Noscope Headshot"
-		"sv" "med en {green}Noscope Huvudskott"
+	    "en" "with a {green}Noscope Headshot"
+	    "sv" "med en {green}Noscope Huvudskott"
+	    "tr" "{green}Duman içinden {default}ve {green}kafadan"
 	}
 	"#SMStats_FragEvent_Type3" //Headshot.
 	{
-		"en" "with a {green}Headshot"
-		"sv" "med ett {green}Huvudskott"
+	    "en" "with a {green}Headshot"
+	    "sv" "med ett {green}Huvudskott"
+	    "tr" "{green}Kafadan"
 	}
 	"#SMStats_FragEvent_Type4" //Noscope.
 	{
-		"en" "with a {green}Noscope"
-		"sv" "med ett {green}icke-zoomingsskott"
+	    "en" "with a {green}Noscope"
+	    "sv" "med ett {green}icke-zoomingsskott"
+	    "tr" "{green}Dürbünsüz"
 	}
 	"#SMStats_FragEvent_Type5" //Backstab.
 	{
-		"en" "with a {green}Backstab"
-		"sv" "med ett {green}Rygghugg"
+	    "en" "with a {green}Backstab"
+	    "sv" "med ett {green}Rygghugg"
+	    "tr" "{green}Sırtından bıçaklayarak"
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
-		"en" "{green}Airshot"
-		"sv" "{green}Luftskott"
+	    "en" "with an {green}Airshot"
+	    "sv" "med ett {green}Luftskott"
+	    "tr" "{green}Havadan"
 	}
 	"#SMStats_FragEvent_Type7" //Deflect frag.
 	{
-		"en" "{green}Deflect Frag"
-		"sv" "{green}Deflekteringsfrag"
+	    "en" "{green}Deflect Frag"
+	    "sv" "{green}Deflekteringsfrag"
+	    "tr" "Saldırıyı {green}Püskürterek"
 	}
 	"#SMStats_FragEvent_Type8" //Teleport frag.
 	{
-		"en" "with a {green}Telefrag"
-		"sv" "med ett {green}Telefrag"
+	    "en" "with a {green}Telefrag"
+	    "sv" "med ett {green}Telefrag"
+	    "tr" "{green}Işınlanarak"
 	}
 	"#SMStats_FragEvent_Type9" //Taunt frag.
 	{
-		"en" "with a {green}Taunt Frag"
-		"sv" "med {green}Hånsfrag"
+	    "en" "with a {green}Taunt Frag"
+	    "sv" "med {green}Hånsfrag"
+	    "tr" "{green}Alay ederek"
 	}
 	"#SMStats_FragEvent_Type10" // Pumpkin Bomb frag.
 	{
-		"en" "with a {green}Pumpkin Bomb"
-		"sv" "med en {green}Pumpa Bomb"
+	    "en" "with a {green}Pumpkin Bomb"
+	    "sv" "med en {green}Pumpa Bomb"
+	    "tr" "{green}Kabak Bombası {default}ile"
 	}
 	"#SMStats_FragEvent_Type11" //Collateral.
 	{
-		"en" "with a {green}Collateral"
-		"sv" "med en {green}Kollateral"
+	    "en" "with a {green}Collateral"
+	    "sv" "med en {green}Kollateral"
+	    "tr" "{green}Doğal yollar {default}ile"
 	}
 	"#SMStats_FragEvent_Type12" //Grenade frag.
 	{
-		"en" "with a {green}Grenade Frag"
-		"sv" "med en {green}Granat Frag"
+	    "en" "with a {green}Grenade Frag"
+	    "sv" "med en {green}Granat Frag"
+	    "tr" "{green}El Bombası {default}ile"
 	}
 	"#SMStats_FragEvent_Type13" //Bomb/C4 frag.
 	{
-		"en" "with a {green}Bomb Frag"
-		"sv" "med en {green}Bomb Frag"
+	    "en" "with a {green}Bomb Frag"
+	    "sv" "med en {green}Bomb Frag"
+	    "tr" "{green}C4 {default}ile"
 	}
 	"#SMStats_FragEvent_Type14" //Blinded frag.
 	{
-		"en" "while {green}Blinded"
-		"sv" "medans {green}Förblindad"
+	    "en" "while {green}Blinded"
+	    "sv" "medans {green}Förblindad"
+	    "tr" "{green}Kör {default}iken"
 	}
-	
+
 	//Kill events
 	"#SMStats_FragEvent_Assisted" //Assist
 	{
-		// {1} player name
-		// {2} player points
-		// {3} points earned
-		// {4} assister name
-		// {5} victim fragged
-		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} in assisting {4} for fragging {5}."
-		"sv" "{1} ({2}) Belönades med {3} genom att assistera {4} för att fragga {5}."
+	    // {1} assister name
+	    // {2} assister points
+	    // {3} points earned
+		// {4} fragger name
+	    // {5} victim fragged
+	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
+	    "en" "{1} ({2}) Earned {3} for assisting {4} fragging {5}."
+	    "sv" "{1} ({2}) Belönades med {3} för att assistera {4} att fragga {5}."
+	    "tr" "{1} ({2}), {4} oyuncusunun {5} oyuncusunu öldürmesine yardım ederek {3} kazandın."
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
-		// {1} player name
-		// {2} player points
-		// {3} points earned
-		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Lost {3} for dying."
-		"sv" "{1} ({2}) Förlorade {3} på grund av att dö."
+	    // {1} player name
+	    // {2} player points
+	    // {3} points earned
+	    "#format" "{1:s},{2:i},{3:s}"
+	    "en" "{1} ({2}) Lost {3} for dying."
+	    "sv" "{1} ({2}) Förlorade {3} på grund av att dö."
+	    "tr" "{1} ({2}), öldüğün için {3} kaybettin."
 	}
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
-		// {1} player name
-		// {2} player points
-		// {3} points earned
-		// {4} victim name
-		// {5} special frag event
-		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} for fragging {4} {5}."
-		"sv" "{1} ({2}) Belönades med {3} för att {4} {5}."
+	    // {1} player name
+	    // {2} player points
+	    // {3} points earned
+	    // {4} victim name
+	    // {5} special frag event
+	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
+	    "en" "{1} ({2}) Earned {3} for fragging {4} {5}."
+	    "sv" "{1} ({2}) Belönades med {3} för att {4} {5}."
+	    "tr" "{1} ({2}), {4} oyuncusunu {5} öldürdüğün için {3} kazandın."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
-		// {1} player name
-		// {2} player points
-		// {3} points earned
-		// {4} victim name
-		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for fragging {4}."
-		"sv" "{1} ({2}) Belönades med {3} för att fragga {4}."
+	    // {1} player name
+	    // {2} player points
+	    // {3} points earned
+	    // {4} victim name
+	    "#format" "{1:s},{2:i},{3:s},{4:s}"
+	    "en" "{1} ({2}) Earned {3} for fragging {4}."
+	    "sv" "{1} ({2}) Belönades med {3} för att fragga {4}."
+	    "tr" "{1} ({2}), {4} oyuncusunu öldürdüğün için {3} kazandın."
 	}
-
 	"#SMStats_FragEventError_NewItem"
 	{
-		"#format" "{1:i},{2:s},{3:s}"
-		"en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is new to current version ({3}) and needs to be updated."
-		"sv" "{yellow}Fel: {default}itemdef {1} (classname '{2}') Vapnet är ny till nuvarande version ({3}) och borde uppdateras."
+	    "#format" "{1:i},{2:s},{3:s}"
+	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is new to the current version ({3}) and needs to be updated."
+	    "sv" "{yellow}Fel: {default}Vapen itemdef {1} (classname '{2}') är ny för den nuvarande versionen ({3}) och behöver uppdateras."
+	    "tr" "{yellow}Hata: {default}Silah ögeleme tanımı {1} (classname '{2}') şu anki sürüme yeni ({3}) ve güncellenmeli."
 	}
 	"#SMStats_FragEventError_InvalidItem"
 	{
-		"#format" "{1:i},{2:s}"
-		"en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is invalid."
-		"sv" "{yellow}Fel: {default}{1} (classname '{2}') Vapnet är ogiltig."
+	    "#format" "{1:i},{2:s}"
+	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is invalid."
+	    "sv" "{yellow}Fel: {default}Silah ögeleme tanımı {1} (classname '{2}') geçersiz."
+	    "tr" "{yellow}Hata: {default}Silah ögeleme tanımı {1} (classname '{2}') geçersiz."
 	}
 	"#SMStats_FragEventError_InvalidItemCvar"
 	{
-		"#format" "{1:i},{2:s}"
-		"en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') seems to be invalid! (New item perhaps?)"
-		"sv" "{yellow}Fel: {default}{1} (classname '{2}') Vapnet verkar ogiltig! (Nytt förmål möjligtvis?)"
+	    "#format" "{1:i},{2:s}"
+	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') seems to be invalid! (New item perhaps?)"
+	    "sv" "{yellow}Fel: {default}Silah ögeleme tanımı {1} (classname '{2}') geçerli gibi görünmüyor! (Yeni öge belki?)"
+	    "tr" "{yellow}Hata: {default}Silah ögeleme tanımı {1} (classname '{2}') geçersiz gibi görünüyor! (Yeni öge olabilir mi?)"
 	}
-
 	//================================//
 	// Achievement event.
 	//================================//
@@ -863,5 +985,6 @@
 		"#format" "{1:s},{2:s}"
 		"en" "{1} has earned the achievement {olive}{2}"
 		"sv" "{1} har förtjänat uppdraget {olive}{2}"
+		"tr" "{1} oyuncusu {olive}{2} {default}başarımını kazandı"
 	}
 }
