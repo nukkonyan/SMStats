@@ -202,6 +202,7 @@
 		"sv" "Spion : {1} Fraggad / {2} Dödsfall"
 		"tr" "Spy : {1} Leş / {2} Ölüm"
 	}
+
 	"#SMStats_MenuInfo_Buildings"
 	{
 		// {1} buildings placed count
@@ -265,6 +266,7 @@
 		"sv" "Sapper : {1} Placerad / {2} Förstörd"
 		"tr" "Sapper : {1} Yerleştirildi / {2} Kırıldı"
 	}
+
 	"#SMStats_MenuInfo_CP_Captured"
 	{
 		// {1} capture points capture count
@@ -321,6 +323,7 @@
 		"sv" "Flaggor tappad : {1}"
 		"tr" "Düşürülen bayraklar : {1}"
 	}
+
 	"#SMStats_MenuInfo_TeleportersUsed"
 	{
 		// {1} teleporters used count
@@ -410,6 +413,7 @@
 		"sv" "Förvånade spelare : {1} / {2} Månskott"
 		"tr" "Sersemletilen Oyuncular : {1} / {2} Ay Atışı"
 	}
+
 	"#SMStats_MenuInfo_HWN_Monoculus"
 	{
 		// {1} monoculus kill count
@@ -444,6 +448,7 @@
 		"sv" "Skelettkung : {1} Fraggade"
 		"tr" "İskelet Kral : {1} Öldürüldü"
 	}
+
 	"#SMStats_MenuInfo_MvM_TanksDestroyed"
 	{
 		// {1} mvm tank destroy count
@@ -628,7 +633,7 @@
 	//===================//
 	// Pass Ball Mode.
 	//===================//
-		"#SMStats_PassBall_GrabNeutralBall"
+	"#SMStats_PassBall_GrabNeutralBall"
 	{
 		// {1} player name
 		// {2} player points
@@ -861,6 +866,7 @@
 		"sv" "{1} ({2}) Belönades med {3} för att stjäla en smörgås."
 		"tr" "{1} ({2}) Sandviç {green}çalarak{default} {3} kazandın."
 	}
+
 	"#SMStats_Player_StunScenario0"
 	{
 		// {1} player name
@@ -883,6 +889,7 @@
 		"sv" "{1} ({2}) Belönades med {3} för att {green}Stunna {4} med {green}Månskott{default}."
 		"tr" "{1} ({2}) {4} oyuncusunu {green}Ay Vuruşu{default} ile {green}sersemleterek {default}{3} kazandın."
 	}
+
 	"#SMStats_Player_CoatedPiss" //Pissed opponent.
 	{
 		// {1} player name
@@ -916,6 +923,7 @@
 		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med {green}Bensin{default}."
 		"tr" "{1} ({2}) {4} oyuncusunu {green}Benzin{default} ile kaplayarak {3} kazandın."
 	}
+
 	"#SMStats_Player_Extinguished" // extinguished
 	{
 		// {1} player name
