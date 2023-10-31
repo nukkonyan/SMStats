@@ -65,6 +65,7 @@
 #define query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected 85
 #define query_error_uniqueid_OnPlayerDisconnectUpdatePlayTime 86
 #define query_error_uniqueid_OnUpdatedMenuSettingValue 87
+#define query_error_uniqueid_OnItemEventInsert 88
 
 SMStats_TF2GameInfo g_Game[MaxPlayers+1];
 

@@ -372,6 +372,18 @@ enum struct FragEventInfo
 	int itemdef;
 }
 
+enum struct ItemEventInfo
+{
+	int timestamp;
+	int itemdef;
+	bool strange;
+	bool unusual;
+	int method;
+	int quality;
+	int weartype;
+	int quantity;
+}
+
 //
 
 float g_Time_ObjectPlaced = 5.0;
@@ -403,33 +415,33 @@ void PrepareGame()
 	
 	/* capture-the-flag */
 	g_FlagEvent[CTF_PickedUp] = CreateConVar("sm_stats_points_flag_pickedup", "1", "SM Stats: TF2 - Points earned when picking up the flag.", _, true);
-	g_FlagEvent[CTF_Captured] = CreateConVar("sm_stats_points_flag_captured", "2", "SM Stats: TF2 - Points earned when capturing the flag.", _, true);
+	g_FlagEvent[CTF_Captured] = CreateConVar("sm_stats_points_flag_captured", "1", "SM Stats: TF2 - Points earned when capturing the flag.", _, true);
 	g_FlagEvent[CTF_Defended] = CreateConVar("sm_stats_points_flag_defended", "1", "SM Stats: TF2 - Points earned when defending the flag.", _, true);
-	g_FlagEvent[CTF_Dropped] = CreateConVar("sm_stats_points_flag_dropped", "2", "SM Stats: TF2 - Points lost when dropping the flag.", _, true);
-	g_FlagEvent_Stolen = CreateConVar("sm_stats_points_flag_stolen", "2", "SM Stats: TF2 - Points earned when stealing the flag. Paired with picking up.");
+	g_FlagEvent[CTF_Dropped] = CreateConVar("sm_stats_points_flag_dropped", "1", "SM Stats: TF2 - Points lost when dropping the flag.", _, true);
+	g_FlagEvent_Stolen = CreateConVar("sm_stats_points_flag_stolen", "1", "SM Stats: TF2 - Points earned when stealing the flag. Paired with picking up.");
 	
 	/* objects / buildings */
-	g_Object_Placed[TFBuilding_Sentrygun] = CreateConVar("sm_stats_points_object_sentrygun_built", "2", "SM Stats: TF2 - Points earned when a Sentrygun was built.", _, true);
-	g_Object_Placed[TFBuilding_Dispenser] = CreateConVar("sm_stats_points_object_dispenser_built", "2", "SM Stats: TF2 - Points earned when a Dispenser was built.", _, true);
-	g_Object_Placed[TFBuilding_Teleporter_Entrance] = CreateConVar("sm_stats_points_object_teleporter_entrance_built", "2", "SM Stats: TF2 - Points earned when Teleporter Entrance was built.", _, true);
-	g_Object_Placed[TFBuilding_Teleporter_Exit] = CreateConVar("sm_stats_points_object_teleporter_exit_built", "2", "SM Stats: TF2 - Points earned when Teleporter Exit was built.", _, true);
-	g_Object_Placed[TFBuilding_MiniSentry] = CreateConVar("sm_stats_points_object_minisentry_built", "2", "SM Stats: TF2 - Points earned when a Mini Sentrygun was built.", _, true);
-	g_Object_Placed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_built", "2", "SM Stats: TF2 - Points earned when a Sapper was placed.", _, true);
+	g_Object_Placed[TFBuilding_Sentrygun] = CreateConVar("sm_stats_points_object_sentrygun_built", "1", "SM Stats: TF2 - Points earned when a Sentrygun was built.", _, true);
+	g_Object_Placed[TFBuilding_Dispenser] = CreateConVar("sm_stats_points_object_dispenser_built", "1", "SM Stats: TF2 - Points earned when a Dispenser was built.", _, true);
+	g_Object_Placed[TFBuilding_Teleporter_Entrance] = CreateConVar("sm_stats_points_object_teleporter_entrance_built", "1", "SM Stats: TF2 - Points earned when Teleporter Entrance was built.", _, true);
+	g_Object_Placed[TFBuilding_Teleporter_Exit] = CreateConVar("sm_stats_points_object_teleporter_exit_built", "1", "SM Stats: TF2 - Points earned when Teleporter Exit was built.", _, true);
+	g_Object_Placed[TFBuilding_MiniSentry] = CreateConVar("sm_stats_points_object_minisentry_built", "1", "SM Stats: TF2 - Points earned when a Mini Sentrygun was built.", _, true);
+	g_Object_Placed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_built", "1", "SM Stats: TF2 - Points earned when a Sapper was placed.", _, true);
 	
-	g_Object_Destroyed[TFBuilding_Sentrygun] = CreateConVar("sm_stats_points_object_sentrygun_destroyed", "2", "SM Stats: TF2 - Points earned when a Sentrygun was destroyed.", _, true);
-	g_Object_Destroyed[TFBuilding_Dispenser] = CreateConVar("sm_stats_points_object_dispenser_destroyed", "2", "SM Stats: TF2 - Points earned when a Dispenser was destroyed.", _, true);
-	g_Object_Destroyed[TFBuilding_Teleporter_Entrance] = CreateConVar("sm_stats_points_object_teleporter_entrance_destroyed", "2", "SM Stats: TF2 - Points earned when Teleporter Entrance was destroyed.", _, true);
-	g_Object_Destroyed[TFBuilding_Teleporter_Exit] = CreateConVar("sm_stats_points_object_teleporter_exit_destroyed", "2", "SM Stats: TF2 - Points earned when Teleporter Exit was destroyed.", _, true);
-	g_Object_Destroyed[TFBuilding_MiniSentry] = CreateConVar("sm_stats_points_object_minisentry_destroyed", "2", "SM Stats: TF2 - Points earned when a Mini Sentrygun was destroyed.", _, true);
-	g_Object_Destroyed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_destroyed", "2", "SM Stats: TF2 - Points earned when a Sapper was destroyed.", _, true);
+	g_Object_Destroyed[TFBuilding_Sentrygun] = CreateConVar("sm_stats_points_object_sentrygun_destroyed", "1", "SM Stats: TF2 - Points earned when a Sentrygun was destroyed.", _, true);
+	g_Object_Destroyed[TFBuilding_Dispenser] = CreateConVar("sm_stats_points_object_dispenser_destroyed", "1", "SM Stats: TF2 - Points earned when a Dispenser was destroyed.", _, true);
+	g_Object_Destroyed[TFBuilding_Teleporter_Entrance] = CreateConVar("sm_stats_points_object_teleporter_entrance_destroyed", "1", "SM Stats: TF2 - Points earned when Teleporter Entrance was destroyed.", _, true);
+	g_Object_Destroyed[TFBuilding_Teleporter_Exit] = CreateConVar("sm_stats_points_object_teleporter_exit_destroyed", "1", "SM Stats: TF2 - Points earned when Teleporter Exit was destroyed.", _, true);
+	g_Object_Destroyed[TFBuilding_MiniSentry] = CreateConVar("sm_stats_points_object_minisentry_destroyed", "1", "SM Stats: TF2 - Points earned when a Mini Sentrygun was destroyed.", _, true);
+	g_Object_Destroyed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_destroyed", "1", "SM Stats: TF2 - Points earned when a Sapper was destroyed.", _, true);
 	
 	/* player */
 	g_Ubercharged = CreateConVar("sm_stats_points_ubercharged", "5", "SM Stats: TF2 - Points earned when ubercharging.", _, true);
 	g_Ubercharged_Spy = CreateConVar("sm_stats_points_ubercharged_count_spy", "5", "SM Stats: TF2 - Points earned when ubercharging.", _, true);
 	
-	g_Teleported = CreateConVar("sm_stats_points_teleported", "2", "SM Stats: TF2 - Points the teleporter builder earns when teleporter was used.", _, true);
+	g_Teleported = CreateConVar("sm_stats_points_teleported", "1", "SM Stats: TF2 - Points the teleporter builder earns when teleporter was used.", _, true);
 	
-	g_SandvichStolen = CreateConVar("sm_stats_points_sandvich_stolen", "2", "SM Stats: TF2 - Points earned when stealing a sandvich.", _, true);
+	g_SandvichStolen = CreateConVar("sm_stats_points_sandvich_stolen", "1", "SM Stats: TF2 - Points earned when stealing a sandvich.", _, true);
 	
 	g_Jarated = CreateConVar("sm_stats_points_jar_jarated", "2", "SM Stats: TF2 - Points earned when coating opponents with piss.", _, true);
 	g_Milked = CreateConVar("sm_stats_points_jar_milked", "2", "SM Stats: TF2 - Points earned when coating opponents with milk.", _, true);
@@ -441,26 +453,26 @@ void PrepareGame()
 	
 	/* pass ball mode */
 	g_PassBall[PassBall_GrabbingNeutralBall] = CreateConVar("sm_stats_points_pass_get", "1", "SM Stats: TF2 - Points earned when grabbing the neutral ball.", _, true);
-	g_PassBall[PassBall_ScoringBall] = CreateConVar("sm_stats_points_pass_score", "2", "SM Stats: TF2 - Points earned when scoring the ball.", _, true);
+	g_PassBall[PassBall_ScoringBall] = CreateConVar("sm_stats_points_pass_score", "1", "SM Stats: TF2 - Points earned when scoring the ball.", _, true);
 	g_PassBall[PassBall_DroppingBall] = CreateConVar("sm_stats_points_pass_dropball", "1" , "SM Stats: TF2 - Points taken when dropping the ball", _, true);
 	g_PassBall[PassBall_CatchingBall] = CreateConVar("sm_stats_points_pass_caught", "1", "SM Stats: TF2 - Points earned when catching the ball.", _, true);
-	g_PassBall[PassBall_StealingBall] = CreateConVar("sm_stats_points_pass_steal", "2", "SM Stats: TF2 - Points earned when stealing the ball.", _, true);
+	g_PassBall[PassBall_StealingBall] = CreateConVar("sm_stats_points_pass_steal", "1", "SM Stats: TF2 - Points earned when stealing the ball.", _, true);
 	g_PassBall[PassBall_BlockingBall] = CreateConVar("sm_stats_points_pass_block", "1", "SM Stats: TF2 - Points earned when blocking the ball.", _, true);
 	
 	/* bosses */
-	g_BossFragged[Boss_HHH] = CreateConVar("sm_stats_points_boss_hhh", "5", "SM Stats: TF2 - Points earned when fragging Headless Horseless Horsemann.", _, true);
-	g_BossFragged[Boss_Monoculus] = CreateConVar("sm_stats_points_boss_monoculus", "5", "SM Stats: TF2 - Points earned when fragging Monoculus.", _, true);
-	g_BossFragged[Boss_Merasmus] = CreateConVar("sm_stats_points_boss_merasmus", "5", "SM Stats: TF2 - Points earned when fragging Merasmus.", _, true);
-	g_BossFragged[Boss_Skeleton] = CreateConVar("sm_stats_points_boss_skeleton", "5", "SM Stats: TF2 - Points earned when fragging Skeleton.", _, true);
+	g_BossFragged[Boss_HHH] = CreateConVar("sm_stats_points_boss_hhh", "1", "SM Stats: TF2 - Points earned when fragging Headless Horseless Horsemann.", _, true);
+	g_BossFragged[Boss_Monoculus] = CreateConVar("sm_stats_points_boss_monoculus", "1", "SM Stats: TF2 - Points earned when fragging Monoculus.", _, true);
+	g_BossFragged[Boss_Merasmus] = CreateConVar("sm_stats_points_boss_merasmus", "1", "SM Stats: TF2 - Points earned when fragging Merasmus.", _, true);
+	g_BossFragged[Boss_Skeleton] = CreateConVar("sm_stats_points_boss_skeleton", "1", "SM Stats: TF2 - Points earned when fragging Skeleton.", _, true);
 	
-	g_BossStunned[Boss_Monoculus] = CreateConVar("sm_stats_points_boss_monoculus_stunned", "5", "SM Stats: TF2 - Points earned when stunning Monoculus.", _, true);
-	g_BossStunned[Boss_Merasmus] = CreateConVar("sm_stats_points_boss_merasmus_stunned", "5", "SM Stats: TF2 - Points earned when stunning Merasmus.", _, true);
+	g_BossStunned[Boss_Monoculus] = CreateConVar("sm_stats_points_boss_monoculus_stunned", "1", "SM Stats: TF2 - Points earned when stunning Monoculus.", _, true);
+	g_BossStunned[Boss_Merasmus] = CreateConVar("sm_stats_points_boss_merasmus_stunned", "1", "SM Stats: TF2 - Points earned when stunning Merasmus.", _, true);
 	
 	/* MvM related */
-	g_MvM[MvM_DestroyTank] = CreateConVar("sm_stats_points_mvm_destroytank", "5", "SM Stats: TF2 - Points the RED team earns when tank is destroyed.", _, true);
-	g_MvM[MvM_FragSentryBuster] = CreateConVar("sm_stats_points_mvm_fragsentrybuster", "5", "SM Stats: TF2 - Points earned when fragging the Sentry Buster.", _, true);
+	g_MvM[MvM_DestroyTank] = CreateConVar("sm_stats_points_mvm_destroytank", "1", "SM Stats: TF2 - Points the RED team earns when tank is destroyed.", _, true);
+	g_MvM[MvM_FragSentryBuster] = CreateConVar("sm_stats_points_mvm_fragsentrybuster", "1", "SM Stats: TF2 - Points earned when fragging the Sentry Buster.", _, true);
 	g_MvM[MvM_FragRobot] = CreateConVar("sm_stats_points_mvm_fragrobot", "1", "SM Stats: TF2 - Points earned when fragging a robot.", _, true);
-	g_MvM[MvM_ResetBomb] = CreateConVar("sm_stats_points_mvm_resetbomb", "5", "SM Stats: TF2 - Points earned when resetting the bomb.", _, true);
+	g_MvM[MvM_ResetBomb] = CreateConVar("sm_stats_points_mvm_resetbomb", "1", "SM Stats: TF2 - Points earned when resetting the bomb.", _, true);
 	
 	
 	/* ========================================================================================== */
@@ -687,6 +699,9 @@ void PrepareGame()
 	/* core */
 	HookEvent("player_death", OnPlayerDeath, EventHookMode_Pre);
 	HookEvent("player_team", OnPlayerTeamChange, EventHookMode_Pre);
+	
+	/* item was traded, found, unboxed, etc */
+	HookEvent("item_found", OnItemFound, EventHookMode_Pre);
 	
 	/* Capture Point */
 	HookEvent("teamplay_point_captured", OnCapturedPoint, EventHookMode_Pre);
@@ -1031,6 +1046,91 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	}
 	
 	g_Game[client].aFragEvent.PushArray(frag, sizeof(frag));
+}
+
+/* Called as soon as a player finds, unboxes, trades, etc an item. */
+void OnItemFound(Event event, const char[] event_name, bool dontBroadcast)
+{
+	if(sql != null && bLoaded)
+	{
+		int client;
+		if(IsValidClient((client = event.GetInt("player"))))
+		{
+			if(!g_Game[client].aItemEvent)
+			{
+				g_Game[client].aItemEvent = new ArrayList(sizeof(ItemEventInfo));
+			}
+			
+			//
+			
+			int timestamp = GetTime();
+			
+			int itemdef = event.GetInt("itemdef");
+			int quality = event.GetInt("quality");
+			int method = event.GetInt("method");
+			
+			bool strange = event.GetBool("is_strange");
+			bool unusual = event.GetBool("is_unusual");
+			
+			float wear = event.GetFloat("wear");
+			int weartype = -1;
+			if(quality == 15)
+			{
+				if(wear < 0.4)
+				{
+					weartype = 1;
+				}
+				else if(wear >= 0.4 && wear < 0.6)
+				{
+					weartype = 2;
+				}
+				else if(wear >= 0.6 && wear < 0.8)
+				{
+					weartype = 3;
+				}
+				else if(wear >= 0.8 && wear < 0.9)
+				{
+					weartype = 4;
+				}
+				else if(wear >= 0.9)
+				{
+					weartype = 5;
+				}
+			}
+			
+			//
+			
+			ItemEventInfo item;
+			for(int i = 0; i < g_Game[client].aItemEvent.Length; i++)
+			{
+				g_Game[client].aItemEvent.GetArray(i, item);
+				
+				if(item.itemdef == itemdef
+				&& item.quality == quality
+				&& item.method == method
+				&& item.strange == strange 
+				&& item.unusual == unusual
+				&& item.weartype == weartype)
+				{
+					item.quantity++;
+					g_Game[client].aItemEvent.SetArray(i, item, sizeof(item));
+					return;
+				}
+			}
+			
+			//
+			
+			item.timestamp = timestamp;
+			item.itemdef = itemdef;
+			item.method = method;
+			item.quality = quality;
+			item.strange = strange;
+			item.unusual = unusual;
+			item.weartype = weartype;
+			item.quantity = 1;
+			g_Game[client].aItemEvent.PushArray(item, sizeof(item));
+		}
+	}
 }
 
 /* Called as soon a player changes their team. */
@@ -2732,6 +2832,65 @@ Action OnPlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playe
 }
 
 /* ===================================================================================== */
+
+public void OnGameFrame()
+{
+	if(bLoaded)
+	{
+		int client = 0;
+		while((client = FindEntityByClassname(client, "player")) != -1)
+		{
+			if(!IsValidClient(client))
+			{
+				continue;
+			}
+			
+			if(!!g_Game[client].aItemEvent)
+			{
+				Transaction txn = new Transaction();
+				
+				for(int i = 0; i < g_Game[client].aItemEvent.Length; i++)
+				{
+					ItemEventInfo item;
+					g_Game[client].aItemEvent.GetArray(i, item, sizeof(item));
+					
+					int len = 0;
+					char query[1024];
+					len += Format(query[len], sizeof(query)-len, "insert into `"...sql_table_item_log..."`");
+					len += Format(query[len], sizeof(query)-len, "(");
+					len += Format(query[len], sizeof(query)-len, "ServerID");
+					len += Format(query[len], sizeof(query)-len, ",SteamID");
+					len += Format(query[len], sizeof(query)-len, ",Timestamp");
+					len += Format(query[len], sizeof(query)-len, ",itemdef");
+					len += Format(query[len], sizeof(query)-len, ",quality");
+					len += Format(query[len], sizeof(query)-len, ",method");
+					len += Format(query[len], sizeof(query)-len, ",strange");
+					len += Format(query[len], sizeof(query)-len, ",unusual");
+					len += Format(query[len], sizeof(query)-len, ",weartype");
+					len += Format(query[len], sizeof(query)-len, ",quantity");
+					len += Format(query[len], sizeof(query)-len, ")");
+					len += Format(query[len], sizeof(query)-len, "values");
+					len += Format(query[len], sizeof(query)-len, "(");
+					len += Format(query[len], sizeof(query)-len, "'%i'", g_ServerID);
+					len += Format(query[len], sizeof(query)-len, ",'%s'", g_Player[client].auth);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.timestamp);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.itemdef);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.quality);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.method);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.strange);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.unusual);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.weartype);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.quantity);
+					len += Format(query[len], sizeof(query)-len, ")");
+					txn.AddQuery(query);
+				}
+				
+				sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnItemEventInsert);
+				g_Game[client].aItemEvent.Clear();
+			}
+		}
+	}
+}
 
 // instead of OnGameFrame, we have custom delayed game timer.
 // For optimization purposes.
