@@ -682,7 +682,8 @@ stock bool AssistedKills(Transaction txn
 					, int client
 					, const int[] list_healercount
 					, const int[][] list_healer
-					, char[] list_steamid_assister)
+					, char[] list_steamid_assister
+					, int list_steamid_assister_len)
 {
 	// spaghetti code
 	
@@ -781,8 +782,8 @@ stock bool AssistedKills(Transaction txn
 				
 				switch(strlen(list_steamid_assister) < 1)
 				{
-					case false: Format(list_steamid_assister, 28*assisters.Length, "%s;%s", list_steamid_assister, g_Player[assist].auth);
-					case true: Format(list_steamid_assister, 28*assisters.Length, g_Player[assist].auth);
+					case false: Format(list_steamid_assister, list_steamid_assister_len, "%s;%s", list_steamid_assister, g_Player[assist].auth);
+					case true: strcopy(list_steamid_assister, list_steamid_assister_len, g_Player[assist].auth);
 				}
 				
 				char query[1024];

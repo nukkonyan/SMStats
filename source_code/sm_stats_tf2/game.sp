@@ -2833,65 +2833,6 @@ Action OnPlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playe
 
 /* ===================================================================================== */
 
-public void OnGameFrame()
-{
-	if(bLoaded)
-	{
-		int client = 0;
-		while((client = FindEntityByClassname(client, "player")) != -1)
-		{
-			if(!IsValidClient(client))
-			{
-				continue;
-			}
-			
-			if(!!g_Game[client].aItemEvent)
-			{
-				Transaction txn = new Transaction();
-				
-				for(int i = 0; i < g_Game[client].aItemEvent.Length; i++)
-				{
-					ItemEventInfo item;
-					g_Game[client].aItemEvent.GetArray(i, item, sizeof(item));
-					
-					int len = 0;
-					char query[1024];
-					len += Format(query[len], sizeof(query)-len, "insert into `"...sql_table_item_log..."`");
-					len += Format(query[len], sizeof(query)-len, "(");
-					len += Format(query[len], sizeof(query)-len, "ServerID");
-					len += Format(query[len], sizeof(query)-len, ",SteamID");
-					len += Format(query[len], sizeof(query)-len, ",Timestamp");
-					len += Format(query[len], sizeof(query)-len, ",itemdef");
-					len += Format(query[len], sizeof(query)-len, ",quality");
-					len += Format(query[len], sizeof(query)-len, ",method");
-					len += Format(query[len], sizeof(query)-len, ",strange");
-					len += Format(query[len], sizeof(query)-len, ",unusual");
-					len += Format(query[len], sizeof(query)-len, ",weartype");
-					len += Format(query[len], sizeof(query)-len, ",quantity");
-					len += Format(query[len], sizeof(query)-len, ")");
-					len += Format(query[len], sizeof(query)-len, "values");
-					len += Format(query[len], sizeof(query)-len, "(");
-					len += Format(query[len], sizeof(query)-len, "'%i'", g_ServerID);
-					len += Format(query[len], sizeof(query)-len, ",'%s'", g_Player[client].auth);
-					len += Format(query[len], sizeof(query)-len, ",'%i'", item.timestamp);
-					len += Format(query[len], sizeof(query)-len, ",'%i'", item.itemdef);
-					len += Format(query[len], sizeof(query)-len, ",'%i'", item.quality);
-					len += Format(query[len], sizeof(query)-len, ",'%i'", item.method);
-					len += Format(query[len], sizeof(query)-len, ",'%i'", item.strange);
-					len += Format(query[len], sizeof(query)-len, ",'%i'", item.unusual);
-					len += Format(query[len], sizeof(query)-len, ",'%i'", item.weartype);
-					len += Format(query[len], sizeof(query)-len, ",'%i'", item.quantity);
-					len += Format(query[len], sizeof(query)-len, ")");
-					txn.AddQuery(query);
-				}
-				
-				sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnItemEventInsert);
-				g_Game[client].aItemEvent.Clear();
-			}
-		}
-	}
-}
-
 // instead of OnGameFrame, we have custom delayed game timer.
 // For optimization purposes.
 // Workaround with OnGameFrame possible would be greatly appreciated.
@@ -2937,41 +2878,17 @@ Action MapTimer_GameTimer(Handle timer)
 					any[] list_class = new any[frags];
 					bool[] list_wepfrag = new bool[frags];
 					char[][] list_classname = new char[frags][64];
-					char[][] list_classname_backup = new char[frags][64];
 					
 					// kill log
 					
-					bool[] bBotFrag = new bool[frags];
-					char[][] list_steamid_victim = new char[frags][28];
+					char list_steamid_victim[448];
 					char list_steamid_assister[448];
-					int[] list_timestamp = new int[frags];
-					int[] list_weaponitemdef = new int[frags];
-					
-					bool[] list_domination = new bool[frags];
-					bool[] list_revenge = new bool[frags];
-					bool[] list_airshot = new bool[frags];
-					bool[] list_headshot = new bool[frags];
-					bool[] list_noscope = new bool[frags];
-					bool[] list_backstab = new bool[frags];
-					bool[] list_tauntfrag = new bool[frags];
-					bool[] list_gibfrag = new bool[frags];
-					bool[] list_deflectfrag = new bool[frags];
-					bool[] list_telefrag = new bool[frags];
-					bool[] list_collateral = new bool[frags];
-					bool[] list_midairfrag = new bool[frags];
-					bool[] list_critfrag = new bool[frags];
-					bool[] list_minicritfrag = new bool[frags];
-					bool[] list_pumpkinbombfrag = new bool[frags];
-					
-					bool[] list_minisentryfrag = new bool[frags];
-					bool[] list_sentryfrag = new bool[frags];
-					int[] list_sentrylvlfrag = new int[frags];
-					
-					bool[] list_ubercharged = new bool[frags];
-					bool[] list_vaccinatortypeused = new bool[frags];
-					
-					int[] list_stunnedtype = new int[frags];
-					int[] list_coatedtype = new int[frags];
+					int list_timestamp;
+					char list_itemdefs[176];
+					bool list_ubercharged;
+					int list_vaccinatortypeused;
+					int list_stunnedtype;
+					int list_coatedtype;
 					
 					//
 					
@@ -2990,15 +2907,7 @@ Action MapTimer_GameTimer(Handle timer)
 					int iMiniCrits;
 					int iCrits;
 					
-					int iScouts;
-					int iSoldiers;
-					int iPyros;
-					int iDemos;
-					int iHeavies;
-					int iEngies;
-					int iMedics;
-					int iSnipers;
-					int iSpies;
+					int tfClasses[10];
 					
 					int iTeleFrags;
 					int iWepFrags;
@@ -3032,7 +2941,7 @@ Action MapTimer_GameTimer(Handle timer)
 					for(int i = 0; i < frags; i++)
 					{
 						g_Game[client].aFragEvent.GetArray(i, event, sizeof(event));
-						list_timestamp[i] = event.timestamp;
+						list_timestamp = event.timestamp;
 						int userid_victim = (list[i] = event.userid);
 						list_assister[i] = event.assister;
 						list_assister_dominate[i] = event.dominated_assister;
@@ -3040,13 +2949,23 @@ Action MapTimer_GameTimer(Handle timer)
 						list_inflictor[i] = event.inflictor;
 						list_itemdef[i] = event.itemdef;
 						list_class[i] = event.class;
-						strcopy(list_classname_backup[i], sizeof(event.classname), event.classname);
+						strcopy(list_classname[i], sizeof(event.classname), event.classname);
+						
+						switch(strlen(list_itemdefs) < 1)
+						{
+							case false: Format(list_itemdefs, sizeof(list_itemdefs), "%s;%i", list_itemdefs, list_itemdef[i]);
+							case true: Format(list_itemdefs, sizeof(list_itemdefs), "%i", list_itemdef[i]);
+						}
 						
 						// kill log
 						int victim;
 						if(IsValidClient((victim = GetClientOfUserId(userid_victim))))
 						{
-							strcopy(list_steamid_victim[i], sizeof(g_Player[].auth), g_Player[victim].auth);
+							switch(strlen(list_steamid_victim) < 1)
+							{
+								case false: Format(list_steamid_victim, sizeof(list_steamid_victim), "%s;%s", list_steamid_victim, g_Player[victim].auth);
+								case true: strcopy(list_steamid_victim, sizeof(list_steamid_victim), g_Player[victim].auth);
+							}
 						}
 						
 						// override medic assister, count all healers as assisters.
@@ -3087,7 +3006,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Headshot = false;
 								}
 								bPrev_headshot = true;
-								list_headshot[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Backstab = event.backstab))
@@ -3101,7 +3019,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Backstab = false;
 								}
 								bPrev_backstab = true;
-								list_backstab[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Domination = event.dominated))
@@ -3115,7 +3032,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Domination = false;
 								}
 								bPrev_domination = true;
-								list_domination[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Revenge = event.revenge))
@@ -3129,7 +3045,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Revenge = false;
 								}
 								bPrev_revenge = true;
-								list_revenge[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Noscope = event.noscope))
@@ -3143,7 +3058,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Noscope = false;
 								}
 								bPrev_noscope = true;
-								list_noscope[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Taunt = event.tauntfrag))
@@ -3157,7 +3071,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Taunt = false;
 								}
 								bPrev_tauntfrag = true;
-								list_tauntfrag[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.PumpkinBomb = event.pumpkinbombfrag))
@@ -3171,7 +3084,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.PumpkinBomb = false;
 								}
 								bPrev_pumpkinbombfrag = true;
-								list_pumpkinbombfrag[i] = true
 							}
 						}
 						switch((g_Player[client].fragmsg.Deflected = event.deflectfrag))
@@ -3185,7 +3097,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Deflected = false;
 								}
 								bPrev_deflectfrag = true;
-								list_deflectfrag[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Gibbed = event.gibfrag))
@@ -3199,7 +3110,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Gibbed = false;
 								}
 								bPrev_gibfrag = true;
-								list_gibfrag[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Airshot = event.airshot))
@@ -3213,7 +3123,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Airshot = false;
 								}
 								bPrev_airshot = true;
-								list_airshot[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Collateral = event.collateral))
@@ -3227,7 +3136,6 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Collateral = false;
 								}
 								bPrev_collateral = true;
-								list_collateral[i] = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.MidAir = event.midair))
@@ -3241,34 +3149,17 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.MidAir = false;
 								}
 								bPrev_midair = true;
-								list_midairfrag[i] = true;
 							}
 						}
 						switch(event.crit_type)
 						{
-							case 1:
-							{
-								iMiniCrits++;
-								list_minicritfrag[i] = true;
-							}
-							case 2:
-							{
-								iCrits++;
-								list_critfrag[i] = true;
-							}
+							case 1: iMiniCrits++;
+							case 2: iCrits++;
 						}
 						
-						switch(event.class)
+						if(event.class >= TFClass_Scout && event.class <= TFClass_Engineer)
 						{
-							case TFClass_Scout: iScouts++;
-							case TFClass_Soldier: iSoldiers++;
-							case TFClass_Pyro: iPyros++;
-							case TFClass_DemoMan: iDemos++;
-							case TFClass_Heavy: iHeavies++;
-							case TFClass_Engineer: iEngies++;
-							case TFClass_Medic: iMedics++;
-							case TFClass_Sniper: iSnipers++;
-							case TFClass_Spy: iSpies++;
+							tfClasses[event.class]++;
 						}
 						
 						switch(TF2_IsEntityBuilding(event.inflictor))
@@ -3284,7 +3175,7 @@ Action MapTimer_GameTimer(Handle timer)
 											iWepFrags++;
 											list_wepfrag[i] = true;
 											
-											int itemdef = (list_weaponitemdef[i] = event.itemdef);
+											int itemdef = (list_itemdef[i] = event.itemdef);
 											ConVar cvar_points;
 											switch((cvar_points = array_GetWeapon(itemdef)) == null)
 											{
@@ -3305,11 +3196,7 @@ Action MapTimer_GameTimer(Handle timer)
 											}
 										}
 									}
-									case true:
-									{
-										iTeleFrags++;
-										list_telefrag[i] = true;
-									}
+									case true: iTeleFrags++;
 								}
 							}
 							
@@ -3322,8 +3209,6 @@ Action MapTimer_GameTimer(Handle timer)
 									{
 										iSentries++;
 										int level = TF2_GetBuildingLevel(event.inflictor);
-										list_sentryfrag[i] = true;
-										list_sentrylvlfrag[i] = level;
 										
 										switch(level)
 										{
@@ -3332,11 +3217,10 @@ Action MapTimer_GameTimer(Handle timer)
 											case 3: iSentriesLVL3++;
 										}
 									}
-									
 									case TFBuilding_MiniSentry:
 									{
+										iSentries++;
 										iMiniSentries++;
-										list_minisentryfrag[i] = true;
 									}
 								}
 							}
@@ -3354,7 +3238,7 @@ Action MapTimer_GameTimer(Handle timer)
 					GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
 					
 					Transaction txn = new Transaction();
-					AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client, list_healercount, list_healer, list_steamid_assister);
+					AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client, list_healercount, list_healer, list_steamid_assister, sizeof(list_steamid_assister));
 					VictimDied(txn, list, list_class, frags);
 					
 					char query[4096], query_map[4096];
@@ -3369,9 +3253,9 @@ Action MapTimer_GameTimer(Handle timer)
 							if(list_wepfrag[i])
 							{
 								char fix_weapon[64], query_wep[256];
-								CorrectWeaponClassname(event.class_attacker, list_classname[i], sizeof(fix_weapon), list_itemdef[i], list_classname_backup[i]);
+								CorrectWeaponClassname(event.class_attacker, fix_weapon, sizeof(fix_weapon), list_itemdef[i], list_classname[i]);
 								Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set %s = %s+1 where SteamID = '%s' and ServerID = %i"
-								, list_classname[i], list_classname[i], g_Player[client].auth, g_ServerID);
+								, fix_weapon, fix_weapon, g_Player[client].auth, g_ServerID);
 								txn.AddQuery(query_wep, queryId_frag_weapon);
 							}
 						}
@@ -3509,59 +3393,59 @@ Action MapTimer_GameTimer(Handle timer)
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", CritFrags = CritFrags+%i", frags);
 					}
 					// classes
-					if(iScouts > 0)
+					if(tfClasses[TFClass_Scout] > 0)
 					{
-						g_Player[client].session[Stats_ScoutFrags] += iScouts;
-						len += Format(query[len], sizeof(query)-len, ", ScoutFrags = ScoutFrags+%i", iScouts);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", ScoutFrags = ScoutFrags+%i", iScouts);
+						g_Player[client].session[Stats_ScoutFrags] += tfClasses[TFClass_Scout];
+						len += Format(query[len], sizeof(query)-len, ", ScoutFrags = ScoutFrags+%i", tfClasses[TFClass_Scout]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", ScoutFrags = ScoutFrags+%i", tfClasses[TFClass_Scout]);
 					}
-					if(iSoldiers > 0)
+					if(tfClasses[TFClass_Soldier] > 0)
 					{
-						g_Player[client].session[Stats_SoldierFrags] += iSoldiers;
-						len += Format(query[len], sizeof(query)-len, ", SoldierFrags = SoldierFrags+%i", iSoldiers);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SoldierFrags = SoldierFrags+%i", iSoldiers);
+						g_Player[client].session[Stats_SoldierFrags] += tfClasses[TFClass_Soldier];
+						len += Format(query[len], sizeof(query)-len, ", SoldierFrags = SoldierFrags+%i", tfClasses[TFClass_Soldier]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SoldierFrags = SoldierFrags+%i", tfClasses[TFClass_Soldier]);
 					}
-					if(iPyros > 0)
+					if(tfClasses[TFClass_Pyro] > 0)
 					{
-						g_Player[client].session[Stats_PyroFrags] += iPyros;
-						len += Format(query[len], sizeof(query)-len, ", PyroFrags = PyroFrags+%i", iPyros);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", PyroFrags = PyroFrags+%i", iPyros);
+						g_Player[client].session[Stats_PyroFrags] += tfClasses[TFClass_Pyro];
+						len += Format(query[len], sizeof(query)-len, ", PyroFrags = PyroFrags+%i", tfClasses[TFClass_Pyro]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", PyroFrags = PyroFrags+%i", tfClasses[TFClass_Pyro]);
 					}
-					if(iDemos > 0)
+					if(tfClasses[TFClass_DemoMan] > 0)
 					{
-						g_Player[client].session[Stats_DemoFrags] += iDemos;
-						len += Format(query[len], sizeof(query)-len, ", DemoFrags = DemoFrags+%i", iDemos);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DemoFrags = DemoFrags+%i", iDemos);
+						g_Player[client].session[Stats_DemoFrags] += tfClasses[TFClass_DemoMan];
+						len += Format(query[len], sizeof(query)-len, ", DemoFrags = DemoFrags+%i", tfClasses[TFClass_DemoMan]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DemoFrags = DemoFrags+%i", tfClasses[TFClass_DemoMan]);
 					}
-					if(iHeavies > 0)
+					if(tfClasses[TFClass_Heavy] > 0)
 					{
-						g_Player[client].session[Stats_HeavyFrags] += iHeavies;
-						len += Format(query[len], sizeof(query)-len, ", HeavyFrags = HeavyFrags+%i", iHeavies);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", HeavyFrags = HeavyFrags+%i", iHeavies);
+						g_Player[client].session[Stats_HeavyFrags] += tfClasses[TFClass_Heavy];
+						len += Format(query[len], sizeof(query)-len, ", HeavyFrags = HeavyFrags+%i", tfClasses[TFClass_Heavy]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", HeavyFrags = HeavyFrags+%i", tfClasses[TFClass_Heavy]);
 					}
-					if(iEngies > 0)
+					if(tfClasses[TFClass_Engineer] > 0)
 					{
-						g_Player[client].session[Stats_EngieFrags] += iEngies;
-						len += Format(query[len], sizeof(query)-len, ", EngieFrags = EngieFrags+%i", iEngies);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", EngieFrags = EngieFrags+%i", iEngies);
+						g_Player[client].session[Stats_EngieFrags] += tfClasses[TFClass_Engineer];
+						len += Format(query[len], sizeof(query)-len, ", EngieFrags = EngieFrags+%i", tfClasses[TFClass_Engineer]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", EngieFrags = EngieFrags+%i", tfClasses[TFClass_Engineer]);
 					}
-					if(iMedics > 0)
+					if(tfClasses[TFClass_Medic] > 0)
 					{
-						g_Player[client].session[Stats_MedicFrags] += iMedics;
-						len += Format(query[len], sizeof(query)-len, ", MedicFrags = MedicFrags+%i", iMedics);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MedicFrags = MedicFrags+%i", iMedics);
+						g_Player[client].session[Stats_MedicFrags] += tfClasses[TFClass_Medic];
+						len += Format(query[len], sizeof(query)-len, ", MedicFrags = MedicFrags+%i", tfClasses[TFClass_Medic]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MedicFrags = MedicFrags+%i", tfClasses[TFClass_Medic]);
 					}
-					if(iSnipers > 0)
+					if(tfClasses[TFClass_Sniper] > 0)
 					{
-						g_Player[client].session[Stats_SniperFrags] += iSnipers;
-						len += Format(query[len], sizeof(query)-len, ", SniperFrags = SniperFrags+%i", iSnipers);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SniperFrags = SniperFrags+%i", iSnipers);
+						g_Player[client].session[Stats_SniperFrags] += tfClasses[TFClass_Sniper];
+						len += Format(query[len], sizeof(query)-len, ", SniperFrags = SniperFrags+%i", tfClasses[TFClass_Sniper]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SniperFrags = SniperFrags+%i", tfClasses[TFClass_Sniper]);
 					}
-					if(iSpies > 0)
+					if(tfClasses[TFClass_Spy] > 0)
 					{
-						g_Player[client].session[Stats_SpyFrags] += iSpies;
-						len += Format(query[len], sizeof(query)-len, ", SpyFrags = SpyFrags+%i", iSpies);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SpyFrags = SpyFrags+%i", iSpies);
+						g_Player[client].session[Stats_SpyFrags] += tfClasses[TFClass_Spy];
+						len += Format(query[len], sizeof(query)-len, ", SpyFrags = SpyFrags+%i", tfClasses[TFClass_Spy]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SpyFrags = SpyFrags+%i", tfClasses[TFClass_Spy]);
 					}
 					
 					//
@@ -3583,91 +3467,87 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					// kill log
 					
-					for(int i = 0; i < frags; i++)
-					{
-						if(!bBotFrag[i])
-						{
-							int lenk;
-							char queryk[4096];
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "insert into `"...sql_table_kill_log..."`");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "ServerID");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Attacker");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Victim");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Assister");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Timestamp");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",WeaponItemdef");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",WeaponClassname");
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Domination");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Revenge");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Airshot");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Headshot");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Noscope");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Backstab");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",TauntFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",GibFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",DeflectFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",TeleFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Collateral");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",MidAirFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",CritFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",MiniCritFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",PumpkinBombFrag");
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",MiniSentryFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SentryFrag");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SentryLVLFrag");
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Ubercharged");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",VaccinatorTypeUsed");
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",StunnedType");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",CoatedType");
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ")");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "values");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "%i", g_ServerID);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", g_Player[client].auth);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_victim[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_assister);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_timestamp[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_weaponitemdef[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_classname[i]);
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_domination[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_revenge[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_airshot[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_headshot[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_noscope[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_backstab[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_tauntfrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_gibfrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_deflectfrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_telefrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_collateral[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_midairfrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_critfrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_minicritfrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_pumpkinbombfrag[i]);
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_minisentryfrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_sentryfrag[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_sentrylvlfrag[i]);
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_ubercharged[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_vaccinatortypeused[i]);
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_stunnedtype[i]);
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_coatedtype[i]);
-							
-							lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ")");
-							
-							txn.AddQuery(queryk);
-						}
-					}
+					int lenk;
+					char queryk[4096];
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "insert into `"...sql_table_kill_log..."`");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "ServerID");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Attacker");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Victim");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Assister");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Timestamp");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",WeaponItemdef");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Quantity");
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Dominations");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Revenges");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Airshots");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Headshots");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Noscopes");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Backstabs");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",TauntFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",GibFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",DeflectFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",TeleFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Collaterals");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",MidAirFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",CritFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",MiniCritFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",PumpkinBombFrags");
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",MiniSentryFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SentryFrags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SentryLVL1Frags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SentryLVL2Frags");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SentryLVL3Frags");
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Ubercharged");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",VaccinatorTypeUsed");
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",StunnedType");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",CoatedType");
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ")");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "values");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "%i", g_ServerID);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", g_Player[client].auth);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_victim);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_assister);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_timestamp);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_itemdefs);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", frags);
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iDominated);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iRevenges);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iAirshots);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iHeadshots);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iNoscopes);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iBackstabs);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iTauntFrags);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iGibFrags);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iDeflectFrags);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iTeleFrags);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iCollaterals);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iMidAirFrags);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iCrits);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iMiniCrits);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iPumpkinBombFrags);
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iMiniSentries);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentries);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentriesLVL1);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentriesLVL2);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentriesLVL3);
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_ubercharged);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_vaccinatortypeused);
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_stunnedtype);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_coatedtype);
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ")");
+					txn.AddQuery(queryk);
 					
 					//
 					
@@ -3680,12 +3560,55 @@ Action MapTimer_GameTimer(Handle timer)
 					{
 						PrepareFragMessage(client, dummy, points, frags);
 					}
-					
 					if(g_Player[client].active_page_session > 0)
 					{
 						StatsMenu.Session(client, g_Player[client].active_page_session);
 					}
 				}
+			}
+			
+			if(!!g_Game[client].aItemEvent)
+			{
+				Transaction txn = new Transaction();
+				
+				for(int i = 0; i < g_Game[client].aItemEvent.Length; i++)
+				{
+					ItemEventInfo item;
+					g_Game[client].aItemEvent.GetArray(i, item, sizeof(item));
+					
+					int len = 0;
+					char query[1024];
+					len += Format(query[len], sizeof(query)-len, "insert into `"...sql_table_item_log..."`");
+					len += Format(query[len], sizeof(query)-len, "(");
+					len += Format(query[len], sizeof(query)-len, "ServerID");
+					len += Format(query[len], sizeof(query)-len, ",SteamID");
+					len += Format(query[len], sizeof(query)-len, ",Timestamp");
+					len += Format(query[len], sizeof(query)-len, ",itemdef");
+					len += Format(query[len], sizeof(query)-len, ",quality");
+					len += Format(query[len], sizeof(query)-len, ",method");
+					len += Format(query[len], sizeof(query)-len, ",strange");
+					len += Format(query[len], sizeof(query)-len, ",unusual");
+					len += Format(query[len], sizeof(query)-len, ",weartype");
+					len += Format(query[len], sizeof(query)-len, ",quantity");
+					len += Format(query[len], sizeof(query)-len, ")");
+					len += Format(query[len], sizeof(query)-len, "values");
+					len += Format(query[len], sizeof(query)-len, "(");
+					len += Format(query[len], sizeof(query)-len, "'%i'", g_ServerID);
+					len += Format(query[len], sizeof(query)-len, ",'%s'", g_Player[client].auth);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.timestamp);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.itemdef);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.quality);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.method);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.strange);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.unusual);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.weartype);
+					len += Format(query[len], sizeof(query)-len, ",'%i'", item.quantity);
+					len += Format(query[len], sizeof(query)-len, ")");
+					txn.AddQuery(query);
+				}
+				
+				sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnItemEventInsert);
+				g_Game[client].aItemEvent.Clear();
 			}
 			
 			if(!!g_Game[client].aObjectPlaced)

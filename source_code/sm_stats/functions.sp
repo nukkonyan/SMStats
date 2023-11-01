@@ -104,7 +104,7 @@ stock int GetClientPosition(const char[] auth)
 	if(!!sql)
 	{
 		char query[256];
-		Format(query, sizeof(query), "select Points from `" ... sql_table_playerlist ... "` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+		Format(query, sizeof(query), "select Points from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
 		SQL_LockDatabase(sql); // lock database as it's non-threaded.
 		DBResultSet results = SQL_Query(sql, query);
 		SQL_UnlockDatabase(sql);
@@ -113,12 +113,9 @@ stock int GetClientPosition(const char[] auth)
 		{
 			case false:
 			{
-				delete results;
 				char error[256];
 				SQL_GetError(sql, error, sizeof(error));
-				
 				LogError("%s GetClientPosition error: Failed retrieving points for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
-				return -1;
 			}
 			
 			case true:
@@ -130,19 +127,21 @@ stock int GetClientPosition(const char[] auth)
 				results = SQL_Query(sql, query);
 				SQL_UnlockDatabase(sql);
 				
-				if(!results)
+				switch(!!results)
 				{
-					delete results;
-					char error[256];
-					SQL_GetError(sql, error, sizeof(error));
-					
-					LogError("%s GetClientPosition error: Failed retrieving position for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
-					return -1;
-				}
-				
-				while(results.FetchRow())
-				{
-					position = results.FetchInt(0);
+					case false:
+					{
+						char error[256];
+						SQL_GetError(sql, error, sizeof(error));
+						LogError("%s GetClientPosition error: Failed retrieving position for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
+					}
+					case true:
+					{
+						while(results.FetchRow())
+						{
+							position = results.FetchInt(0);
+						}
+					}
 				}
 			}
 		}
@@ -163,15 +162,21 @@ stock int GetTablePlayerCount()
 	if(!!sql)
 	{
 		char query[256];
-		Format(query, sizeof(query), "select count(*) from `%s` where ServerID = %i", sql_table_playerlist, g_ServerID);
+		Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where ServerID = %i", g_ServerID);
 		
 		SQL_LockDatabase(sql);
 		DBResultSet results = SQL_Query(sql, query);
 		SQL_UnlockDatabase(sql);
 		
-		while(!!results && results.FetchRow())
+		switch(!!results)
 		{
-			players = results.FetchInt(0);
+			case false:
+			{
+				char error[256];
+				SQL_GetError(sql, error, sizeof(error));
+				LogError("%s GetTablePlayerCount error: Failed getting playercount of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, error);
+			}
+			case true: players = results.RowCount;
 		}
 		
 		delete results;
@@ -184,17 +189,13 @@ stock int GetTablePlayerCount()
 
 stock int GetPlayerCount(bool count_bots=false)
 {
-	int count = 0;
-	
-	int player = 0;
+	int count, player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(!IsValidClient(player, !count_bots ? true : false))
+		if(IsValidClient(player, !count_bots))
 		{
-			continue;
+			count++;
 		}
-		
-		count++;
 	}
 	
 	return count;
@@ -224,16 +225,16 @@ stock void OnRoundStarted(Event event, const char[] event_name, bool dontBroadca
 	bRoundActive = true;
 	_sm_stats_info_update_round_active(true);
 	
-	bWarmupActive = IsWarmupActive();
-	
-	if(bWarmupActive)
+	if((bWarmupActive = IsWarmupActive()) && !bAllowWarmup)
 	{
 		int player = 0;
-		while(IsValidClient((player = FindEntityByClassname(player, "player"))))
+		while((player = FindEntityByClassname(player, "player")) != -1)
 		{
-			CPrintToChat(player, "%s %T", g_ChatTag, "#SMStats_RoundStart_Warmup", player);
+			if(IsValidClient(player))
+			{
+				CPrintToChat(player, "%s %T", g_ChatTag, "#SMStats_RoundStart_Warmup", player);
+			}
 		}
-		
 		return;
 	}
 	
@@ -247,7 +248,7 @@ stock void OnRoundStarted(Event event, const char[] event_name, bool dontBroadca
 			bStatsActive = true;
 			
 			int player = 0;
-			while((player = FindEntityByClassname(player, "player")) > 0)
+			while((player = FindEntityByClassname(player, "player")) != -1)
 			{
 				if(IsValidClient(player))
 				{
@@ -264,21 +265,21 @@ stock void OnRoundEnded(Event event, const char[] event_name, bool dontBroadcast
 	bRoundActive = false;
 	_sm_stats_info_update_round_active(false);
 	
-	bWarmupActive = IsWarmupActive();
-	
-	if(bWarmupActive)
+	if((bWarmupActive = IsWarmupActive()) && !bAllowWarmup)
 	{
-		if(bDisableAfterRoundEnd)
+		return;
+	}
+	
+	if(bDisableAfterRoundEnd)
+	{
+		bStatsActive = false;
+		
+		int player = 0;
+		while((player = FindEntityByClassname(player, "player")) != -1)
 		{
-			bStatsActive = false;
-			
-			int player = 0;
-			while((player = FindEntityByClassname(player, "player")) > 0)
+			if(IsValidClient(player))
 			{
-				if(IsValidClient(player))
-				{
-					CPrintToChat(player, "%T", "#SMStats_RoundEnd", player);
-				}
+				CPrintToChat(player, "%T", "#SMStats_RoundEnd", player);
 			}
 		}
 	}
