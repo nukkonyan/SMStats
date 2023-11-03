@@ -343,6 +343,7 @@ enum struct FragEventInfo
 	int assister;
 	int inflictor;
 	int crit_type;
+	int userid_healpoints;
 	TFClassType class;
 	TFClassType class_attacker;
 	ArrayList healers;
@@ -852,7 +853,9 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	char classname[64];
 	event.GetString("weapon_logclassname", classname, sizeof(classname));
 	
-	if(StrContains(classname, "world") != -1 && assister < 1)
+	if(StrContains(classname, "trigger_") != -1
+	|| StrContains(classname, "prop_") != -1
+	|| (StrContains(classname, "world") != -1 && assister < 1))
 	{
 		return;
 	}
@@ -991,6 +994,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	frag.assister = assister;
 	frag.inflictor = event.GetInt("inflictor");
 	frag.crit_type = event.GetInt("crit_type");
+	frag.userid_healpoints = GetEntProp(victim, Prop_Send, "m_iHealPoints");
 	frag.class = TF2_GetPlayerClass(victim);
 	frag.class_attacker = class;
 	frag.healers = GetHealers(client);
@@ -2869,6 +2873,7 @@ Action MapTimer_GameTimer(Handle timer)
 					FragEventInfo event;
 					int[] list = new int[frags];
 					int[] list_assister = new int[frags];
+					int[] list_healpoints = new int[frags];
 					bool[] list_assister_dominate = new bool[frags];
 					bool[] list_assister_revenge = new bool[frags];
 					int[] list_healercount = new int[frags];
@@ -2977,7 +2982,7 @@ Action MapTimer_GameTimer(Handle timer)
 								list_healercount[i] = event.healers.Length;
 							}
 							
-							delete event.healers;
+							delete event.healers; // kill handle, don't wanna cause a handle leak. (memory leak)
 						}
 						
 						switch(event.suicide_assisted)
@@ -3170,29 +3175,26 @@ Action MapTimer_GameTimer(Handle timer)
 								{
 									case false:
 									{
-										if(!event.pumpkinbombfrag)
+										iWepFrags++;
+										list_wepfrag[i] = true;
+										
+										int itemdef = (list_itemdef[i] = event.itemdef);
+										ConVar cvar_points;
+										switch((cvar_points = array_GetWeapon(itemdef)) == null)
 										{
-											iWepFrags++;
-											list_wepfrag[i] = true;
-											
-											int itemdef = (list_itemdef[i] = event.itemdef);
-											ConVar cvar_points;
-											switch((cvar_points = array_GetWeapon(itemdef)) == null)
+											case false: points += cvar_points.IntValue;
+											case true:
 											{
-												case false: points += cvar_points.IntValue;
-												case true:
-												{
-													PrintToServer("%s itemdef %i has invalid convar!"
-													... "\nattacker userid : %i"
-													... "\nvictim userid : %i"
-													... "\nvictim class : %i"
-													... "\n "
-													, core_chattag, itemdef
-													, GetClientUserId(client)
-													, list[i]
-													, list_class[i]);
-													continue;
-												}
+												PrintToServer("%s itemdef %i has invalid convar!"
+												... "\nattacker userid : %i"
+												... "\nvictim userid : %i"
+												... "\nvictim class : %i"
+												... "\n "
+												, core_chattag, itemdef
+												, GetClientUserId(client)
+												, list[i]
+												, list_class[i]);
+												continue;
 											}
 										}
 									}
@@ -3239,7 +3241,7 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					Transaction txn = new Transaction();
 					AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client, list_healercount, list_healer, list_steamid_assister, sizeof(list_steamid_assister));
-					VictimDied(txn, list, list_class, frags);
+					VictimDied(txn, list, list_healpoints, list_class, frags);
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
@@ -3457,6 +3459,7 @@ Action MapTimer_GameTimer(Handle timer)
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
 						len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+						len_map += Format(query_map[len], sizeof(query_map)-len_map, ", Points = Points+%i", points);
 					}
 					
 					len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);

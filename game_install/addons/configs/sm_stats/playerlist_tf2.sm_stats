@@ -3,6 +3,7 @@ create table if not exists `playerlist_tf2`
 	`ID` int not null auto_increment,
 	`ServerID` int not null default '1',
 	`Points` int not null default '1000',
+	`LastConnectedName` varchar(64) not null default 'ERR_NAME_NOT_FOUND',
 	`LastConnectedTime` int not null default '0',
 	`PlayTime` int not null default '0',
 	`SteamID` varchar(28) not null default '',
@@ -33,6 +34,7 @@ create table if not exists `playerlist_tf2`
 	`SniperDeaths` int not null default '0',
 	`SpyDeaths` int not null default '0',
 	
+	`HealPoints` int not null default '0',
 	`Dominations` int not null default '0',
 	`Revenges` int not null default '0',
 	`Airshots` int not null default '0',

@@ -834,7 +834,7 @@ stock bool AssistedKills(Transaction txn
 }
 
 // will be re-done and optimized.
-stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] list_class, int frags)
+stock void VictimDied(Transaction txn, const int[] list, const int[] list_healpoints, const TFClassType[] list_class, int frags)
 {
 	for(int i = 0; i < frags; i++)
 	{
@@ -851,6 +851,13 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 			int len = 0;
 			char query[1024];
 			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set Deaths = Deaths+1");
+			
+			int healpoints = list_healpoints[i];
+			if(healpoints > 0)
+			{
+				g_Player[victim].session[Stats_HealPoints] += healpoints;
+				len += Format(query[len], sizeof(query)-len, ", HealPoints = HealPoints+%i", healpoints);
+			}
 			
 			g_Player[victim].session[Stats_Deaths]++;
 			switch(class)

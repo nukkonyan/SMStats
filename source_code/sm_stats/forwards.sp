@@ -506,7 +506,7 @@ Action Timer_TimePlayed(Handle timer, int userid)
 	if(sql != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select PlayTime from `" ... sql_table_playerlist ..."` where SteamID = '%s' and ServerID = %i"
+		Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
 		, g_Player[client].auth, g_ServerID);
 		sql.Query(DBQuery_TimePlayed, query, userid);
 		
@@ -539,7 +539,7 @@ void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] err
 		int PlayTime = results.FetchInt(0);
 		int session = g_Player[client].session[Stats_PlayTime];
 		int calculate = session - PlayTime;
-		CallbackQuery("update `" ... sql_table_playerlist ..."` set PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `"... sql_table_playerlist..."` set PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = %i"
 		, query_error_uniqueid_UpdatePlayTime
 		, calculate
 		, g_Player[client].auth
@@ -552,7 +552,7 @@ public void OnMapStart()
 	GetCurrentMap(cMap, sizeof(cMap));
 	if(hMapTimer == null)
 	{
-		hMapTimer = CreateTimer(60.0, MapTimer_OnMapStart_Minutes, _, TIMER_REPEAT);
+		hMapTimer = CreateTimer(60.0, MapTimer_OnMapStart_Timer, _, TIMER_REPEAT);
 	}
 	if(hMapTimerSeconds == null)
 	{
@@ -587,7 +587,7 @@ public void OnMapEnd()
 	}
 }
 
-Action MapTimer_OnMapStart_Minutes(Handle timer)
+Action MapTimer_OnMapStart_Timer(Handle timer)
 {
 	SQLUpdateMapTimer();
 	return Plugin_Continue;
@@ -607,21 +607,21 @@ void SQLUpdateMapTimer()
 	if(sql != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select PlayTime from `"...sql_table_maps_log..."` where MapName = '%s' and ServerID = %i", cMap, g_ServerID);
-		sql.Query(DBQuery_MapTimer, query);
+		Format(query, sizeof(query), "select `PlayTime` from `"...sql_table_maps_log..."` where `MapName`='%s' and `ServerID`='%i'", cMap, g_ServerID);
+		sql.Query(DBQuery_MapTimer, query, GetTime());
 	}
 }
 
-void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, any data)
+void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, int LastPlayedTime)
 {
 	switch(results != null && results.RowCount > 0)
 	{
 		// not found
 		case false:
 		{
-			CallbackQuery("insert into `" ... sql_table_maps_log ... "` (PlayTime, ServerID, MapName) values (%i, %i, '%s')"
+			CallbackQuery("insert into `"...sql_table_maps_log..."` (PlayTime,LastPlayedTime,ServerID,MapName) values ('%i','%i','%i','%s')"
 			, query_error_uniqueid_UpdateMapTimeInserting
-			, iMapTimerSeconds, g_ServerID, cMap);
+			, iMapTimerSeconds, LastPlayedTime, g_ServerID, cMap);
 		}
 		// found
 		case true:
@@ -632,9 +632,9 @@ void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, any 
 				int session = iMapTimerSeconds;
 				int calculate = session - PlayTime;
 				
-				CallbackQuery("update `" ... sql_table_maps_log ... "` set PlayTime = PlayTime+%i where ServerID = %i and MapName = '%s'"
+				CallbackQuery("update `"...sql_table_maps_log..."` set `PlayTime`=`PlayTime`+'%i',`LastPlayedTime`='%i' where `ServerID`='%i' and `MapName`='%s'"
 				, query_error_uniqueid_UpdateMapTimeUpdating
-				, calculate, g_ServerID, cMap);
+				, calculate, LastPlayedTime, g_ServerID, cMap);
 			}
 		}
 	}
@@ -650,6 +650,7 @@ void UpdateMapTimerSeconds(const char[] map, int seconds)
 		pack.WriteCell(strlen(map)+1);
 		pack.WriteString(map);
 		pack.WriteCell(seconds);
+		pack.WriteCell(GetTime());
 		pack.Reset();
 		sql.Query(DBQuery_UpdateMapTimerSeconds, query, pack);
 	}
@@ -661,6 +662,7 @@ void DBQuery_UpdateMapTimerSeconds(Database db, DBResultSet results, const char[
 	char[] map = new char[maxlen];
 	pack.ReadString(map, maxlen);
 	int seconds = pack.ReadCell();
+	int lastplayed = pack.ReadCell();
 	delete pack;
 	
 	if(results.FetchRow())
@@ -669,8 +671,8 @@ void DBQuery_UpdateMapTimerSeconds(Database db, DBResultSet results, const char[
 		int session = seconds;
 		int calculate = session - PlayTime;
 		
-		CallbackQuery("update `" ... sql_table_maps_log ... "` set PlayTime = PlayTime+%i where ServerID = %i and MapName = '%s'"
+		CallbackQuery("update `"...sql_table_maps_log..."` set PlayTime = PlayTime+%i, LastPlayedTime = %i where ServerID = %i and MapName = '%s'"
 		, query_error_uniqueid_UpdateMapTimeUpdatingSeconds
-		, calculate, g_ServerID, map);
+		, calculate, lastplayed, g_ServerID, map);
 	}
 }
