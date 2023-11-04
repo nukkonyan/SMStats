@@ -2100,7 +2100,7 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 	{
 		case 1:
 		{
-			char play_time[255];
+			char play_time[256];
 			GetTimeFormat(client, stats[Stats_PlayTime], play_time, sizeof(play_time));
 			
 			switch(top_player)

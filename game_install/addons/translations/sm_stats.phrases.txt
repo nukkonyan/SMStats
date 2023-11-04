@@ -25,72 +25,72 @@
 	//================================//
 	"#SMStats_TimeFormat_Year"
 	{
-		"en" "{YEAR} year#|#{YEAR} years"
-		"jp" "{YEAR}ヶ年"
-		"sv" "{YEAR}år"
-		"tr" "{YEAR}yıl"
+		"en" "year #|# years"
+		"jp" "ヶ年"
+		"sv" " år"
+		"tr" " yıl"
 	}
 	"#SMStats_TimeFormat_Month"
 	{
-		"en" "{MONTH} month#|#{MONTH} months"
-		"jp" "{MONTH}ヶ月"
-		"sv" "{MONTH} måned#|#{MONTH} måneder"
-		"sv" "{MONTH} månad#|#{MONTH} månader"
-		"tr" "{MONTH} ay"
+		"en" " month#|# months"
+		"jp" "ヶ月"
+		"sv" " måned#|# måneder"
+		"sv" " månad#|# månader"
+		"tr" " ay"
 	}
 	"#SMStats_TimeFormat_Day"
 	{
-		"en" "{DAY} day#|#{DAY} days"
-		"jp" "{DAY}日間"
-		"no" "{DAY} dag#|#{DAY} dager"
-		"sv" "{DAY} dag#|#{DAY} dagar"
-		"tr" "{DAY} gün"
+		"en" " day#|# days"
+		"jp" "日間"
+		"no" " dag#|# dager"
+		"sv" " dag#|# dagar"
+		"tr" " gün"
 	}
 	"#SMStats_TimeFormat_Hour"
 	{
-		"en" "{HOUR} hour#|#{HOUR} hours"
-		"jp" "{HOUR}時間"
-		"no" "{HOUR} time#|#{HOUR} timer"
-		"sv" "{HOUR} timme#|#{HOUR} timmar"
-		"tr" "{HOUR} saat"
+		"en" " hour#|# hours"
+		"jp" "時間"
+		"no" " time#|# timer"
+		"sv" " timme#|# timmar"
+		"tr" " saat"
 	}
 	"#SMStats_TimeFormat_Minute"
 	{
-		"en" "{MINUTE} minute#|#{MINUTE} minutes"
-		"jp" "{MINUTE}分"
-		"no" "{MINUTE} minut#|#{MINUTE} minuter"
-		"sv" "{MINUTE} minut#|#{MINUTE} minuter"
-		"tr" "{MINUTE} dakika"
+		"en" " minute#|# minutes"
+		"jp" "分"
+		"no" " minut#|# minuter"
+		"sv" " minut#|# minuter"
+		"tr" " dakika"
 	}
 	"#SMStats_TimeFormat_Second"
 	{
-		"en" "{SECOND} second#|#{SECOND} seconds"
-		"jp" "{SECOND}秒"
-		"no" "{SECOND} sekund#|#{SECOND} sekunder"
-		"sv" "{SECOND} sekund#|#{SECOND} sekunder"
-		"tr" "{SECOND} saniye"
+		"en" " second#|# seconds"
+		"jp" "秒"
+		"no" " sekund#|# sekunder"
+		"sv" " sekund#|# sekunder"
+		"tr" " saniye"
 	}
 	"#SMStats_TimeFormatShort_Hour"
 	{
-		"en" "{HOUR}hr#|#{HOUR}hrs"
-		"jp" "{HOUR}時間"
-		"no" "{HOUR}hr"
-		"sv" "{HOUR}hr"
-		"tr" "{HOUR}sa"
+		"en" "hr#|#hrs"
+		"jp" "時間"
+		"no" "hr"
+		"sv" "hr"
+		"tr" "sa"
 	}
 	"#SMStats_TimeFormatShort_Minute"
 	{
-		"en" "{MINUTE}min"
-		"jp" "{MINUTE}分"
-		"tr" "{MINUTE}dk"
+		"en" "min"
+		"jp" "分"
+		"tr" "dk"
 	}
 	"#SMStats_TimeFormatShort_Second"
 	{
-		"en" "{SECOND}sec"
-		"jp" "{SECOND}秒"
-		"no" "{SECOND}sek"
-		"sv" "{SECOND}sek"
-		"tr" "{SECOND}sn"
+		"en" "sec"
+		"jp" "秒"
+		"no" "sek"
+		"sv" "sek"
+		"tr" "sn"
 	}
 	"#SMStats_TimeFormat_AM_PM"
 	{
@@ -143,7 +143,6 @@
 	"#SMStats_PlayTimeFormat_Scenario5"
 	{
 		"en" "{SECONDS}"
-		"tr" "{SECONDS}"
 	}
 	"#SMStats_TimeFormat_LastConnected"
 	{
@@ -693,7 +692,7 @@
 	"#SMStats_VersionLoaded"
 	{
 	    "#format" "{1:s}"
-	    "en" "{orange}Version {1} {lightgreen}has been loaded!"
+	    "en" "{orange}Version {1} {lightgreen}has loaded!"
 	    "jp" "{orange}バージョン{1}{lightgreen}がロードされました！"
 	    "sv" "{orange}Version {1} {lightgreen}har laddats!"
 	    "tr" "{orange}Sürüm {1} {lightgreen}yüklendi!"
@@ -796,13 +795,14 @@
 	}
 	"#SMStats_Points_PluralSplitter" // points plural splitter false#|#true (non-plural#|#plural)
 	{
-	    // {POINTS} player points
-	    "en" "{POINTS} point#|#{POINTS} points"
-	    "jp" "{POINTS}ポイント"
-	    "sv" "{POINTS} poäng"
-	    "nl" "{POINTS} punt#|#{POINTS} punten"
-	    "no" "{POINTS} poeng"
-	    "tr" "{POINTS} puan"
+	    // player points
+	    // this will automatically become 'x point or 'x points'
+	    "en" " point#|# points"
+	    "jp" "ポイント"
+	    "sv" " poäng"
+	    "nl" " punt#|# punten"
+	    "no" " poeng"
+	    "tr" " puan"
 	}
 	"#SMStats_FeatureUnavailable"
 	{

@@ -1072,24 +1072,25 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 
 stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen)
 {
-	char fmt_points_plural[32], str_points[11];
-	Format(fmt_points_plural, sizeof(fmt_points_plural), "%T", "#SMStats_Points_PluralSplitter", client);
-	IntToString(points, str_points, sizeof(str_points));
-	ReplaceString(fmt_points_plural, sizeof(fmt_points_plural), "{POINTS}", str_points, false);
-	switch(StrContains(fmt_points_plural, "#|#") != -1)
+	char fmt_plural[64];
+	Format(fmt_plural, sizeof(fmt_plural), "%T", "#SMStats_Points_PluralSplitter", client);
+	switch(StrContains(fmt_plural, "#|#") != -1)
 	{
 		// this language defies the 'point' and 'points' with one word as both singular and plural.
 		case false:
 		{
-			strcopy(translation, maxlen, fmt_points_plural);
+			Format(translation, maxlen, "%i%s", points, fmt_plural);
 		}
 		// this language defies the 'point' and 'points' with one word as inflection-based singular and plural.
 		case true:
 		{
-			char points_plural[2][32];
-			ExplodeString(fmt_points_plural, "#|#", points_plural, sizeof(points_plural), 32);
-			ReplaceString(points_plural[0], sizeof(points_plural[]), "#|#", "");
-			strcopy(translation, maxlen, points_plural[view_as<int>(points < -1 || points > 1)]);
+			bool bPlural = (points < -1 || points > 1);
+			char szPlural[2][16];
+			if(ExplodeString(fmt_plural, "#|#", szPlural, sizeof(szPlural), 16) == 2)
+			{
+				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
+			}
+			Format(translation, maxlen, "%i%s", points, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 }
@@ -1363,7 +1364,7 @@ stock int IsValidDeveloperType(int client)
 
 // time formats, these needs to be fixed and corrected.
 
-int TimeFormat_ConvertSeconds(int seconds)
+stock int TimeFormat_ConvertSeconds(int seconds)
 {
 	int minutes = ( seconds / 60 );
 	int minutes_sec = ( seconds - ( minutes * 60 ) );
@@ -1375,7 +1376,7 @@ int TimeFormat_ConvertSeconds(int seconds)
 	
 	return minutes_sec;
 }
-int TimeFormat_ConvertMinutes(int seconds)
+stock int TimeFormat_ConvertMinutes(int seconds)
 {
 	int minutes;
 	
@@ -1387,7 +1388,7 @@ int TimeFormat_ConvertMinutes(int seconds)
 	
 	return minutes;
 }
-int TimeFormat_ConvertHours(int minutes, int &minutes_remove)
+stock int TimeFormat_ConvertHours(int &minutes)
 {
 	int hours;
 	
@@ -1397,14 +1398,9 @@ int TimeFormat_ConvertHours(int minutes, int &minutes_remove)
 		minutes -= 60;
 	}
 	
-	for(int i = 0; i < hours; i++)
-	{
-		minutes_remove -= 60;
-	}
-	
 	return hours;
 }
-int TimeFormat_ConvertDays(int hours, int &hours_remove)
+stock int TimeFormat_ConvertDays(int &hours)
 {
 	int days;
 	
@@ -1414,21 +1410,22 @@ int TimeFormat_ConvertDays(int hours, int &hours_remove)
 		hours -= 24;
 	}
 	
-	for(int i = 0; i < days; i++)
-	{
-		hours_remove -= 24;
-	}
-	
 	return days;
 }
-
-stock int TimeFormat_ConvertMonths(int days, int &days_remove)
+stock int TimeFormat_ConvertMonths(int &days)
 {
-	// code to be filled
-	return -69;
+	// workaround needed, cuz we need to detect correct months.
+	int months;
+	
+	while(days >= 31)
+	{
+		months++;
+		days -= 31;
+	}
+	
+	return months;
 }
-
-stock int TimeFormat_ConvertYears(int months, int &months_remove)
+stock int TimeFormat_ConvertYears(int &months)
 {
 	int years;
 	
@@ -1438,15 +1435,9 @@ stock int TimeFormat_ConvertYears(int months, int &months_remove)
 		months -= 12;
 	}
 	
-	for(int i = 0; i < months; i++)
-	{
-		months_remove -= i;
-	}
-	
 	return years;
 }
-
-void GetCountStr(int count, char[] yes, int no)
+stock void TimeFormat_GetCountStr(int count, char[] yes, int no)
 {
 	IntToString(count, yes, no);
 	if(strlen(yes) == 1)
@@ -1461,150 +1452,112 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 	
 	int seconds = TimeFormat_ConvertSeconds(time_seconds);
 	int minutes = TimeFormat_ConvertMinutes(time_seconds);
-	int hours = TimeFormat_ConvertHours(minutes, minutes);
-	int days = TimeFormat_ConvertDays(hours, hours);
-	int months;// = TimeFormat_ConvertYears(days, days);
-	int years;// = TimeFormat_ConvertYears(months, months);
+	int hours = TimeFormat_ConvertHours(minutes);
+	int days = TimeFormat_ConvertDays(hours);
+	int months = TimeFormat_ConvertMonths(days);
+	int years = TimeFormat_ConvertYears(months);
 	
 	//PrintToServer("%i seconds %i minutes %i hours %i days", seconds, minutes, hours, days);
 	
-	char szYear[2][32];
-	bool bYearPlural = false;
+	char szYear[16];
 	Format(time_format, maxlen, "%T", "#SMStats_TimeFormat_Year", client);
-	if(StrContains(time_format, "{YEAR}", false) != -1)
-	{
-		char count[11];
-		GetCountStr(years, count, sizeof(count));
-		ReplaceString(time_format, maxlen, "{YEAR}", count, false);
-	}
 	switch(StrContains(time_format, "#|#") != -1)
 	{
-		case false:
-		{
-			bYearPlural = false;
-			strcopy(szYear[0], sizeof(szYear[]), time_format);
-		}
+		case false: Format(szYear, sizeof(szYear), "%i%s", years, time_format);
 		case true:
 		{
-			if(ExplodeString(time_format, "#|#", szYear, sizeof(szYear), 32) == 2)
+			bool bPlural = (years < -1 || years > 1);
+			char szPlural[2][16];
+			if(ExplodeString(time_format, "#|#", szPlural, sizeof(szPlural), 16) == 2)
 			{
-				ReplaceString(szYear[0], sizeof(szYear[]), "#|#", "");
+				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
 			}
+			Format(szYear, sizeof(szYear), "%i%s", years, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 	
-	char szMonth[2][32];
-	bool bMonthPlural = false;
+	char szMonth[16];
 	Format(time_format, maxlen, "%T", "#SMStats_TimeFormat_Month", client);
-	if(StrContains(time_format, "{MONTH}", false) != -1)
-	{
-		char count[11];
-		GetCountStr(months, count, sizeof(count));
-		ReplaceString(time_format, maxlen, "{MONTH}", count, false);
-	}
 	switch(StrContains(time_format, "#|#") != -1)
 	{
-		case false:
-		{
-			bMonthPlural = false;
-			strcopy(szMonth[0], sizeof(szMonth[]), time_format);
-		}
+		case false: Format(szMonth, sizeof(szMonth), "%i%s", months, time_format);
 		case true:
 		{
-			ExplodeString(time_format, "#|#", szMonth, sizeof(szMonth), 32);
-			ReplaceString(szMonth[0], sizeof(szMonth[]), "#|#", "");
+			bool bPlural = (months < -1 || months > 1);
+			char szPlural[2][16];
+			if(ExplodeString(time_format, "#|#", szPlural, sizeof(szPlural), 16) == 2)
+			{
+				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
+			}
+			Format(szMonth, sizeof(szMonth), "%i%s", months, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 	
-	char szDay[2][32];
-	bool bDayPlural = false;
+	char szDay[16];
 	Format(time_format, maxlen, "%T", "#SMStats_TimeFormat_Day", client);
-	if(StrContains(time_format, "{DAY}", false) != -1)
-	{
-		char count[11];
-		GetCountStr(days, count, sizeof(count));
-		ReplaceString(time_format, maxlen, "{DAY}", count, false);
-	}
 	switch(StrContains(time_format, "#|#") != -1)
 	{
-		case false:
-		{
-			bDayPlural = false;
-			strcopy(szDay[0], sizeof(szDay[]), time_format);
-		}
+		case false: Format(szDay, sizeof(szDay), "%i%s", days, time_format);
 		case true:
 		{
-			ExplodeString(time_format, "#|#", szDay, sizeof(szDay), 32);
-			ReplaceString(szDay[0], sizeof(szDay[]), "#|#", "");
+			bool bPlural = (days < -1 || days > 1);
+			char szPlural[2][16];
+			if(ExplodeString(time_format, "#|#", szPlural, sizeof(szPlural), 16) == 2)
+			{
+				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
+			}
+			Format(szDay, sizeof(szDay), "%i%s", days, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 	
-	char szHour[2][32];
-	bool bHourPlural = false;
+	char szHour[16];
 	Format(time_format, maxlen, "%T", "#SMStats_TimeFormatShort_Hour", client);
-	if(StrContains(time_format, "{HOUR}", false) != -1)
-	{
-		char count[11];
-		GetCountStr(hours, count, sizeof(count));
-		ReplaceString(time_format, maxlen, "{HOUR}", count, false);
-	}
 	switch(StrContains(time_format, "#|#") != -1)
 	{
-		case false:
-		{
-			bHourPlural = false;
-			strcopy(szHour[0], sizeof(szHour[]), time_format);
-		}
+		case false: Format(szHour, sizeof(szHour), "%i%s", hours, time_format);
 		case true:
 		{
-			ExplodeString(time_format, "#|#", szHour, sizeof(szHour), 32);
-			ReplaceString(szHour[0], sizeof(szHour[]), "#|#", "");
+			bool bPlural = (hours < -1 || hours > 1);
+			char szPlural[2][16];
+			if(ExplodeString(time_format, "#|#", szPlural, sizeof(szPlural), 16) == 2)
+			{
+				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
+			}
+			Format(szDay, sizeof(szDay), "%i%s", hours, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 	
-	char szMinute[2][32];
-	bool bMinutePlural = (minutes != 0);
+	char szMinute[16];
 	Format(time_format, maxlen, "%T", "#SMStats_TimeFormatShort_Minute", client);
-	if(StrContains(time_format, "{MINUTE}", false) != -1)
-	{
-		char count[11];
-		GetCountStr(minutes, count, sizeof(count));
-		ReplaceString(time_format, maxlen, "{MINUTE}", count, false);
-	}
 	switch(StrContains(time_format, "#|#") != -1)
 	{
-		case false:
-		{
-			bMinutePlural = false;
-			strcopy(szMinute[0], sizeof(szMinute[]), time_format);
-		}
+		case false: Format(szMinute, sizeof(szMinute), "%i%s", minutes, time_format);
 		case true:
 		{
-			ExplodeString(time_format, "#|#", szMinute, sizeof(szMinute), 32);
-			ReplaceString(szMinute[0], sizeof(szMinute[]), "#|#", "");
+			bool bPlural = (minutes < -1 || minutes > 1);
+			char szPlural[2][16];
+			if(ExplodeString(time_format, "#|#", szPlural, sizeof(szPlural), 16) == 2)
+			{
+				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
+			}
+			Format(szDay, sizeof(szDay), "%i%s", minutes, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 	
-	char szSecond[2][32];
-	bool bSecondPlural = (seconds != 0);
+	char szSecond[16];
 	Format(time_format, maxlen, "%T", "#SMStats_TimeFormatShort_Second", client);
-	if(StrContains(time_format, "{SECOND}", false) != -1)
-	{
-		char count[11];
-		GetCountStr(seconds, count, sizeof(count));
-		ReplaceString(time_format, maxlen, "{SECOND}", count, false);
-	}
 	switch(StrContains(time_format, "#|#") != -1)
 	{
-		case false:
-		{
-			bSecondPlural = false;
-			strcopy(szSecond[0], sizeof(szSecond[]), time_format);
-		}
+		case false: Format(szSecond, sizeof(szSecond), "%i%s", seconds, time_format);
 		case true:
 		{
-			ExplodeString(time_format, "#|#", szSecond, sizeof(szSecond), 32);
-			ReplaceString(szSecond[0], sizeof(szSecond[]), "#|#", "");
+			bool bPlural = (seconds < -1 || seconds > 1);
+			char szPlural[2][16];
+			if(ExplodeString(time_format, "#|#", szPlural, sizeof(szPlural), 16) == 2)
+			{
+				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
+			}
+			Format(szSecond, sizeof(szSecond), "%i%s", seconds, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 	
@@ -1618,29 +1571,29 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 	&& seconds >= 0)
 	{
 		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario0", client);
-		if(StrContains(time_format, "{YEAR}", false) != -1)
+		if(StrContains(time_format, "{YEARS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{YEARS}", szYear[view_as<int>(bYearPlural)], false);
+			ReplaceString(time_format, maxlen, "{YEARS}", szYear, false);
 		}
 		if(StrContains(time_format, "{MONTHS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{MONTHS}", szMonth[view_as<int>(bMonthPlural)], false);
+			ReplaceString(time_format, maxlen, "{MONTHS}", szMonth, false);
 		}
 		if(StrContains(time_format, "{DAYS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{DAYS}", szDay[view_as<int>(bDayPlural)], false);
+			ReplaceString(time_format, maxlen, "{DAYS}", szDay, false);
 		}
 		if(StrContains(time_format, "{HOURS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{HOURS}", szHour[view_as<int>(bHourPlural)], false);
+			ReplaceString(time_format, maxlen, "{HOURS}", szHour, false);
 		}
 		if(StrContains(time_format, "{MINUTES}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
 		}
 		if(StrContains(time_format, "{SECONDS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
 		}
 	} else
 	if(months > 0
@@ -1652,23 +1605,23 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario1", client);
 		if(StrContains(time_format, "{MONTHS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{MONTHS}", szMonth[view_as<int>(bMonthPlural)], false);
+			ReplaceString(time_format, maxlen, "{MONTHS}", szMonth, false);
 		}
 		if(StrContains(time_format, "{DAYS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{DAYS}", szDay[view_as<int>(bDayPlural)], false);
+			ReplaceString(time_format, maxlen, "{DAYS}", szDay, false);
 		}
 		if(StrContains(time_format, "{HOURS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{HOURS}", szHour[view_as<int>(bHourPlural)], false);
+			ReplaceString(time_format, maxlen, "{HOURS}", szHour, false);
 		}
 		if(StrContains(time_format, "{MINUTES}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
 		}
 		if(StrContains(time_format, "{SECONDS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
 		}
 	} else
 	if(days > 0
@@ -1679,19 +1632,19 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario2", client);
 		if(StrContains(time_format, "{DAYS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{DAYS}", szDay[view_as<int>(bDayPlural)], false);
+			ReplaceString(time_format, maxlen, "{DAYS}", szDay, false);
 		}
 		if(StrContains(time_format, "{HOURS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{HOURS}", szHour[view_as<int>(bHourPlural)], false);
+			ReplaceString(time_format, maxlen, "{HOURS}", szHour, false);
 		}
 		if(StrContains(time_format, "{MINUTES}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
 		}
 		if(StrContains(time_format, "{SECONDS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
 		}
 	}
 	else
@@ -1702,15 +1655,15 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario3", client);
 		if(StrContains(time_format, "{HOURS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{HOURS}", szHour[view_as<int>(bHourPlural)], false);
+			ReplaceString(time_format, maxlen, "{HOURS}", szHour, false);
 		}
 		if(StrContains(time_format, "{MINUTES}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
 		}
 		if(StrContains(time_format, "{SECONDS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
 		}
 	}
 	else
@@ -1720,19 +1673,19 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario4", client);
 		if(StrContains(time_format, "{MINUTES}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute[view_as<int>(bMinutePlural)], false);
+			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
 		}
 		if(StrContains(time_format, "{SECONDS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
 		}
 	}
 	else
 	{
-		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario5", client, seconds);
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario5", client);
 		if(StrContains(time_format, "{SECONDS}", false) != -1)
 		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond[view_as<int>(bSecondPlural)], false);
+			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
 		}
 	}
 	
@@ -1813,7 +1766,7 @@ stock void GetLastConnectedFormat(int client, char[] timezone_ip, int last_conne
 	{
 		if(hour > 12)
 		{
-			hour = hour-12;
+			hour -= hour-12;
 		}
 		
 		char dummy[11];
