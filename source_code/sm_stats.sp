@@ -134,12 +134,12 @@ public void OnPluginStart()
 
 	AutoExecConfig(true);
 	
-	RegAdminCmd("sm_stats_reload", SMStatsReloadCmd, ADMFLAG_ROOT, "SM Stats - Reload core plugin.");
+	RegAdminCmd("sm_stats_reload", SMStatsReloadCmd, ADMFLAG_ROOT, "SM Stats: Core - Reload core plugin.");
 }
 
 Action SMStatsReloadCmd(int client, int args)
 {
-	ReplyToCommand(client, "[SM Stats: Core] Forced reloading SMStats core plugin, expect SQL errors..");
+	ReplyToCommand(client, "%s Forced reloading SMStats core plugin, expect SQL errors..", core_chattag);
 	
 	char plugin_name[64];
 	GetPluginFilename(null, plugin_name, sizeof(plugin_name));
@@ -261,7 +261,7 @@ public void OnMapStart()
 
 void CheckDatabase(bool bOnPluginStart=false)
 {
-	if(!!sql)
+	if(sql != null)
 	{
 		return;
 	}
@@ -277,7 +277,7 @@ void CheckDatabase(bool bOnPluginStart=false)
 
 Action Timer_CheckDatabase(Handle timer, bool bOnPluginStart)
 {
-	if(!sql)
+	if(sql == null)
 	{
 		Database.Connect(DBConnect, _sm_stats_db, bOnPluginStart);
 	}
@@ -287,9 +287,10 @@ Action Timer_CheckDatabase(Handle timer, bool bOnPluginStart)
 
 void DBConnect(Database database, const char[] error, bool bOnPluginStart)
 {
-	if(!database)
+	if(database == null)
 	{
 		SetFailState("%s Database connection failed! (%s)", core_chattag, error);
+		return;
 	}
 	
 	sql = database;

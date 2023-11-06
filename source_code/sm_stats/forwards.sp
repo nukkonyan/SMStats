@@ -68,13 +68,13 @@ public void OnClientConnected(int client)
 	Transaction txn = new Transaction();
 	char query[255];
 	
-	Format(query, sizeof(query), "select ServerID from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	Format(query, sizeof(query), "select * from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
 	txn.AddQuery(query, 1);
 	
-	Format(query, sizeof(query), "select ServerID from `"...sql_table_weapons..."` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	Format(query, sizeof(query), "select ServerID from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
 	txn.AddQuery(query, 2);
 	
-	Format(query, sizeof(query), "select * from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
+	Format(query, sizeof(query), "select ServerID from `"...sql_table_weapons..."` where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
 	txn.AddQuery(query, 3);
 	
 	sql.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, userid);
@@ -101,13 +101,11 @@ public void OnClientPostAdminCheck(int client)
 
 public void OnClientSettingsChanged(int client)
 {
-	if(!bLoaded)
+	if(bLoaded)
 	{
-		return;
+		// too early to gather info, delay has to be added..
+		CreateTimer(0.2, Timer_OnPlayerUpdated, GetClientUserId(client));
 	}
-	
-	// too early to gather info, delay has to be added..
-	CreateTimer(0.2, Timer_OnPlayerUpdated, GetClientUserId(client));
 }
 
 Action Timer_OnPlayerUpdated(Handle timer, int userid)
@@ -131,7 +129,7 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 		{
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
 			
-			CallbackQuery("update `"...sql_table_playerlist..."` set PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
+			CallbackQuery("update `"...sql_table_settings..."` set PlayerName = '%s' where SteamID = '%s'"
 			, query_error_uniqueid_OnPlayerNameUpdate
 			, name, g_Player[client].auth, g_ServerID);
 		}
@@ -150,16 +148,54 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 	}
 	
 	Transaction txn = new Transaction();
+	int timestamp = GetTime();
 	
 	for(int i = 0; i < numQueries; i++)
 	{
 		int query_id = queryData[i];
-		char query[256];
 		
 		switch(query_id)
 		{
-			// playerlist
+			// settings
 			case 1:
+			{
+				int row_count = results[i].RowCount;
+				
+				switch(row_count > 0)
+				{
+					case true:
+					{
+						// table found
+						char query[1024];
+						Format(query, sizeof(query), "select"
+						/*0*/..." Penalty"
+						/*1*/...",PlayConnectSnd"
+						/*2*/...",ShowConnectMsg"
+						/*3*/...",ShowTopConnectMsg"
+						/*4*/...",ShowFragMsg"
+						/*5*/...",ShowAssistMsg"
+						/*6*/...",ShowDeathMsg"
+						..." from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
+						txn.AddQuery(query, 1);
+						
+						Format(query, sizeof(query), "update `"...sql_table_settings..."` set PlayerName = '%s' where SteamID = '%s'"
+						, g_Player[client].name2, g_Player[client].auth);
+						txn.AddQuery(query, 2);
+					}
+					case false:
+					{
+						// table not found, insert it.
+						char query[1024];
+						Format(query, sizeof(query), "insert into `"...sql_table_settings..."`"
+						... " (PlayerName, SteamID, IPAddress, LastConnectedGame, LastConnectedServerID, LastConnectedTime) values"
+						... " ('%s', '%s', '%s', '%s', '%i', '%i')"
+						, g_Player[client].name2, g_Player[client].auth, g_Player[client].ip, GameType, g_ServerID, GetTime());
+						txn.AddQuery(query, 3);
+					}
+				}
+			}
+			// playerlist
+			case 2:
 			{
 				// we have to do this way, as transaction sql query is bugged with 'valid' null results.
 				int server_id = -1;
@@ -169,27 +205,25 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 					server_id = results[i].FetchInt(0);
 				}
 				
-				char name[64];
-				GetClientName(client, name, sizeof(name));
-				TrimString(name);
-				
 				if(server_id >= 0)
 				{
 					// found table, update it.
-					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnected = %i, IPAddress = '%s', PlayerName = '%s' where SteamID = '%s' and ServerID = %i"
-					, GetTime(), g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
-					txn.AddQuery(query, 1);
+					char query[256];
+					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnectedName = '%s', LastConnectedTime = %i where SteamID = '%s' and ServerID = %i"
+					, g_Player[client].name2, timestamp, g_Player[client].auth, g_ServerID);
+					txn.AddQuery(query, 4);
 				}
 				else
 				{
 					// table not found, insert it.
-					Format(query, sizeof(query), "insert into `"...sql_table_playerlist..."` (LastConnected, IPAddress, PlayerName, SteamID, ServerID) values (%i, '%s', '%s', '%s', %i)"
-					, GetTime(), g_Player[client].ip, g_Player[client].name2, g_Player[client].auth, g_ServerID);
-					txn.AddQuery(query, 2);
+					char query[256];
+					Format(query, sizeof(query), "insert into `"...sql_table_playerlist..."` (LastConnectedName, LastConnectedTime, SteamID, ServerID) values ('%s', '%i', '%s', '%i')"
+					, g_Player[client].name2, timestamp, g_Player[client].auth, g_ServerID);
+					txn.AddQuery(query, 5);
 				}
 			}
 			// weapons
-			case 2:
+			case 3:
 			{
 				int server_id = -1;
 				
@@ -200,38 +234,14 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				
 				if(server_id >= 0)
 				{
-					// query 3
+					// query 6
 				}
 				else
 				{
 					// table not found, insert it.
-					Format(query, sizeof(query), "insert into `"...sql_table_weapons..."` (SteamID, ServerID) values ('%s', %i)", g_Player[client].auth, g_ServerID);
-					txn.AddQuery(query, 4);
-				}
-			}
-			// settings
-			case 3:
-			{
-				int row_count = results[i].RowCount;
-				
-				if(row_count > 0)
-				{
-					char sQuery[1024];
-					Format(sQuery, sizeof(sQuery), "select"
-					/*0*/..." PlayConnectSnd"
-					/*1*/...",ShowConnectMsg"
-					/*2*/...",ShowTopConnectMsg"
-					/*1*/...",ShowFragMsg"
-					/*2*/...",ShowAssistMsg"
-					/*3*/...",ShowDeathMsg"
-					..." from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
-					txn.AddQuery(sQuery, 5);
-				}
-				else
-				{
-					// table not found, insert it.
-					Format(query, sizeof(query), "insert into `"...sql_table_settings..."` (SteamID) values ('%s')", g_Player[client].auth);
-					txn.AddQuery(query, 6);
+					char query[256];
+					Format(query, sizeof(query), "insert into `"...sql_table_weapons..."` (SteamID, ServerID) values ('%s', '%i')", g_Player[client].auth, g_ServerID);
+					txn.AddQuery(query, 7);
 				}
 			}
 		}
@@ -260,8 +270,41 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 		
 		switch(query_id)
 		{
-			// updated playerlist table
+			// read settings table
 			case 1:
+			{
+				if(results[i].FetchRow())
+				{
+					g_Player[client].bPenalty = view_as<bool>(results[i].FetchInt(0));
+					g_Player[client].bPlayConSnd = view_as<bool>(results[i].FetchInt(1));
+					g_Player[client].bShowConMsg = view_as<bool>(results[i].FetchInt(2));
+					g_Player[client].bShowTopConMsg = view_as<bool>(results[i].FetchInt(3));
+					g_Player[client].bShowFragMsg = view_as<bool>(results[i].FetchInt(4));
+					g_Player[client].bShowAssistMsg = view_as<bool>(results[i].FetchInt(5));
+					g_Player[client].bShowDeathMsg = view_as<bool>(results[i].FetchInt(6));
+				}
+			}
+			
+			// inserted settings table
+			case 2:
+			{
+				g_Player[client].bPenalty = false;
+				g_Player[client].bPlayConSnd = true
+				g_Player[client].bShowConMsg = true;
+				g_Player[client].bShowTopConMsg = true;
+				g_Player[client].bShowFragMsg = true;
+				g_Player[client].bShowAssistMsg = true;
+				g_Player[client].bShowDeathMsg = true;
+			}
+			
+			// update settings playername table
+			case 3:
+			{
+				
+			}
+			
+			// updated playerlist table
+			case 4:
 			{
 				g_TotalTablePlayers = GetTablePlayerCount();
 				
@@ -272,7 +315,7 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 			}
 			
 			// inserted playerlist table
-			case 2:
+			case 5:
 			{
 				g_TotalTablePlayers = GetTablePlayerCount();
 				g_Player[client].points = _sm_stats_default_points;
@@ -281,40 +324,15 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 			}
 			
 			// read weapons table
-			case 3:
+			case 6:
 			{
 				
 			}
 			
 			// inserted weapons table
-			case 4:
+			case 7:
 			{
 				
-			}
-			
-			// read settings table
-			case 5:
-			{
-				if(results[i].FetchRow())
-				{
-					g_Player[client].bPlayConSnd = view_as<bool>(results[i].FetchInt(0));
-					g_Player[client].bShowConMsg = view_as<bool>(results[i].FetchInt(1));
-					g_Player[client].bShowTopConMsg = view_as<bool>(results[i].FetchInt(2));
-					g_Player[client].bShowFragMsg = view_as<bool>(results[i].FetchInt(3));
-					g_Player[client].bShowAssistMsg = view_as<bool>(results[i].FetchInt(4));
-					g_Player[client].bShowDeathMsg = view_as<bool>(results[i].FetchInt(5));
-				}
-			}
-			
-			// inserted settings table
-			case 6:
-			{
-				g_Player[client].bPlayConSnd = true
-				g_Player[client].bShowConMsg = true;
-				g_Player[client].bShowTopConMsg = true;
-				g_Player[client].bShowFragMsg = true;
-				g_Player[client].bShowAssistMsg = true;
-				g_Player[client].bShowDeathMsg = true;
 			}
 		}
 	}
@@ -383,15 +401,18 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 			{
 				event.BroadcastDisabled = true;
 				
-				char event_reason[256], auth[64];
+				char event_reason[256], auth[28], name[64];
 				event.GetString("reason", event_reason, sizeof(event_reason));
 				GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+				strcopy(name, sizeof(name), g_Player[client].name2);
 				int timestamp = GetTime();
 				
 				char query[255];
 				Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
 				, auth, g_ServerID);
 				DataPack pack = new DataPack();
+				pack.WriteCell(strlen(name)+1);
+				pack.WriteString(name);
 				pack.WriteCell(strlen(auth)+1);
 				pack.WriteString(auth);
 				pack.WriteCell(timestamp);
@@ -407,9 +428,12 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 
 void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const char[] error, DataPack pack)
 {
-	int maxlen = pack.ReadCell();
-	char[] auth = new char[maxlen];
-	pack.ReadString(auth, maxlen);
+	int maxlen1 = pack.ReadCell();
+	char[] name = new char[maxlen1];
+	pack.ReadString(name, maxlen1);
+	int maxlen2 = pack.ReadCell();
+	char[] auth = new char[maxlen2];
+	pack.ReadString(auth, maxlen2);
 	int timestamp = pack.ReadCell();
 	int session_PlayTime = pack.ReadCell();
 	delete pack;
@@ -426,9 +450,22 @@ void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const 
 		int PlayTime = results.FetchInt(0);
 		int calculate = session_PlayTime - PlayTime;
 		
-		CallbackQuery("update `" ... sql_table_playerlist ... "` set LastConnected = %i, PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = '%s'"
-		, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected
-		, timestamp, calculate, auth, g_ServerID);
+		Transaction txn = new Transaction();
+		
+		char query[512];
+		Format(query, sizeof(query), "update `"...sql_table_settings..."` set"
+		..." LastConnectedGame = '%s'"
+		...",LastConnectedServerID = '%i'"
+		...",LastConnectedTime = '%i'"
+		..." where SteamID = '%s'"
+		, GameType, g_ServerID, timestamp, auth);
+		txn.AddQuery(query, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected);
+		
+		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnectedName = '%s', LastConnectedTime = %i, PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = '%s'"
+		, name, timestamp, calculate, auth, g_ServerID);
+		txn.AddQuery(query, query_error_uniqueid_OnPlayerDisconnectUpdatePlayTime);
+		
+		sql.Execute(txn, _, TXN_Callback_Failure);
 	}
 }
 
@@ -472,8 +509,8 @@ Action Timer_TimePlayed(Handle timer, int userid)
 	
 	if(sql != null)
 	{
-		char query[255];
-		Format(query, sizeof(query), "select PlayTime from `" ... sql_table_playerlist ..."` where SteamID = '%s' and ServerID = %i"
+		char query[256];
+		Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
 		, g_Player[client].auth, g_ServerID);
 		sql.Query(DBQuery_TimePlayed, query, userid);
 		
@@ -506,7 +543,7 @@ void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] err
 		int PlayTime = results.FetchInt(0);
 		int session = g_Player[client].session[Stats_PlayTime];
 		int calculate = session - PlayTime;
-		CallbackQuery("update `" ... sql_table_playerlist ..."` set PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `"... sql_table_playerlist..."` set PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = %i"
 		, query_error_uniqueid_UpdatePlayTime
 		, calculate
 		, g_Player[client].auth
@@ -519,7 +556,7 @@ public void OnMapStart()
 	GetCurrentMap(cMap, sizeof(cMap));
 	if(hMapTimer == null)
 	{
-		hMapTimer = CreateTimer(60.0, MapTimer_OnMapStart_Minutes, _, TIMER_REPEAT);
+		hMapTimer = CreateTimer(60.0, MapTimer_OnMapStart_Timer, _, TIMER_REPEAT);
 	}
 	if(hMapTimerSeconds == null)
 	{
@@ -554,7 +591,7 @@ public void OnMapEnd()
 	}
 }
 
-Action MapTimer_OnMapStart_Minutes(Handle timer)
+Action MapTimer_OnMapStart_Timer(Handle timer)
 {
 	SQLUpdateMapTimer();
 	return Plugin_Continue;
@@ -574,21 +611,21 @@ void SQLUpdateMapTimer()
 	if(sql != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select PlayTime from `"...sql_table_maps_log..."` where MapName = '%s' and ServerID = %i", cMap, g_ServerID);
-		sql.Query(DBQuery_MapTimer, query);
+		Format(query, sizeof(query), "select `PlayTime` from `"...sql_table_maps_log..."` where `MapName`='%s' and `ServerID`='%i'", cMap, g_ServerID);
+		sql.Query(DBQuery_MapTimer, query, GetTime());
 	}
 }
 
-void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, any data)
+void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, int LastPlayedTime)
 {
 	switch(results != null && results.RowCount > 0)
 	{
 		// not found
 		case false:
 		{
-			CallbackQuery("insert into `" ... sql_table_maps_log ... "` (PlayTime, ServerID, MapName) values (%i, %i, '%s')"
+			CallbackQuery("insert into `"...sql_table_maps_log..."` (PlayTime,LastPlayedTime,ServerID,MapName) values ('%i','%i','%i','%s')"
 			, query_error_uniqueid_UpdateMapTimeInserting
-			, iMapTimerSeconds, g_ServerID, cMap);
+			, iMapTimerSeconds, LastPlayedTime, g_ServerID, cMap);
 		}
 		// found
 		case true:
@@ -599,9 +636,9 @@ void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, any 
 				int session = iMapTimerSeconds;
 				int calculate = session - PlayTime;
 				
-				CallbackQuery("update `" ... sql_table_maps_log ... "` set PlayTime = PlayTime+%i where ServerID = %i and MapName = '%s'"
+				CallbackQuery("update `"...sql_table_maps_log..."` set `PlayTime`=`PlayTime`+'%i',`LastPlayedTime`='%i' where `ServerID`='%i' and `MapName`='%s'"
 				, query_error_uniqueid_UpdateMapTimeUpdating
-				, calculate, g_ServerID, cMap);
+				, calculate, LastPlayedTime, g_ServerID, cMap);
 			}
 		}
 	}
@@ -617,6 +654,7 @@ void UpdateMapTimerSeconds(const char[] map, int seconds)
 		pack.WriteCell(strlen(map)+1);
 		pack.WriteString(map);
 		pack.WriteCell(seconds);
+		pack.WriteCell(GetTime());
 		pack.Reset();
 		sql.Query(DBQuery_UpdateMapTimerSeconds, query, pack);
 	}
@@ -628,6 +666,7 @@ void DBQuery_UpdateMapTimerSeconds(Database db, DBResultSet results, const char[
 	char[] map = new char[maxlen];
 	pack.ReadString(map, maxlen);
 	int seconds = pack.ReadCell();
+	int lastplayed = pack.ReadCell();
 	delete pack;
 	
 	if(results.FetchRow())
@@ -636,8 +675,8 @@ void DBQuery_UpdateMapTimerSeconds(Database db, DBResultSet results, const char[
 		int session = seconds;
 		int calculate = session - PlayTime;
 		
-		CallbackQuery("update `" ... sql_table_maps_log ... "` set PlayTime = PlayTime+%i where ServerID = %i and MapName = '%s'"
+		CallbackQuery("update `"...sql_table_maps_log..."` set PlayTime = PlayTime+%i, LastPlayedTime = %i where ServerID = %i and MapName = '%s'"
 		, query_error_uniqueid_UpdateMapTimeUpdatingSeconds
-		, calculate, g_ServerID, map);
+		, calculate, lastplayed, g_ServerID, map);
 	}
 }

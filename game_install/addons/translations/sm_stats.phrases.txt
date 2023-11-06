@@ -25,72 +25,72 @@
 	//================================//
 	"#SMStats_TimeFormat_Year"
 	{
-		"en" "{YEAR} year#|#{YEAR} years"
-		"jp" "{YEAR}ヶ年"
-		"sv" "{YEAR}år"
-		"tr" "{YEAR}yıl"
+		"en" "year #|# years"
+		"jp" "ヶ年"
+		"sv" " år"
+		"tr" " yıl"
 	}
 	"#SMStats_TimeFormat_Month"
 	{
-		"en" "{MONTH} month#|#{MONTH} months"
-		"jp" "{MONTH}ヶ月"
-		"sv" "{MONTH} måned#|#{MONTH} måneder"
-		"sv" "{MONTH} månad#|#{MONTH} månader"
-		"tr" "{MONTH} ay"
+		"en" " month#|# months"
+		"jp" "ヶ月"
+		"sv" " måned#|# måneder"
+		"sv" " månad#|# månader"
+		"tr" " ay"
 	}
 	"#SMStats_TimeFormat_Day"
 	{
-		"en" "{DAY} day#|#{DAY} days"
-		"jp" "{DAY}日間"
-		"no" "{DAY} dag#|#{DAY} dager"
-		"sv" "{DAY} dag#|#{DAY} dagar"
-		"tr" "{DAY} gün"
+		"en" " day#|# days"
+		"jp" "日間"
+		"no" " dag#|# dager"
+		"sv" " dag#|# dagar"
+		"tr" " gün"
 	}
 	"#SMStats_TimeFormat_Hour"
 	{
-		"en" "{HOUR} hour#|#{HOUR} hours"
-		"jp" "{HOUR}時間"
-		"no" "{HOUR} time#|#{HOUR} timer"
-		"sv" "{HOUR} timme#|#{HOUR} timmar"
-		"tr" "{HOUR} saat"
+		"en" " hour#|# hours"
+		"jp" "時間"
+		"no" " time#|# timer"
+		"sv" " timme#|# timmar"
+		"tr" " saat"
 	}
 	"#SMStats_TimeFormat_Minute"
 	{
-		"en" "{MINUTE} minute#|#{MINUTE} minutes"
-		"jp" "{MINUTE}分"
-		"no" "{MINUTE} minut#|#{MINUTE} minuter"
-		"sv" "{MINUTE} minut#|#{MINUTE} minuter"
-		"tr" "{MINUTE} dakika"
+		"en" " minute#|# minutes"
+		"jp" "分"
+		"no" " minut#|# minuter"
+		"sv" " minut#|# minuter"
+		"tr" " dakika"
 	}
 	"#SMStats_TimeFormat_Second"
 	{
-		"en" "{SECOND} second#|#{SECOND} seconds"
-		"jp" "{SECOND}秒"
-		"no" "{SECOND} sekund#|#{SECOND} sekunder"
-		"sv" "{SECOND} sekund#|#{SECOND} sekunder"
-		"tr" "{SECOND} saniye"
+		"en" " second#|# seconds"
+		"jp" "秒"
+		"no" " sekund#|# sekunder"
+		"sv" " sekund#|# sekunder"
+		"tr" " saniye"
 	}
 	"#SMStats_TimeFormatShort_Hour"
 	{
-		"en" "{HOUR}hr#|#{HOUR}hrs"
-		"jp" "{HOUR}時間"
-		"no" "{HOUR}hr"
-		"sv" "{HOUR}hr"
-		"tr" "{HOUR}sa"
+		"en" "hr#|#hrs"
+		"jp" "時間"
+		"no" "hr"
+		"sv" "hr"
+		"tr" "sa"
 	}
 	"#SMStats_TimeFormatShort_Minute"
 	{
-		"en" "{MINUTE}min"
-		"jp" "{MINUTE}分"
-		"tr" "{MINUTE}dk"
+		"en" "min"
+		"jp" "分"
+		"tr" "dk"
 	}
 	"#SMStats_TimeFormatShort_Second"
 	{
-		"en" "{SECOND}sec"
-		"jp" "{SECOND}秒"
-		"no" "{SECOND}sek"
-		"sv" "{SECOND}sek"
-		"tr" "{SECOND}sn"
+		"en" "sec"
+		"jp" "秒"
+		"no" "sek"
+		"sv" "sek"
+		"tr" "sn"
 	}
 	"#SMStats_TimeFormat_AM_PM"
 	{
@@ -251,7 +251,7 @@
 		"#format" "{1:s},{2:i},{3:s},{4:s},{5:i}"
 		"en" "{1} (Pos #{2}, {3}) {yellow}was given {4} penalty due to spam abuse. Abused {5} points were reverted."
 		"sv" "{1} (Pos #{2}, {3}) {yellow}blev straffad {4} på grund av spam-missbruka spam. Missbrukade {5} poäng återställdes."
-		"tr" "{1} (Pozisyon #{2}, {3}) spam yüzünden {yellow}{4} süre ceza aldı. Suistimal edilen {5} puan silindi."
+		"tr" "{1} (Pozisyon #{2}, {3}) spam yüzünden {yellow}{4} süre ceza aldı. Suistimal edilen {5} silindi."
 	}
 	"#SMStats_Points_Penalty"
 	{
@@ -299,7 +299,7 @@
 		"nl" "{1} (Pos #{2}, {3}) van {4} neemt deel aan het spel."
 		"no" "{1} (Pos #{2}, {3}) fra {4} er blitt med i spillet."
 		"sv" "{1} (Pos #{2}, {3}) från {4} har gått med i spelet."
-		"tr" "{1} ({3} puan ile {2}. Sıra) {4} ülkesinden oyuna katıldı."
+		"tr" "{1} ({3} ile {2}. Sıra) {4} ülkesinden oyuna katıldı."
 	}
 
 	"#SMStats_Player_Disconnected"
@@ -315,7 +315,7 @@
 		"nl" "{1} (Pos #{2}, {3}) van {4} heeft het spel verlaten {grey}({5})"
 		"no" "{1} (Pos #{2}, {3}) fra {4} har forlatt spillet. {grey}({5})"
 		"sv" "{1} (Pos #{2}, {3}) från {4} har lämnat spelet. {grey}({5})"
-		"tr" "{1} ({3} puan ile {2}. Sıra) {4} ülkesinden oyundan ayrıldı. {grey}({5})"
+		"tr" "{1} ({3} ile {2}. Sıra) {4} ülkesinden oyundan ayrıldı. {grey}({5})"
 	}
 
 	"#SMStats_Player_Connected_TopPlayer"
@@ -693,7 +693,7 @@
 	"#SMStats_VersionLoaded"
 	{
 	    "#format" "{1:s}"
-	    "en" "{orange}Version {1} {lightgreen}has been loaded!"
+	    "en" "{orange}Version {1} {lightgreen}has loaded!"
 	    "jp" "{orange}バージョン{1}{lightgreen}がロードされました！"
 	    "sv" "{orange}Version {1} {lightgreen}har laddats!"
 	    "tr" "{orange}Sürüm {1} {lightgreen}yüklendi!"
@@ -743,13 +743,13 @@
 	// Translations.
 	//================================//
 
-	"#SMStats_MultipleTargets"
+	"#SMStats_MultiplePlayers"
 	{
-	    "en" "Multiple targets"
-	    "dk" "Flere mål"
-	    "sv" "Flera mål"
-	    "jp" "複数のターゲット"
-	    "no" "Flere mål"
+	    "en" "Multiple players"
+	    "dk" "Flere spillere"
+	    "jp" "複数のプレイヤー"
+		  "sv" "Flera spelare"
+	    "no" "Flere spelare"
 	    "tr" "Birden çok oyuncu"
 	}
 	"#SMStats_MultipleObjects"
@@ -796,13 +796,14 @@
 	}
 	"#SMStats_Points_PluralSplitter" // points plural splitter false#|#true (non-plural#|#plural)
 	{
-	    // {POINTS} player points
-	    "en" "{POINTS} point#|#{POINTS} points"
-	    "jp" "{POINTS}ポイント"
-	    "sv" "{POINTS} poäng"
-	    "nl" "{POINTS} punt#|#{POINTS} punten"
-	    "no" "{POINTS} poeng"
-	    "tr" "{POINTS} puan"
+	    // player points
+	    // this will automatically become 'x point or 'x points'
+	    "en" " point#|# points"
+	    "jp" "ポイント"
+	    "sv" " poäng"
+	    "nl" " punt#|# punten"
+	    "no" " poeng"
+	    "tr" " puan"
 	}
 	"#SMStats_FeatureUnavailable"
 	{
@@ -855,8 +856,8 @@
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
-	    "en" "{green}Airshot"
-	    "sv" "{green}Luftskott"
+	    "en" "with an {green}Airshot"
+	    "sv" "med ett {green}Luftskott"
 	    "tr" "{green}Havadan"
 	}
 	"#SMStats_FragEvent_Type7" //Deflect frag.
@@ -911,25 +912,25 @@
 	//Kill events
 	"#SMStats_FragEvent_Assisted" //Assist
 	{
-	    // {1} player name
-	    // {2} player points
+	    // {1} assister name
+	    // {2} assister points
 	    // {3} points earned
-	    // {4} assister name
+		  // {4} fragger name
 	    // {5} victim fragged
 	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-	    "en" "{1} ({2}) Earned {3} in assisting {4} for fragging {5}."
-	    "sv" "{1} ({2}) Belönades med {3} genom att assistera {4} för att fragga {5}."
-	    "tr" "{1} ({2}), {4} oyuncusunun {5} oyuncusunu öldürmesine yardım ederek {3} puan kazandın."
+	    "en" "{1} ({2}) Earned {3} for assisting {4} fragging {5}."
+	    "sv" "{1} ({2}) Belönades med {3} för att assistera {4} att fragga {5}."
+	    "tr" "{1} ({2}), {4} oyuncusunun {5} oyuncusunu öldürmesine yardım ederek {3} kazandın."
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
 	    // {1} player name
 	    // {2} player points
 	    // {3} points earned
-	    "#format" "{1:s},{2:i,{3:s}"
+	    "#format" "{1:s},{2:i},{3:s}"
 	    "en" "{1} ({2}) Lost {3} for dying."
 	    "sv" "{1} ({2}) Förlorade {3} på grund av att dö."
-	    "tr" "{1} ({2}), öldüğün için {3} puan kaybettin."
+	    "tr" "{1} ({2}), öldüğün için {3} kaybettin."
 	}
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
@@ -941,7 +942,7 @@
 	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
 	    "en" "{1} ({2}) Earned {3} for fragging {4} {5}."
 	    "sv" "{1} ({2}) Belönades med {3} för att {4} {5}."
-	    "tr" "{1} ({2}), {4} oyuncusunu {5} öldürdüğün için {3} puan kazandın."
+	    "tr" "{1} ({2}), {4} oyuncusunu {5} öldürdüğün için {3} kazandın."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
@@ -952,7 +953,7 @@
 	    "#format" "{1:s},{2:i},{3:s},{4:s}"
 	    "en" "{1} ({2}) Earned {3} for fragging {4}."
 	    "sv" "{1} ({2}) Belönades med {3} för att fragga {4}."
-	    "tr" "{1} ({2}), {4} oyuncusunu öldürdüğün için {3} puan kazandın."
+	    "tr" "{1} ({2}), {4} oyuncusunu öldürdüğün için {3} kazandın."
 	}
 	"#SMStats_FragEventError_NewItem"
 	{

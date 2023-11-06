@@ -1,0 +1,15 @@
+create table if not exists `item_log_tf2`
+(
+	`ID` int not null auto_increment,
+	`ServerID` int(4) not null default '1',
+	`SteamID` varchar(28) not null default '',
+	`Timestamp` int not null default '0',
+	`itemdef` int not null default '-1',
+	`quality` int(2) not null default '-1',
+	`method` int(2) not null default '-1',
+	`strange` bool not null default '0',
+	`unusual` bool not null default '0',
+	`weartype` int(2) not null default '-1',
+	`quantity` int(4) not null default '0',
+	primary key (`ID`)
+)

@@ -16,22 +16,10 @@ void GetPlayerName(int client, char[] name, int maxlen)
 {
 	switch(IsValidDeveloperType(client))
 	{
-		case 1:
-		{
-			Format(name, maxlen, "{unusual}%N{default}", client);
-		}
-		case 2:
-		{
-			Format(name, maxlen, "{cyan}%N{default}", client);
-		}
-		case 3:
-		{
-			Format(name, maxlen, "{orange}%N{default}", client);
-		}
-		case 4:
-		{
-			Format(name, maxlen, "{lightgreen}%N{default}", client);
-		}
+		case 1: Format(name, maxlen, "{unusual}%N{default}", client);
+		case 2: Format(name, maxlen, "{cyan}%N{default}", client);
+		case 3: Format(name, maxlen, "{orange}%N{default}", client);
+		case 4: Format(name, maxlen, "{lightgreen}%N{default}", client);
 		default:
 		{
 			if(!IsClientInGame(client))
@@ -694,7 +682,8 @@ stock bool AssistedKills(Transaction txn
 					, int client
 					, const int[] list_healercount
 					, const int[][] list_healer
-					, char[] list_steamid_assister)
+					, char[] list_steamid_assister
+					, int list_steamid_assister_len)
 {
 	// spaghetti code
 	
@@ -793,8 +782,8 @@ stock bool AssistedKills(Transaction txn
 				
 				switch(strlen(list_steamid_assister) < 1)
 				{
-					case false: Format(list_steamid_assister, 28*assisters.Length, "%s;%s", list_steamid_assister, g_Player[assist].auth);
-					case true: Format(list_steamid_assister, 28*assisters.Length, g_Player[assist].auth);
+					case false: Format(list_steamid_assister, list_steamid_assister_len, "%s;%s", list_steamid_assister, g_Player[assist].auth);
+					case true: strcopy(list_steamid_assister, list_steamid_assister_len, g_Player[assist].auth);
 				}
 				
 				char query[1024];
@@ -845,7 +834,7 @@ stock bool AssistedKills(Transaction txn
 }
 
 // will be re-done and optimized.
-stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] list_class, int frags)
+stock void VictimDied(Transaction txn, const int[] list, const int[] list_healpoints, const TFClassType[] list_class, int frags)
 {
 	for(int i = 0; i < frags; i++)
 	{
@@ -862,6 +851,13 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 			int len = 0;
 			char query[1024];
 			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set Deaths = Deaths+1");
+			
+			int healpoints = list_healpoints[i];
+			if(healpoints > 0)
+			{
+				g_Player[victim].session[Stats_HealPoints] += healpoints;
+				len += Format(query[len], sizeof(query)-len, ", HealPoints = HealPoints+%i", healpoints);
+			}
 			
 			g_Player[victim].session[Stats_Deaths]++;
 			switch(class)

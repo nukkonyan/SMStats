@@ -34,26 +34,12 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 	//
 	
 	char query[256], error[256];
-	DBResultSet results;
+	Format(query, sizeof(query), "select `PlayerName` from settings where SteamID = '%s'", auth);
 	SQL_LockDatabase(sql);
-	switch(only_same_gameserver)
+	DBResultSet results;
+	if(!(results = SQL_Query(sql, query)))
 	{
-		case false:
-		{
-			Format(query, sizeof(query), "select `PlayerName` from playerlist_* where SteamID = '%s'", auth);
-			if(!(results = SQL_Query(sql, query)))
-			{
-				SQL_GetError(sql, error, sizeof(error));
-			}
-		}
-		case true:
-		{
-			Format(query, sizeof(query), "select `PlayerName` from `"...sql_table_playerlist..."` where SteamID = '%s'", auth);
-			if(!(results = SQL_Query(sql, query)))
-			{
-				SQL_GetError(sql, error, sizeof(error));
-			}
-		}
+		SQL_GetError(sql, error, sizeof(error));
 	}
 	SQL_UnlockDatabase(sql);
 	
