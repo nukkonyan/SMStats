@@ -101,13 +101,11 @@ public void OnClientPostAdminCheck(int client)
 
 public void OnClientSettingsChanged(int client)
 {
-	if(!bLoaded)
+	if(bLoaded)
 	{
-		return;
+		// too early to gather info, delay has to be added..
+		CreateTimer(0.2, Timer_OnPlayerUpdated, GetClientUserId(client));
 	}
-	
-	// too early to gather info, delay has to be added..
-	CreateTimer(0.2, Timer_OnPlayerUpdated, GetClientUserId(client));
 }
 
 Action Timer_OnPlayerUpdated(Handle timer, int userid)
@@ -211,16 +209,16 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				{
 					// found table, update it.
 					char query[256];
-					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnectedTime = %i where SteamID = '%s' and ServerID = %i"
-					, timestamp, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnectedName = '%s', LastConnectedTime = %i where SteamID = '%s' and ServerID = %i"
+					, g_Player[client].name2, timestamp, g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 4);
 				}
 				else
 				{
 					// table not found, insert it.
 					char query[256];
-					Format(query, sizeof(query), "insert into `"...sql_table_playerlist..."` (LastConnectedTime, SteamID, ServerID) values ('%i', '%s', '%i')"
-					, timestamp, g_Player[client].auth, g_ServerID);
+					Format(query, sizeof(query), "insert into `"...sql_table_playerlist..."` (LastConnectedName, LastConnectedTime, SteamID, ServerID) values ('%s', '%i', '%s', '%i')"
+					, g_Player[client].name2, timestamp, g_Player[client].auth, g_ServerID);
 					txn.AddQuery(query, 5);
 				}
 			}
@@ -403,15 +401,18 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 			{
 				event.BroadcastDisabled = true;
 				
-				char event_reason[256], auth[64];
+				char event_reason[256], auth[28], name[64];
 				event.GetString("reason", event_reason, sizeof(event_reason));
 				GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
+				strcopy(name, sizeof(name), g_Player[client].name2);
 				int timestamp = GetTime();
 				
 				char query[255];
 				Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
 				, auth, g_ServerID);
 				DataPack pack = new DataPack();
+				pack.WriteCell(strlen(name)+1);
+				pack.WriteString(name);
 				pack.WriteCell(strlen(auth)+1);
 				pack.WriteString(auth);
 				pack.WriteCell(timestamp);
@@ -427,9 +428,12 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 
 void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const char[] error, DataPack pack)
 {
-	int maxlen = pack.ReadCell();
-	char[] auth = new char[maxlen];
-	pack.ReadString(auth, maxlen);
+	int maxlen1 = pack.ReadCell();
+	char[] name = new char[maxlen1];
+	pack.ReadString(name, maxlen1);
+	int maxlen2 = pack.ReadCell();
+	char[] auth = new char[maxlen2];
+	pack.ReadString(auth, maxlen2);
 	int timestamp = pack.ReadCell();
 	int session_PlayTime = pack.ReadCell();
 	delete pack;
@@ -457,8 +461,8 @@ void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const 
 		, GameType, g_ServerID, timestamp, auth);
 		txn.AddQuery(query, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected);
 		
-		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnectedTime = %i, PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = '%s'"
-		, timestamp, calculate, auth, g_ServerID);
+		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnectedName = '%s', LastConnectedTime = %i, PlayTime = PlayTime+%i where SteamID = '%s' and ServerID = '%s'"
+		, name, timestamp, calculate, auth, g_ServerID);
 		txn.AddQuery(query, query_error_uniqueid_OnPlayerDisconnectUpdatePlayTime);
 		
 		sql.Execute(txn, _, TXN_Callback_Failure);
@@ -505,7 +509,7 @@ Action Timer_TimePlayed(Handle timer, int userid)
 	
 	if(sql != null)
 	{
-		char query[255];
+		char query[256];
 		Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
 		, g_Player[client].auth, g_ServerID);
 		sql.Query(DBQuery_TimePlayed, query, userid);

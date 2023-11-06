@@ -134,12 +134,12 @@ public void OnPluginStart()
 
 	AutoExecConfig(true);
 	
-	RegAdminCmd("sm_stats_reload", SMStatsReloadCmd, ADMFLAG_ROOT, "SM Stats - Reload core plugin.");
+	RegAdminCmd("sm_stats_reload", SMStatsReloadCmd, ADMFLAG_ROOT, "SM Stats: Core - Reload core plugin.");
 }
 
 Action SMStatsReloadCmd(int client, int args)
 {
-	ReplyToCommand(client, "[SM Stats: Core] Forced reloading SMStats core plugin, expect SQL errors..");
+	ReplyToCommand(client, "%s Forced reloading SMStats core plugin, expect SQL errors..", core_chattag);
 	
 	char plugin_name[64];
 	GetPluginFilename(null, plugin_name, sizeof(plugin_name));

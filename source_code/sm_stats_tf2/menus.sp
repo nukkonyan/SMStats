@@ -19,11 +19,15 @@ enum struct StatsMenuInfo
 		GeoipCountryName(client, g_Player[client].ip, country, sizeof(country));
 		GetTimeFormat(client, iMapTimerSeconds, map_time, sizeof(map_time));
 		
+		// needs to be updated to not lag out the server, because of direct-sql query.
+		// doing direct-sql will make the proceeding actions wait for the query to finish.
+		/*
 		if(!g_Player[client].bMenuCheckPosition)
 		{
 			g_Player[client].position = GetClientPosition(g_Player[client].auth);
 			g_Player[client].bMenuCheckPosition = true; // avoid sql overload.
 		}
+		*/
 		
 		Panel panel = new Panel();
 		panel.DrawItem("SourceMod Stats - " ... VersionAlt ... " by Teamkiller324 ( Work in progress )");
@@ -85,20 +89,9 @@ enum struct StatsMenuInfo
 	
 	void ActiveStats(int client)
 	{
-		if(TF2_GetPlayerSQLInfo(client
-		, g_Player[client].auth
-		, g_Player[client].menustats_name
-		, sizeof(g_Player[].menustats_name)
-		, g_Player[client].menustats_ip
-		, sizeof(g_Player[].menustats_ip)
-		, g_Player[client].menustats_lastconnected))
-		{
-			g_Player[client].active_page_mainmenu = -1;
-			g_Player[client].active_page_session = -1;
-			g_Player[client].active_page_activestats = 1;
-			g_Player[client].active_page_topstats = -1;
-			this.ActiveStatsInfo(client, 1);
-		}
+		char query[256];
+		Format(query, sizeof(query), "select `SteamID`,`PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
+		sql.Query(DBQuery_CheckActiveStats_1, query, GetClientUserId(client));
 	}
 	
 	void ActiveStatsInfo(int client, int page=1)
@@ -116,6 +109,13 @@ enum struct StatsMenuInfo
 	
 	void TopStats(int client, int display_at=0)
 	{
+		DataPack pack = new DataPack();
+		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(display_at);
+		pack.Reset();
+		sql.Query(DBQuery_TopStats_1, "select `LastConnectedName`,`SteamID`,`Points` from `"...sql_table_playerlist..."` order by `Points` desc limit 10", pack);
+		
+		/*
 		char[][] SteamID = new char[10][64];
 		char[][] PlayerName = new char[10][64];
 		int Points[10];
@@ -123,7 +123,7 @@ enum struct StatsMenuInfo
 		
 		char error[256];
 		SQL_LockDatabase(sql);
-		DBResultSet results = SQL_Query(sql, "SELECT SteamID, Points FROM `"...sql_table_playerlist..."` ORDER BY `"...sql_table_playerlist..."`.`Points` DESC LIMIT 10");
+		DBResultSet results = SQL_Query(sql, "select `LastConnectedName`,`SteamID`,`Points` from `"...sql_table_playerlist..."` order by `"...sql_table_playerlist..."`.`Points` desc limit 10");
 		SQL_UnlockDatabase(sql);
 		if(results == null)
 		{
@@ -138,25 +138,11 @@ enum struct StatsMenuInfo
 		
 		while(results.FetchRow())
 		{
-			results.FetchString(0, SteamID[Players], 64);
-			Points[Players] = results.FetchInt(1);
+			results.FetchString(0, PlayerName[Players], 28);
+			results.FetchString(1, SteamID[Players], 64);
+			Points[Players] = results.FetchInt(2);
 			Players++
 		}
-		
-		SQL_LockDatabase(sql);
-		for(int i = 0; i < Players; i++)
-		{
-			char query[256];
-			Format(query, sizeof(query), "SELECT `PlayerName` FROM `"...sql_table_settings..."` WHERE SteamID = '%s'", SteamID[i]);
-			results = SQL_Query(sql, query);
-			
-			if(results != null && results.FetchRow())
-			{
-				results.FetchString(0, PlayerName[i], 28);
-			}
-		}
-		SQL_UnlockDatabase(sql);
-		delete results;
 		
 		if(Players < 1)
 		{
@@ -177,6 +163,7 @@ enum struct StatsMenuInfo
 		
 		menu.ExitBackButton = true;
 		menu.DisplayAt(client, display_at, MENU_TIME_FOREVER);
+		*/
 	}
 	
 	void TopStatsInfo(int client, int page=1, int top=10)
@@ -195,25 +182,22 @@ enum struct StatsMenuInfo
 	
 	void TopPlayerId(int client, int top_player_id)
 	{
+		g_Player[client].menustats_pos = top_player_id;
 		char query[255];
-		Format(query, sizeof(query), "SELECT SteamID FROM `"... sql_table_playerlist ... "` ORDER BY `" ... sql_table_playerlist ..."`.`Points` DESC");
-		DataPack pack = new DataPack();
-		pack.WriteCell(GetClientUserId(client));
-		pack.WriteCell(top_player_id);
-		pack.Reset();
-		sql.Query(StatsMenu_TopPlayerId, query, pack);
+		Format(query, sizeof(query), "select SteamID from `"... sql_table_playerlist ... "` order by `Points` desc");
+		sql.Query(StatsMenu_TopPlayerId_1, query, GetClientUserId(client));
 	}
 	
 	void TopPlayerAuth(int client, const char[] auth)
 	{
 		char query[255];
-		Format(query, sizeof(query), "SELECT SteamID FROM `"... sql_table_playerlist..."` ORDER BY `"...sql_table_playerlist..."`.`Points` DESC");
+		Format(query, sizeof(query), "select SteamID from `"... sql_table_playerlist..."` order by `Points` desc");
 		DataPack pack = new DataPack();
 		pack.WriteCell(GetClientUserId(client));
 		pack.WriteCell(strlen(auth)+1);
 		pack.WriteString(auth);
 		pack.Reset();
-		sql.Query(StatsMenu_TopPlayerAuth, query, pack);
+		sql.Query(StatsMenu_TopPlayerAuth_1, query, pack);
 	}
 	
 	void Settings(int client, int display_at=0)
@@ -1024,22 +1008,11 @@ int StatsMenu_TopStats(Menu menu, MenuAction action, int client, int select)
 				return 0;
 			}
 			
-			strcopy(g_Player[client].menustats_auth, sizeof(g_Player[].menustats_auth), auth);
+			g_Player[client].menustats_pos = select+1;
 			
-			if(TF2_GetPlayerSQLInfo(client
-			, g_Player[client].menustats_auth
-			, g_Player[client].menustats_name
-			, sizeof(g_Player[].menustats_name)
-			, g_Player[client].menustats_ip
-			, sizeof(g_Player[].menustats_ip)
-			, g_Player[client].menustats_lastconnected
-			, g_Player[client].menustats_penalty))
-			{
-				g_Player[client].active_page_menu = menu.Selection;
-				g_Player[client].active_page_topstats = 1;
-				g_Player[client].menustats_pos = select+1;
-				StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
-			}
+			char query[256];
+			Format(query, sizeof(query), "select `SteamID`,`PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);
+			sql.Query(DBQuery_TopStats_Menu_1, query, GetClientUserId(client));
 		}
 		case MenuAction_Cancel:
 		{
@@ -1438,12 +1411,8 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 	return 0;
 }
 
-void StatsMenu_TopPlayerId(Database database, DBResultSet results, const char[] error, DataPack pack)
+void StatsMenu_TopPlayerId_1(Database database, DBResultSet results, const char[] error, int userid)
 {
-	int userid = pack.ReadCell();
-	int top_player_id = pack.ReadCell();
-	delete pack;
-	
 	int client;
 	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
@@ -1457,6 +1426,8 @@ void StatsMenu_TopPlayerId(Database database, DBResultSet results, const char[] 
 		CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_ErrorParsing", client);
 		return;
 	}
+	
+	int top_player_id = g_Player[client].menustats_pos;
 	
 	char auth[64];
 	while(results.FetchRow())
@@ -1476,29 +1447,59 @@ void StatsMenu_TopPlayerId(Database database, DBResultSet results, const char[] 
 		return;
 	}
 	
-	g_Player[client].menustats_pos = top_player_id;
-	strcopy(g_Player[client].menustats_auth, sizeof(g_Player[].menustats_auth), auth);
-	
-	if(TF2_GetPlayerSQLInfo(client
-	, g_Player[client].menustats_auth
-	, g_Player[client].menustats_name
-	, sizeof(g_Player[].menustats_name)
-	, g_Player[client].menustats_ip
-	, sizeof(g_Player[].menustats_ip)
-	, g_Player[client].menustats_lastconnected
-	, g_Player[client].menustats_penalty
-	, true
-	, true))
+	char query[256];
+	Format(query, sizeof(query), "select `SteamID`,`PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);
+	sql.Query(StatsMenu_TopPlayerId_2, query, GetClientUserId(client));
+}
+
+void StatsMenu_TopPlayerId_2(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
 	{
-		g_Player[client].active_page_mainmenu = -1;
-		g_Player[client].active_page_session = -1;
-		g_Player[client].active_page_activestats = -1;
-		g_Player[client].active_page_topstats = 1;
-		StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
+		if(results != null && results.FetchRow())
+		{
+			char auth[28];
+			results.FetchString(0, auth, sizeof(auth));
+			results.FetchString(1, g_Player[client].menustats_name, sizeof(g_Player[].menustats_name));
+			results.FetchString(2, g_Player[client].menustats_ip, sizeof(g_Player[].menustats_ip));
+			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
+			
+			char query[256];
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+			sql.Query(StatsMenu_TopPlayerId_3, query, userid);
+		}
+		else
+		{
+			CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist", client, g_Player[client].menustats_pos);
+		}
 	}
 }
 
-void StatsMenu_TopPlayerAuth(Database database, DBResultSet results, const char[] error, DataPack pack)
+void StatsMenu_TopPlayerId_3(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		if(results != null && results.FetchRow())
+		{
+			g_Player[client].menustats_lastconnected = GetFieldValue(results, "LastConnectedTime");
+			GetPlayerlistStats(results, g_Player[client].menustats);
+			
+			g_Player[client].active_page_mainmenu = -1;
+			g_Player[client].active_page_session = -1;
+			g_Player[client].active_page_activestats = -1;
+			g_Player[client].active_page_topstats = 1;
+			StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
+		}
+		else
+		{
+			CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist", client, g_Player[client].menustats_pos);
+		}
+	}
+}
+
+void StatsMenu_TopPlayerAuth_1(Database database, DBResultSet results, const char[] error, DataPack pack)
 {
 	int userid = pack.ReadCell();
 	int maxlen = pack.ReadCell();
@@ -1541,23 +1542,58 @@ void StatsMenu_TopPlayerAuth(Database database, DBResultSet results, const char[
 		return;
 	}
 	
+	g_Player[client].menustats_pos = top_player_id;
 	strcopy(g_Player[client].menustats_auth, sizeof(g_Player[].menustats_auth), auth);
-	if(TF2_GetPlayerSQLInfo(client
-	, g_Player[client].menustats_auth
-	, g_Player[client].menustats_name
-	, sizeof(g_Player[].menustats_name)
-	, g_Player[client].menustats_ip
-	, sizeof(g_Player[].menustats_ip)
-	, g_Player[client].menustats_lastconnected
-	, g_Player[client].menustats_penalty
-	, true))
+	
+	char query[256];
+	Format(query, sizeof(query), "select `SteamID`,`PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);
+	sql.Query(StatsMenu_TopPlayerAuth_2, query, GetClientUserId(userid));
+}
+
+void StatsMenu_TopPlayerAuth_2(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
 	{
-		g_Player[client].active_page_mainmenu = -1;
-		g_Player[client].active_page_session = -1;
-		g_Player[client].active_page_activestats = -1;
-		g_Player[client].active_page_topstats = 1;
-		g_Player[client].menustats_pos = top_player_id;
-		StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
+		if(results != null && results.FetchRow())
+		{
+			char auth[28];
+			results.FetchString(0, auth, sizeof(auth));
+			results.FetchString(1, g_Player[client].menustats_name, sizeof(g_Player[].menustats_name));
+			results.FetchString(2, g_Player[client].menustats_ip, sizeof(g_Player[].menustats_ip));
+			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
+			
+			char query[256];
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+			sql.Query(StatsMenu_TopPlayerAuth_3, query, userid);
+		}
+		else
+		{
+			CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist", client, g_Player[client].menustats_auth);
+		}
+	}
+}
+
+void StatsMenu_TopPlayerAuth_3(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		if(results != null && results.FetchRow())
+		{
+			g_Player[client].menustats_lastconnected = GetFieldValue(results, "LastConnectedTime");
+			GetPlayerlistStats(results, g_Player[client].menustats);
+			
+			g_Player[client].active_page_mainmenu = -1;
+			g_Player[client].active_page_session = -1;
+			g_Player[client].active_page_activestats = -1;
+			g_Player[client].active_page_topstats = 1;
+			StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
+		}
+		else
+		{
+			CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist", client, g_Player[client].menustats_auth);
+		}
 	}
 }
 
@@ -1830,6 +1866,7 @@ stock bool StrHasNumbers(const char[] str) {
  *	@param client	The user index of the fetcher.
  *	@param auth		The authentication steamid to read.
  */
+ /*
 bool TF2_GetPlayerSQLInfo(int client
 						, const char[] auth
 						, char[] szPlayerName=""
@@ -1854,7 +1891,7 @@ bool TF2_GetPlayerSQLInfo(int client
 	
 	bool bReturn;
 	char query[2048];
-	Format(query, sizeof(query), "select PlayerName,IPAddress,Penalty from `"...sql_table_settings..."` where SteamID = '%s'", auth);	
+	Format(query, sizeof(query), "select `PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);	
 	SQL_LockDatabase(sql);
 	DBResultSet results = SQL_Query(sql, query);
 	SQL_UnlockDatabase(sql);
@@ -1874,102 +1911,7 @@ bool TF2_GetPlayerSQLInfo(int client
 	
 	//
 	
-	Format(query, sizeof(query), "select "
-	/* 0*/... "LastConnectedTime,"
-	/* 1*/... "PlayTime,"
-	/* 2*/... "Points,"
-	/* 3*/... "Frags,"
-	/* 4*/... "Assists,"
-	/* 5*/... "Deaths,"
-	/* 6*/... "Suicides,"
-	/* 7*/... "DamageDone,"
-	/* 8*/... "Achievements,"
-	
-	/* 9*/... "Dominations,"
-	/*10*/... "Revenges,"
-	/*11*/... "Airshots,"
-	/*12*/... "Headshots,"
-	/*13*/... "Noscopes,"
-	/*14*/... "Backstabs,"
-	/*15*/... "TauntFrags,"
-	/*16*/... "GibFrags,"
-	/*17*/... "DeflectFrags,"
-	/*18*/... "TeleFrags,"
-	/*19*/... "Collaterals,"
-	/*20*/... "MidAirFrags,"
-	/*21*/... "CritFrags,"
-	/*22*/... "MiniCritFrags,"
-	/*23*/... "PumpkinBombFrags,"
-	
-	/*24*/... "ScoutFrags,"
-	/*25*/... "SoldierFrags,"
-	/*26*/... "PyroFrags,"
-	/*27*/... "DemoFrags,"
-	/*28*/... "HeavyFrags,"
-	/*29*/... "EngieFrags,"
-	/*30*/... "MedicFrags,"
-	/*31*/... "SniperFrags,"
-	/*32*/... "SpyFrags,"
-	/*33*/... "ScoutDeaths,"
-	/*34*/... "SoldierDeaths,"
-	/*35*/... "PyroDeaths,"
-	/*36*/... "DemoDeaths,"
-	/*37*/... "HeavyDeaths,"
-	/*38*/... "EngieDeaths,"
-	/*39*/... "MedicDeaths,"
-	/*40*/... "SniperDeaths,"
-	/*41*/... "SpyDeaths,"
-	
-	/*42*/... "BuildingsPlaced,"
-	/*43*/... "DispensersPlaced,"
-	/*44*/... "SentryGunsPlaced,"
-	/*45*/... "TeleporterEntrancesPlaced,"
-	/*46*/... "TeleporterExitsPlaced,"
-	/*47*/... "MiniSentryGunsPlaced,"
-	/*48*/... "SappersPlaced,"
-	/*49*/... "BuildingsDestroyed,"
-	/*50*/... "DispensersDestroyed,"
-	/*51*/... "SentryGunsDestroyed,"
-	/*52*/... "TeleporterEntrancesDestroyed,"
-	/*53*/... "TeleporterExitsDestroyed,"
-	/*54*/... "MiniSentryGunsDestroyed,"
-	/*55*/... "SappersDestroyed,"
-	
-	/*56*/... "PointsCaptured,"
-	/*57*/... "PointsDefended,"
-	/*58*/... "FlagsPickedUp,"
-	/*59*/... "FlagsCaptured,"
-	/*60*/... "FlagsStolen,"
-	/*61*/... "FlagsDefended,"
-	/*62*/... "FlagsDropped,"
-	
-	/*63*/... "TeleportersUsed,"
-	/*64*/... "PlayersTeleported,"
-	/*65*/... "CoatedPiss,"
-	/*66*/... "CoatedMilk,"
-	/*67*/... "CoatedGasoline,"
-	/*68*/... "Coated,"
-	/*69*/... "Extinguished,"
-	/*XX*///... "Ignited,"
-	/*70*/... "Ubercharged,"
-	/*71*/... "SandvichesStolen,"
-	/*72*/... "StunnedPlayers,"
-	/*73*/... "MoonShotStunnedPlayers,"
-	
-	/*74*/... "MonoculusStunned,"
-	/*75*/... "MerasmusStunned,"
-	/*76*/... "MonoculusFragged,"
-	/*77*/... "MerasmusFragged,"
-	/*78*/... "HHHFragged,"
-	/*79*/... "SkeletonKingsFragged,"
-	
-	/*XX*///... "RobotsFragged,"
-	/*80*/... "TanksDestroyed,"
-	/*81*/... "SentryBustersFragged,"
-	/*82*/... "BombsResetted"
-	
-	... " from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i"
-	, auth, g_ServerID);
+	Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
 	
 	SQL_LockDatabase(sql);
 	results = SQL_Query(sql, query);
@@ -1993,99 +1935,8 @@ bool TF2_GetPlayerSQLInfo(int client
 		}
 		case true:
 		{
-			LastConnectedTime = results.FetchInt(0);
-			g_Player[client].menustats[Stats_PlayTime] = results.FetchInt(1);
-			g_Player[client].menustats[Stats_Points] = results.FetchInt(2);
-			g_Player[client].menustats[Stats_Frags] = results.FetchInt(3);
-			g_Player[client].menustats[Stats_Assists] = results.FetchInt(4);
-			g_Player[client].menustats[Stats_Deaths] = results.FetchInt(5);
-			g_Player[client].menustats[Stats_Suicides] = results.FetchInt(6);
-			g_Player[client].menustats[Stats_DamageDone] = results.FetchInt(7);
-			g_Player[client].menustats[Stats_Achievements] = results.FetchInt(8);
-			
-			g_Player[client].menustats[Stats_Dominations] = results.FetchInt(9);
-			g_Player[client].menustats[Stats_Revenges] = results.FetchInt(10);
-			g_Player[client].menustats[Stats_Airshots] = results.FetchInt(11);
-			g_Player[client].menustats[Stats_Headshots] = results.FetchInt(12);
-			g_Player[client].menustats[Stats_Noscopes] = results.FetchInt(13);
-			g_Player[client].menustats[Stats_Backstabs] = results.FetchInt(14);
-			g_Player[client].menustats[Stats_TauntFrags] = results.FetchInt(15);
-			g_Player[client].menustats[Stats_GibFrags] = results.FetchInt(16);
-			g_Player[client].menustats[Stats_Deflects] = results.FetchInt(17);
-			g_Player[client].menustats[Stats_TeleFrags] = results.FetchInt(18);
-			g_Player[client].menustats[Stats_Collaterals] = results.FetchInt(19);
-			g_Player[client].menustats[Stats_MidAirFrags] = results.FetchInt(20);
-			g_Player[client].menustats[Stats_CritFrags] = results.FetchInt(21);
-			g_Player[client].menustats[Stats_MiniCritFrags] = results.FetchInt(22);
-			g_Player[client].menustats[Stats_PumpkinBombFrags] = results.FetchInt(23);
-			
-			g_Player[client].menustats[Stats_ScoutFrags] = results.FetchInt(24);
-			g_Player[client].menustats[Stats_SoldierFrags] = results.FetchInt(25);
-			g_Player[client].menustats[Stats_PyroFrags] = results.FetchInt(26);
-			g_Player[client].menustats[Stats_DemoFrags] = results.FetchInt(27);
-			g_Player[client].menustats[Stats_HeavyFrags] = results.FetchInt(28);
-			g_Player[client].menustats[Stats_EngieFrags] = results.FetchInt(29);
-			g_Player[client].menustats[Stats_MedicFrags] = results.FetchInt(30);
-			g_Player[client].menustats[Stats_SniperFrags] = results.FetchInt(31);
-			g_Player[client].menustats[Stats_SpyFrags] = results.FetchInt(32);
-			g_Player[client].menustats[Stats_ScoutDeaths] = results.FetchInt(33);
-			g_Player[client].menustats[Stats_SoldierDeaths] = results.FetchInt(34);
-			g_Player[client].menustats[Stats_PyroDeaths] = results.FetchInt(35);
-			g_Player[client].menustats[Stats_DemoDeaths] = results.FetchInt(36);
-			g_Player[client].menustats[Stats_HeavyDeaths] = results.FetchInt(37);
-			g_Player[client].menustats[Stats_EngieDeaths] = results.FetchInt(38);
-			g_Player[client].menustats[Stats_MedicDeaths] = results.FetchInt(39);
-			g_Player[client].menustats[Stats_SniperDeaths] = results.FetchInt(40);
-			g_Player[client].menustats[Stats_SpyDeaths] = results.FetchInt(41);
-			
-			g_Player[client].menustats[Stats_BuildingsPlaced] = results.FetchInt(42);
-			g_Player[client].menustats[Stats_DispensersPlaced] = results.FetchInt(43);
-			g_Player[client].menustats[Stats_SentryGunsPlaced] = results.FetchInt(44);
-			g_Player[client].menustats[Stats_TeleporterEntrancesPlaced] = results.FetchInt(45);
-			g_Player[client].menustats[Stats_TeleporterExitsPlaced] = results.FetchInt(46);
-			g_Player[client].menustats[Stats_MiniSentryGunsPlaced] = results.FetchInt(47);
-			g_Player[client].menustats[Stats_SappersPlaced] = results.FetchInt(48);
-			g_Player[client].menustats[Stats_BuildingsDestroyed] = results.FetchInt(49);
-			g_Player[client].menustats[Stats_DispensersDestroyed] = results.FetchInt(50);
-			g_Player[client].menustats[Stats_SentryGunsDestroyed] = results.FetchInt(51);
-			g_Player[client].menustats[Stats_TeleporterEntrancesDestroyed] = results.FetchInt(52);
-			g_Player[client].menustats[Stats_TeleporterExitsDestroyed] = results.FetchInt(53);
-			g_Player[client].menustats[Stats_MiniSentryGunsDestroyed] = results.FetchInt(54);
-			g_Player[client].menustats[Stats_SappersDestroyed] = results.FetchInt(55);
-			
-			g_Player[client].menustats[Stats_PointsCaptured] = results.FetchInt(56);
-			g_Player[client].menustats[Stats_PointsDefended] = results.FetchInt(57);
-			g_Player[client].menustats[Stats_FlagsPickedUp] = results.FetchInt(58);
-			g_Player[client].menustats[Stats_FlagsCaptured] = results.FetchInt(59);
-			g_Player[client].menustats[Stats_FlagsStolen] = results.FetchInt(60);
-			g_Player[client].menustats[Stats_FlagsDefended] = results.FetchInt(61);
-			g_Player[client].menustats[Stats_FlagsDropped] = results.FetchInt(62);
-			
-			g_Player[client].menustats[Stats_TeleportersUsed] = results.FetchInt(63);
-			g_Player[client].menustats[Stats_PlayersTeleported] = results.FetchInt(64);
-			g_Player[client].menustats[Stats_CoatedPiss] = results.FetchInt(65);
-			g_Player[client].menustats[Stats_CoatedMilk] = results.FetchInt(66);
-			g_Player[client].menustats[Stats_CoatedGasoline] = results.FetchInt(67);
-			g_Player[client].menustats[Stats_Coated] = results.FetchInt(68);
-			g_Player[client].menustats[Stats_Extinguished] = results.FetchInt(69);
-			//g_Player[client].menustats[Stats_Ignited] = results.FetchInt(XX);
-			g_Player[client].menustats[Stats_Ubercharged] = results.FetchInt(70);
-			g_Player[client].menustats[Stats_SandvichesStolen] = results.FetchInt(71);
-			g_Player[client].menustats[Stats_StunnedPlayers] = results.FetchInt(72);
-			g_Player[client].menustats[Stats_MoonShotStunnedPlayers] = results.FetchInt(73);
-			
-			g_Player[client].menustats[Stats_MonoculusStunned] = results.FetchInt(74);
-			g_Player[client].menustats[Stats_MerasmusStunned] = results.FetchInt(75);
-			g_Player[client].menustats[Stats_MonoculusFragged] = results.FetchInt(76);
-			g_Player[client].menustats[Stats_MerasmusFragged] = results.FetchInt(77);
-			g_Player[client].menustats[Stats_HHHFragged] = results.FetchInt(78);
-			g_Player[client].menustats[Stats_SkeletonKingsFragged] = results.FetchInt(79);
-			
-			//g_Player[client].menustats[Stats_RobotsFragged] = results.FetchInt(XX);
-			g_Player[client].menustats[Stats_TanksDestroyed] = results.FetchInt(80);
-			g_Player[client].menustats[Stats_SentryBustersFragged] = results.FetchInt(81);
-			g_Player[client].menustats[Stats_BombsResetted] = results.FetchInt(82);
-			
+			LastConnectedTime = GetFieldValue(results, "LastConnectedTime");
+			GetPlayerlistStats(results, g_Player[client].menustats);
 			bReturn = true;
 		}
 	}
@@ -2093,6 +1944,7 @@ bool TF2_GetPlayerSQLInfo(int client
 	delete results;
 	return bReturn;
 }
+*/
 
 void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stats, bool top_player=false, bool penalty=false)
 {
@@ -2260,6 +2112,233 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 			//PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);
 			panel.DrawText(" ");
 			PanelItem(panel, "%T", "#SMStats_Menu_ExitPage", client);
+		}
+	}
+}
+
+//
+
+void GetPlayerlistStats(DBResultSet results, int[] stats)
+{
+	stats[Stats_PlayTime] = GetFieldValue(results, "PlayTime");
+	stats[Stats_Points] = GetFieldValue(results, "Points");
+	stats[Stats_Frags] = GetFieldValue(results, "Frags");
+	stats[Stats_Assists] = GetFieldValue(results, "Assists");
+	stats[Stats_Deaths] = GetFieldValue(results, "Deaths");
+	stats[Stats_Suicides] = GetFieldValue(results, "Suicides");
+	stats[Stats_DamageDone] = GetFieldValue(results, "DamageDone");
+	stats[Stats_Achievements] = GetFieldValue(results, "Achievements");
+	
+	stats[Stats_Dominations] = GetFieldValue(results, "Dominations");
+	stats[Stats_Revenges] = GetFieldValue(results, "Revenges");
+	stats[Stats_Airshots] = GetFieldValue(results, "Airshots");
+	stats[Stats_Headshots] = GetFieldValue(results, "Headshots");
+	stats[Stats_Noscopes] = GetFieldValue(results, "Noscopes");
+	stats[Stats_Backstabs] = GetFieldValue(results, "Backstabs");
+	stats[Stats_TauntFrags] = GetFieldValue(results, "TauntFrags");
+	stats[Stats_GibFrags] = GetFieldValue(results, "GibFrags");
+	stats[Stats_Deflects] = GetFieldValue(results, "DeflectFrags");
+	stats[Stats_TeleFrags] = GetFieldValue(results, "TeleFrags");
+	stats[Stats_Collaterals] = GetFieldValue(results, "Collaterals");
+	stats[Stats_MidAirFrags] = GetFieldValue(results, "MidAirFrags");
+	stats[Stats_CritFrags] = GetFieldValue(results, "CritFrags");
+	stats[Stats_MiniCritFrags] = GetFieldValue(results, "MiniCritFrags");
+	stats[Stats_PumpkinBombFrags] = GetFieldValue(results, "PumpkinBombFrags");
+	
+	stats[Stats_ScoutFrags] = GetFieldValue(results, "ScoutFrags");
+	stats[Stats_SoldierFrags] = GetFieldValue(results, "SoldierFrags");
+	stats[Stats_PyroFrags] = GetFieldValue(results, "PyroFrags");
+	stats[Stats_DemoFrags] = GetFieldValue(results, "DemoFrags");
+	stats[Stats_HeavyFrags] = GetFieldValue(results, "HeavyFrags");
+	stats[Stats_EngieFrags] = GetFieldValue(results, "EngieFrags");
+	stats[Stats_MedicFrags] = GetFieldValue(results, "MedicFrags");
+	stats[Stats_SniperFrags] = GetFieldValue(results, "SniperFrags");
+	stats[Stats_SpyFrags] = GetFieldValue(results, "SpyFrags");
+	stats[Stats_ScoutDeaths] = GetFieldValue(results, "ScoutDeaths");
+	stats[Stats_SoldierDeaths] = GetFieldValue(results, "SoldierDeaths");
+	stats[Stats_PyroDeaths] = GetFieldValue(results, "PyroDeaths");
+	stats[Stats_DemoDeaths] = GetFieldValue(results, "DemoDeaths");
+	stats[Stats_HeavyDeaths] = GetFieldValue(results, "HeavyDeaths");
+	stats[Stats_EngieDeaths] = GetFieldValue(results, "EngieDeaths");
+	stats[Stats_MedicDeaths] = GetFieldValue(results, "MedicDeaths");
+	stats[Stats_SniperDeaths] = GetFieldValue(results, "SniperDeaths");
+	stats[Stats_SpyDeaths] = GetFieldValue(results, "SpyDeaths");
+	
+	stats[Stats_BuildingsPlaced] = GetFieldValue(results, "BuildingsPlaced");
+	stats[Stats_DispensersPlaced] = GetFieldValue(results, "DispensersPlaced");
+	stats[Stats_SentryGunsPlaced] = GetFieldValue(results, "SentryGunsPlaced");
+	stats[Stats_TeleporterEntrancesPlaced] = GetFieldValue(results, "TeleporterEntrancesPlaced");
+	stats[Stats_TeleporterExitsPlaced] = GetFieldValue(results, "TeleporterExitsPlaced");
+	stats[Stats_MiniSentryGunsPlaced] = GetFieldValue(results, "MiniSentryGunsPlaced");
+	stats[Stats_SappersPlaced] = GetFieldValue(results, "SappersPlaced");
+	stats[Stats_BuildingsDestroyed] = GetFieldValue(results, "BuildingsDestroyed");
+	stats[Stats_DispensersDestroyed] = GetFieldValue(results, "DispensersDestroyed");
+	stats[Stats_SentryGunsDestroyed] = GetFieldValue(results, "SentryGunsDestroyed");
+	stats[Stats_TeleporterEntrancesDestroyed] = GetFieldValue(results, "TeleporterEntrancesDestroyed");
+	stats[Stats_TeleporterExitsDestroyed] = GetFieldValue(results, "TeleporterExitsDestroyed");
+	stats[Stats_MiniSentryGunsDestroyed] = GetFieldValue(results, "MiniSentryGunsDestroyed");
+	stats[Stats_SappersDestroyed] = GetFieldValue(results, "SappersDestroyed");
+	
+	stats[Stats_PointsCaptured] = GetFieldValue(results, "PointsCaptured");
+	stats[Stats_PointsDefended] = GetFieldValue(results, "PointsDefended");
+	stats[Stats_FlagsPickedUp] = GetFieldValue(results, "FlagsPickedUp");
+	stats[Stats_FlagsCaptured] = GetFieldValue(results, "FlagsCaptured");
+	stats[Stats_FlagsStolen] = GetFieldValue(results, "FlagsStolen");
+	stats[Stats_FlagsDefended] = GetFieldValue(results, "FlagsDefended");
+	stats[Stats_FlagsDropped] = GetFieldValue(results, "FlagsDropped");
+	
+	stats[Stats_TeleportersUsed] = GetFieldValue(results, "TeleportersUsed");
+	stats[Stats_PlayersTeleported] = GetFieldValue(results, "PlayersTeleported");
+	stats[Stats_CoatedPiss] = GetFieldValue(results, "CoatedPiss");
+	stats[Stats_CoatedMilk] = GetFieldValue(results, "CoatedMilk");
+	stats[Stats_CoatedGasoline] = GetFieldValue(results, "CoatedGasoline");
+	stats[Stats_Coated] = GetFieldValue(results, "Coated");
+	stats[Stats_Extinguished] = GetFieldValue(results, "Extinguished");
+	//stats[Stats_Ignited] = GetFieldValue(results, "Ignited");
+	stats[Stats_Ubercharged] = GetFieldValue(results, "Ubercharged");
+	stats[Stats_SandvichesStolen] = GetFieldValue(results, "SandvichesStolen");
+	stats[Stats_StunnedPlayers] = GetFieldValue(results, "StunnedPlayers");
+	stats[Stats_MoonShotStunnedPlayers] = GetFieldValue(results, "MoonShotStunnedPlayers");
+	
+	stats[Stats_MonoculusStunned] = GetFieldValue(results, "MonoculusFragged");
+	stats[Stats_MerasmusStunned] = GetFieldValue(results, "MerasmusStunned");
+	stats[Stats_MonoculusFragged] = GetFieldValue(results, "MonoculusFragged");
+	stats[Stats_MerasmusFragged] = GetFieldValue(results, "MerasmusFragged");
+	stats[Stats_HHHFragged] = GetFieldValue(results, "HHHFragged");
+	stats[Stats_SkeletonKingsFragged] = GetFieldValue(results, "SkeletonKingsFragged");
+	
+	//stats[Stats_RobotsFragged] = GetFieldValue(results, "RobotFrags");
+	stats[Stats_TanksDestroyed] = GetFieldValue(results, "TanksDestroyed");
+	stats[Stats_SentryBustersFragged] = GetFieldValue(results, "SentryBustersFragged");
+	stats[Stats_BombsResetted] = GetFieldValue(results, "BombsResetted");
+}
+
+// StatsMenu_CheckActiveStats()
+
+void DBQuery_CheckActiveStats_1(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		if(results != null && results.FetchRow())
+		{
+			char auth[28];
+			results.FetchString(0, auth, sizeof(auth));
+			results.FetchString(1, g_Player[client].menustats_name, sizeof(g_Player[].menustats_name));
+			results.FetchString(2, g_Player[client].menustats_ip, sizeof(g_Player[].menustats_ip));
+			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
+			
+			char query[256];
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+			sql.Query(DBQuery_CheckActiveStats_2, query, userid);
+		}
+	}
+}
+
+void DBQuery_CheckActiveStats_2(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		if(results != null && results.FetchRow())
+		{
+			g_Player[client].menustats_lastconnected = GetFieldValue(results, "LastConnectedTime");
+			GetPlayerlistStats(results, g_Player[client].menustats);
+			
+			g_Player[client].active_page_mainmenu = -1;
+			g_Player[client].active_page_session = -1;
+			g_Player[client].active_page_activestats = 1;
+			g_Player[client].active_page_topstats = -1;
+			StatsMenu.ActiveStatsInfo(client, 1);
+		}
+	}
+}
+
+// StatsMenu_TopStats()
+
+void DBQuery_TopStats_1(Database database, DBResultSet results, const char[] error, DataPack pack)
+{
+	int userid = pack.ReadCell();
+	int display_at = pack.ReadCell();
+	delete pack;
+	
+	//
+	
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		char[][] SteamID = new char[10][64];
+		char[][] PlayerName = new char[10][64];
+		int Points[10];
+		int Players = 0;
+		
+		while(results.FetchRow())
+		{
+			results.FetchString(0, PlayerName[Players], 28);
+			results.FetchString(1, SteamID[Players], 64);
+			Points[Players] = results.FetchInt(2);
+			Players++
+		}
+		
+		if(Players < 1)
+		{
+			CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_TopSQLInfo_NoPlayers", client);
+			return;
+		}
+		
+		Menu menu = new Menu(StatsMenu_TopStats);
+		menu.SetTitle("SourceMod Stats - "...VersionAlt..." > %T", "#SMStats_Menu_Top10", client);
+		
+		for(int i = 0; i < Players; i++)
+		{
+			char dummy[96], points_plural[32];
+			PointsPluralSplitter(client, Points[i], points_plural, sizeof(points_plural));
+			Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_TopPlayer", client, i+1, PlayerName[i], points_plural);
+			menu.AddItem(SteamID[i], dummy);
+		}
+		
+		menu.ExitBackButton = true;
+		menu.DisplayAt(client, display_at, MENU_TIME_FOREVER);
+	}
+}
+
+// StatsMenu_TopStats_MenuHandler()
+
+void DBQuery_TopStats_Menu_1(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		if(results != null && results.FetchRow())
+		{
+			char auth[28];
+			results.FetchString(0, auth, sizeof(auth));
+			results.FetchString(1, g_Player[client].menustats_name, sizeof(g_Player[].menustats_name));
+			results.FetchString(2, g_Player[client].menustats_ip, sizeof(g_Player[].menustats_ip));
+			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
+			
+			char query[256];
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+			sql.Query(DBQuery_TopStats_Menu_2, query, userid);
+		}
+	}
+}
+
+void DBQuery_TopStats_Menu_2(Database database, DBResultSet results, const char[] error, int userid)
+{
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		if(results != null && results.FetchRow())
+		{
+			g_Player[client].menustats_lastconnected = GetFieldValue(results, "LastConnectedTime");
+			GetPlayerlistStats(results, g_Player[client].menustats);
+			
+			g_Player[client].active_page_mainmenu = -1;
+			g_Player[client].active_page_session = -1;
+			g_Player[client].active_page_activestats = -1;
+			g_Player[client].active_page_topstats = 1;
+			StatsMenu.TopStatsInfo(client, 1, g_Player[client].menustats_pos);
 		}
 	}
 }

@@ -1445,7 +1445,6 @@ stock void TimeFormat_GetCountStr(int count, char[] yes, int no)
 		Format(yes, no, "0%s", yes);
 	}
 }
-
 stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int maxlen)
 {
 	// convert seconds into Year/s Day/s Hour/s Minute/s Second/s
@@ -1799,4 +1798,39 @@ stock int SecondsCheckPenalty(int timestamp)
 {
 	int time = timestamp - GetTime();
 	return time - 60 * (time / 60);
+}
+
+//
+
+stock int GetFieldValue(DBResultSet results, char[] field_name)
+{
+	int field;
+	if(results.FieldNameToNum(field_name, field))
+	{
+		return results.FetchInt(field);
+	}
+	
+	return -2;
+}
+
+stock bool GetFieldBoolValue(DBResultSet results, char[] field_name)
+{
+	int field;
+	if(results.FieldNameToNum(field_name, field))
+	{
+		return view_as<bool>(results.FetchInt(field));
+	}
+	
+	return false;
+}
+
+stock int GetFieldString(DBResultSet results, char[] field_name, char[] output, int maxlen)
+{
+	int field;
+	if(results.FieldNameToNum(field_name, field))
+	{
+		return results.FetchString(field, output, maxlen);
+	}
+	
+	return -2;
 }

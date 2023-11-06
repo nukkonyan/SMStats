@@ -3250,6 +3250,7 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					if(iWepFrags > 0)
 					{
+						// needs to be arrayed, multiple same classname calls for update.
 						for(int i = 0; i < frags; i++)
 						{
 							if(list_wepfrag[i])
