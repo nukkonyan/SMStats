@@ -2050,8 +2050,11 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_TeleporterExit", client, stats[Stats_TeleporterExitsPlaced], stats[Stats_TeleporterExitsDestroyed]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_MiniSentryGun", client, stats[Stats_MiniSentryGunsPlaced], stats[Stats_MiniSentryGunsDestroyed]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Sapper", client, stats[Stats_SappersPlaced], stats[Stats_SappersDestroyed]);
+			
+			// will be worked on further, not finished yet.
 			panel.DrawText(" ");
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_SentryGunFrags", client, stats[Stats_SentryLVL1Frags], stats[Stats_SentryLVL2Frags], stats[Stats_SentryLVL3Frags], stats[Stats_SentryFrags]);
+			
 			panel.DrawText(" ");
 			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);
 			PanelItem(panel, "%T", "#SMStats_Menu_NextPage", client);

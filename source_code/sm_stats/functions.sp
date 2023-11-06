@@ -1165,6 +1165,7 @@ stock void Send_Player_Connected(int client)
 	char query[256];
 	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `ServerID`='%i'", g_ServerID);
 	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(points);
 	pack.WriteCell(strlen(auth)+1);
 	pack.WriteString(auth);
@@ -1178,6 +1179,7 @@ stock void Send_Player_Connected(int client)
 
 stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results, const char[] error, DataPack pack)
 {
+	int userid = pack.ReadCell();
 	int points = pack.ReadCell();
 	
 	int maxlen1 = pack.ReadCell();
@@ -1215,6 +1217,12 @@ stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results,
 		}
 	}
 	
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		g_Player[client].position = position;
+	}
+	
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
@@ -1248,6 +1256,7 @@ stock void Send_Player_Connected_CheckTop10(int client)
 	char query[256];
 	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `ServerID`='%i' order by `Points` limit 10 desc", g_ServerID);
 	DataPack pack = new DataPack();
+	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(strlen(auth)+1);
 	pack.WriteString(auth);
 	pack.WriteCell(strlen(ip)+1);
@@ -1260,6 +1269,8 @@ stock void Send_Player_Connected_CheckTop10(int client)
 
 void DBQuery_Send_Player_Connected_CheckTop10(Database database, DBResultSet results, const char[] error, DataPack pack)
 {
+	int userid = pack.ReadCell();
+	
 	int maxlen1 = pack.ReadCell();
 	char[] auth = new char[maxlen1];
 	pack.ReadString(auth, maxlen1);
@@ -1293,6 +1304,12 @@ void DBQuery_Send_Player_Connected_CheckTop10(Database database, DBResultSet res
 		{
 			break;
 		}
+	}
+	
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		g_Player[client].position = position;
 	}
 	
 	int player = 0;
