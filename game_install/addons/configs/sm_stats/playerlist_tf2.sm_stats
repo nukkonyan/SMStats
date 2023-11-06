@@ -34,7 +34,10 @@ create table if not exists `playerlist_tf2`
 	`SniperDeaths` int not null default '0',
 	`SpyDeaths` int not null default '0',
 	
+	`FeignDeaths` int not null default '0',
+	`MedicAssists` int not null default '0',
 	`HealPoints` int not null default '0',
+
 	`Dominations` int not null default '0',
 	`Revenges` int not null default '0',
 	`Airshots` int not null default '0',

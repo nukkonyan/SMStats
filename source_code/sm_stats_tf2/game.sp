@@ -2837,6 +2837,13 @@ Action OnPlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playe
 
 /* ===================================================================================== */
 
+enum struct TempLmao
+{
+	char classname[64];
+	int itemdef;
+	int quantity;
+}
+
 // instead of OnGameFrame, we have custom delayed game timer.
 // For optimization purposes.
 // Workaround with OnGameFrame possible would be greatly appreciated.
@@ -3251,17 +3258,54 @@ Action MapTimer_GameTimer(Handle timer)
 					if(iWepFrags > 0)
 					{
 						// needs to be arrayed, multiple same classname calls for update.
+						
+						ArrayList lmao = new ArrayList(sizeof(TempLmao));
+						
 						for(int i = 0; i < frags; i++)
 						{
 							if(list_wepfrag[i])
 							{
-								char fix_weapon[64], query_wep[256];
-								CorrectWeaponClassname(event.class_attacker, fix_weapon, sizeof(fix_weapon), list_itemdef[i], list_classname[i]);
-								Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set %s = %s+1 where SteamID = '%s' and ServerID = %i"
-								, fix_weapon, fix_weapon, g_Player[client].auth, g_ServerID);
-								txn.AddQuery(query_wep, queryId_frag_weapon);
+								int index;
+								switch((index = lmao.FindString(list_classname[i])) == -1)
+								{
+									// valid, updating..
+									case false:
+									{
+										TempLmao epic;
+										lmao.GetArray(index, epic, sizeof(epic));
+										epic.quantity++;
+										lmao.SetArray(index, epic, sizeof(epic));
+									}
+									
+									// not valid, adding..
+									case true:
+									{
+										TempLmao epic;
+										strcopy(epic.classname, sizeof(epic.classname), list_classname[i]);
+										epic.itemdef = list_itemdef[i];
+										epic.quantity = 1;
+										lmao.PushArray(epic, sizeof(epic));
+									}
+								}
 							}
 						}
+						
+						for(int i = 0; i < lmao.Length; i++)
+						{
+							TempLmao epic;
+							lmao.GetArray(i, epic, sizeof(epic));
+							
+							char fix_weapon[64], query_wep[256];
+							CorrectWeaponClassname(event.class_attacker, fix_weapon, sizeof(fix_weapon), epic.itemdef, epic.classname);
+							Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set `%s`=`%s`+'%i' where `SteamID`='%s' and `ServerID`='%i'"
+							, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_ServerID);
+							txn.AddQuery(query_wep, queryId_frag_weapon);
+							
+							if(DEBUG) PrintToServer("%s OnPlayerDeath() DEBUG: [userid %i] classname '%s' / itemdef '%i' / quantity '%i'"
+							, core_chattag, attacker, epic.classname, epic.itemdef, epic.quantity);
+						}
+						
+						delete lmao;
 					}
 					if(iTeleFrags > 0)
 					{
