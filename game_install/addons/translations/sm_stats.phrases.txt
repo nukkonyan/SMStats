@@ -143,6 +143,7 @@
 	"#SMStats_PlayTimeFormat_Scenario5"
 	{
 		"en" "{SECONDS}"
+		"tr" "{SECONDS}"
 	}
 	"#SMStats_TimeFormat_LastConnected"
 	{
@@ -747,7 +748,7 @@
 	    "en" "Multiple players"
 	    "dk" "Flere spillere"
 	    "jp" "複数のプレイヤー"
-		"sv" "Flera spelare"
+		  "sv" "Flera spelare"
 	    "no" "Flere spelare"
 	    "tr" "Birden çok oyuncu"
 	}
@@ -914,7 +915,7 @@
 	    // {1} assister name
 	    // {2} assister points
 	    // {3} points earned
-		// {4} fragger name
+		  // {4} fragger name
 	    // {5} victim fragged
 	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
 	    "en" "{1} ({2}) Earned {3} for assisting {4} fragging {5}."
