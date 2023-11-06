@@ -319,7 +319,6 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 			{
 				g_TotalTablePlayers = GetTablePlayerCount();
 				g_Player[client].points = _sm_stats_default_points;
-				g_Player[client].position = GetClientPosition(g_Player[client].auth);
 				Send_Player_Connected(client);
 			}
 			
@@ -351,7 +350,6 @@ void DBQuery_CheckUserSQL_Points(Database db, DBResultSet results, const char[] 
 		case true:
 		{
 			g_Player[client].points = results.FetchInt(0);
-			g_Player[client].position = GetClientPosition(g_Player[client].auth);
 			Send_Player_Connected(client);
 		}
 	}
