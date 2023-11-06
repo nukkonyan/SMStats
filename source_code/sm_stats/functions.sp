@@ -1140,11 +1140,59 @@ stock void Send_Player_Connected(int client)
 	strcopy(auth, sizeof(auth), g_Player[client].auth);
 	strcopy(ip, sizeof(ip), g_Player[client].ip);
 	strcopy(name, sizeof(name), g_Player[client].name);
-	int points = g_Player[client].points
-	int position = g_Player[client].position;
-	if(position < 1)
+	int points = g_Player[client].points;
+	
+	char query[256];
+	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `ServerID`='%i'", g_ServerID);
+	DataPack pack = new DataPack();
+	pack.WriteCell(points);
+	pack.WriteCell(strlen(auth)+1);
+	pack.WriteString(auth);
+	pack.WriteCell(strlen(ip)+1);
+	pack.WriteString(ip);
+	pack.WriteCell(strlen(name)+1);
+	pack.WriteString(name);
+	pack.Reset();
+	sql.Query(DBQuery_Send_Player_Connected, query, pack);
+}
+
+stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results, const char[] error, DataPack pack)
+{
+	int points = pack.ReadCell();
+	
+	int maxlen1 = pack.ReadCell();
+	char[] auth = new char[maxlen1];
+	pack.ReadString(auth, maxlen1);
+	
+	int maxlen2 = pack.ReadCell();
+	char[] ip = new char[maxlen2];
+	pack.ReadString(ip, maxlen2);
+	
+	int maxlen3 = pack.ReadCell();
+	char[] name = new char[maxlen3];
+	pack.ReadString(name, maxlen3);
+	
+	delete pack;
+	
+	//
+	
+	if(results == null)
 	{
-		position = (g_Player[client].position = GetClientPosition(auth));
+		return;
+	}
+	
+	int position = 0;
+	while(results.FetchRow())
+	{
+		position++;
+		
+		char row_auth[28];
+		results.FetchString(0, row_auth, sizeof(row_auth));
+		
+		if(StrEqual(row_auth, auth))
+		{
+			break;
+		}
 	}
 	
 	int player = 0;
@@ -1175,7 +1223,7 @@ stock void Send_Player_Connected_CheckTop10(int client)
 	int position;
 	if((position = g_Player[client].position) < 1)
 	{
-		PrintToServer("%N have invalid position %i", client, position);
+		PrintToServer("%s Send_Player_Connected_CheckTop10 : client index %i have invalid position %i", core_chattag, client, position);
 		return;
 	}
 	
@@ -1233,11 +1281,63 @@ stock void Send_Player_Disconnected(int client, const char[] event_reason)
 	strcopy(auth, sizeof(auth), g_Player[client].auth);
 	strcopy(ip, sizeof(ip), g_Player[client].ip);
 	strcopy(name, sizeof(name), g_Player[client].name);
-	int points = g_Player[client].points
-	int position = g_Player[client].position;
-	if(position < 1)
+	
+	char query[256];
+	Format(query, sizeof(query), "select `SteamID`,`Points` from `"...sql_table_playerlist..."` where `ServerID`='%i'", g_ServerID);
+	DataPack pack = new DataPack();
+	pack.WriteCell(strlen(auth)+1);
+	pack.WriteString(auth);
+	pack.WriteCell(strlen(ip)+1);
+	pack.WriteString(ip);
+	pack.WriteCell(strlen(name)+1);
+	pack.WriteString(name);
+	pack.WriteCell(strlen(event_reason)+1);
+	pack.WriteString(event_reason);
+	pack.Reset();
+	sql.Query(DBQuery_Send_Player_Disconnected, query, pack);
+}
+
+stock void DBQuery_Send_Player_Disconnected(Database database, DBResultSet results, const char[] error, DataPack pack)
+{
+	int maxlen1 = pack.ReadCell();
+	char[] auth = new char[maxlen1];
+	pack.ReadString(auth, maxlen1);
+	
+	int maxlen2 = pack.ReadCell();
+	char[] ip = new char[maxlen2];
+	pack.ReadString(ip, maxlen2);
+	
+	int maxlen3 = pack.ReadCell();
+	char[] name = new char[maxlen3];
+	pack.ReadString(name, maxlen3);
+	
+	int maxlen4 = pack.ReadCell();
+	char[] event_reason = new char[maxlen4];
+	pack.ReadString(event_reason, maxlen4);
+	
+	delete pack;
+	
+	//
+	
+	if(results == null)
 	{
-		position = GetClientPosition(auth);
+		return;
+	}
+	
+	int position = 0;
+	int points = 0;
+	while(results.FetchRow())
+	{
+		position++;
+		
+		char row_auth[28];
+		results.FetchString(0, row_auth, sizeof(row_auth));
+		
+		if(StrEqual(row_auth, auth))
+		{
+			points = results.FetchInt(1);
+			break;
+		}
 	}
 	
 	int player = 0;
