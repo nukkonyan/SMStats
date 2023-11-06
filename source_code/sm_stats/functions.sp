@@ -470,11 +470,15 @@ enum
 	Frag_Deflect = 7,
 	Frag_TeleFrag = 8,
 	Frag_Taunt = 9,
-	Frag_PumpkinBomb = 10,
-	Frag_Collateral = 11,
-	Frag_Grenade = 12,
-	Frag_Bomb = 13,
-	Frag_Blinded = 14,
+	Frag_Sentry = 10,
+	Frag_MiniSentry = 11,
+	Frag_WrangledSentry = 12,
+	Frag_WrangledMiniSentry = 13,
+	Frag_PumpkinBomb = 14,
+	Frag_Collateral = 15,
+	Frag_Grenade = 16,
+	Frag_Bomb = 17,
+	Frag_Blinded = 18,
 }
 
 /**
@@ -493,11 +497,15 @@ char Frag_Type[][] = {
 /*7*/"#SMStats_FragEvent_Type7", //Deflect frag.
 /*8*/"#SMStats_FragEvent_Type8", //Telefrag.
 /*9*/"#SMStats_FragEvent_Type9", //Taunt frag.
-/*10*/"#SMStats_FragEvent_Type10", //Pumpkin Bomb frag.
-/*11*/"#SMStats_FragEvent_Type11", //Collateral.
-/*12*/"#SMStats_FragEvent_Type12", //Grenade frag.
-/*13*/"#SMStats_FragEvent_Type13", //Bomb frag.
-/*14*/"#SMStats_FragEvent_Type14", //Blinded frag.
+/*10*/"#SMStats_FragEvent_Type10", //Sentry Gun.
+/*11*/"#SMStats_FragEvent_Type11", //Mini-Sentry Gun.
+/*12*/"#SMStats_FragEvent_Type12", //Wrangled Sentry Gun.
+/*13*/"#SMStats_FragEvent_Type13", //Wrangled Mini-Sentry Gun.
+/*12*/"#SMStats_FragEvent_Type14", //Pumpkin Bomb frag.
+/*13*/"#SMStats_FragEvent_Type15", //Collateral.
+/*14*/"#SMStats_FragEvent_Type16", //Grenade frag.
+/*15*/"#SMStats_FragEvent_Type17", //Bomb frag.
+/*16*/"#SMStats_FragEvent_Type18", //Blinded frag.
 };
 
 /**
@@ -976,11 +984,23 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		Format(buffer, sizeof(buffer), "%T{default}"
 		, Frag_Type[Frag_TeleFrag], client);
 	}
-	/* Taunt Kill */
+	/* Taunt Frag */
 	else if(g_Player[client].fragmsg.Taunt)
 	{
 		Format(buffer, sizeof(buffer), "%T{default}"
 		, Frag_Type[Frag_Taunt], client);
+	}
+	/* Sentry Frag */
+	else if(g_Player[client].fragmsg.Sentry)
+	{
+		Format(buffer, sizeof(buffer), "%T{default}"
+		, Frag_Type[g_Player[client].fragmsg.Wrangled ? Frag_WrangledSentry:Frag_Sentry], client);
+	}
+	/* Mini-Sentry Frag */
+	else if(g_Player[client].fragmsg.MiniSentry)
+	{
+		Format(buffer, sizeof(buffer), "%T{default}"
+		, Frag_Type[g_Player[client].fragmsg.Wrangled ? Frag_WrangledMiniSentry:Frag_MiniSentry], client);
 	}
 	/* Pumpkin Bomb Frag */
 	else if(g_Player[client].fragmsg.PumpkinBomb)
@@ -1220,11 +1240,59 @@ stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results,
 
 stock void Send_Player_Connected_CheckTop10(int client)
 {
-	int position;
-	if((position = g_Player[client].position) < 1)
+	char auth[28], ip[16], name[64];
+	strcopy(auth, sizeof(auth), g_Player[client].auth);
+	strcopy(ip, sizeof(ip), g_Player[client].ip);
+	strcopy(name, sizeof(name), g_Player[client].name);
+	
+	char query[256];
+	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `ServerID`='%i' order by `Points` limit 10 desc", g_ServerID);
+	DataPack pack = new DataPack();
+	pack.WriteCell(strlen(auth)+1);
+	pack.WriteString(auth);
+	pack.WriteCell(strlen(ip)+1);
+	pack.WriteString(ip);
+	pack.WriteCell(strlen(name)+1);
+	pack.WriteString(name);
+	pack.Reset();
+	sql.Query(DBQuery_Send_Player_Connected_CheckTop10, query, pack);
+}
+
+void DBQuery_Send_Player_Connected_CheckTop10(Database database, DBResultSet results, const char[] error, DataPack pack)
+{
+	int maxlen1 = pack.ReadCell();
+	char[] auth = new char[maxlen1];
+	pack.ReadString(auth, maxlen1);
+	
+	int maxlen2 = pack.ReadCell();
+	char[] ip = new char[maxlen2];
+	pack.ReadString(ip, maxlen2);
+	
+	int maxlen3 = pack.ReadCell();
+	char[] name = new char[maxlen3];
+	pack.ReadString(name, maxlen3);
+	
+	delete pack;
+	
+	//
+	
+	if(results == null)
 	{
-		PrintToServer("%s Send_Player_Connected_CheckTop10 : client index %i have invalid position %i", core_chattag, client, position);
 		return;
+	}
+	
+	int position = 0;
+	while(results.FetchRow())
+	{
+		position++;
+		
+		char row_auth[28];
+		results.FetchString(0, row_auth, sizeof(row_auth));
+		
+		if(StrEqual(row_auth, auth))
+		{
+			break;
+		}
 	}
 	
 	int player = 0;
@@ -1262,12 +1330,12 @@ stock void Send_Player_Connected_CheckTop10(int client)
 				if(g_Player[player].bShowTopConMsg)
 				{
 					char country_name[64];
-					GeoipCountryName(player, g_Player[client].ip, country_name, sizeof(country_name));
+					GeoipCountryName(player, ip, country_name, sizeof(country_name));
 					CPrintToChat(player, "%s %T"
 					, g_ChatTag
 					, "#SMStats_Player_Connected_TopPlayer", player
-					, g_Player[client].position
-					, g_Player[client].name
+					, position
+					, name
 					, country_name);
 				}
 			}

@@ -1016,19 +1016,22 @@ stock TFBuilding TF2_GetBuildingType(int entity)
 	}
 	else if(StrEqual(classname, "obj_sentrygun"))
 	{
-		return TFBuilding_Sentrygun;
+		bool m_bMiniBuilding = view_as<bool>(GetEntProp(entity, Prop_Send, "m_bMiniBuilding"));	
+		return m_bMiniBuilding ? TFBuilding_MiniSentry:TFBuilding_Sentrygun;
 	}
 	else if(StrEqual(classname, "obj_teleporter"))
 	{
 		switch(TF2_GetObjectMode(entity))
 		{
-			case TFObjectMode_Entrance: return TFBuilding_Teleporter_Entrance;
-			case TFObjectMode_Exit: return TFBuilding_Teleporter_Exit;
+			case TFObjectMode_Entrance:
+			{
+				return TFBuilding_Teleporter_Entrance;
+			}
+			case TFObjectMode_Exit:
+			{
+				return TFBuilding_Teleporter_Exit;
+			}
 		}
-	}
-	else if(StrEqual(classname, "obj_minisentry"))
-	{
-		return TFBuilding_MiniSentry;
 	}
 	else if(StrContains(classname, "sapper", false) != -1)
 	{

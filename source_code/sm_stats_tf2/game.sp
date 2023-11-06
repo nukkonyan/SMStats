@@ -21,6 +21,11 @@ enum
 	MvM_FragSentryBuster = 1,
 	MvM_FragRobot = 2,
 	MvM_ResetBomb = 3,
+	
+	SentryFrag_LVL1 = 0,
+	SentryFrag_LVL2 = 1,
+	SentryFrag_LVL3 = 2,
+	SentryFrag_Mini = 3,
 }
 
 /* ========== Convars ========= */
@@ -41,6 +46,7 @@ ConVar g_FlagEvent_Stolen;
 /* objects / buildings */
 ConVar g_Object_Placed[6];
 ConVar g_Object_Destroyed[6];
+ConVar g_SentryFrags[4];
 
 /* player */
 ConVar g_Ubercharged;
@@ -350,6 +356,9 @@ enum struct FragEventInfo
 	
 	int penetrated;
 	
+	int sentryfragtype;
+	bool wranglerfrag;
+	
 	bool suicide;
 	bool suicide_assisted;
 	bool headshot;
@@ -402,6 +411,10 @@ float g_Time_ExtEvent = 5.0;
 
 //
 
+ArrayList g_FeignDeaths;
+
+//
+
 void PrepareGame()
 {
 	/* other */
@@ -435,6 +448,11 @@ void PrepareGame()
 	g_Object_Destroyed[TFBuilding_Teleporter_Exit] = CreateConVar("sm_stats_points_object_teleporter_exit_destroyed", "1", "SM Stats: TF2 - Points earned when Teleporter Exit was destroyed.", _, true);
 	g_Object_Destroyed[TFBuilding_MiniSentry] = CreateConVar("sm_stats_points_object_minisentry_destroyed", "1", "SM Stats: TF2 - Points earned when a Mini Sentrygun was destroyed.", _, true);
 	g_Object_Destroyed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_destroyed", "1", "SM Stats: TF2 - Points earned when a Sapper was destroyed.", _, true);
+	
+	g_SentryFrags[SentryFrag_LVL1] = CreateConVar("sm_stats_points_sentryfrag_lvl1", "2", "SMStats: TF2 - Points earned when fragging with lvl 1 Sentry Gun.", _, true);
+	g_SentryFrags[SentryFrag_LVL2] = CreateConVar("sm_stats_points_sentryfrag_lvl2", "2", "SMStats: TF2 - Points earned when fragging with lvl 2 Sentry Gun.", _, true);
+	g_SentryFrags[SentryFrag_LVL3] = CreateConVar("sm_stats_points_sentryfrag_lvl3", "2", "SMStats: TF2 - Points earned when fragging with lvl 3 Sentry Gun.", _, true);
+	g_SentryFrags[SentryFrag_Mini] = CreateConVar("sm_stats_points_sentryfrag_mini", "2", "SMStats: TF2 - Points earned when fragging with Mini-Sentry Gun.", _, true);
 	
 	/* player */
 	g_Ubercharged = CreateConVar("sm_stats_points_ubercharged", "5", "SM Stats: TF2 - Points earned when ubercharging.", _, true);
@@ -798,12 +816,6 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int death_flags = event.GetInt("death_flags");
-	if(death_flags & TF_DEATHFLAG_DEADRINGER)
-	{
-		return;
-	}
-	
 	int userid = event.GetInt("userid");
 	int attacker = event.GetInt("attacker");
 	if(userid < 1
@@ -826,16 +838,35 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	if(IsValidAbuse(client))
-	{
-		return;
-	}
-	
 	int victim = GetClientOfUserId(userid);
 	if(!IsValidClient(victim, !bAllowBots))
 	{
 		return;
 	}
+	
+	int death_flags = event.GetInt("death_flags");
+	if(death_flags & TF_DEATHFLAG_DEADRINGER)
+	{
+		if(!IsFakeClient(victim))
+		{
+			if(!g_FeignDeaths)
+			{
+				g_FeignDeaths = new ArrayList();
+			}
+			
+			g_FeignDeaths.PushString(g_Player[victim].auth);
+		}
+		return;
+	}
+	
+	//
+	
+	if(IsValidAbuse(client))
+	{
+		return;
+	}
+	
+	//
 	
 	if(client == victim)
 	{
@@ -862,10 +893,15 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	TFClassType class = TF2_GetPlayerClass(client);
 	
+	int inflictor = event.GetInt("inflictor_entindex");
 	int customkill = event.GetInt("customkill");
 	int itemdef = event.GetInt("weapon_def_index");
 	bool bleedkill = (customkill == TF_CUSTOM_BLEEDING);
 	bool assisted_suicide = false;
+	int sentryfragtype = 0;
+	bool wranglerfrag = false;
+	
+	bool bValidMidAir = true;
 	
 	/*
 	 * The 'weapon_def_index' on the player_death is same as if you're gathering the killers
@@ -901,6 +937,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	/* Sandman. */
 	else if(StrEqual(classname, "ball", false))
 	{
+		bValidMidAir = false;
 		switch(class)
 		{
 			// obtain the melee sandman / wrapper's assassin.
@@ -936,22 +973,79 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	{
 		itemdef = GetPlayerWeaponSlotItemdef(client, 0);
 	}
+	/* Sentry Gun. */
+	else if(StrEqual(classname, "obj_sentrygun", false))
+	{
+		bValidMidAir = false;
+		sentryfragtype = 1;
+		itemdef = ITEMDEF_INVALID;
+	}
+	else if(StrEqual(classname, "obj_sentrygun2", false))
+	{
+		bValidMidAir = false;
+		sentryfragtype = 2;
+		itemdef = ITEMDEF_INVALID;
+	}
+	else if(StrEqual(classname, "obj_sentrygun3", false))
+	{
+		bValidMidAir = false;
+		sentryfragtype = 3;
+		itemdef = ITEMDEF_INVALID;
+	}
+	/* Mini-Sentry Gun. */
+	else if(StrEqual(classname, "obj_minisentry", false))
+	{
+		bValidMidAir = false;
+		sentryfragtype = 4;
+		itemdef = ITEMDEF_INVALID;
+	}
+	/* Wrangled Sentry Gun. */
+	else if(StrEqual(classname, "wrangler_kill", false))
+	{
+		bValidMidAir = false;
+		itemdef = GetPlayerWeaponSlotItemdef(client, 1);
+		wranglerfrag = true;
+		
+		if(IsValidEntity(inflictor))
+		{
+			switch(TF2_GetBuildingType(inflictor))
+			{
+				case TFBuilding_Sentrygun:
+				{
+					int level = TF2_GetBuildingLevel(inflictor);
+					
+					switch(level)
+					{
+						case 1: sentryfragtype = 1;
+						case 2: sentryfragtype = 2;
+						case 3: sentryfragtype = 3;
+					}
+				}
+				case TFBuilding_MiniSentry:
+				{
+					sentryfragtype = 4;
+				}
+			}
+		}
+	}
 	/* Assisted suicide. */
 	// this will get re-done.
 	else if(StrEqual(classname, "world", false))
 	{
+		bValidMidAir = false;
 		assisted_suicide = (assister > 0);
-		itemdef = ITEMDEF_ASSIST_SUICIDE;
+		itemdef = ITEMDEF_INVALID;
 	}
 	else if(StrEqual(classname, "player", false))
 	{
+		bValidMidAir = false;
 		assisted_suicide = (assister > 0);
-		itemdef = ITEMDEF_ASSIST_SUICIDE;
+		itemdef = ITEMDEF_INVALID;
 	}
 	
 	//
 	
-	if(itemdef != ITEMDEF_ASSIST_SUICIDE)
+	if(itemdef != ITEMDEF_INVALID)
 	{
 		if(itemdef > MaxItemDef)
 		{
@@ -992,13 +1086,14 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	frag.timestamp = GetTime();
 	frag.userid = userid;
 	frag.assister = assister;
-	frag.inflictor = event.GetInt("inflictor");
+	frag.inflictor = inflictor;
 	frag.crit_type = event.GetInt("crit_type");
 	frag.userid_healpoints = GetEntProp(victim, Prop_Send, "m_iHealPoints");
 	frag.class = TF2_GetPlayerClass(victim);
 	frag.class_attacker = class;
 	frag.healers = GetHealers(client);
-	
+	frag.sentryfragtype = sentryfragtype;
+	frag.wranglerfrag = wranglerfrag;
 	frag.suicide = (userid == attacker);
 	frag.suicide_assisted = assisted_suicide;
 	frag.headshot = (customkill == TF_CUSTOM_HEADSHOT || customkill == TF_CUSTOM_HEADSHOT_DECAPITATION);
@@ -1038,7 +1133,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	frag.pumpkinbombfrag = (StrEqual(classname, "tf_pumpkin_bomb", false));
 	frag.telefrag = (StrEqual(classname, "telefrag", false));
-	frag.midair = IsClientMidAir(client);
+	frag.midair = (IsClientMidAir(client) && bValidMidAir);
 	frag.airshot = (GetClientFlags(victim) == 258);
 	
 	strcopy(frag.classname, sizeof(frag.classname), classname);
@@ -1513,13 +1608,16 @@ void OnObjectDestroyed(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int userid = event.GetInt("attacker");
-	if(userid < 1)
+	int userid = event.GetInt("userid");
+	int attacker = event.GetInt("attacker");
+	if( userid < 1
+	|| attacker < 1
+	|| userid == attacker)
 	{
 		return;
 	}
 	
-	int client = GetClientOfUserId(userid);
+	int client = GetClientOfUserId(attacker);
 	if(!IsValidClient(client))
 	{
 		return;
@@ -2665,6 +2763,18 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 		GetEntityClassname(jar, item_class, sizeof(item_class));
 	}
 	
+	/* Manually fire a broken event */
+	Event event = CreateEvent("player_jarated", true);
+	event.SetInt("thrower_entindex", client);
+	event.SetInt("victim_entindex", victim);
+	event.SetInt("itemdefindex", itemdef);
+	event.Fire();
+	
+	if(client == victim)
+	{
+		return Plugin_Handled;
+	}
+	
 	if(!IsValidClient(client))
 	{
 		return Plugin_Handled;
@@ -2708,13 +2818,6 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 		PrintToServer("%s OnPlayerCoated() Invalid jar detected!\nInformation: Item classname '%s'\nItem definition index %i", core_chattag, item_class, itemdef);
 		bProceed = false;
 	}
-	
-	/* Manually fire a broken event */
-	Event event = CreateEvent("player_jarated", true);
-	event.SetInt("thrower_entindex", client);
-	event.SetInt("victim_entindex", victim);
-	event.SetInt("itemdefindex", itemdef);
-	event.Fire();
 	
 	if(!IsValidStats())
 	{
@@ -2768,6 +2871,11 @@ Action OnPlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int 
 		return Plugin_Handled;
 	}
 	
+	if(client == victim)
+	{
+		return Plugin_Handled;
+	}
+	
 	if(!IsValidClient(client))
 	{
 		return Plugin_Handled;
@@ -2783,7 +2891,7 @@ Action OnPlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int 
 		return Plugin_Handled;
 	}
 	
-	if(!IsValidClient(victim, !bAllowBots ? true : false))
+	if(!IsValidClient(victim, !bAllowBots))
 	{
 		return Plugin_Handled;
 	}
@@ -2851,6 +2959,29 @@ Action MapTimer_GameTimer(Handle timer)
 {
 	if(bLoaded)
 	{
+		if(!!g_FeignDeaths)
+		{
+			if(g_FeignDeaths.Length > 0)
+			{
+				Transaction txn = new Transaction();
+				
+				for(int i = 0; i < g_FeignDeaths.Length; i++)
+				{
+					char auth[28];
+					g_FeignDeaths.GetString(i, auth, sizeof(auth));
+					
+					char query[256];
+					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `FeignDeaths`=`FeignDeaths`+1 where `SteamID`='%s' and ServerID='%i'"
+					, auth, g_ServerID);
+					txn.AddQuery(query);
+				}
+				
+				sql.Execute(txn, _, TXN_Callback_Failure);
+			}
+			
+			delete g_FeignDeaths;
+		}
+		
 		// alternative over a for() loop.
 		int client = 0;
 		while((client = FindEntityByClassname(client, "player")) > 0)
@@ -2885,7 +3016,6 @@ Action MapTimer_GameTimer(Handle timer)
 					bool[] list_assister_revenge = new bool[frags];
 					int[] list_healercount = new int[frags];
 					int[][] list_healer = new int[MaxPlayers+1][frags];
-					int[] list_inflictor = new int[frags];
 					int[] list_itemdef = new int[frags];
 					any[] list_class = new any[frags];
 					bool[] list_wepfrag = new bool[frags];
@@ -2925,11 +3055,11 @@ Action MapTimer_GameTimer(Handle timer)
 					int iWepFrags;
 					
 					int iDispensers;
-					int iSentries;
-					int iSentriesLVL1;
-					int iSentriesLVL2;
-					int iSentriesLVL3;
-					int iMiniSentries;
+					int iSentryFrags;
+					int iSentryFragsLVL1;
+					int iSentryFragsLVL2;
+					int iSentryFragsLVL3;
+					int iMiniSentryFrags;
 					
 					int points = 0;
 					
@@ -2941,6 +3071,9 @@ Action MapTimer_GameTimer(Handle timer)
 					bool bPrev_revenge;
 					bool bPrev_noscope;
 					bool bPrev_tauntfrag;
+					bool bPrev_sentryfrag;
+					bool bPrev_minisentryfrag;
+					bool bPrev_wrangled;
 					bool bPrev_pumpkinbombfrag;
 					bool bPrev_deflectfrag;
 					bool bPrev_gibfrag;
@@ -2958,7 +3091,6 @@ Action MapTimer_GameTimer(Handle timer)
 						list_assister[i] = event.assister;
 						list_assister_dominate[i] = event.dominated_assister;
 						list_assister_revenge[i] = event.revenge_assister;
-						list_inflictor[i] = event.inflictor;
 						list_itemdef[i] = event.itemdef;
 						list_class[i] = event.class;
 						strcopy(list_classname[i], sizeof(event.classname), event.classname);
@@ -2992,21 +3124,9 @@ Action MapTimer_GameTimer(Handle timer)
 							delete event.healers; // kill handle, don't wanna cause a handle leak. (memory leak)
 						}
 						
-						switch(event.suicide_assisted)
-						{
-							case false:
-							{
-								if(event.telefrag)
-								{
-									points += g_TeleFrag.IntValue;
-								}
-								else if(event.pumpkinbombfrag)
-								{
-									points += g_PumpkinBomb.IntValue;
-								}
-							}
-							case true: points += g_SuicideAssisted.IntValue;
-						}
+						bool bSentryGun = (event.sentryfragtype >= 1 && event.sentryfragtype <= 3);
+						bool bMiniSentryGun = (event.sentryfragtype == 4);
+						
 						switch((g_Player[client].fragmsg.Headshot = event.headshot))
 						{
 							case false: bPrev_headshot = false;
@@ -3083,6 +3203,44 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Taunt = false;
 								}
 								bPrev_tauntfrag = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Sentry = bSentryGun))
+						{
+							case false: bPrev_sentryfrag = false;
+							case true:
+							{
+								iSentryFrags++;
+								if(frags > 1 && !bPrev_sentryfrag)
+								{
+									g_Player[client].fragmsg.Sentry = false;
+								}
+								bPrev_sentryfrag = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.MiniSentry = bMiniSentryGun))
+						{
+							case false: bPrev_minisentryfrag = false;
+							case true:
+							{
+								iMiniSentryFrags++;
+								if(frags > 1 && !bPrev_minisentryfrag)
+								{
+									g_Player[client].fragmsg.MiniSentry = false;
+								}
+								bPrev_minisentryfrag = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Wrangled = event.wranglerfrag))
+						{
+							case false: bPrev_wrangled = false;
+							case true:
+							{
+								if(frags > 1 && !bPrev_wrangled)
+								{
+									g_Player[client].fragmsg.Wrangled = false;
+								}
+								bPrev_wrangled = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.PumpkinBomb = event.pumpkinbombfrag))
@@ -3174,68 +3332,73 @@ Action MapTimer_GameTimer(Handle timer)
 							tfClasses[event.class]++;
 						}
 						
-						switch(TF2_IsEntityBuilding(event.inflictor))
+						bool bValidWeapon = true;
+						if(event.suicide_assisted)
 						{
-							case false:
-							{
-								switch(event.telefrag)
-								{
-									case false:
-									{
-										iWepFrags++;
-										list_wepfrag[i] = true;
-										
-										int itemdef = (list_itemdef[i] = event.itemdef);
-										ConVar cvar_points;
-										switch((cvar_points = array_GetWeapon(itemdef)) == null)
-										{
-											case false: points += cvar_points.IntValue;
-											case true:
-											{
-												PrintToServer("%s itemdef %i has invalid convar!"
-												... "\nattacker userid : %i"
-												... "\nvictim userid : %i"
-												... "\nvictim class : %i"
-												... "\n "
-												, core_chattag, itemdef
-												, GetClientUserId(client)
-												, list[i]
-												, list_class[i]);
-												continue;
-											}
-										}
-									}
-									case true: iTeleFrags++;
-								}
-							}
+							points += g_SuicideAssisted.IntValue;
+							bValidWeapon = false;
+						}
+						else if(event.sentryfragtype == 1)
+						{
+							iSentryFragsLVL1++;
+							points += g_SentryFrags[SentryFrag_LVL1].IntValue;
+							bValidWeapon = event.wranglerfrag;
+						}
+						else if(event.sentryfragtype == 2)
+						{
+							iSentryFragsLVL2++;
+							points += g_SentryFrags[SentryFrag_LVL2].IntValue;
+							bValidWeapon = event.wranglerfrag;
+						}
+						else if(event.sentryfragtype == 3)
+						{
+							iSentryFragsLVL3++;
+							points += g_SentryFrags[SentryFrag_LVL3].IntValue;
+							bValidWeapon = event.wranglerfrag;
+						}
+						else if(event.sentryfragtype == 4)
+						{
+							points += g_SentryFrags[SentryFrag_Mini].IntValue;
+							bValidWeapon = event.wranglerfrag;
+						}
+						else if(event.telefrag)
+						{
+							iTeleFrags++;
+							points += g_TeleFrag.IntValue;
+							bValidWeapon = false;
+						}
+						else if(event.pumpkinbombfrag)
+						{
+							points += g_PumpkinBomb.IntValue;
+						}
+						
+						if(bValidWeapon)
+						{
+							iWepFrags++;
+							list_wepfrag[i] = true;
 							
-							case true:
+							int itemdef = (list_itemdef[i] = event.itemdef);
+							ConVar cvar_points;
+							switch((cvar_points = array_GetWeapon(itemdef)) == null)
 							{
-								switch(TF2_GetBuildingType(event.inflictor))
+								case false: points += cvar_points.IntValue;
+								case true:
 								{
-									case TFBuilding_Dispenser: iDispensers++;
-									case TFBuilding_Sentrygun:
-									{
-										iSentries++;
-										int level = TF2_GetBuildingLevel(event.inflictor);
-										
-										switch(level)
-										{
-											case 1: iSentriesLVL1++;
-											case 2: iSentriesLVL2++;
-											case 3: iSentriesLVL3++;
-										}
-									}
-									case TFBuilding_MiniSentry:
-									{
-										iSentries++;
-										iMiniSentries++;
-									}
+									PrintToServer("%s itemdef %i has invalid convar!"
+									... "\nattacker userid : %i"
+									... "\nvictim userid : %i"
+									... "\nvictim class : %i"
+									... "\nclassname : '%s'"
+									... "\n "
+									, core_chattag, itemdef
+									, GetClientUserId(client)
+									, list[i]
+									, list_class[i]
+									, list_classname[i]);
+									continue;
 								}
 							}
 						}
-						
-						//
 					}
 					
 					g_Game[client].aFragEvent.Clear();
@@ -3320,33 +3483,33 @@ Action MapTimer_GameTimer(Handle timer)
 						, core_chattag
 						, client, GetClientUserId(client), core_chattag);
 					}
-					if(iSentries > 0)
+					if(iSentryFrags > 0)
 					{
-						g_Player[client].session[Stats_SentryFrags] += iSentries;
-						len += Format(query[len], sizeof(query)-len, ", SentryFrags = SentryFrags+%i", iSentries);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryFrags = SentryFrags+%i", iSentries);
+						g_Player[client].session[Stats_SentryFrags] += iSentryFrags;
+						len += Format(query[len], sizeof(query)-len, ", SentryFrags = SentryFrags+%i", iSentryFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryFrags = SentryFrags+%i", iSentryFrags);
 						
-						if(iSentriesLVL1 > 0)
+						if(iSentryFragsLVL1 > 0)
 						{
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL1Frags = SentryLVL1Frags+%i", iSentriesLVL1);
-							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL1Frags = SentryLVL1Frags+%i", iSentriesLVL1);
+							len += Format(query[len], sizeof(query)-len, ", SentryLVL1Frags = SentryLVL1Frags+%i", iSentryFragsLVL1);
+							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL1Frags = SentryLVL1Frags+%i", iSentryFragsLVL1);
 						}
-						if(iSentriesLVL2 > 0)
+						if(iSentryFragsLVL2 > 0)
 						{
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL2Frags = SentryLVL2Frags+%i", iSentriesLVL2);
-							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL2Frags = SentryLVL2Frags+%i", iSentriesLVL2);
+							len += Format(query[len], sizeof(query)-len, ", SentryLVL2Frags = SentryLVL2Frags+%i", iSentryFragsLVL2);
+							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL2Frags = SentryLVL2Frags+%i", iSentryFragsLVL2);
 						}
-						if(iSentriesLVL3 > 0)
+						if(iSentryFragsLVL3 > 0)
 						{
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentriesLVL3);
-							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentriesLVL3);
+							len += Format(query[len], sizeof(query)-len, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentryFragsLVL3);
+							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentryFragsLVL3);
 						}
 					}
-					if(iMiniSentries > 0)
+					if(iMiniSentryFrags > 0)
 					{
-						g_Player[client].session[Stats_MiniSentryFrags] += iMiniSentries;
-						len += Format(query[len], sizeof(query)-len, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentries);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentries);
+						g_Player[client].session[Stats_MiniSentryFrags] += iMiniSentryFrags;
+						len += Format(query[len], sizeof(query)-len, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentryFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentryFrags);
 					}
 					if(iHeadshots > 0)
 					{
@@ -3582,11 +3745,11 @@ Action MapTimer_GameTimer(Handle timer)
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iMiniCrits);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iPumpkinBombFrags);
 					
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iMiniSentries);
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentries);
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentriesLVL1);
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentriesLVL2);
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentriesLVL3);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iMiniSentryFrags);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentryFrags);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentryFragsLVL1);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentryFragsLVL2);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iSentryFragsLVL3);
 					
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_ubercharged);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_vaccinatortypeused);

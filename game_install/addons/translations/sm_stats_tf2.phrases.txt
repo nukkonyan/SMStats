@@ -266,6 +266,15 @@
 		"sv" "Sapper : {1} Placerad / {2} Förstörd"
 		"tr" "Sapper : {1} Yerleştirildi / {2} Kırıldı"
 	}
+	"#SMStats_MenuInfo_SentryGunFrags"
+	{
+		// {1} lvl 1 sentry frags
+		// {2} lvl 2 sentry frags
+		// {3} lvl 3 sentry frags
+		// {4} total sentry frags
+		"#format" "{1:i},{2:i},{3:i},{4:i}"
+		"en" "Sentry Gun Frags : LVL1 {1} / LVL2 {2} / LVL3 {3} (Total {4})"
+	}
 
 	"#SMStats_MenuInfo_CP_Captured"
 	{
@@ -931,8 +940,8 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for extinguishing {5}."
-		"sv" "{1} ({2}) Belönades med {3} för att släcka {5}."
-		"tr" "{1} ({2}) {5} oyuncusunu söndürerek {3} kazandın."
+		"en" "{1} ({2}) Earned {3} for extinguishing {4}."
+		"sv" "{1} ({2}) Belönades med {3} för att släcka {4}."
+		"tr" "{1} ({2}) {4} oyuncusunu söndürerek {3} kazandın."
 	}
 }
