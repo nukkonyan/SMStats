@@ -707,6 +707,11 @@ stock bool AssistedKills(Transaction txn
 		int healers = list_healercount[i];
 		if(healers > 0)
 		{
+			if(assisters == null) //rare bug where only 1 assister being a medic healer don't count. tf2 source engine spaghetti code.
+			{
+				assisters = new ArrayList();
+			}
+			
 			for(int x = 0; x < healers; x++)
 			{
 				int healer = list_healer[x][i];
@@ -772,23 +777,28 @@ stock bool AssistedKills(Transaction txn
 		// loop information and obtain if the assister did dominate or revenge somebody.
 		for(int i = 0; i < assisters.Length; i++)
 		{
-			int assist = GetClientOfUserId(assisters.Get(i));
-			if(IsValidClient(assist))
+			int assist = assisters.Get(i);
+			int assister = GetClientOfUserId(assist);
+			if(IsValidClient(assister))
 			{
-				g_Player[assist].session[Stats_Assists]++;
+				g_Player[assister].session[Stats_Assists]++;
 				
 				char dummy[256];
-				GetMultipleTargets(assist, list, frags, dummy, sizeof(dummy));
+				GetMultipleTargets(assister, list, frags, dummy, sizeof(dummy));
 				
 				switch(strlen(list_steamid_assister) < 1)
 				{
-					case false: Format(list_steamid_assister, list_steamid_assister_len, "%s;%s", list_steamid_assister, g_Player[assist].auth);
-					case true: strcopy(list_steamid_assister, list_steamid_assister_len, g_Player[assist].auth);
+					case false: Format(list_steamid_assister, list_steamid_assister_len, "%s;%s", list_steamid_assister, g_Player[assister].auth);
+					case true: strcopy(list_steamid_assister, list_steamid_assister_len, g_Player[assister].auth);
 				}
 				
 				char query[1024];
 				int len = 0;
 				len += Format(query[len], sizeof(query)-len, "update `%s` set Assists = Assists+%i", sql_table_playerlist, assister_count[i]);
+				if(IsMedicAssister(assist, list_healercount, list_healer, frags))
+				{
+					len += Format(query[len], sizeof(query)-len, ", MedicAssists = MedicAssists+%i", assister_count[i]);
+				}
 				if(assister_dominations[i] > 0)
 				{
 					len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", assister_dominations[i]);
@@ -801,24 +811,24 @@ stock bool AssistedKills(Transaction txn
 				{
 					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", g_AssistPoints*assister_count[i]);
 				}
-				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[assist].auth, g_ServerID);
+				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[assister].auth, g_ServerID);
 				txn.AddQuery(query, queryId_frag_assister);
 				
 				if(g_AssistPoints > 0)
 				{
-					g_Player[assist].session[Stats_Points] += g_AssistPoints*assister_count[i];
-					g_Player[assist].points += g_AssistPoints*assister_count[i];
+					g_Player[assister].session[Stats_Points] += g_AssistPoints*assister_count[i];
+					g_Player[assister].points += g_AssistPoints*assister_count[i];
 					
 					char points_plural[32];
-					PointsPluralSplitter(assist, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural));
+					PointsPluralSplitter(assister, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural));
 					
-					if(g_Player[assist].bShowAssistMsg)
+					if(g_Player[assister].bShowAssistMsg)
 					{
-						CPrintToChat(assist, "%s %T"
+						CPrintToChat(assister, "%s %T"
 						, g_ChatTag
-						, "#SMStats_FragEvent_Assisted", assist
-						, g_Player[assist].name
-						, g_Player[assist].points
+						, "#SMStats_FragEvent_Assisted", assister
+						, g_Player[assister].name
+						, g_Player[assister].points
 						, points_plural
 						, g_Player[client].name
 						, dummy);
@@ -831,6 +841,27 @@ stock bool AssistedKills(Transaction txn
 	}
 	
 	return true;
+}
+
+bool IsMedicAssister(int assister, const int[] list_healercount, const int[][] list_healer, int frags)
+{
+	for(int i = 0; i < frags; i++)
+	{
+		int healers = list_healercount[i];
+		if(healers > 0)
+		{
+			for(int x = 0; x < healers; x++)
+			{
+				int healer = list_healer[x][i];
+				if(healer == assister)
+				{
+					return true;
+				}
+			}
+		}
+	}
+	
+	return false;
 }
 
 // will be re-done and optimized.
