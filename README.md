@@ -32,6 +32,8 @@
           - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
           - Active SMStats development testing server, come in here to see for yourself how the plugin is doing:
             - 83.253.75.203:27018 (Team Fortress 2)
+   - Credits
+      - [Neigeflocon](https://steamcommunity.com/profiles/76561197962831152) - Turkish translations.
 
 ### To-do
    - stats menu
