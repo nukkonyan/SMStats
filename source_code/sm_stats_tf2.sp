@@ -67,6 +67,7 @@
 #define query_error_uniqueid_OnUpdatedMenuSettingValue 87
 #define query_error_uniqueid_OnItemEventInsert 88
 #define query_error_uniqueid_OnFeignDeathUpdate 89
+#define query_error_uniqueid_OnMedicHealPointsUpdate 90
 
 SMStats_TF2GameInfo g_Game[MaxPlayers+1];
 

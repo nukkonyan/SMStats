@@ -938,7 +938,7 @@
 		// {4} fragger name
 	    // {5} victim fragged
 	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-	    "en" "{1} ({2}) Earned {3} for assisting {4} fragging {5}."
+	    "en" "{1} ({2}) Earned {3} for assisting {4} in fragging {5}."
 	    "sv" "{1} ({2}) Belönades med {3} för att assistera {4} att fragga {5}."
 	    "tr" "{1} ({2}), {4} oyuncusunun {5} oyuncusunu öldürmesine yardım ederek {3} kazandın."
 	}

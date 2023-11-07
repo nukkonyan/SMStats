@@ -2053,7 +2053,12 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 			
 			// will be worked on further, not finished yet.
 			panel.DrawText(" ");
-			PanelText(panel, "  %T", "#SMStats_MenuInfo_SentryGunFrags", client, stats[Stats_SentryLVL1Frags], stats[Stats_SentryLVL2Frags], stats[Stats_SentryLVL3Frags], stats[Stats_SentryFrags]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_SentryGunFrags", client
+			, stats[Stats_SentryFrags]
+			, stats[Stats_SentryLVL1Frags]
+			, stats[Stats_SentryLVL2Frags]
+			, stats[Stats_SentryLVL3Frags]
+			, stats[Stats_MiniSentryFrags]);
 			
 			panel.DrawText(" ");
 			PanelItem(panel, "%T", "#SMStats_Menu_PreviousPage", client);

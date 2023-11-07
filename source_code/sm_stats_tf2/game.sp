@@ -349,7 +349,6 @@ enum struct FragEventInfo
 	int assister;
 	int inflictor;
 	int crit_type;
-	int userid_healpoints;
 	TFClassType class;
 	TFClassType class_attacker;
 	ArrayList healers;
@@ -412,6 +411,7 @@ float g_Time_ExtEvent = 5.0;
 //
 
 ArrayList g_FeignDeaths;
+ArrayList g_MedicHealPointDeaths;
 
 //
 
@@ -440,14 +440,14 @@ void PrepareGame()
 	g_Object_Placed[TFBuilding_Teleporter_Entrance] = CreateConVar("sm_stats_points_object_teleporter_entrance_built", "1", "SM Stats: TF2 - Points earned when Teleporter Entrance was built.", _, true);
 	g_Object_Placed[TFBuilding_Teleporter_Exit] = CreateConVar("sm_stats_points_object_teleporter_exit_built", "1", "SM Stats: TF2 - Points earned when Teleporter Exit was built.", _, true);
 	g_Object_Placed[TFBuilding_MiniSentry] = CreateConVar("sm_stats_points_object_minisentry_built", "1", "SM Stats: TF2 - Points earned when a Mini Sentrygun was built.", _, true);
-	g_Object_Placed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_built", "1", "SM Stats: TF2 - Points earned when a Sapper was placed.", _, true);
+	g_Object_Placed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_built", "5", "SM Stats: TF2 - Points earned when a Sapper was placed.", _, true);
 	
 	g_Object_Destroyed[TFBuilding_Sentrygun] = CreateConVar("sm_stats_points_object_sentrygun_destroyed", "1", "SM Stats: TF2 - Points earned when a Sentrygun was destroyed.", _, true);
 	g_Object_Destroyed[TFBuilding_Dispenser] = CreateConVar("sm_stats_points_object_dispenser_destroyed", "1", "SM Stats: TF2 - Points earned when a Dispenser was destroyed.", _, true);
 	g_Object_Destroyed[TFBuilding_Teleporter_Entrance] = CreateConVar("sm_stats_points_object_teleporter_entrance_destroyed", "1", "SM Stats: TF2 - Points earned when Teleporter Entrance was destroyed.", _, true);
 	g_Object_Destroyed[TFBuilding_Teleporter_Exit] = CreateConVar("sm_stats_points_object_teleporter_exit_destroyed", "1", "SM Stats: TF2 - Points earned when Teleporter Exit was destroyed.", _, true);
 	g_Object_Destroyed[TFBuilding_MiniSentry] = CreateConVar("sm_stats_points_object_minisentry_destroyed", "1", "SM Stats: TF2 - Points earned when a Mini Sentrygun was destroyed.", _, true);
-	g_Object_Destroyed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_destroyed", "1", "SM Stats: TF2 - Points earned when a Sapper was destroyed.", _, true);
+	g_Object_Destroyed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_destroyed", "5", "SM Stats: TF2 - Points earned when a Sapper was destroyed.", _, true);
 	
 	g_SentryFrags[SentryFrag_LVL1] = CreateConVar("sm_stats_points_sentryfrag_lvl1", "2", "SMStats: TF2 - Points earned when fragging with lvl 1 Sentry Gun.", _, true);
 	g_SentryFrags[SentryFrag_LVL2] = CreateConVar("sm_stats_points_sentryfrag_lvl2", "2", "SMStats: TF2 - Points earned when fragging with lvl 2 Sentry Gun.", _, true);
@@ -773,7 +773,6 @@ void PrepareGame()
 	AutoExecConfig(true);
 	
 	RegAdminCmd("sm_asdf1", asdf1Cmd, ADMFLAG_ROOT);
-	RegAdminCmd("sm_asdf2", asdf2Cmd, ADMFLAG_ROOT);
 }
 
 Action asdf1Cmd(int client, int args)
@@ -788,18 +787,6 @@ Action asdf1Cmd(int client, int args)
 	, points_plural
 	, penalty_time
 	, 69);
-	return Plugin_Continue;
-}
-
-Action asdf2Cmd(int client, int args)
-{
-	char points_plural[32];
-	PointsPluralSplitter(client, g_Player[client].points, points_plural, sizeof(points_plural));
-	
-	CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_Player_Banned", client
-	, g_Player[client].name
-	, g_Player[client].position
-	, points_plural);
 	return Plugin_Continue;
 }
 
@@ -857,6 +844,22 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 			g_FeignDeaths.PushString(g_Player[victim].auth);
 		}
 		return;
+	}
+	
+	if(!IsFakeClient(victim))
+	{
+		int healpoints = GetEntProp(victim, Prop_Send, "m_iHealPoints");
+		
+		if(healpoints > 0)
+		{
+			if(!g_MedicHealPointDeaths)
+			{
+				g_MedicHealPointDeaths = new ArrayList(8);
+			}
+			
+			g_MedicHealPointDeaths.PushString(g_Player[victim].auth);
+			g_MedicHealPointDeaths.Push(healpoints);
+		}
 	}
 	
 	//
@@ -1088,7 +1091,6 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	frag.assister = assister;
 	frag.inflictor = inflictor;
 	frag.crit_type = event.GetInt("crit_type");
-	frag.userid_healpoints = GetEntProp(victim, Prop_Send, "m_iHealPoints");
 	frag.class = TF2_GetPlayerClass(victim);
 	frag.class_attacker = class;
 	frag.healers = GetHealers(client);
@@ -2976,10 +2978,37 @@ Action MapTimer_GameTimer(Handle timer)
 					txn.AddQuery(query);
 				}
 				
-				sql.Execute(txn, _, TXN_Callback_Failure);
+				sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnFeignDeathUpdate);
+				
+				g_FeignDeaths.Clear();
+			}
+		}
+		
+		if(!!g_MedicHealPointDeaths)
+		{
+			if(g_MedicHealPointDeaths.Length > 0)
+			{
+				Transaction txn = new Transaction();
+				
+				for(int i = 0; i < g_MedicHealPointDeaths.Length; i++)
+				{
+					char auth[28];
+					int healpoints;
+					
+					g_MedicHealPointDeaths.GetString(i, auth, sizeof(auth));
+					healpoints = g_MedicHealPointDeaths.Get(i+1);
+					i++;
+					
+					char query[256];
+					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HealPoints`=`HealPoints`+%i where `SteamID`='%s' and ServerID='%i'"
+					, healpoints, auth, g_ServerID);
+					txn.AddQuery(query);
+				}
+				
+				sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnMedicHealPointsUpdate);
 			}
 			
-			delete g_FeignDeaths;
+			g_MedicHealPointDeaths.Clear();
 		}
 		
 		// alternative over a for() loop.
@@ -3011,11 +3040,10 @@ Action MapTimer_GameTimer(Handle timer)
 					FragEventInfo event;
 					int[] list = new int[frags];
 					int[] list_assister = new int[frags];
-					int[] list_healpoints = new int[frags];
 					bool[] list_assister_dominate = new bool[frags];
 					bool[] list_assister_revenge = new bool[frags];
-					int[] list_healercount = new int[frags];
 					int[][] list_healer = new int[MaxPlayers+1][frags];
+					int[] list_healercount = new int[frags];
 					int[] list_itemdef = new int[frags];
 					any[] list_class = new any[frags];
 					bool[] list_wepfrag = new bool[frags];
@@ -3411,7 +3439,7 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					Transaction txn = new Transaction();
 					AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client, list_healercount, list_healer, list_steamid_assister, sizeof(list_steamid_assister));
-					VictimDied(txn, list, list_healpoints, list_class, frags);
+					VictimDied(txn, list, list_class, frags);
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
