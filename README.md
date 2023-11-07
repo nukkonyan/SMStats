@@ -41,12 +41,11 @@
              -  sm_stats 30 displays **Top 30 current player.**
              -  sm_stats "STEAM_0:0:1234" **displays the player through steamid.**
    - overall
-        - Implement spam-detection with a penalty (exploiting loopholes to farm points).
+        - Implement spam-detection with a penalty (exploiting loopholes to farm points). (Prevent gaining points).
         - Implement custom achievements functionality.
-        - Implement leaderboard ban functionality (Prevented from gaining points).
         - Implement functional K-A-D ratio (Kill-Assist-Death ratio).
         - Implement functional K/D Ratio (Kill-Death ratio).
-        - Implement functional time played (Convert x seconds to 1 day 1 hour, etc.)
+        - ~~Implement functional time played (Convert x seconds to 1 day 1 hour, etc.)~~ Added
         - Implement a ban feature which detects if the player has been banned from the server, the player's details on SMStats will be removed.
         - Implement a hit location tracker, which tracks where you hit on the enemy's body (Stomach/Torso, Head, Shoulder, Feet, etc)
         - Fix playtime timer. Right now it is buggy and not working correctly. **(At the moment somewhat fixed.)**
