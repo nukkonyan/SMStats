@@ -42,31 +42,6 @@ stock bool IsValidClient(int client, bool bIsFakeClient=true)
 	return true;
 }
 
-/**
- *	Returns the users m_fFlags status.
- *
- *	@param	client	The users index.
- *
- *	@error	If the user is invalid or has no m_fFlags property, this returns -1.
- */
-stock int GetClientFlags(int client)
-{
-	return GetEntProp(client, Prop_Send, "m_fFlags");
-}
-
-/**
- *	Returns if the user is mid-air.
- *
- *	@param	client	The users index.
- *
- *	@error	If the user is invalid, this returns false.
- */
-stock bool IsClientMidAir(int client)
-{
-	int flags = GetClientFlags(client);
-	return (flags == 256 || flags == 258 || flags == 262);
-}
-
 stock int GetPlayerWeaponSlotItemdef(int client, int slot)
 {
 	int weapon = GetPlayerWeaponSlot(client, slot);
@@ -78,6 +53,8 @@ stock int GetPlayerWeaponSlotItemdef(int client, int slot)
 	
 	return -1;
 }
+
+/* ============================================================== */
 
 stock void PanelItem(Panel panel, const char[] text, any ...)
 {

@@ -968,28 +968,51 @@ bool TF2_IsMvMGameMode()
 	return view_as<bool>(GameRules_GetProp("m_bPlayingMannVsMachine"));
 }
 
-/**
- *	Returns if the entity is a building.
- *
- *	@param	entity	The building entity index.
- *
- *	@error	If the entity is invalid, this returns false.
- */
-stock bool TF2_IsEntityBuilding(int building)
+//
+
+// borrowing code of MGE
+// https://forums.alliedmods.net/showpost.php?p=2225745&postcount=23
+stock bool IsValidAirshot(int client)
 {
-	return !IsValidEntity(building) ? false : HasEntProp(building, Prop_Send, "m_bBuilding");
+	float vStart[3];
+	float vEnd[3];
+	float vAngles[] = {90.0, 0.0, 0.0};
+	Handle trace;
+	float distance = -1.0;
+	
+	// Get the user's origin vector and start up the trace ray.
+	GetClientAbsOrigin(client, vStart);
+	trace = TR_TraceRayFilterEx(vStart, vAngles, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer);
+	
+	switch(TR_DidHit(trace))
+	{
+		case false:
+		{
+			// There should always be some ground under the player.
+			if(DEBUG) PrintToServer("%s IsValidAirshot() trace error : (user index %i, userid %i)", core_chattag, client, g_Player[client].userid);
+		}
+		case true:
+		{
+			// calculate the distance
+			TR_GetEndPosition(vEnd, trace);
+			distance = GetVectorDistance(vStart, vEnd, false);
+		}
+	}
+	
+	// clean up 'n return.
+	delete trace;
+	
+	if(DEBUG) PrintToServer("%s IsValidAirshot() distance : %.1f (user index %i, userid %i)", core_chattag, distance, client, g_Player[client].userid);
+	return (distance >= 60.0);
 }
 
-/**
- *	Returns the buildings upgrade level.
- *
- *	@param	entity	The building entity index.
- *	@error	If the entity is invalid, this returns -1.
- */
-stock int TF2_GetBuildingLevel(int building)
+// TraceEntityFilterPlayer() : ignore players in a trace ray
+bool TraceEntityFilterPlayer(int client, int contentsMask)
 {
-	return !IsValidEntity(building) ? -1 : GetEntProp(building, Prop_Send, "m_iUpgradeLevel");
+	return IsValidClient(client, !bAllowBots);
 }
+
+//
 
 /**
  *	Returns the TFBuilding type.

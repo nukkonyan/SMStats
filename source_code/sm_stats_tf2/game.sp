@@ -920,21 +920,25 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	/* Boston Basher / Tribalman's Shiv. */
 	if(bleedkill)
 	{
+		bValidMidAir = false;
 		itemdef = GetPlayerWeaponSlotItemdef(client, 2);
 	}
 	/* Rocket Launcher. */
 	else if(StrEqual(classname, "tf_projectile_rocket", false))
 	{
+		bValidMidAir = false;
 		itemdef = GetPlayerWeaponSlotItemdef(client, 0);
 	}
 	/* Grenade Launcher. */
 	else if(StrEqual(classname, "tf_projectile_pipe", false))
 	{
+		bValidMidAir = false;
 		itemdef = GetPlayerWeaponSlotItemdef(client, 0);
 	}
 	/* Stickybomb Launcher. */
 	else if(StrEqual(classname, "tf_projectile_pipe_remote", false))
 	{
+		bValidMidAir = false;
 		itemdef = GetPlayerWeaponSlotItemdef(client, 1);
 	}
 	/* Sandman. */
@@ -959,21 +963,25 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	/* Scottish Resistance. */
 	else if(StrEqual(classname, "sticky_resistance", false))
 	{
+		bValidMidAir = false;
 		itemdef = GetPlayerWeaponSlotItemdef(client, 1);
 	}
 	/* Loch-N-Load. */
 	else if(StrEqual(classname, "loch_n_load", false))
 	{
+		bValidMidAir = false;
 		itemdef = GetPlayerWeaponSlotItemdef(client, 0)
 	}
 	/* QuickeBomb Launcher. */
 	else if(StrEqual(classname, "quickiebomb_launcher", false))
 	{
+		bValidMidAir = false;
 		itemdef = GetPlayerWeaponSlotItemdef(client, 1);
 	}
 	/* Iron Bomber. */
 	else if(StrEqual(classname, "iron_bomber", false))
 	{
+		bValidMidAir = false;
 		itemdef = GetPlayerWeaponSlotItemdef(client, 0);
 	}
 	/* Sentry Gun. */
@@ -1015,7 +1023,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 			{
 				case TFBuilding_Sentrygun:
 				{
-					int level = TF2_GetBuildingLevel(inflictor);
+					int level = GetEntProp(inflictor, Prop_Send, "m_iUpgradeLevel");
 					
 					switch(level)
 					{
@@ -1082,6 +1090,15 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	//
 	
+	bool bGibFrag = false;
+	if(death_flags & TF_DEATHFLAG_GIBBED)
+	{
+		bValidMidAir = false;
+		bGibFrag = true;
+	}
+	
+	//
+	
 	//int inflictor = event.GetInt("inflictor");
 	int playerpenetratedcount = event.GetInt("playerpenetratedcount");
 	
@@ -1119,11 +1136,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	{
 		frag.revenge_assister = true;
 	}
-	if(death_flags & TF_DEATHFLAG_GIBBED)
-	{
-		frag.gibfrag = true;
-	}
-	
+	frag.gibfrag = bGibFrag;
 	frag.collateral = (playerpenetratedcount > 0);
 	frag.deflectfrag = StrContains(classname, "eflect", false) != -1;
 	
@@ -1135,8 +1148,16 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	frag.pumpkinbombfrag = (StrEqual(classname, "tf_pumpkin_bomb", false));
 	frag.telefrag = (StrEqual(classname, "telefrag", false));
-	frag.midair = (IsClientMidAir(client) && bValidMidAir);
-	frag.airshot = (GetClientFlags(victim) == 258);
+	
+	if(bValidMidAir)
+	{
+		if(!(GetEntityFlags(client) & FL_ONGROUND))
+		{
+			frag.midair = true;
+		}
+	}
+	
+	frag.airshot = IsValidAirshot(victim);
 	
 	strcopy(frag.classname, sizeof(frag.classname), classname);
 	frag.itemdef = itemdef;
