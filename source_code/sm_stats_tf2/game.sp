@@ -1151,13 +1151,10 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	if(bValidMidAir)
 	{
-		if(!(GetEntityFlags(client) & FL_ONGROUND))
-		{
-			frag.midair = true;
-		}
+		frag.midair = (DistanceAboveGround(client) >= 45.0);
 	}
 	
-	frag.airshot = IsValidAirshot(victim);
+	frag.airshot = (DistanceAboveGround(victim) >= 60.0);
 	
 	strcopy(frag.classname, sizeof(frag.classname), classname);
 	frag.itemdef = itemdef;

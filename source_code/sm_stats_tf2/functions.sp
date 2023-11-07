@@ -972,7 +972,7 @@ bool TF2_IsMvMGameMode()
 
 // borrowing code of MGE
 // https://forums.alliedmods.net/showpost.php?p=2225745&postcount=23
-stock bool IsValidAirshot(int client)
+stock float DistanceAboveGround(int client)
 {
 	float vStart[3];
 	float vEnd[3];
@@ -1003,7 +1003,7 @@ stock bool IsValidAirshot(int client)
 	delete trace;
 	
 	if(DEBUG) PrintToServer("%s IsValidAirshot() distance : %.1f (user index %i, userid %i)", core_chattag, distance, client, g_Player[client].userid);
-	return (distance >= 60.0);
+	return distance;
 }
 
 // TraceEntityFilterPlayer() : ignore players in a trace ray
