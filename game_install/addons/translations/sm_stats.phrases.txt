@@ -986,14 +986,14 @@
 	{
 	    "#format" "{1:i},{2:s}"
 	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is invalid."
-	    "sv" "{yellow}Fel: {default}Silah ögeleme tanımı {1} (classname '{2}') geçersiz."
+	    "sv" "{yellow}Fel: {default}Vapen itemdef {1} (classname '{2}') är ogiltig."
 	    "tr" "{yellow}Hata: {default}Silah ögeleme tanımı {1} (classname '{2}') geçersiz."
 	}
 	"#SMStats_FragEventError_InvalidItemCvar"
 	{
 	    "#format" "{1:i},{2:s}"
 	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') seems to be invalid! (New item perhaps?)"
-	    "sv" "{yellow}Fel: {default}Silah ögeleme tanımı {1} (classname '{2}') geçerli gibi görünmüyor! (Yeni öge belki?)"
+	    "sv" "{yellow}Fel: {default}Vapnen itemdef {1} (classname '{2}') verkar ogiltig! (Nytt föremål kanske?)"
 	    "tr" "{yellow}Hata: {default}Silah ögeleme tanımı {1} (classname '{2}') geçersiz gibi görünüyor! (Yeni öge olabilir mi?)"
 	}
 	//================================//
