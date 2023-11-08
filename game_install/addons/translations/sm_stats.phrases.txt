@@ -143,7 +143,6 @@
 	"#SMStats_PlayTimeFormat_Scenario5"
 	{
 		"en" "{SECONDS}"
-		"tr" "{SECONDS}"
 	}
 	"#SMStats_TimeFormat_LastConnected"
 	{
