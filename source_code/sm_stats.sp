@@ -83,51 +83,51 @@ public void OnPluginStart()
 {
 	CheckDatabase(true);
 	
-	ConVar cvar = CreateConVar("sm_stats_chattag", "{green}[SM Stats]", "SM Stats - Chat tag prefix.");
+	ConVar cvar = CreateConVar("sm_stats_chattag", "{green}[SM Stats]", "SM Stats: Core - Chat tag prefix.");
 	cvar.AddChangeHook(OnUpdatedChatTag);
 	cvar.GetString(g_ChatTag, sizeof(g_ChatTag));
 	Format(g_ChatTag, sizeof(g_ChatTag), "%s{default}", g_ChatTag);
 	
 	//
 	
-	g_StatsID = CreateConVar("sm_stats_statsid", "1", "SM Stats - Stats ID.", _, true, 1.0);
+	g_StatsID = CreateConVar("sm_stats_id", "1", "SM Stats: Core - Statistical Tracking ID.", _, true, 1.0);
 	g_StatsID.AddChangeHook(OnUpdatedStatsID);
 	
-	g_AllowBots = CreateConVar("sm_stats_allow_bots", "1", "SM Stats - Allow bots.", _, true, _, true, 1.0);
+	g_AllowBots = CreateConVar("sm_stats_allow_bots", "1", "SM Stats: Core - Allow bots.", _, true, _, true, 1.0);
 	g_AllowBots.AddChangeHook(OnUpdatedAllowBots);
 	
-	g_MinPlayers = CreateConVar("sm_stats_min_players", "4", "SM Stats - Minimum players required for statistical tracking.", _, true, 1.0);
+	g_MinPlayers = CreateConVar("sm_stats_min_players", "4", "SM Stats: Core - Minimum players required for statistical tracking.", _, true, 1.0);
 	g_MinPlayers.AddChangeHook(OnUpdatedMinPlayers);
 	
-	g_AllowAbuse = CreateConVar("sm_stats_allow_abuse", "0", "SM Stats - Allow abuse of commands during events such as Noclip or sv_cheats 1.", _, true, _, true, 1.0);
+	g_AllowAbuse = CreateConVar("sm_stats_allow_abuse", "0", "SM Stats: Core - Allow abuse of commands during events such as Noclip or sv_cheats 1.", _, true, _, true, 1.0);
 	g_AllowAbuse.AddChangeHook(OnUpdatedAllowAbuse);
 	
-	g_AllowWarmup = CreateConVar("sm_stats_allow_warmup", "0", "SM Stats - Allow tracking during warmup.", _, true, _, true, 1.0);
+	g_AllowWarmup = CreateConVar("sm_stats_allow_warmup", "0", "SM Stats: Core - Allow tracking during warmup.", _, true, _, true, 1.0);
 	g_AllowWarmup.AddChangeHook(OnUpdatedAllowWarmup);
 	
-	g_DisableAfterRoundEnd = CreateConVar("sm_stats_disable_after_round_end", "1", "SM Stats - Disable after round end.", _, true, _, true, 1.0);
+	g_DisableAfterRoundEnd = CreateConVar("sm_stats_disable_after_round_end", "1", "SM Stats: Core - Disable after round end.", _, true, _, true, 1.0);
 	g_AllowWarmup.AddChangeHook(OnUpdatedDisableAfterRoundEnd);
 	
-	g_DeathPoints = CreateConVar("sm_stats_points_death", "10", "SM Stats - Points taken when dying.", _, true);
+	g_DeathPoints = CreateConVar("sm_stats_points_death", "10", "SM Stats: Core - Points taken when dying.", _, true);
 	g_DeathPoints.AddChangeHook(OnUpdatedDeathPoints);
 	
-	g_AssistPoints = CreateConVar("sm_stats_points_assist", "5", "SM Stats - Points given when assisting.", _, true);
+	g_AssistPoints = CreateConVar("sm_stats_points_assist", "5", "SM Stats: Core - Points given when assisting.", _, true);
 	g_DeathPoints.AddChangeHook(OnUpdatedAssistPoints);
 	
-	g_PenaltySeconds = CreateConVar("sm_stats_penalty_seconds", "3600", "SM Stats - Seconds of the points-spam penalty.", _, true);
+	g_PenaltySeconds = CreateConVar("sm_stats_penalty_seconds", "3600", "SM Stats: Core - Seconds of the points-spam penalty.", _, true);
 	g_PenaltySeconds.AddChangeHook(OnUpdatedPenaltySeconds);
 	
-	g_ConSndTop1 = CreateConVar("sm_stats_connectsound_top1", "sm_stats/connect_top10.wav", "SM Stats - Sound from game/sound/ directory to play to players when the top 1 player has connected. ");
+	g_ConSndTop1 = CreateConVar("sm_stats_connectsound_top1", "sm_stats/connect_top10.wav", "SM Stats: Core - Sound from game/sound/ directory to play to players when the top 1 player has connected. ");
 	g_ConSndTop1.AddChangeHook(OnUpdatedConSndTop1);
 	g_ConSndTop1.GetString(g_sndConnectedTop1, sizeof(g_sndConnectedTop1));
 	CacheConnectSound(g_sndConnectedTop1, 0, true);
 	
-	g_ConSndTop10 = CreateConVar("sm_stats_connectsound_top10", "sm_stats/connect_top10.wav", "SM Stats - Sound from game/sound/ directory to play to players when a top 10 player has connected.");
+	g_ConSndTop10 = CreateConVar("sm_stats_connectsound_top10", "sm_stats/connect_top10.wav", "SM Stats: Core - Sound from game/sound/ directory to play to players when a top 10 player has connected.");
 	g_ConSndTop10.AddChangeHook(OnUpdatedConSndTop10);
 	g_ConSndTop10.GetString(g_sndConnectedTop10, sizeof(g_sndConnectedTop10));
 	CacheConnectSound(g_sndConnectedTop10, 1, true);
 	
-	g_ConSndGeneric = CreateConVar("sm_stats_connectsound_generic", "buttons/blip1.wav", "SM Stats - Sound from game/sound/ directory to play to players when someone has connected.");
+	g_ConSndGeneric = CreateConVar("sm_stats_connectsound_generic", "buttons/blip1.wav", "SM Stats: Core - Sound from game/sound/ directory to play to players when someone has connected.");
 	g_ConSndGeneric.AddChangeHook(OnUpdatedConSndGeneric);
 	g_ConSndGeneric.GetString(g_sndConnectedGeneric, sizeof(g_sndConnectedGeneric));
 	CacheConnectSound(g_sndConnectedGeneric, 2, true);

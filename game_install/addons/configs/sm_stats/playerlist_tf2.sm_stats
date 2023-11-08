@@ -3,7 +3,7 @@ create table if not exists `playerlist_tf2`
 	`ID` int not null auto_increment,
 	`StatsID` int not null default '1',
 	`Points` int not null default '1000',
-	`LastConnectedName` int not null default '0',
+	`LastConnectedName` varchar(64) not null default '0',
 	`LastConnectedTime` int not null default '0',
 	`PlayTime` int not null default '0',
 	`SteamID` varchar(28) not null default '',
