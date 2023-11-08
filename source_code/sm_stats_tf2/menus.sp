@@ -1466,7 +1466,7 @@ void StatsMenu_TopPlayerId_2(Database database, DBResultSet results, const char[
 			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
 			
 			char query[256];
-			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID` = %i", auth, g_StatsID);
 			sql.Query(StatsMenu_TopPlayerId_3, query, userid);
 		}
 		else
@@ -1564,7 +1564,7 @@ void StatsMenu_TopPlayerAuth_2(Database database, DBResultSet results, const cha
 			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
 			
 			char query[256];
-			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'", auth, g_StatsID);
 			sql.Query(StatsMenu_TopPlayerAuth_3, query, userid);
 		}
 		else
@@ -2239,7 +2239,7 @@ void DBQuery_CheckActiveStats_1(Database database, DBResultSet results, const ch
 			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
 			
 			char query[256];
-			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'", auth, g_StatsID);
 			sql.Query(DBQuery_CheckActiveStats_2, query, userid);
 		}
 	}
@@ -2328,7 +2328,7 @@ void DBQuery_TopStats_Menu_1(Database database, DBResultSet results, const char[
 			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
 			
 			char query[256];
-			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'", auth, g_StatsID);
 			sql.Query(DBQuery_TopStats_Menu_2, query, userid);
 		}
 	}

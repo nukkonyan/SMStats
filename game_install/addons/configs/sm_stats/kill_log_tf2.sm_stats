@@ -1,12 +1,12 @@
 create table if not exists `kill_log_tf2`
 (
 	`ID` int not null auto_increment,
-	`ServerID` int not null default '1',
+	`StatsID` int not null default '1',
 	`SteamID_Attacker` varchar(28) not null default '',
 	`SteamID_Victim` varchar(448) not null default '',
 	`SteamID_Assister` varchar(448) not null default '',
 	`Timestamp` int not null default '0',
-	`WeaponItemdef` varchar(176) not null default '0',
+	`Itemdefs` varchar(176) not null default '-1',
 	`Quantity` int(4) not null default '0',
 
 	`Dominations` int(4) not null default '0',

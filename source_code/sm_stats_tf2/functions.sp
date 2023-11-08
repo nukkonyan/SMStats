@@ -794,24 +794,24 @@ stock bool AssistedKills(Transaction txn
 				
 				char query[1024];
 				int len = 0;
-				len += Format(query[len], sizeof(query)-len, "update `%s` set Assists = Assists+%i", sql_table_playerlist, assister_count[i]);
+				len += Format(query[len], sizeof(query)-len, "update `%s` set `Assists`=`Assists`+%i", sql_table_playerlist, assister_count[i]);
 				if(IsMedicAssister(assist, list_healercount, list_healer, frags))
 				{
-					len += Format(query[len], sizeof(query)-len, ", MedicAssists = MedicAssists+%i", assister_count[i]);
+					len += Format(query[len], sizeof(query)-len, ",`MedicAssists`=`MedicAssists`+%i", assister_count[i]);
 				}
 				if(assister_dominations[i] > 0)
 				{
-					len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", assister_dominations[i]);
+					len += Format(query[len], sizeof(query)-len, ",`Dominations`=`Dominations`+%i", assister_dominations[i]);
 				}
 				if(assister_revenges[i] > 0)
 				{
-					len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", assister_revenges[i]);
+					len += Format(query[len], sizeof(query)-len, ",`Revenges`=`Revenges`+%i", assister_revenges[i]);
 				}
 				if(g_AssistPoints > 0)
 				{
-					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", g_AssistPoints*assister_count[i]);
+					len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", g_AssistPoints*assister_count[i]);
 				}
-				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[assister].auth, g_ServerID);
+				len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[assister].auth, g_StatsID);
 				txn.AddQuery(query, queryId_frag_assister);
 				
 				if(g_AssistPoints > 0)
@@ -881,7 +881,7 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 			
 			int len = 0;
 			char query[1024];
-			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set Deaths = Deaths+1");
+			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set `Deaths`=`Deaths`+1");
 			
 			g_Player[victim].session[Stats_Deaths]++;
 			switch(class)
@@ -889,59 +889,59 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 				case TFClass_Scout:
 				{
 					g_Player[victim].session[Stats_ScoutDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", ScoutDeaths = ScoutDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`ScoutDeaths`=`ScoutDeaths`+1");
 				}
 				case TFClass_Soldier:
 				{
 					g_Player[victim].session[Stats_SoldierDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", SoldierDeaths = SoldierDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`SoldierDeaths`=`SoldierDeaths`+1");
 				}
 				case TFClass_Pyro:
 				{
 					g_Player[victim].session[Stats_PyroDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", PyroDeaths = PyroDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`PyroDeaths`=`PyroDeaths`+1");
 				}
 				case TFClass_DemoMan:
 				{
 					g_Player[victim].session[Stats_DemoDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", DemoDeaths = DemoDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`DemoDeaths`=`DemoDeaths`+1");
 				}
 				case TFClass_Heavy:
 				{
 					g_Player[victim].session[Stats_HeavyDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", HeavyDeaths = HeavyDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`HeavyDeaths`=`HeavyDeaths`+1");
 				}
 				case TFClass_Engineer:
 				{
 					g_Player[victim].session[Stats_EngieDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", EngieDeaths = EngieDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`EngieDeaths`=`EngieDeaths`+1");
 				}
 				case TFClass_Medic:
 				{
 					g_Player[victim].session[Stats_MedicDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", MedicDeaths = MedicDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`MedicDeaths`=`MedicDeaths`+1");
 				}
 				case TFClass_Sniper:
 				{
 					g_Player[victim].session[Stats_SniperDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", SniperDeaths = SniperDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`SniperDeaths`=`SniperDeaths`+1");
 				}
 				case TFClass_Spy:
 				{
 					g_Player[victim].session[Stats_SpyDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ", SpyDeaths = SpyDeaths+1");
+					len += Format(query[len], sizeof(query)-len, ",`SpyDeaths =`SpyDeaths`+1");
 				}
 			}
 			
 			if(g_DeathPoints >= 1)
 			{
-				len += Format(query[len], sizeof(query)-len, ", Points = Points-%i", g_DeathPoints);
+				len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`-%i", g_DeathPoints);
 				
 				g_Player[victim].session[Stats_Points] -= g_DeathPoints;
 				g_Player[victim].points -= g_DeathPoints;
 			}
 			
-			len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[victim].auth, g_ServerID);
+			len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[victim].auth, g_StatsID);
 			txn.AddQuery(query, queryId_frag_victim_death);
 			
 			if(g_DeathPoints >= 1 && g_Player[victim].bShowDeathMsg)

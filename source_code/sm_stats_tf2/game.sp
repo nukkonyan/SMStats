@@ -1321,7 +1321,7 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 			g_Player[client].points += points;
 		}
 		
-		len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+		len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_CP_OnCapturedPoint);
 	}
 	
@@ -1363,12 +1363,12 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 	int points = 0;
 	int len = 0;
 	char query[256];
-	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set PointsDefended = PointsDefended+1");
+	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `PointsDefended`=`PointsDefended`+1");
 	if((points = g_PointBlocked.IntValue) > 0 && !g_Player[client].bPenalty)
 	{
-		len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+		len += Format(query[len], sizeof(query)-len, ", `Points`=`Points`+%i", points);
 	}
-	len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 	sql.Query(DBQuery_Callback, query, query_error_uniqueid_CP_OnCapturedPoint);
 	
 	if(points > 0 && !g_Player[client].bPenalty)
@@ -1476,16 +1476,16 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			{
 				case false:
 				{
-					CallbackQuery("update `%s` set Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1 where SteamID = '%s' and ServerID = %i"
+					CallbackQuery("update `%s` set `Points`=`Points`+%i,`FlagsPickedUp`=`FlagsPickedUp`+1 where `SteamID`='%s' and `StatsID`='%i'"
 					, query_error_uniqueid_CTF_OnFlagPickedUp
-					, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+					, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 				}
 				
 				case true:
 				{
-					CallbackQuery("update `%s` set Points = Points+%i, FlagsPickedUp = FlagsPickedUp+1, FlagsStolen = FlagsStolen+1 where SteamID = '%s' and ServerID = %i"
+					CallbackQuery("update `%s` set `Points`=`Points`+%i,`FlagsPickedUp`=`FlagsPickedUp`+1,`FlagsStolen`=`FlagsStolen`+1 where SteamID = '%s' and `StatsID`='%i'"
 					, query_error_uniqueid_CTF_OnFlagStolen
-					, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+					, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 				}
 			}
 		}
@@ -1509,9 +1509,9 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set Points = Points+%i, FlagsCaptured = FlagsCaptured+1 where SteamID = '%s' and ServerID = %i"
+			CallbackQuery("update `%s` set `Points`=Points+%i,`FlagsCaptured`=`FlagsCaptured`+1 where `SteamID`='%s' and `StatsID`='%i'"
 			, query_error_uniqueid_CTF_OnFlagCaptured
-			, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
 		
 		/* Defended */
@@ -1533,9 +1533,9 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set Points = Points+%i, FlagsDefended = FlagsDefended+1 where SteamID = '%s' and ServerID = %i"
+			CallbackQuery("update `%s` set `Points`=`Points`+%i,`FlagsDefended`=`FlagsDefended`+1 where `SteamID`='%s' and `StatsID`='%i'"
 			, query_error_uniqueid_CTF_OnFlagDefended
-			, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
 		
 		/* Dropped */
@@ -1557,9 +1557,9 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			g_Player[client].session[Stats_Points] -= points;
 			g_Player[client].points -= points;
 			
-			CallbackQuery("update `%s` set Points = Points-%i where SteamID = '%s' and ServerID = %i"
+			CallbackQuery("update `%s` set `Points`=`Points`-%i where `SteamID`='%s' and `StatsID`='%i'"
 			, query_error_uniqueid_CTF_OnFlagDropped
-			, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
 		
 		/* Carrier */
@@ -1599,12 +1599,12 @@ void OnObjectPlaced(Event event, const char[] event_name, bool dontBroadcast)
 	TFBuilding obj = TFBuilding_Invalid;
 	if((obj = TF2_GetBuildingType(index)) == TFBuilding_Invalid)
 	{
-		LogError("[SM Stats: TF2] OnObjectPlaced error: Failed obtaining object type of object entity index %i!", index);
+		LogError("%s OnObjectPlaced error: Failed obtaining object type of object entity index %i!", core_chattag, index);
 		return;
 	}
 	else if(!g_Object_Placed[obj])
 	{
-		LogError("[SM Stats: TF2] OnObjectPlaced error: Building type index %i has invalid convar handle!", obj);
+		LogError("%s OnObjectPlaced error: Building type index %i has invalid convar handle!", core_chattag, obj);
 		return;
 	}
 	else if(g_Game[client].bObjectPlaced[obj])
@@ -1723,12 +1723,12 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 	int points = 0;
 	int len;
 	char query[256];
-	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Ubercharged = Ubercharged+1");
+	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Ubercharged`=`Ubercharged`+1");
 	if((points = g_Ubercharged.IntValue) > 0 && !g_Player[client].bPenalty)
 	{
-		len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+		len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 	}
-	len += Format(query[len], sizeof(query)-len, "where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	len += Format(query[len], sizeof(query)-len, "where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerUbercharged);
 	
 	g_Game[client].bUbercharged = true;
@@ -1806,13 +1806,13 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 		int len;
 		int points = 0;
 		char query[256];
-		len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set TeleportersUsed = TeleportersUsed+1");
+		len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `TeleportersUsed`=`TeleportersUsed`+1");
 		if((points = g_Teleported.IntValue) > 0 && !g_Player[client].bPenalty)
 		{
 			g_Player[client].session[Stats_Points] += points;
-			len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+			len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 		}
-		len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+		len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnPlayerUsedTeleporter);
 		
 		g_Game[client].bUsedTeleporter = true;
@@ -1831,8 +1831,8 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 			}
 			
 			char query[256];
-			Format(query, sizeof(query), "update `%s` set PlayersTeleported = PlayersTeleported+1 where SteamID = '%s' and ServerID = %i"
-			, sql_table_playerlist, g_Player[victim].auth, g_ServerID);
+			Format(query, sizeof(query), "update `%s` set `PlayersTeleported`=`PlayersTeleported`+1 where `SteamID`='%s' and `StatsID`='%i'"
+			, sql_table_playerlist, g_Player[victim].auth, g_StatsID);
 			txn.AddQuery(query, query_error_uniqueid_OnPlayerTeleported);
 			
 			g_Game[client].bPlayerUsedTeleporter = true;
@@ -1883,14 +1883,14 @@ void OnPlayerStealSandvich(Event event, const char[] event_name, bool dontBroadc
 	int len;
 	char query[256];
 	int points = 0;
-	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set SandvichesStolen = SandvichesStolen+1");
+	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `SandvichesStolen`=`SandvichesStolen`+1");
 	if((points = g_SandvichStolen.IntValue) > 0 && !g_Player[client].bPenalty)
 	{
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].points += points;
-		len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+		len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 	}
-	len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerStealSandvich);
 	
 	g_Game[client].bStolenSandvich = true;
@@ -1994,20 +1994,19 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 	int points = 0;
 	int len = 0;
 	char query[256];
-	len += Format(query[len], sizeof(query)-len, "update `%s` set", sql_table_playerlist);
+	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set StunnedPlayers = StunnedPlayers+1");
+	if(big_stun)
+	{
+		g_Player[client].session[Stats_MoonShotStunnedPlayers]++;
+		len += Format(query[len], sizeof(query)-len, ",`MoonShotStunnedPlayers`=`MoonShotStunnedPlayers`+1");
+	}
 	if((points = g_Stunned.IntValue) > 0 && !g_Player[client].bPenalty)
 	{
 		g_Player[client].points += points;
 		g_Player[client].session[Stats_Points] += points;
-		len += Format(query[len], sizeof(query)-len, " Points = Points+%i", points);
+		len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 	}
-	if(big_stun)
-	{
-		g_Player[client].session[Stats_MoonShotStunnedPlayers]++;
-		len += Format(query[len], sizeof(query)-len, ", MoonShotStunnedPlayers = MoonShotStunnedPlayers+1");
-	}
-	len += Format(query[len], sizeof(query)-len, ", StunnedPlayers = StunnedPlayers+1");
-	len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+	len += Format(query[len], sizeof(query)-len, " where SteamID='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerStunned);
 	
 	g_Game[client].bStunned = true;
@@ -2113,23 +2112,23 @@ void OnHalloweenBossKill(Event event, const char[] event_name, bool dontBroadcas
 		{
 			case 1:
 			{
-				CallbackQuery("update `%s` set Points = Points+%i, HHHFragged = HHHFragged+1 where SteamID = '%s' and ServerID = %i"
+				CallbackQuery("update `%s` set `Points`=`Points`+%i,`HHHFragged`=`HHHFragged`+1 where `SteamID`='%s' and `StatsID`=%i"
 				, query_error_uniqueid_Halloween_OnHHHFragged
-				, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+				, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 			}
 			
 			case 2:
 			{
-				CallbackQuery("update `%s` set Points = Points+%i, MonoculusFragged = MonoculusFragged+1 where SteamID = '%s' and ServerID = %i"
+				CallbackQuery("update `%s` set `Points`=`Points`+%i,`MonoculusFragged`=`MonoculusFragged`+1 where `SteamID`='%s' and `StatsID`='%i'"
 				, query_error_uniqueid_Halloween_OnMonoculusFragged
-				, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+				, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 			}
 			
 			case 3:
 			{
-				CallbackQuery("update `%s` set Points = Points+%i, MerasmusFragged = MerasmusFragged+1 where SteamID = '%s' and ServerID = %i"
+				CallbackQuery("update `%s` set `Points`=`Points`+%i,`MerasmusFragged`=`MerasmusFragged`+1 where `SteamID`='%s' and `StatsID`='%i'"
 				, query_error_uniqueid_Halloween_OnMerasmusFragged
-				, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+				, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 			}
 		}
 	}
@@ -2180,9 +2179,9 @@ void OnHalloweenSkeletonKingKilled(Event event, const char[] event_name, bool do
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set Points = Points+%i, SkeletonKingsFragged = SkeletonKingsFragged+1 where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `%s` set `Points`=`Points`+%i,`SkeletonKingsFragged`=`SkeletonKingsFragged`+1 where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_Halloween_OnSkeletonKingFragged
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	}
 }
 
@@ -2227,9 +2226,9 @@ void OnHalloweenStunned(Event event, const char[] event_name, bool dontBroadcast
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set Points = Points+%i, MonoculusStunned = MonoculusStunned+1 where SteamID = '%s' and ServerID = %i"
+			CallbackQuery("update `%s` set `Points`=`Points`+%i,`MonoculusStunned`=`MonoculusStunned`+1 where `SteamID`='%s' and `StatsID`='%i'"
 			, query_error_uniqueid_Halloween_OnMonoculusStunned
-			, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
 	} else
 	if(StrEqual(event_name, "merasmus_stunned"))
@@ -2255,9 +2254,9 @@ void OnHalloweenStunned(Event event, const char[] event_name, bool dontBroadcast
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set Points = Points+%i, MerasmusStunned = MerasmusStunned+1 where SteamID = '%s' and ServerID = %i"
+			CallbackQuery("update `%s` set `Points`=`Points`+%i,`MerasmusStunned`=`MerasmusStunned`+1 where `SteamID`='%s' and `StatsID`='%i'"
 			, query_error_uniqueid_Halloween_OnMerasmusStunned
-			, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
 	}
 }
@@ -2306,9 +2305,9 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set Points = Points+%i, PassBallsGotten = PassBallsGotten+1 where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsGotten`=`PassBallsGotten`+1 where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_PassBall_Get
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_score") && (client = event.GetInt("scorer")) > 0 && (points = g_PassBall[(type = PassBall_ScoringBall)].IntValue) > 0)
 	{
@@ -2342,9 +2341,9 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set Points = Points+%i, PassBallsScored = PassBallsScored+1 where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsScored`=`PassBallsScored`+1 where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_PassBall_Score
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_free") && (client = event.GetInt("owner")) > 0 && (points = g_PassBall[(type = PassBall_DroppingBall)].IntValue) > 0)
 	{
@@ -2378,9 +2377,9 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points -= points;
 		
-		CallbackQuery("update `%s` set Points = Points+%i, PassBallsDropped = PassBallsDropped+1 where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsDropped`=`PassBallsDropped`+1 where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_PassBall_Dropped
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_pass_caught") && (client = event.GetInt("catcher")) > 0 && (points = g_PassBall[(type = PassBall_CatchingBall)].IntValue) > 0)
 	{
@@ -2432,9 +2431,9 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set Points = Points+%i, PassBallsCatched = PassBallsCatched+1 where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsCatched`=`PassBallsCatched`+1 where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_PassBall_Catched
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_pass_stolen") && (client = event.GetInt("attacker")) > 0 && (points = g_PassBall[(type = PassBall_StealingBall)].IntValue) > 0)
 	{
@@ -2460,7 +2459,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_PassBallsStolen]++;
 		
 		int victim = event.GetInt("victim");	
-		switch(IsValidClient(victim, bAllowBots ? true : false))
+		switch(IsValidClient(victim, bAllowBots))
 		{
 			case false:
 			{
@@ -2486,9 +2485,9 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set Points = Points+%i, PassBallsStolen = PassBallsStolen+1 where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsStolen`=`PassBallsStolen`+1 where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_PassBall_Stolen
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_pass_blocked") && (client = event.GetInt("blocker")) > 0 && (points = g_PassBall[(type = PassBall_BlockingBall)].IntValue) > 0)
 	{
@@ -2514,7 +2513,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_PassBallsBlocked]++;
 		
 		int victim = event.GetInt("victim");
-		switch(IsValidClient(victim, !bAllowBots ? true : false))
+		switch(IsValidClient(victim, !bAllowBots))
 		{
 			case false:
 			{
@@ -2540,9 +2539,9 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set Points = Points+%i, PassBallsBlocked = PassBallsBlocked+1 where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsBlocked`=`PassBallsBlocked`+1 where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_PassBall_Blocked
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	}
 	
 	if(client > 0 && type != -1)
@@ -2607,9 +2606,9 @@ void MvM_OnTankDestroyed(Event event, const char[] event_name, bool dontBroadcas
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set Points = Points+%i, TanksDestroyed = TanksDestroyed+1 where SteamID = '%s' and ServerID = %i"
+			CallbackQuery("update `%s` set `Points`=`Points`+%i,`TanksDestroyed`=`TanksDestroyed`+1 where `SteamID`='%s' and `StatsID`='%i'"
 			, query_error_uniqueid_MvM_OnTankDestroyed
-			, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
 	}
 }
@@ -2702,9 +2701,9 @@ void MvM_OnRobotDeath(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set Points = Points+%i, SentryBustersFragged = SentryBustersFragged+1 where SteamID = '%s' and ServerID = %i"
+		CallbackQuery("update `%s` set `Points`=`Points`+%i,`SentryBustersFragged`=`SentryBustersFragged`+1 where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_MvM_OnSentryBusterFragged
-		, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		
 		return;
 	}
@@ -2761,9 +2760,9 @@ void MvM_OnBombResetted(Event event, const char[] event_name, bool dontBroadcast
 	g_Player[client].session[Stats_Points] += points;
 	g_Player[client].points += points;
 	
-	CallbackQuery("update `%s` set Points = Points+%i, BombsResetted = BombsResetted+1 where SteamID = '%s' and ServerID = %i"
+	CallbackQuery("update `%s` set `Points`=`Points`+%i,`BombsResetted`=`BombsResetted`+1 where `SteamID`='%s' and `StatsID`='%i'"
 	, query_error_uniqueid_MvM_OnBombResetted
-	, sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+	, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 }
 
 /* ===================================================================================== */
@@ -2835,7 +2834,7 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 	}
 	else
 	{
-		PrintToServer("%s OnPlayerCoated() Invalid jar detected!\nInformation: Item classname '%s'\nItem definition index %i", core_chattag, item_class, itemdef);
+		LogError("%s OnPlayerCoated() Invalid jar detected!\nInformation: Item classname '%s'\nItem definition index %i", core_chattag, item_class, itemdef);
 		bProceed = false;
 	}
 	
@@ -2991,8 +2990,8 @@ Action MapTimer_GameTimer(Handle timer)
 					g_FeignDeaths.GetString(i, auth, sizeof(auth));
 					
 					char query[256];
-					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `FeignDeaths`=`FeignDeaths`+1 where `SteamID`='%s' and ServerID='%i'"
-					, auth, g_ServerID);
+					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `FeignDeaths`=`FeignDeaths`+1 where `SteamID`='%s' and `Stats`='%i'"
+					, auth, g_StatsID);
 					txn.AddQuery(query);
 				}
 				
@@ -3018,8 +3017,8 @@ Action MapTimer_GameTimer(Handle timer)
 					i++;
 					
 					char query[256];
-					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HealPoints`=`HealPoints`+%i where `SteamID`='%s' and ServerID='%i'"
-					, healpoints, auth, g_ServerID);
+					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HealPoints`=`HealPoints`+%i where `SteamID`='%s' and `StatsID`='%i'"
+					, healpoints, auth, g_StatsID);
 					txn.AddQuery(query);
 				}
 				
@@ -3430,7 +3429,7 @@ Action MapTimer_GameTimer(Handle timer)
 								case false: points += cvar_points.IntValue;
 								case true:
 								{
-									PrintToServer("%s itemdef %i has invalid convar!"
+									LogError("%s itemdef %i has invalid convar!"
 									... "\nattacker userid : %i"
 									... "\nvictim userid : %i"
 									... "\nvictim class : %i"
@@ -3461,8 +3460,8 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
-					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Frags = Frags+%i", frags);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set Frags = Frags+%i", frags);
+					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Frags`=`Frags`+%i", frags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set `Frags`=`Frags`+%i", frags);
 					
 					if(iWepFrags > 0)
 					{
@@ -3506,8 +3505,8 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							char fix_weapon[64], query_wep[256];
 							CorrectWeaponClassname(event.class_attacker, fix_weapon, sizeof(fix_weapon), epic.itemdef, epic.classname);
-							Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set `%s`=`%s`+'%i' where `SteamID`='%s' and `ServerID`='%i'"
-							, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_ServerID);
+							Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set `%s`=`%s`+'%i' where `SteamID`='%s' and `StatsID`='%i'"
+							, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_StatsID);
 							txn.AddQuery(query_wep, queryId_frag_weapon);
 							
 							if(DEBUG) PrintToServer("%s OnPlayerDeath() DEBUG: [userid %i] classname '%s' / itemdef '%i' / quantity '%i'"
@@ -3520,8 +3519,8 @@ Action MapTimer_GameTimer(Handle timer)
 					{
 						g_Player[client].session[Stats_TeleFrags] += iTeleFrags;
 						points = g_TeleFrag.IntValue * iTeleFrags;
-						len += Format(query[len], sizeof(query)-len, ", TeleFrags = TeleFrags+%i", iTeleFrags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleFrags = TeleFrags+%i", iTeleFrags);
+						len += Format(query[len], sizeof(query)-len, ",`TeleFrags`=`TeleFrags`+%i", iTeleFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`TeleFrags`=`TeleFrags`+%i", iTeleFrags);
 					}
 					if(iDispensers > 0)
 					{
@@ -3532,84 +3531,84 @@ Action MapTimer_GameTimer(Handle timer)
 					if(iSentryFrags > 0)
 					{
 						g_Player[client].session[Stats_SentryFrags] += iSentryFrags;
-						len += Format(query[len], sizeof(query)-len, ", SentryFrags = SentryFrags+%i", iSentryFrags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryFrags = SentryFrags+%i", iSentryFrags);
+						len += Format(query[len], sizeof(query)-len, ",`SentryFrags`=`SentryFrags`+%i", iSentryFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SentryFrags`=`SentryFrags`+%i", iSentryFrags);
 						
 						if(iSentryFragsLVL1 > 0)
 						{
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL1Frags = SentryLVL1Frags+%i", iSentryFragsLVL1);
-							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL1Frags = SentryLVL1Frags+%i", iSentryFragsLVL1);
+							len += Format(query[len], sizeof(query)-len, ",`SentryLVL1Frags`=`SentryLVL1Frags`+%i", iSentryFragsLVL1);
+							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SentryLVL1Frags`=`SentryLVL1Frags`+%i", iSentryFragsLVL1);
 						}
 						if(iSentryFragsLVL2 > 0)
 						{
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL2Frags = SentryLVL2Frags+%i", iSentryFragsLVL2);
-							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL2Frags = SentryLVL2Frags+%i", iSentryFragsLVL2);
+							len += Format(query[len], sizeof(query)-len, ",`SentryLVL2Frags`=`SentryLVL2Frags`+%i", iSentryFragsLVL2);
+							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SentryLVL2Frags`=`SentryLVL2Frags`+%i", iSentryFragsLVL2);
 						}
 						if(iSentryFragsLVL3 > 0)
 						{
-							len += Format(query[len], sizeof(query)-len, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentryFragsLVL3);
-							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryLVL3Frags = SentryLVL3Frags+%i", iSentryFragsLVL3);
+							len += Format(query[len], sizeof(query)-len, ",`SentryLVL3Frags`=`SentryLVL3Frags`+%i", iSentryFragsLVL3);
+							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SentryLVL3Frags`=`SentryLVL3Frags`+%i", iSentryFragsLVL3);
 						}
 					}
 					if(iMiniSentryFrags > 0)
 					{
 						g_Player[client].session[Stats_MiniSentryFrags] += iMiniSentryFrags;
-						len += Format(query[len], sizeof(query)-len, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentryFrags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryFrags = MiniSentryFrags+%i", iMiniSentryFrags);
+						len += Format(query[len], sizeof(query)-len, ",`MiniSentryFrags`=`MiniSentryFrags`+%i", iMiniSentryFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`MiniSentryFrags`=`MiniSentryFrags`+%i", iMiniSentryFrags);
 					}
 					if(iHeadshots > 0)
 					{
 						g_Player[client].session[Stats_Headshots] += iHeadshots;
-						len += Format(query[len], sizeof(query)-len, ", Headshots = Headshots+%i", iHeadshots);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Headshots = Headshots+%i", iHeadshots);
+						len += Format(query[len], sizeof(query)-len, ",`Headshots`=`Headshots`+%i", iHeadshots);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Headshots`=`Headshots`+%i", iHeadshots);
 					}
 					if(iBackstabs > 0)
 					{
 						g_Player[client].session[Stats_Backstabs] += iBackstabs;
-						len += Format(query[len], sizeof(query)-len, ", Backstabs = Backstabs+%i", iBackstabs);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Backstabs = Backstabs+%i", iBackstabs);
+						len += Format(query[len], sizeof(query)-len, ",`Backstabs`=`Backstabs`+%i", iBackstabs);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Backstabs`=`Backstabs`+%i", iBackstabs);
 					}
 					if(iDominated > 0)
 					{
 						g_Player[client].session[Stats_Dominations] += iDominated;
-						len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", iDominated);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Dominations = Dominations+%i", iDominated);
+						len += Format(query[len], sizeof(query)-len, ",`Dominations`=`Dominations`+%i", iDominated);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Dominations`=`Dominations`+%i", iDominated);
 					}
 					if(iRevenges > 0)
 					{
 						g_Player[client].session[Stats_Revenges] += iRevenges;
-						len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", iRevenges);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Revenges = Revenges+%i", iRevenges);
+						len += Format(query[len], sizeof(query)-len, ",`Revenges`=`Revenges`+%i", iRevenges);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Revenges`=`Revenges`+%i", iRevenges);
 					}
 					if(iNoscopes > 0)
 					{
 						g_Player[client].session[Stats_Noscopes] += iNoscopes;
-						len += Format(query[len], sizeof(query)-len, ", Noscopes = Noscopes+%i", iNoscopes);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Noscopes = Noscopes+%i", iNoscopes);
+						len += Format(query[len], sizeof(query)-len, ",`Noscopes`=`Noscopes`+%i", iNoscopes);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Noscopes`=`Noscopes`+%i", iNoscopes);
 					}
 					if(iTauntFrags > 0)
 					{
 						g_Player[client].session[Stats_TauntFrags] += iTauntFrags;
-						len += Format(query[len], sizeof(query)-len, ", TauntFrags = TauntFrags+%i", iTauntFrags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TauntFrags = TauntFrags+%i", iTauntFrags);
+						len += Format(query[len], sizeof(query)-len, ",`TauntFrags`=`TauntFrags`+%i", iTauntFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`TauntFrags`=`TauntFrags`+%i", iTauntFrags);
 					}
 					if(iPumpkinBombFrags > 0)
 					{
 						g_Player[client].session[Stats_PumpkinBombFrags] += iPumpkinBombFrags;
-						len += Format(query[len], sizeof(query)-len, ", PumpkinBombFrags = PumpkinBombFrags+%i", iPumpkinBombFrags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", PumpkinBombFrags = PumpkinBombFrags+%i", iPumpkinBombFrags);
+						len += Format(query[len], sizeof(query)-len, ",`PumpkinBombFrags`=`PumpkinBombFrags`+%i", iPumpkinBombFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`PumpkinBombFrags`=`PumpkinBombFrags`+%i", iPumpkinBombFrags);
 					}
 					if(iDeflectFrags > 0)
 					{
 						g_Player[client].session[Stats_Deflects] += iDeflectFrags;
-						len += Format(query[len], sizeof(query)-len, ", DeflectFrags = DeflectFrags+%i", iDeflectFrags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DeflectFrags = DeflectFrags+%i", iDeflectFrags);
+						len += Format(query[len], sizeof(query)-len, ",`DeflectFrags`=`DeflectFrags`+%i", iDeflectFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`DeflectFrags`=`DeflectFrags`+%i", iDeflectFrags);
 					}
 					if(iGibFrags > 0)
 					{
 						g_Player[client].session[Stats_GibFrags] += iGibFrags;
-						len += Format(query[len], sizeof(query)-len, ", GibFrags = GibFrags+%i", iGibFrags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", GibFrags = GibFrags+%i", iGibFrags);
+						len += Format(query[len], sizeof(query)-len, ",`GibFrags`=`GibFrags`+%i", iGibFrags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`GibFrags`=`GibFrags`+%i", iGibFrags);
 					}
 					if(iAirshots > 0)
 					{
@@ -3620,8 +3619,8 @@ Action MapTimer_GameTimer(Handle timer)
 					if(iCollaterals > 0)
 					{
 						g_Player[client].session[Stats_Collaterals] += iCollaterals;
-						len += Format(query[len], sizeof(query)-len, ", Collaterals = Collaterals+%i", iCollaterals);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Collaterals = Collaterals+%i", iCollaterals);
+						len += Format(query[len], sizeof(query)-len, ",`Collaterals`=`Collaterals`+%i", iCollaterals);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Collaterals`=`Collaterals`+%i", iCollaterals);
 						
 						if(g_Collateral.IntValue)
 						{
@@ -3631,77 +3630,77 @@ Action MapTimer_GameTimer(Handle timer)
 					if(iMidAirFrags > 0)
 					{
 						g_Player[client].session[Stats_MidAirFrags] += iMidAirFrags;
-						len += Format(query[len], sizeof(query)-len, ", MidAirFrags = MidAirFrags+%i", iMidAirFrags);
-						len_map += Format(query[len_map], sizeof(query_map)-len_map, ", MidAirFrags = MidAirFrags+%i", iMidAirFrags);
+						len += Format(query[len], sizeof(query)-len, ",`MidAirFrags`=`MidAirFrags`+%i", iMidAirFrags);
+						len_map += Format(query[len_map], sizeof(query_map)-len_map, ",`MidAirFrags`=`MidAirFrags`+%i", iMidAirFrags);
 					}
 					// mini-crit
 					if(iMiniCrits > 0)
 					{
 						g_Player[client].session[Stats_MiniCritFrags] += frags;
-						len += Format(query[len], sizeof(query)-len, ", MiniCritFrags = MiniCritFrags+%i", frags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniCritFrags = MiniCritFrags+%i", frags);
+						len += Format(query[len], sizeof(query)-len, ",`MiniCritFrags`=`MiniCritFrags`+%i", frags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`MiniCritFrags`=`MiniCritFrags`+%i", frags);
 					}
 					// crit 
 					if(iCrits > 0)
 					{
 						g_Player[client].session[Stats_CritFrags] += frags;
-						len += Format(query[len], sizeof(query)-len, ", CritFrags = CritFrags+%i", frags);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", CritFrags = CritFrags+%i", frags);
+						len += Format(query[len], sizeof(query)-len, ",`CritFrags`=`CritFrags`+%i", frags);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`CritFrags`=`CritFrags`+%i", frags);
 					}
 					// classes
 					if(tfClasses[TFClass_Scout] > 0)
 					{
 						g_Player[client].session[Stats_ScoutFrags] += tfClasses[TFClass_Scout];
-						len += Format(query[len], sizeof(query)-len, ", ScoutFrags = ScoutFrags+%i", tfClasses[TFClass_Scout]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", ScoutFrags = ScoutFrags+%i", tfClasses[TFClass_Scout]);
+						len += Format(query[len], sizeof(query)-len, ",`ScoutFrags`=`ScoutFrags`+%i", tfClasses[TFClass_Scout]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`ScoutFrags`=`ScoutFrags`+%i", tfClasses[TFClass_Scout]);
 					}
 					if(tfClasses[TFClass_Soldier] > 0)
 					{
 						g_Player[client].session[Stats_SoldierFrags] += tfClasses[TFClass_Soldier];
-						len += Format(query[len], sizeof(query)-len, ", SoldierFrags = SoldierFrags+%i", tfClasses[TFClass_Soldier]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SoldierFrags = SoldierFrags+%i", tfClasses[TFClass_Soldier]);
+						len += Format(query[len], sizeof(query)-len, ",`SoldierFrags`=`SoldierFrags`+%i", tfClasses[TFClass_Soldier]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SoldierFrags`=`SoldierFrags`+%i", tfClasses[TFClass_Soldier]);
 					}
 					if(tfClasses[TFClass_Pyro] > 0)
 					{
 						g_Player[client].session[Stats_PyroFrags] += tfClasses[TFClass_Pyro];
-						len += Format(query[len], sizeof(query)-len, ", PyroFrags = PyroFrags+%i", tfClasses[TFClass_Pyro]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", PyroFrags = PyroFrags+%i", tfClasses[TFClass_Pyro]);
+						len += Format(query[len], sizeof(query)-len, ",`PyroFrags`=`PyroFrags`+%i", tfClasses[TFClass_Pyro]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`PyroFrags`=`PyroFrags`+%i", tfClasses[TFClass_Pyro]);
 					}
 					if(tfClasses[TFClass_DemoMan] > 0)
 					{
 						g_Player[client].session[Stats_DemoFrags] += tfClasses[TFClass_DemoMan];
-						len += Format(query[len], sizeof(query)-len, ", DemoFrags = DemoFrags+%i", tfClasses[TFClass_DemoMan]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DemoFrags = DemoFrags+%i", tfClasses[TFClass_DemoMan]);
+						len += Format(query[len], sizeof(query)-len, ",`DemoFrags`=`DemoFrags`+%i", tfClasses[TFClass_DemoMan]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`DemoFrags`=`DemoFrags`+%i", tfClasses[TFClass_DemoMan]);
 					}
 					if(tfClasses[TFClass_Heavy] > 0)
 					{
 						g_Player[client].session[Stats_HeavyFrags] += tfClasses[TFClass_Heavy];
-						len += Format(query[len], sizeof(query)-len, ", HeavyFrags = HeavyFrags+%i", tfClasses[TFClass_Heavy]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", HeavyFrags = HeavyFrags+%i", tfClasses[TFClass_Heavy]);
+						len += Format(query[len], sizeof(query)-len, ",`HeavyFrags`=`HeavyFrags`+%i", tfClasses[TFClass_Heavy]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`HeavyFrags`=`HeavyFrags`+%i", tfClasses[TFClass_Heavy]);
 					}
 					if(tfClasses[TFClass_Engineer] > 0)
 					{
 						g_Player[client].session[Stats_EngieFrags] += tfClasses[TFClass_Engineer];
-						len += Format(query[len], sizeof(query)-len, ", EngieFrags = EngieFrags+%i", tfClasses[TFClass_Engineer]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", EngieFrags = EngieFrags+%i", tfClasses[TFClass_Engineer]);
+						len += Format(query[len], sizeof(query)-len, ",`EngieFrags`=`EngieFrags`+%i", tfClasses[TFClass_Engineer]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`EngieFrags`=`EngieFrags`+%i", tfClasses[TFClass_Engineer]);
 					}
 					if(tfClasses[TFClass_Medic] > 0)
 					{
 						g_Player[client].session[Stats_MedicFrags] += tfClasses[TFClass_Medic];
-						len += Format(query[len], sizeof(query)-len, ", MedicFrags = MedicFrags+%i", tfClasses[TFClass_Medic]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MedicFrags = MedicFrags+%i", tfClasses[TFClass_Medic]);
+						len += Format(query[len], sizeof(query)-len, ",`MedicFrags`=`MedicFrags`+%i", tfClasses[TFClass_Medic]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`MedicFrags`=`MedicFrags`+%i", tfClasses[TFClass_Medic]);
 					}
 					if(tfClasses[TFClass_Sniper] > 0)
 					{
 						g_Player[client].session[Stats_SniperFrags] += tfClasses[TFClass_Sniper];
-						len += Format(query[len], sizeof(query)-len, ", SniperFrags = SniperFrags+%i", tfClasses[TFClass_Sniper]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SniperFrags = SniperFrags+%i", tfClasses[TFClass_Sniper]);
+						len += Format(query[len], sizeof(query)-len, ",`SniperFrags`=`SniperFrags`+%i", tfClasses[TFClass_Sniper]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SniperFrags`=`SniperFrags`+%i", tfClasses[TFClass_Sniper]);
 					}
 					if(tfClasses[TFClass_Spy] > 0)
 					{
 						g_Player[client].session[Stats_SpyFrags] += tfClasses[TFClass_Spy];
-						len += Format(query[len], sizeof(query)-len, ", SpyFrags = SpyFrags+%i", tfClasses[TFClass_Spy]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SpyFrags = SpyFrags+%i", tfClasses[TFClass_Spy]);
+						len += Format(query[len], sizeof(query)-len, ",`SpyFrags`=`SpyFrags`+%i", tfClasses[TFClass_Spy]);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SpyFrags`=`SpyFrags`+%i", tfClasses[TFClass_Spy]);
 					}
 					
 					//
@@ -3712,12 +3711,12 @@ Action MapTimer_GameTimer(Handle timer)
 					{
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
-						len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
-						len_map += Format(query_map[len], sizeof(query_map)-len_map, ", Points = Points+%i", points);
+						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Points`=`Points`+%i", points);
 					}
 					
-					len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where ServerID = %i", g_ServerID);
+					len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `StatsID`='%i'", g_StatsID);
 					txn.AddQuery(query, queryId_frag_playerlist);
 					txn.AddQuery(query_map, queryId_frag_playerlist_MapUpdate);
 					
@@ -3728,12 +3727,12 @@ Action MapTimer_GameTimer(Handle timer)
 					char queryk[4096];
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "insert into `"...sql_table_kill_log..."`");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "ServerID");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "StatsID");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Attacker");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Victim");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Assister");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Timestamp");
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",WeaponItemdef");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Itemdefs");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Quantity");
 					
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Dominations");
@@ -3767,7 +3766,7 @@ Action MapTimer_GameTimer(Handle timer)
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ")");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "values");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "%i", g_ServerID);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "%i", g_StatsID);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", g_Player[client].auth);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_victim);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_assister);
@@ -3804,7 +3803,7 @@ Action MapTimer_GameTimer(Handle timer)
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_coatedtype);
 					
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ")");
-					txn.AddQuery(queryk);
+					txn.AddQuery(queryk, query_error_uniqueid_OnKillLogInsert);
 					
 					//
 					
@@ -3837,7 +3836,7 @@ Action MapTimer_GameTimer(Handle timer)
 					char query[1024];
 					len += Format(query[len], sizeof(query)-len, "insert into `"...sql_table_item_log..."`");
 					len += Format(query[len], sizeof(query)-len, "(");
-					len += Format(query[len], sizeof(query)-len, "ServerID");
+					len += Format(query[len], sizeof(query)-len, "StatsID");
 					len += Format(query[len], sizeof(query)-len, ",SteamID");
 					len += Format(query[len], sizeof(query)-len, ",Timestamp");
 					len += Format(query[len], sizeof(query)-len, ",itemdef");
@@ -3850,7 +3849,7 @@ Action MapTimer_GameTimer(Handle timer)
 					len += Format(query[len], sizeof(query)-len, ")");
 					len += Format(query[len], sizeof(query)-len, "values");
 					len += Format(query[len], sizeof(query)-len, "(");
-					len += Format(query[len], sizeof(query)-len, "'%i'", g_ServerID);
+					len += Format(query[len], sizeof(query)-len, "'%i'", g_StatsID);
 					len += Format(query[len], sizeof(query)-len, ",'%s'", g_Player[client].auth);
 					len += Format(query[len], sizeof(query)-len, ",'%i'", item.timestamp);
 					len += Format(query[len], sizeof(query)-len, ",'%i'", item.itemdef);
@@ -3952,48 +3951,48 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
-					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set BuildingsPlaced = BuildingsPlaced+%i", buildings);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set BuildingsPlaced = BuildingsPlaced+%i", buildings);
+					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `BuildingsPlaced`=`BuildingsPlaced`+%i", buildings);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set `BuildingsPlaced`=`BuildingsPlaced`+%i", buildings);
 					if(sentryguns > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", SentryGunsPlaced = SentryGunsPlaced+%i", sentryguns);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryGunsPlaced = SentryGunsPlaced+%i", sentryguns);
+						len += Format(query[len], sizeof(query)-len, ",`SentryGunsPlaced`=`SentryGunsPlaced`+%i", sentryguns);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SentryGunsPlaced`=`SentryGunsPlaced`+%i", sentryguns);
 					}
 					if(dispensers > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", DispensersPlaced = DispensersPlaced+%i", dispensers);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DispensersPlaced = DispensersPlaced+%i", dispensers);
+						len += Format(query[len], sizeof(query)-len, ",`DispensersPlaced`=`DispensersPlaced`+%i", dispensers);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`DispensersPlaced`=`DispensersPlaced`+%i", dispensers);
 					}
 					if(minisentryguns > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", MiniSentryGunsPlaced = MiniSentryGunsPlaced+%i", minisentryguns);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryGunsPlaced = MiniSentryGunsPlaced+%i", minisentryguns);
+						len += Format(query[len], sizeof(query)-len, ",`MiniSentryGunsPlaced`=`MiniSentryGunsPlaced`+%i", minisentryguns);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`MiniSentryGunsPlaced`=`MiniSentryGunsPlaced`+%i", minisentryguns);
 					}
 					if(teleporterentrances > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", TeleporterEntrancesPlaced = TeleporterEntrancesPlaced+%i", teleporterentrances);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleporterEntrancesPlaced = TeleporterEntrancesPlaced+%i", teleporterentrances);
+						len += Format(query[len], sizeof(query)-len, ",`TeleporterEntrancesPlaced`=`TeleporterEntrancesPlaced`+%i", teleporterentrances);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`TeleporterEntrancesPlaced`=`TeleporterEntrancesPlaced`+%i", teleporterentrances);
 					}
 					if(teleporterexits > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", TeleporterExitsPlaced = TeleporterExitsPlaced+%i", teleporterexits);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleporterExitsPlaced = TeleporterExitsPlaced+%i", teleporterexits);
+						len += Format(query[len], sizeof(query)-len, ",`TeleporterExitsPlaced`=`TeleporterExitsPlaced`+%i", teleporterexits);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`TeleporterExitsPlaced`=`TeleporterExitsPlaced+%i", teleporterexits);
 					}
 					if(sappers > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", SappersPlaced = SappersPlaced+%i", sappers);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SappersPlaced = SappersPlaced+%i", sappers);
+						len += Format(query[len], sizeof(query)-len, ",`SappersPlaced`=`SappersPlaced`+%i", sappers);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SappersPlaced`=`SappersPlaced`+%i", sappers);
 					}
 					if(points > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 						
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
 					}
 					
-					len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where ServerID = %i", g_ServerID);
+					len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `StatsID`='%i'", g_StatsID);
 					txn.AddQuery(query, queryId_object_placed);
 					txn.AddQuery(query_map, queryId_object_placed_MapUpdate);
 					sql.Execute(txn, _, TXNEvent_OnFailed, GetClientUserId(client));
@@ -4109,48 +4108,48 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
-					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set BuildingsDestroyed = BuildingsDestroyed+%i", buildings);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set BuildingsDestroyed = BuildingsDestroyed+%i", buildings);
+					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `BuildingsDestroyed`=`BuildingsDestroyed`+%i", buildings);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set `BuildingsDestroyed`=`BuildingsDestroyed`+%i", buildings);
 					if(sentryguns > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", SentryGunsDestroyed = SentryGunsDestroyed+%i", sentryguns);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SentryGunsDestroyed = SentryGunsDestroyed+%i", sentryguns);
+						len += Format(query[len], sizeof(query)-len, ",`SentryGunsDestroyed`=`SentryGunsDestroyed`+%i", sentryguns);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SentryGunsDestroyed`=`SentryGunsDestroyed`+%i", sentryguns);
 					}
 					if(dispensers > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", DispensersDestroyed = DispensersDestroyed+%i", dispensers);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", DispensersDestroyed = DispensersDestroyed+%i", dispensers);
+						len += Format(query[len], sizeof(query)-len, ",`DispensersDestroyed`=`DispensersDestroyed`+%i", dispensers);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`DispensersDestroyed`=`DispensersDestroyed`+%i", dispensers);
 					}
 					if(minisentryguns > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+%i", minisentryguns);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", MiniSentryGunsDestroyed = MiniSentryGunsDestroyed+%i", minisentryguns);
+						len += Format(query[len], sizeof(query)-len, ",`MiniSentryGunsDestroyed`=`MiniSentryGunsDestroyed`+%i", minisentryguns);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`MiniSentryGunsDestroyed`=`MiniSentryGunsDestroyed`+%i", minisentryguns);
 					}
 					if(teleporterentrances > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+%i", teleporterentrances);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleporterEntrancesDestroyed = TeleporterEntrancesDestroyed+%i", teleporterentrances);
+						len += Format(query[len], sizeof(query)-len, ",`TeleporterEntrancesDestroyed`=`TeleporterEntrancesDestroyed`+%i", teleporterentrances);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`TeleporterEntrancesDestroyed`=`TeleporterEntrancesDestroyed`+%i", teleporterentrances);
 					}
 					if(teleporterexits > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", TeleporterExitsDestroyed = TeleporterExitsDestroyed+%i", teleporterexits);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", TeleporterExitsDestroyed = TeleporterExitsDestroyed+%i", teleporterexits);
+						len += Format(query[len], sizeof(query)-len, ",`TeleporterExitsDestroyed`=`TeleporterExitsDestroyed`+%i", teleporterexits);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`TeleporterExitsDestroyed`=`TeleporterExitsDestroyed`+%i", teleporterexits);
 					}
 					if(sappers > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", SappersDestroyed = SappersDestroyed+%i", sappers);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", SappersDestroyed = SappersDestroyed+%i", sappers);
+						len += Format(query[len], sizeof(query)-len, ",`SappersDestroyed`=`SappersDestroyed`+%i", sappers);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SappersDestroyed`=`SappersDestroyed`+%i", sappers);
 					}
 					if(points > 0)
 					{
-						len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 						
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
 					}
 					
-					len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where ServerID = %i", g_ServerID);
+					len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `StatsID`='%i'", g_StatsID);
 					txn.AddQuery(query, queryId_object_destroyed);
 					txn.AddQuery(query_map, queryId_object_destroyed_MapUpdate);
 					sql.Execute(txn, _, TXNEvent_OnFailed, GetClientUserId(client));
@@ -4215,15 +4214,15 @@ Action MapTimer_GameTimer(Handle timer)
 							{
 								int len;
 								char query[256];
-								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Coated = Coated+%i", jars);
+								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Coated`=`Coated`+%i", jars);
 								if((points = g_Jarated.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
-									len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+									len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 									g_Player[client].session[Stats_Points] += points;
 									g_Player[client].points += points;
 								}
-								len += Format(query[len], sizeof(query)-len, ", CoatedPiss = CoatedPiss+%i", jars);
-								len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+								len += Format(query[len], sizeof(query)-len, ",`CoatedPiss`=`CoatedPiss`+%i", jars);
+								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerJarated);
 								
 								g_Game[client].bPlayerJarated = true;
@@ -4253,15 +4252,15 @@ Action MapTimer_GameTimer(Handle timer)
 							{
 								int len;
 								char query[256];
-								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Coated = Coated+%i", jars);
+								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Coated`=`Coated`+%i", jars);
 								if((points = g_Milked.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
-									len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+									len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 									g_Player[client].session[Stats_Points] += points;
 									g_Player[client].points += points;
 								}
-								len += Format(query[len], sizeof(query)-len, ", CoatedMilk = CoatedMilk+%i", jars);
-								len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+								len += Format(query[len], sizeof(query)-len, ",`CoatedMilk`=`CoatedMilk`+%i", jars);
+								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerMilked);
 								
 								g_Game[client].bPlayerMilked = true;
@@ -4294,12 +4293,12 @@ Action MapTimer_GameTimer(Handle timer)
 								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Coated = Coated+%i", jars);
 								if((points = g_GasPassed.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
-									len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+									len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 									g_Player[client].session[Stats_Points] += points;
 									g_Player[client].points += points;
 								}
-								len += Format(query[len], sizeof(query)-len, ", CoatedGasoline = CoatedGasoline+%i", jars);
-								len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+								len += Format(query[len], sizeof(query)-len, ",`CoatedGasoline`=`CoatedGasoline`+%i", jars);
+								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerGasPassed);
 								
 								g_Game[client].bPlayerGasPassed = true;
@@ -4348,14 +4347,14 @@ Action MapTimer_GameTimer(Handle timer)
 						int points;
 						int len;
 						char query[256];
-						len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Extinguished = Extinguished+%i", exts);
+						len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Extinguished`=`Extinguished`+%i", exts);
 						if((points = g_Extinguished.IntValue * exts) > 0 && !g_Player[client].bPenalty)
 						{
-							len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+							len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 							g_Player[client].session[Stats_Points] += points;
 							g_Player[client].points += points;
 						}
-						len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+						len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 						sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerExtinguished);
 						
 						g_Game[client].bExtEvent = true;
@@ -4388,14 +4387,14 @@ Action MapTimer_GameTimer(Handle timer)
 				int points;
 				int len;
 				char query[256];
-				len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set RobotsFragged = RobotsFragged+%i", robots);
+				len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `RobotsFragged`=`RobotsFragged`+%i", robots);
 				if((points = g_MvM[MvM_FragRobot].IntValue * robots) > 0 && !g_Player[client].bPenalty)
 				{
-					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+					len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 					g_Player[client].session[Stats_Points] += points;
 					g_Player[client].points += points;
 				}
-				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
+				len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 				sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnRobotsFragged);
 				
 				if(points > 0 && !g_Player[client].bPenalty)

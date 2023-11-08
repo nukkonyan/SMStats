@@ -1,7 +1,7 @@
 create table if not exists `playerlist_tf2`
 (
 	`ID` int not null auto_increment,
-	`ServerID` int not null default '1',
+	`StatsID` int not null default '1',
 	`Points` int not null default '1000',
 	`LastConnectedName` int not null default '0',
 	`LastConnectedTime` int not null default '0',

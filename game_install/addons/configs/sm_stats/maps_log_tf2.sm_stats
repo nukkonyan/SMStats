@@ -1,7 +1,8 @@
 create table if not exists `maps_log_tf2`
 (
 	`ID` int not null auto_increment,
-	`ServerID` int(4) not null default '1',
+	`StatsID` int(4) not null default '1',
+	`Points` int not null default '0',
 	`MapName` varchar(64) not null default '',
 	`PlayTime` int not null default '0',
 	`LastPlayedTime` int not null default '0',

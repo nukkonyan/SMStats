@@ -1,7 +1,7 @@
 create table if not exists `item_log_tf2`
 (
 	`ID` int not null auto_increment,
-	`ServerID` int(4) not null default '1',
+	`StatsID` int(4) not null default '1',
 	`SteamID` varchar(28) not null default '',
 	`Timestamp` int not null default '0',
 	`itemdef` int not null default '-1',

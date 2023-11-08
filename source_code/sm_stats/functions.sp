@@ -81,7 +81,7 @@ stock int GetClientPosition(const char[] auth)
 	if(!!sql)
 	{
 		char query[256];
-		Format(query, sizeof(query), "select Points from `"...sql_table_playerlist..."` where SteamID = '%s' and ServerID = %i", auth, g_ServerID);
+		Format(query, sizeof(query), "select Points from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'", auth, g_StatsID);
 		SQL_LockDatabase(sql); // lock database as it's non-threaded.
 		DBResultSet results = SQL_Query(sql, query);
 		SQL_UnlockDatabase(sql);
@@ -99,7 +99,7 @@ stock int GetClientPosition(const char[] auth)
 			{
 				int points = results.FetchInt(0);
 				
-				Format(query, sizeof(query), "select count(*) from `"...sql_table_playerlist..."` where Points >= %i and ServerID = %i", points, g_ServerID);
+				Format(query, sizeof(query), "select count(*) from `"...sql_table_playerlist..."` where Points >= %i and g_StatsID='%i'", points, g_StatsID);
 				SQL_LockDatabase(sql);
 				results = SQL_Query(sql, query);
 				SQL_UnlockDatabase(sql);
@@ -139,7 +139,7 @@ stock int GetTablePlayerCount()
 	if(!!sql)
 	{
 		char query[256];
-		Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where ServerID = %i", g_ServerID);
+		Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `StatsID`='%i'", g_StatsID);
 		
 		SQL_LockDatabase(sql);
 		DBResultSet results = SQL_Query(sql, query);
@@ -1140,7 +1140,7 @@ stock void Send_Player_Connected(int client)
 	int points = g_Player[client].points;
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `ServerID`='%i'", g_ServerID);
+	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `StatsID`='%i'", g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(points);
@@ -1231,7 +1231,7 @@ stock void Send_Player_Connected_CheckTop10(int client)
 	strcopy(name, sizeof(name), g_Player[client].name);
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `ServerID`='%i' order by `Points` limit 10 desc", g_ServerID);
+	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `StatsID`='%i' order by `Points` limit 10 desc", g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(strlen(auth)+1);
@@ -1345,7 +1345,7 @@ stock void Send_Player_Disconnected(int client, const char[] event_reason)
 	strcopy(name, sizeof(name), g_Player[client].name);
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID`,`Points` from `"...sql_table_playerlist..."` where `ServerID`='%i'", g_ServerID);
+	Format(query, sizeof(query), "select `SteamID`,`Points` from `"...sql_table_playerlist..."` where `StatsID`='%i'", g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(strlen(auth)+1);
 	pack.WriteString(auth);

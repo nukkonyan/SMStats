@@ -33,7 +33,7 @@ char g_sndConnectedGeneric[96]; // play a sound when a player connects.
 bool bCachedSndConTop10;
 bool bCachedSndConTop1;
 bool bCachedSndConGeneric;
-ConVar g_ServerID; // server id.
+ConVar g_StatsID; // stats id.
 ConVar g_MinPlayers; // minimum required players for statistical tracking.
 ConVar g_AllowBots; // allow bots.
 ConVar g_AllowAbuse; // allow abuse of commands during events.
@@ -60,7 +60,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	
 	// internal
 	CreateNative("_sm_stats_get_chattag", Native_GetChatTag);
-	CreateNative("_sm_stats_get_serverid", Native_GetServerID);
+	CreateNative("_sm_stats_get_statsid", Native_GetStatsID);
 	CreateNative("_sm_stats_get_sql", Native_GetSQL);
 	CreateNative("_sm_stats_get_minplayers", Native_GetMinPlayers);
 	CreateNative("_sm_stats_get_deathpoints", Native_GetDeathPoints);
@@ -90,8 +90,8 @@ public void OnPluginStart()
 	
 	//
 	
-	g_ServerID = CreateConVar("sm_stats_serverid", "1", "SM Stats - Server ID.", _, true, 1.0);
-	g_ServerID.AddChangeHook(OnUpdatedServerID);
+	g_StatsID = CreateConVar("sm_stats_statsid", "1", "SM Stats - Stats ID.", _, true, 1.0);
+	g_StatsID.AddChangeHook(OnUpdatedStatsID);
 	
 	g_AllowBots = CreateConVar("sm_stats_allow_bots", "1", "SM Stats - Allow bots.", _, true, _, true, 1.0);
 	g_AllowBots.AddChangeHook(OnUpdatedAllowBots);
@@ -159,11 +159,11 @@ void OnUpdatedChatTag(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 	Format(g_ChatTag, sizeof(g_ChatTag), "%s{default}", newvalue);
 	SendUpdatedFwdValue(SMStatsUpdated_ChatTag, g_ChatTag);
 }
-void OnUpdatedServerID(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+void OnUpdatedStatsID(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
-	char str_value[11];
+	char str_value[4];
 	IntToString(cvar.IntValue, str_value, sizeof(str_value));
-	SendUpdatedFwdValue(SMStatsUpdated_ServerID, str_value);
+	SendUpdatedFwdValue(SMStatsUpdated_StatsID, str_value);
 }
 void OnUpdatedAllowBots(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
@@ -310,9 +310,9 @@ any Native_GetChatTag(Handle plugin, int params)
 {
 	return SetNativeString(1, g_ChatTag, GetNativeCell(2));
 }
-any Native_GetServerID(Handle plugin, int params)
+any Native_GetStatsID(Handle plugin, int params)
 {
-	return g_ServerID.IntValue;
+	return g_StatsID.IntValue;
 }
 any Native_GetSQL(Handle plugin, int params)
 {
