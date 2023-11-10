@@ -36,7 +36,7 @@
       - [Neigeflocon](https://steamcommunity.com/profiles/76561197962831152) - Turkish translations.
 
 ### To-do
-   - [x] Update Stats Me
+   - [x] Update Stats Menu
       -  [x] Implement sm_stats <top index | steamid > to manually check statistics of a particular player.
          -  [x] sm_stats 30 displays **Top 30 current player.**
          -  [x] sm_stats "STEAM_0:0:1234" **displays the player through steamid.**
