@@ -26,7 +26,7 @@
       - Games supported so far:
           - Team Fortress 2 (works very well, some bugs and issues are to be expected)
       - Expected early testing build
-          - Somewhere between end of October and somewhere early-mid november.
+          - Somewhere between end of October and somewhere between mid november and early-mid december.
           - This will begin with Team Fortress 2 due to stability reasons.
       - Lookin to assist in development?
           - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
