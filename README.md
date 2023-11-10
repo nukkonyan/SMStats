@@ -38,8 +38,8 @@
 ### To-do
    - [x] Update Stats Menu
       -  [x] Implement sm_stats <top index | steamid > to manually check statistics of a particular player.
-         -  [x] sm_stats 30 displays **Top 30 current player.**
-         -  [x] sm_stats "STEAM_0:0:1234" **displays the player through steamid.**
+         -  [x] sm_stats 30 **displays Top 30 current player.**
+         -  [x] sm_stats "STEAM_0:0:1234" **displays the Top player through steamid.**
    - [ ] Implement spam-detection with a penalty (exploiting loopholes to farm points). (Prevent gaining points).
    - [ ] Implement custom achievements functionality.
    - [ ] Implement functional K-A-D ratio (Kill-Assist-Death ratio).
