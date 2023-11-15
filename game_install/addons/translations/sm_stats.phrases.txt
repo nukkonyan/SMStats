@@ -1,6 +1,6 @@
 "Phrases"
 {
-	// if several languages share same translation as english, it will be used by auto if no translation is specified the other language.
+	// if more than 1 language share same translation as english, it will be used automatically if no translation is specified in the other language.
 	// The ' #|# ' is the plural-splitter. For proper translations. Inspired by Counter-Strike 2 source 2 translation syntaxing.
 
 	//================================//
@@ -102,48 +102,71 @@
 	}
 	"#SMStats_PlayTimeFormat_Scenario0"
 	{
-		"en" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
-		"jp" "{YEARS}{MONTHS}{DAYS}{HOURS}{MINUTES}{SECONDS}"
-		"no" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
-		"sv" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
-		"tr" "{YEARS}, {MONTHS}, {DAYS}, {HOURS}, {MINUTES} ve {SECONDS}"
+		// {1} years
+		// {2} months
+		// {3} days
+		// {4} hours
+		// {5} minutes
+		// {6} seconds
+		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s},{6:s}"
+		"en" "{1}, {2}, {3}, {4}, {5} and {6}"
+		"jp" "{1}{2}{3}{4}{5}{6}"
+		"no" "{1}, {2}, {3}, {4}, {5} og {6}"
+		"sv" "{1}, {2}, {3}, {4}, {5} och {6}"
+		"tr" "{1}, {2}, {3}, {4}, {5} ve {6}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario1"
 	{
-		"en" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
-		"jp" "{MONTHS}{DAYS}{HOURS}{MINUTES}{SECONDS}"
-		"no" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
-		"sv" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
-		"tr" "{MONTHS}, {DAYS}, {HOURS}, {MINUTES} ve {SECONDS}"
+		// {1} months
+		// {2} days
+		// {3} hours
+		// {4} minutes
+		// {5} seconds
+		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s}"
+		"en" "{1}, {2}, {3}, {4} and {5}"
+		"jp" "{1}{2}{3}{4}{5}"
+		"no" "{1}, {2}, {3}, {4} og {5}"
+		"sv" "{1}, {2}, {3}, {4} och {5}"
+		"tr" "{1}, {2}, {3}, {4} ve {5}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario2"
 	{
-		"en" "{DAYS}, {HOURS}, {MINUTES} and {SECONDS}"
-		"jp" "{DAYS}{HOURS}{MINUTES}{SECONDS}"
-		"no" "{DAYS}, {HOURS}, {MINUTES} og {SECONDS}"
-		"sv" "{DAYS}, {HOURS}, {MINUTES} och {SECONDS}"
-		"tr" "{DAYS}, {HOURS}, {MINUTES} ve {SECONDS}"
+		// {1} days
+		// {2} hours
+		// {3} minutes
+		// {4} seconds
+		"#format" "{1:s},{2:s},{3:s},{4:s}"
+		"en" "{1}, {2}, {3} and {4}"
+		"jp" "{1}{2}{3}{4}"
+		"no" "{1}, {2}, {3} og {4}"
+		"sv" "{1}, {2}, {3} och {4}"
+		"tr" "{1}, {2}, {3} ve {4}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario3"
 	{
-		"en" "{HOURS}, {MINUTES} and {SECONDS}"
-		"jp" "{HOURS}{MINUTES}{SECONDS}"
-		"no" "{HOURS}, {MINUTES} og {SECONDS}"
-		"sv" "{HOURS}, {MINUTES} och {SECONDS}"
-		"tr" "{HOURS}, {MINUTES} ve {SECONDS}"
+		// {1} hours
+		// {2} minutes
+		// {3} seconds
+		"#format" "{1:s},{2:s},{3:s}"
+		"en" "{1}, {2} and {3}"
+		"jp" "{1}{2}{3}"
+		"no" "{1}, {2} og {3}"
+		"sv" "{1}, {2} och {3}"
+		"tr" "{1}, {2} ve {3}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario4"
 	{
-		"en" "{MINUTES} and {SECONDS}"
-		"jp" "{MINUTES}{SECONDS}"
-		"no" "{MINUTES} og {SECONDS}"
-		"sv" "{MINUTES} och {SECONDS}"
-		"tr" "{MINUTES} ve {SECONDS}"
+		// {1} minutes
+		// {2} seconds
+		"#format" "{1:s},{2:s}"
+		"en" "{1} and {2}"
+		"jp" "{1}{2}"
+		"no" "{1} og {2}"
+		"sv" "{1} och {2}"
+		"tr" "{1} ve {2}"
 	}
-	"#SMStats_PlayTimeFormat_Scenario5"
-	{
-		"en" "{SECONDS}"
-	}
+	//"#SMStats_PlayTimeFormat_Scenario5" // seconds
+
 	"#SMStats_TimeFormat_LastConnected"
 	{
 		// Year - {YEAR}
@@ -247,9 +270,9 @@
 		// {3} player points
 		// {4} penalty time format
 		// {5} points reverted
-		"#format" "{1:s},{2:i},{3:s},{4:s},{5:i}"
-		"en" "{1} (Pos #{2}, {3}) {yellow}was given {4} penalty due to spam abuse. Abused {5} points were reverted."
-		"sv" "{1} (Pos #{2}, {3}) {yellow}blev straffad {4} på grund av spam-missbruka spam. Missbrukade {5} poäng återställdes."
+		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
+		"en" "{1} (Pos #{2}, {3}) {yellow}was given {4} penalty due to spam abuse. Abused {5} were reverted."
+		"sv" "{1} (Pos #{2}, {3}) {yellow}blev straffad {4} på grund av spam-missbruka spam. Missbrukade {5} återställdes."
 		"tr" "{1} (Pozisyon #{2}, {3}) spam yüzünden {yellow}{4} süre ceza aldı. Suistimal edilen {5} silindi."
 	}
 	"#SMStats_Points_Penalty"
@@ -793,7 +816,7 @@
 	    "sv" "Av#|#På"
 	    "tr" "Kapalı#|#Açık"
 	}
-	"#SMStats_Points_PluralSplitter" // points plural splitter false#|#true (non-plural#|#plural)
+	"#SMStats_Points" // points plural splitter false#|#true (non-plural#|#plural)
 	{
 	    // player points
 	    // this will automatically become 'x point or 'x points'
@@ -803,6 +826,16 @@
 	    "nl" " punt#|# punten"
 	    "no" " poeng"
 	    "tr" " puan"
+	}
+	"#SMStats_Points_Plus"
+	{
+		"#format" "{1:i}"
+		"en" "{green}+{1}{default}"
+	}
+	"#SMStats_Points_Minus"
+	{
+		"#format" "{1:i}"
+		"en" "{red}-{1}{default}"
 	}
 	"#SMStats_FeatureUnavailable"
 	{
@@ -831,100 +864,98 @@
 	}
 	"#SMStats_FragEvent_Type2" //Noscope headshot
 	{
-	    "en" "with a {green}Noscope Headshot"
-	    "sv" "med en {green}Noscope Huvudskott"
+	    "en" "{green}Noscope Headshot"
+	    "sv" "{green}icke-zoomningshuvudskott"
 	    "tr" "{green}Duman içinden {default}ve {green}kafadan"
 	}
 	"#SMStats_FragEvent_Type3" //Headshot.
 	{
-	    "en" "with a {green}Headshot"
-	    "sv" "med ett {green}Huvudskott"
+	    "en" "{green}Headshot"
+	    "sv" "{green}Huvudskott"
 	    "tr" "{green}Kafadan"
 	}
 	"#SMStats_FragEvent_Type4" //Noscope.
 	{
-	    "en" "with a {green}Noscope"
-	    "sv" "med ett {green}icke-zoomingsskott"
+	    "en" "{green}Noscope"
+	    "sv" "{green}icke-zoomningsskott"
 	    "tr" "{green}Dürbünsüz"
 	}
 	"#SMStats_FragEvent_Type5" //Backstab.
 	{
-	    "en" "with a {green}Backstab"
-	    "sv" "med ett {green}Rygghugg"
+	    "en" "{green}Backstab"
+	    "sv" "{green}Rygghugg"
 	    "tr" "{green}Sırtından bıçaklayarak"
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
-	    "en" "with an {green}Airshot"
-	    "sv" "med ett {green}Luftskott"
+	    "en" "{green}Airshot"
+	    "sv" "{green}Luftskott"
 	    "tr" "{green}Havadan"
 	}
 	"#SMStats_FragEvent_Type7" //Deflect frag.
 	{
-	    "en" "with a {green}Deflect Frag"
-	    "sv" "med ett {green}Deflekteringsfrag"
+	    "en" "{green}Deflect"
+	    "sv" "{green}Deflektering"
 	    "tr" "Saldırıyı {green}Püskürterek"
 	}
 	"#SMStats_FragEvent_Type8" //Teleport frag.
 	{
-	    "en" "with a {green}Telefrag"
-	    "sv" "med ett {green}Telefrag"
+	    "en" "{green}Telefrag"
 	    "tr" "{green}Işınlanarak"
 	}
 	"#SMStats_FragEvent_Type9" //Taunt frag.
 	{
-	    "en" "with a {green}Taunt Frag"
-	    "sv" "med ett {green}Hånsfrag"
+	    "en" "{green}Taunt Frag"
+	    "sv" "{green}Hånsfrag"
 	    "tr" "{green}Alay ederek"
 	}
 	"#SMStats_FragEvent_Type10" //Sentry Gun frag.
 	{
-	    "en" "with a {green}Sentry Gun"
-	    "sv" "med ett {green}Vaktgevär"
+	    "en" "{green}Sentry Gun"
+	    "sv" "{green}Vaktgevär"
 	}
 	"#SMStats_FragEvent_Type11" //Mini-Sentry Gun frag.
 	{
-	    "en" "with a {green}Mini-Sentry Gun"
-	    "sv" "med ett {green}Mini-Vaktgevär"
+	    "en" "{green}Mini-Sentry Gun"
+	    "sv" "{green}Mini-Vaktgevär"
 	}
 	"#SMStats_FragEvent_Type12" //Wrangled Sentry Gun frag.
 	{
-	    "en" "with a {green}Wrangled Sentry Gun"
-	    "sv" "med en {green}Förvrängd Vaktgevär"
+	    "en" "{green}Wrangled Sentry Gun"
+	    "sv" "{green}Förvrängd Vaktgevär"
 	}
 	"#SMStats_FragEvent_Type13" //Wrangled Mini-Sentry Gun frag.
 	{
-	    "en" "with a {green}Wrangled Mini-Sentry Gun"
-	    "sv" "med en {green}Förvrängd Mini-Vaktgevär"
+	    "en" "{green}Wrangled Mini-Sentry Gun"
+	    "sv" "{green}Förvrängd Mini-Vaktgevär"
 	}
 	"#SMStats_FragEvent_Type14" // Pumpkin Bomb frag.
 	{
-	    "en" "with a {green}Pumpkin Bomb"
-	    "sv" "med en {green}Pumpa Bomb"
+	    "en" "{green}Pumpkin Bomb"
+	    "sv" "{green}Pumpa Bomb"
 	    "tr" "{green}Kabak Bombası {default}ile"
 	}
 	"#SMStats_FragEvent_Type15" //Collateral.
 	{
-	    "en" "with a {green}Collateral"
-	    "sv" "med en {green}Kollateral"
+	    "en" "{green}Collateral"
+	    "sv" "{green}Kollateral"
 	    "tr" "{green}Doğal yollar {default}ile"
 	}
 	"#SMStats_FragEvent_Type16" //Grenade frag.
 	{
-	    "en" "with a {green}Grenade Frag"
-	    "sv" "med en {green}Granat Frag"
+	    "en" "{green}Grenade Frag"
+	    "sv" "{green}Granat Frag"
 	    "tr" "{green}El Bombası {default}ile"
 	}
 	"#SMStats_FragEvent_Type17" //Bomb/C4 frag.
 	{
-	    "en" "with a {green}Bomb Frag"
-	    "sv" "med en {green}Bomb Frag"
+	    "en" "{green}Bomb Frag"
 	    "tr" "{green}C4 {default}ile"
 	}
 	"#SMStats_FragEvent_Type18" //Blinded frag.
 	{
-	    "en" "while {green}Blinded"
-	    "sv" "medans {green}Förblindad"
+	    "en" "{green}Blinded"
+	    "sv" "{green}Förblindad"
 	    "tr" "{green}Kör {default}iken"
 	}
 
@@ -937,8 +968,8 @@
 		// {4} fragger name
 	    // {5} victim fragged
 	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-	    "en" "{1} ({2}) Earned {3} for assisting {4} in fragging {5}."
-	    "sv" "{1} ({2}) Belönades med {3} för att assistera {4} att fragga {5}."
+	    "en" "{1} ({2}) {3} assisting {4} fragging {5}."
+	    "sv" "{1} ({2}) {3} assisterar {4} fragga {5}."
 	    "tr" "{1} ({2}), {4} oyuncusunun {5} oyuncusunu öldürmesine yardım ederek {3} kazandın."
 	}
 	"#SMStats_FragEvent_Death" //Death.
@@ -947,8 +978,8 @@
 	    // {2} player points
 	    // {3} points earned
 	    "#format" "{1:s},{2:i},{3:s}"
-	    "en" "{1} ({2}) Lost {3} for dying."
-	    "sv" "{1} ({2}) Förlorade {3} på grund av att dö."
+	    "en" "{1} ({2}) {3} for dying."
+	    "sv" "{1} ({2}) {3} på grund av att dö."
 	    "tr" "{1} ({2}), öldüğün için {3} kaybettin."
 	}
 	"#SMStats_FragEvent_Special" //Special kill event.
@@ -959,8 +990,8 @@
 	    // {4} victim name
 	    // {5} special frag event
 	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-	    "en" "{1} ({2}) Earned {3} for fragging {4} {5}."
-	    "sv" "{1} ({2}) Belönades med {3} för att {4} {5}."
+	    "en" "{1} ({2}) {3} fragging {4} ({5})."
+	    "sv" "{1} ({2}) {3} fragga {4} {5}."
 	    "tr" "{1} ({2}), {4} oyuncusunu {5} öldürdüğün için {3} kazandın."
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
@@ -970,8 +1001,8 @@
 	    // {3} points earned
 	    // {4} victim name
 	    "#format" "{1:s},{2:i},{3:s},{4:s}"
-	    "en" "{1} ({2}) Earned {3} for fragging {4}."
-	    "sv" "{1} ({2}) Belönades med {3} för att fragga {4}."
+	    "en" "{1} ({2}) {3} fragging {4}."
+	    "sv" "{1} ({2}) {3} fragga {4}."
 	    "tr" "{1} ({2}), {4} oyuncusunu öldürdüğün için {3} kazandın."
 	}
 	"#SMStats_FragEventError_NewItem"

@@ -1,14 +1,3 @@
-enum TFBuilding
-{
-	TFBuilding_Invalid = -1,
-	TFBuilding_Sentrygun = 0,
-	TFBuilding_Dispenser = 1,
-	TFBuilding_Teleporter_Entrance = 2,
-	TFBuilding_Teleporter_Exit = 3,
-	TFBuilding_MiniSentry = 4,
-	TFBuilding_Sapper = 5
-}
-
 stock bool IsValidClient(int client, bool bIsFakeClient=true)
 {
 	if(client < 1 || client > MaxPlayers)
@@ -313,7 +302,7 @@ void CheckActivePlayers()
 		}
 	}
 	
-	if(DEBUG) PrintToServer("CheckActivePlayers() : %i players out of required %i"
+	if(bDebug) PrintToServer("CheckActivePlayers() : %i players out of required %i"
 	... "\n bStatsActive : %s"
 	... "\n bRoundActive : %s"
 	, players, g_MinPlayers
@@ -325,24 +314,24 @@ stock bool IsValidStats()
 {
 	if(!bLoaded)
 	{
-		if(DEBUG) PrintToServer("IsValidStats() - bLoaded : false");
+		if(bDebug) PrintToServer("IsValidStats() - bLoaded : false");
 		return false;
 	}
 	else if(!bStatsActive)
 	{
-		if(DEBUG) PrintToServer("IsValidStats() - bStatsActive : false");
+		if(bDebug) PrintToServer("IsValidStats() - bStatsActive : false");
 		return false;
 	}
 	else if(!bRoundActive)
 	{
-		if(DEBUG) PrintToServer("IsValidStats() - bRoundActive : false");
+		if(bDebug) PrintToServer("IsValidStats() - bRoundActive : false");
 		return false;
 	}
 	else if(bWarmupActive)
 	{
 		if(!bAllowWarmup)
 		{
-			if(DEBUG) PrintToServer("IsValidstats() - bWarmupActive : false (not allowed)");
+			if(bDebug) PrintToServer("IsValidstats() - bWarmupActive : false (not allowed)");
 			return false;
 		}
 	}
@@ -435,6 +424,11 @@ stock void GetMultipleTargets(int client, const int[] list, int counter, char[] 
  ========================
 */
 
+/**
+ *	Frag scenario | Used for translations.
+ *	The kill events will be merged together automatically.
+ *	Example: Headshot whilst Mid-Air or Headshot Through Smoke whilst Mid-Air, etc.. (You get it)
+ */
 enum
 {
 	Frag_MidAir = 0,
@@ -457,12 +451,6 @@ enum
 	Frag_Bomb = 17,
 	Frag_Blinded = 18,
 }
-
-/**
- *	Frag scenario | Used for translations.
- *	The kill events will be merged together automatically.
- *	Example: Headshot whilst Mid-Air or Headshot Through Smoke whilst Mid-Air, etc.. (You get it)
- */
 char Frag_Type[][] = {
 /*0*/"#SMStats_FragEvent_Type0", //Mid-Air.
 /*1*/"#SMStats_FragEvent_Type1", //Through Smoke.
@@ -494,10 +482,10 @@ char Frag_Type[][] = {
  */
 stock void PrepareFragMessage(int client, const char[] victim, int points, int frags)
 {
-	if(DEBUG) PrintToServer("%s PrepareFragMessage(client %i, victim '%s', points %i, frags %i)", core_chattag, client, victim, points, frags);
+	if(bDebug) PrintToServer("%s PrepareFragMessage(client %i, victim '%s', points %i, frags %i)", core_chattag, client, victim, points, frags);
 	char buffer[196];
 	
-	/* Lë ol' messy code but has to be it. */
+	/* Le ol' messy code but has to be it. */
 	
 	/* Deflect kill */
 	if(g_Player[client].fragmsg.Deflected)
@@ -511,16 +499,16 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 				case true:
 				{
 					Format(buffer, sizeof(buffer), "%T{default} %T{default} %T{default}"
+					, Frag_Type[Frag_Deflect], client
 					, Frag_Type[Frag_Headshot], client
-					, Frag_Type[Frag_Airshot], client
-					, Frag_Type[Frag_Deflect], client);
+					, Frag_Type[Frag_Airshot], client);
 				}
 				/* Airshot deflect kill */
 				case false:
 				{
 					Format(buffer, sizeof(buffer), "%T{default} %T{default}"
-					, Frag_Type[Frag_Airshot], client
-					, Frag_Type[Frag_Deflect], client);
+					, Frag_Type[Frag_Deflect], client
+					, Frag_Type[Frag_Airshot], client);
 				}
 			}
 		}
@@ -532,8 +520,8 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 				case true:
 				{
 					Format(buffer, sizeof(buffer), "%T{default} %T{default}"
-					, Frag_Type[Frag_Headshot], client
-					, Frag_Type[Frag_Deflect], client);
+					, Frag_Type[Frag_Deflect], client
+					, Frag_Type[Frag_Headshot], client);
 				}
 				/* Deflect kill */
 				case false:
@@ -1024,8 +1012,8 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		, Frag_Type[Frag_MidAir], client);
 	}
 	
-	char points_plural[32];
-	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+	char points_plural[64];
+	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_On);
 	
 	switch(strlen(buffer) > 0)
 	{
@@ -1067,29 +1055,62 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 	g_Player[client].fragmsg.Reset();
 }
 
-stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen)
-{
+stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen, PointsSplitType type=PointSplit_Off) {
 	char fmt_plural[64];
-	Format(fmt_plural, sizeof(fmt_plural), "%T", "#SMStats_Points_PluralSplitter", client);
-	switch(StrContains(fmt_plural, "#|#") != -1)
-	{
+	Format(fmt_plural, sizeof(fmt_plural), "%T", "#SMStats_Points", client);
+	switch(StrContains(fmt_plural, "#|#") != -1) {
 		// this language defies the 'point' and 'points' with one word as both singular and plural.
-		case false:
-		{
-			Format(translation, maxlen, "%i%s", points, fmt_plural);
+		case false: {
+			if(type >= PointSplit_On) {
+				char fmt_points[64];
+				PointsPrefix(client, points, fmt_points, sizeof(fmt_points), type);
+				Format(translation, maxlen, "%s%s", fmt_points, fmt_plural);
+			} else {
+				Format(translation, maxlen, "%i%s", points, fmt_plural);
+			}
 		}
 		// this language defies the 'point' and 'points' with one word as inflection-based singular and plural.
-		case true:
-		{
+		case true: {
 			bool bPlural = (points < -1 || points > 1);
 			char szPlural[2][16];
-			if(ExplodeString(fmt_plural, "#|#", szPlural, sizeof(szPlural), 16) == 2)
-			{
+			if(ExplodeString(fmt_plural, "#|#", szPlural, sizeof(szPlural), 16) == 2) {
 				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
 			}
-			Format(translation, maxlen, "%i%s", points, szPlural[view_as<int>(bPlural)]);
+			
+			if(type >= PointSplit_On) {
+				char fmt_points[64];
+				PointsPrefix(client, points, fmt_points, sizeof(fmt_points), type);
+				Format(translation, maxlen, "%s%s", fmt_points, szPlural[view_as<int>(bPlural)]);
+			} else {
+				Format(translation, maxlen, "%i%s", points, szPlural[view_as<int>(bPlural)]);
+			}
 		}
 	}
+}
+
+stock void PointsPrefix(int client, int points, char[] prefix, int maxlen, PointsSplitType type) {
+	char fmt_points[64];
+	
+	if((points <= -1 || type == PointSplit_Minus)) {
+		// remove minus of the points shown, because it'd be a double minus otherwise.
+		char str_points[11];
+		IntToString(points, str_points, sizeof(str_points));
+		if(StrContains(str_points, "-") != -1) {
+			ReplaceString(str_points, sizeof(str_points), "-", "");
+		}
+		
+		points = StringToInt(str_points);
+		
+		//
+		
+		Format(fmt_points, sizeof(fmt_points), "%T", "#SMStats_Points_Minus", client, points);
+	} else if((points >= 1 || type == PointSplit_Plus)) {
+		Format(fmt_points, sizeof(fmt_points), "%T", "#SMStats_Points_Plus", client, points);
+	} else {
+		Format(fmt_points, sizeof(fmt_points), "%i", points);
+	}
+	
+	strcopy(prefix, maxlen, fmt_points)
 }
 
 stock void OnOffPluralSplitter(int client, bool OffOn, char[] translation, int maxlen)
@@ -1731,123 +1752,37 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 	&& minutes > 0
 	&& seconds >= 0)
 	{
-		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario0", client);
-		if(StrContains(time_format, "{YEARS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{YEARS}", szYear, false);
-		}
-		if(StrContains(time_format, "{MONTHS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{MONTHS}", szMonth, false);
-		}
-		if(StrContains(time_format, "{DAYS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{DAYS}", szDay, false);
-		}
-		if(StrContains(time_format, "{HOURS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{HOURS}", szHour, false);
-		}
-		if(StrContains(time_format, "{MINUTES}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
-		}
-		if(StrContains(time_format, "{SECONDS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
-		}
-	} else
-	if(months > 0
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario0", client, szYear, szMonth, szDay, szHour, szMinute, szSecond);
+	}
+	else if(months > 0
 	&& days > 0
 	&& hours > 0
 	&& minutes > 0
 	&& seconds >= 0)
 	{
-		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario1", client);
-		if(StrContains(time_format, "{MONTHS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{MONTHS}", szMonth, false);
-		}
-		if(StrContains(time_format, "{DAYS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{DAYS}", szDay, false);
-		}
-		if(StrContains(time_format, "{HOURS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{HOURS}", szHour, false);
-		}
-		if(StrContains(time_format, "{MINUTES}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
-		}
-		if(StrContains(time_format, "{SECONDS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
-		}
-	} else
-	if(days > 0
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario1", client, szMonth, szDay, szHour, szMinute, szSecond);
+	}
+	else if(days > 0
 	&& hours > 0
 	&& minutes > 0
 	&& seconds >= 0)
 	{
-		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario2", client);
-		if(StrContains(time_format, "{DAYS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{DAYS}", szDay, false);
-		}
-		if(StrContains(time_format, "{HOURS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{HOURS}", szHour, false);
-		}
-		if(StrContains(time_format, "{MINUTES}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
-		}
-		if(StrContains(time_format, "{SECONDS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
-		}
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario2", client, szDay, szHour, szMinute, szSecond);
 	}
-	else
-	if(hours > 0
+	else if(hours > 0
 	&& minutes > 0
 	&& seconds >= 0)
 	{
-		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario3", client);
-		if(StrContains(time_format, "{HOURS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{HOURS}", szHour, false);
-		}
-		if(StrContains(time_format, "{MINUTES}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
-		}
-		if(StrContains(time_format, "{SECONDS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
-		}
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario3", client, szHour, szMinute, szSecond);
 	}
-	else
-	if(minutes > 0
+	else if(minutes > 0
 	&& seconds >= 0)
 	{
-		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario4", client);
-		if(StrContains(time_format, "{MINUTES}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{MINUTES}", szMinute, false);
-		}
-		if(StrContains(time_format, "{SECONDS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
-		}
+		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario4", client, szMinute, szSecond);
 	}
 	else
 	{
-		Format(time_format, maxlen, "%T", "#SMStats_PlayTimeFormat_Scenario5", client);
-		if(StrContains(time_format, "{SECONDS}", false) != -1)
-		{
-			ReplaceString(time_format, maxlen, "{SECONDS}", szSecond, false);
-		}
+		Format(time_format, maxlen, szSecond);
 	}
 	
 	//PrintToServer(time_format);
@@ -1954,12 +1889,11 @@ stock void GetLastConnectedFormat(int client, char[] timezone_ip, int last_conne
 	}
 }
 
-//
-
-stock int SecondsCheckPenalty(int timestamp)
+stock int TimestampSeconds(int timestamp)
 {
 	int time = timestamp - GetTime();
-	return time - 60 * (time / 60);
+	int seconds = time - 60 * (time / 60);
+	return seconds;
 }
 
 //
@@ -1995,4 +1929,207 @@ stock int GetFieldString(DBResultSet results, char[] field_name, char[] output, 
 	}
 	
 	return -2;
+}
+
+//
+
+stock void PenaltyPlayer(int client, int pPoints)
+{
+	if(sql == null)
+	{
+		PrintToServer(core_chattag..." PenaltyPlayer() error : SQL Connection unavailable or invalid.");
+		return;
+	}
+	
+	char name[64], auth[28];
+	strcopy(name, sizeof(name), g_Player[client].name);
+	strcopy(auth, sizeof(auth), g_Player[client].auth);
+	
+	int points = g_Player[client].points;
+	int position = g_Player[client].position;
+	int penalty = g_PenaltySeconds;
+	int timestamp = GetTime();
+	
+	g_Player[client].bPenalty = true;
+	
+	//
+	
+	char query[256];
+	Format(query, sizeof(query), "update `"...sql_table_settings..."` set `Penalty`='1',`LastPenaltyTime`='%i',`PenaltyTime`='%i' where SteamID='%s'", timestamp, penalty, auth);
+	DataPack pack = new DataPack();
+	pack.WriteCell(g_Player[client].userid);
+	pack.WriteCell(strlen(auth)+1);
+	pack.WriteString(auth);
+	pack.Reset();
+	sql.Query(DBQuery_PenaltyPlayer, query, pack);
+	
+	//
+	
+	if(bDebug) PrintToServer(core_chattag..." PenaltyPlayer()"
+	... "\nUserID : %i ['%s']"
+	... "\nPosition : #%i"
+	... "\nPenalty : %i seconds"
+	... "\nReverted Points : %i"
+	... "\n"
+	, g_Player[client].name2
+	, position
+	, penalty
+	, pPoints);
+	
+	//
+	
+	char penalty_time[128], str_points1[32], str_points2[32];
+	GetTimeFormat(client, penalty, penalty_time, sizeof(penalty_time));
+	PointsPluralSplitter(client, points, str_points1, sizeof(str_points1));
+	PointsPluralSplitter(client, pPoints, str_points2, sizeof(str_points2), PointSplit_Minus);
+	
+	CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_Player_Penalty", client
+	, name
+	, position
+	, str_points1
+	, penalty_time
+	, str_points2);
+}
+
+stock void DBQuery_PenaltyPlayer(Database database, DBResultSet results, const char[] error, DataPack pack)
+{
+	if(!results)
+	{
+		int userid = pack.ReadCell();
+		delete pack;
+		PrintToServer(core_chattag..." PenaltyPlayer() error : Failed to query userid %i !"
+		..."\nError below:"
+		..."\n%s", userid, error);
+		return;
+	}
+	
+	CreateTimer(g_PenaltySeconds+0.0, Timer_PenaltyPlayer_Expire, pack);
+}
+
+stock Action Timer_PenaltyPlayer_Expire(Handle timer, DataPack pack)
+{
+	int userid = pack.ReadCell();
+	int maxlen = pack.ReadCell();
+	char[] auth = new char[maxlen];
+	delete pack;
+	
+	char query[256];
+	Format(query, sizeof(query), "update `"...sql_table_settings..."` set `Penalty`='0', `PenaltyTime`='-1' where SteamID='%s'", auth);
+	sql.Query(DBQuery_PenaltyPlayer_Expire, query, userid);
+	
+	int client;
+	if(IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		g_Player[client].bPenalty = false;
+		
+		char penalty_time[128];
+		GetTimeFormat(client, g_PenaltySeconds, penalty_time, sizeof(penalty_time));
+		
+		CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_Player_Penalty_Expired", client, penalty_time);
+	}
+	
+	return Plugin_Continue;
+}
+
+stock void DBQuery_PenaltyPlayer_Expire(Database database, DBResultSet results, const char[] error, int userid)
+{
+	if(!results)
+	{
+		PrintToServer(core_chattag..." PenaltyPlayer_Expire() error : Failed to query userid %i !"
+		... "\nError below:"
+		... "\n%s", userid, error);
+		return;
+	}
+}
+
+// work in progress
+
+stock void SaveServerInfo()
+{
+	char path[64];
+	BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/server_info.sm_stats");
+	
+	if(!FileExists(path))
+	{
+		File file = OpenFile(path, "w+");
+		delete file;
+	}
+	
+	KeyValues kv = new KeyValues("ServerInfo");
+	if(!kv.ImportFromFile(path))
+	{
+		delete kv;
+		PrintToServer("%s SaveServerInfo() : Failed saving info!\nReason below:\nUnable to import KeyValues file path '%s'", core_chattag, path);
+		return;
+	}
+	
+	int client;
+	while((client = FindEntityByClassname(client, "player")) != -1)
+	{
+		SMStats_PlayerInfo player;
+		player = g_Player[client];
+		//SMStats_TF2GameInfo game = g_Game[client];
+		
+		if(kv.JumpToKey("g_Player[]" , true))
+		{
+			if(kv.JumpToKey(player.auth, true))
+			{
+				kv.SetNum("userid", player.userid);
+				kv.SetString("auth", player.auth);
+				kv.SetString("profileid", player.profileid);
+				kv.SetString("name", player.name);
+				kv.SetString("name2", player.name2);
+				kv.SetString("ip", player.ip);
+				//kv.SetNum("bAlreadyConnected", view_as<int>(player.bAlreadyConnected));
+				kv.SetNum("bPenalty", view_as<int>(player.bPenalty));
+				kv.SetNum("points", player.points);
+				kv.SetNum("position", player.position);
+				kv.SetNum("active_page_mainmenu", player.active_page_mainmenu);
+				kv.SetNum("active_page_menu", player.active_page_menu);
+				kv.SetNum("active_page_session", player.active_page_session);
+				kv.SetNum("active_page_activestats", player.active_page_activestats);
+				kv.SetNum("active_page_topstats", player.active_page_topstats);
+				kv.SetNum("bMenuCheckPosition", view_as<int>(player.bMenuCheckPosition));
+				
+				// settings
+				kv.SetNum("bPlayConSnd", view_as<int>(player.bPlayConSnd));
+				kv.SetNum("bPlayConSndUpdated", view_as<int>(player.bPlayConSndUpdated));
+				kv.SetNum("bShowConMsg", view_as<int>(player.bShowConMsg));
+				kv.SetNum("bShowConMsgUpdated", view_as<int>(player.bShowConMsgUpdated));
+				kv.SetNum("bShowTopConMsg", view_as<int>(player.bShowTopConMsg));
+				kv.SetNum("bShowTopConMsgUpdated", view_as<int>(player.bShowTopConMsgUpdated));
+				kv.SetNum("bShowFragMsg", view_as<int>(player.bShowFragMsg));
+				kv.SetNum("bShowFragMsgUpdated", view_as<int>(player.bShowFragMsgUpdated));
+				kv.SetNum("bShowAssistMsg", view_as<int>(player.bShowAssistMsg));
+				kv.SetNum("bShowAssistMsgUpdated", view_as<int>(player.bShowAssistMsgUpdated));
+				kv.SetNum("bShowDeathMsg", view_as<int>(player.bShowDeathMsg));
+				kv.SetNum("bShowDeathMsgUpdated", view_as<int>(player.bShowDeathMsgUpdated));
+				
+				if(kv.JumpToKey("session[]", true))
+				{
+					for(int i = 0; i < SMStats_StatsSize; i++)
+					{
+						char str_id[4];
+						IntToString(i, str_id, sizeof(str_id));
+						kv.SetNum(str_id, player.session[i]);
+					}
+					
+					kv.GoBack();
+				}
+				if(kv.JumpToKey("menustats[]", true))
+				{
+					for(int i = 0; i < SMStats_StatsSize; i++)
+					{
+						char str_id[4];
+						IntToString(i, str_id, sizeof(str_id));
+						kv.SetNum(str_id, player.menustats[i]);
+					}
+				}
+				
+				kv.GoBack();
+			}
+			
+			kv.GoBack();
+		}
+	}
 }

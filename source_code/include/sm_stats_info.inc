@@ -12,6 +12,9 @@ enum struct SMStats_FragMsgInfo
 	bool Gibbed;
 	bool TeleFrag;
 	bool Taunt;
+	bool Sentry;
+	bool MiniSentry;
+	bool Wrangled;
 	bool Collateral;
 	bool Grenade;
 	bool Bomb;
@@ -32,6 +35,9 @@ enum struct SMStats_FragMsgInfo
 		this.Gibbed = false;
 		this.TeleFrag = false;
 		this.Taunt = false;
+		this.Sentry = false;
+		this.MiniSentry = false;
+		this.Wrangled = false;
 		this.Collateral = false;
 		this.Grenade = false;
 		this.Bomb = false;
@@ -76,10 +82,11 @@ enum struct SMStats_PlayerInfo
 	int session[SMStats_StatsSize];
 	int menustats[SMStats_StatsSize];
 	char menustats_name[64];
-	char menustats_auth[64];
+	char menustats_auth[28];
 	char menustats_ip[16];
 	int menustats_pos;
 	int menustats_lastconnected;
+	bool menustats_penalty;
 	SMStats_FragMsgInfo fragmsg;
 	
 	void Reset()
@@ -128,6 +135,7 @@ enum struct SMStats_PlayerInfo
 		this.menustats_ip = "";
 		this.menustats_pos = -1;
 		this.menustats_lastconnected = -1;
+		this.menustats_penalty = false;
 		for(int type = 0; type < SMStats_StatsSize; type++)
 		{
 			this.menustats[type] = -1;
@@ -138,6 +146,7 @@ enum struct SMStats_PlayerInfo
 enum struct SMStats_TF2GameInfo
 {
 	ArrayList aFragEvent;
+	ArrayList aItemEvent;
 	
 	bool bObjectPlaced[6];
 	ArrayList aObjectPlaced;
@@ -172,6 +181,9 @@ enum struct SMStats_TF2GameInfo
 	
 	int iRobotFragEvent;
 	
+	int iFrameFeignDeaths;
+	int iFrameHealPoints;
+	
 	//
 	
 	bool bPlayerJarated;
@@ -189,6 +201,11 @@ enum struct SMStats_TF2GameInfo
 		if(!!this.aFragEvent)
 		{
 			delete this.aFragEvent;
+		}
+		
+		if(!!this.aItemEvent)
+		{
+			delete this.aItemEvent;
 		}
 		
 		if(!!this.aObjectPlaced)
@@ -227,7 +244,9 @@ enum struct SMStats_TF2GameInfo
 		this.bPlayerMilked = false;
 		this.bPlayerGasPassed = false;
 		this.bExtEvent = false;
-		this.iRobotFragEvent = -1;
+		this.iRobotFragEvent = 0;
+		this.iFrameFeignDeaths = 0;
+		this.iFrameHealPoints = -1;
 	}
 }
 

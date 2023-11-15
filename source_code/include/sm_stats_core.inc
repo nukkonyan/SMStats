@@ -5,8 +5,6 @@
 #undef REQUIRE_PLUGIN
 #include <sm_stats_info>
 
-stock bool DEBUG = false;
-
 stock char str_statsCmd[][] =
 {
 	"sm_stat",
@@ -17,7 +15,13 @@ stock char str_cmdMenu[][] =
 	"sm_rank",
 	"sm_ranks",
 	"sm_top10",
-	"sm_top"
+	"sm_top",
+	"sm_plats",
+	"sm_placering",
+	"sm_placerad",
+	"sm_rang",
+	"sm_topp",
+	"sm_topp10"
 };
 
 //
@@ -46,6 +50,16 @@ stock char g_strTXNqueryId[][] =
 
 //
 
+enum PointsSplitType
+{
+	PointSplit_Off = 0,
+	PointSplit_On = 1,
+	PointSplit_Minus = 2,
+	PointSplit_Plus = 3
+}
+
+//
+
 /*
  *	SourceMod Stats: Core.
  *	Retrieve the active chat tag.
@@ -58,15 +72,21 @@ native void _sm_stats_get_chattag(char[] tag, int maxlen);
 
 /*
  *	SourceMod Stats: Core.
- *	Retrieve the active server id.
+ *	Retrieve the active stats id.
  */
-native int _sm_stats_get_serverid();
+native int _sm_stats_get_statsid();
 
 /*
  *	SourceMod Stats: Core.
  *	Retrieve the active database connection.
  */
 native Database _sm_stats_get_sql();
+
+/*
+ *	SourceMod Stats: Core.
+ *	Retrieve the boolean status of debugging mode.
+ */
+native bool _sm_stats_get_debug();
 
 /*
  *	SourceMod Stats: Core.
@@ -173,13 +193,14 @@ native void _sm_stats_detect_ban_player_ip(const char[] ip, bool only_same_games
 #define game_translation "sm_stats_"... GameType...".phrases"
 #define ach_translation "sm_stats_"... GameType..."_achievements.phrases"
 
-#define ITEMDEF_ASSIST_SUICIDE -69
+#define ITEMDEF_INVALID -1
 
 char g_ChatTag[96];
-char g_sndConnectedTop10[96];
-char g_sndConnectedTop1[96];
-char g_sndConnectedGeneric[96];
+char g_sndConnectedTop10[96]
+, g_sndConnectedTop1[96]
+, g_sndConnectedGeneric[96];
 Database sql = null;
+bool bDebug = false;
 bool bLoaded = false;
 bool bStatsActive = false;
 bool bRoundActive = false;
@@ -188,8 +209,8 @@ bool bDisableAfterRoundEnd = false;
 bool bAllowBots = false;
 bool bAllowAbuse = false;
 bool bAllowWarmup = false;
-int g_ServerID = -1;
-stock int g_TotalTablePlayers = -1;
+int g_StatsID = -1;
+int g_TotalTablePlayers = -1;
 int g_MinPlayers = -1;
 int g_DeathPoints = -1;
 int g_AssistPoints = -1;
@@ -197,7 +218,7 @@ int g_PenaltySeconds = -1;
 
 SMStats_PlayerInfo g_Player[MaxPlayers+1];
 
-stock PrivateForward g_GetPlayerSessionInfoFwd;
+PrivateForward g_GetPlayerSessionInfoFwd;
 
 // map load event
 int iMapTimerSeconds = 0;
@@ -208,12 +229,14 @@ char cMap[64];
 
 public void _sm_stats_loaded_core()
 {
-	PrintToServer("%s loading..", core_chattag);
+	PrintToServer(core_chattag..." Version "...Version..." (https://github.com/SMStats)");
+	LogToGame(core_chattag..." Version "...Version..." (https://github.com/SMStats)");
 	bLoaded = true;
 	
 	_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
 	_sm_stats_get_connectsounds(g_sndConnectedTop1, g_sndConnectedTop10, g_sndConnectedGeneric);
-	g_ServerID = _sm_stats_get_serverid();
+	g_StatsID = _sm_stats_get_statsid();
+	bDebug = _sm_stats_get_debug();
 	bAllowBots = _sm_stats_get_allowbots();
 	bAllowAbuse = _sm_stats_get_allowabuse();
 	bAllowWarmup = _sm_stats_get_allowwarmup();
@@ -238,7 +261,7 @@ public void _sm_stats_updatedfwd(SMStatsUpdatedFwdType type, const char[] value)
 	switch(type)
 	{
 		case SMStatsUpdated_ChatTag: strcopy(g_ChatTag, sizeof(g_ChatTag), value);
-		case SMStatsUpdated_ServerID: g_ServerID = StringToInt(value);
+		case SMStatsUpdated_StatsID: g_StatsID = StringToInt(value);
 		case SMStatsUpdated_AllowBots:
 		{
 			bAllowBots = view_as<bool>(StringToInt(value));
@@ -257,6 +280,7 @@ public void _sm_stats_updatedfwd(SMStatsUpdatedFwdType type, const char[] value)
 		case SMStatsUpdated_SndConnectedTop10: strcopy(g_sndConnectedTop10, sizeof(g_sndConnectedTop10), value);
 		case SMStatsUpdated_SndConnectedTop1: strcopy(g_sndConnectedTop1, sizeof(g_sndConnectedTop1), value);
 		case SMStatsUpdated_SndConnectedGeneric: strcopy(g_sndConnectedGeneric, sizeof(g_sndConnectedGeneric), value);
+		case SMStatsUpdated_Debug: bDebug = view_as<bool>(StringToInt(value));
 	}
 }
 
@@ -276,6 +300,8 @@ public void OnPluginStart()
 	#if defined assister_func
 	LoadAssisterEvents();
 	#endif
+	
+	RegAdminCmd("sm_stats_erase_database", _sm_stats_erase_db_cmd, ADMFLAG_ROOT, "SMStats: Core - Erase all database information.");
 	
 	// plugin was restarted, manually or via update.
 	// make sure the natives are loaded.
@@ -300,9 +326,13 @@ public void OnPluginStart()
 			iMapTimerSeconds = this_way_with_arrays_sucks_pls_add_SetNativeCell.iMapTimerSeconds;
 		}
 		
+		PrintToServer(core_chattag..." Version "...Version..." (https://github.com/SMStats)");
+		LogToGame(core_chattag..." Version "...Version..." (https://github.com/SMStats)");
+		
 		_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
 		_sm_stats_get_connectsounds(g_sndConnectedTop1, g_sndConnectedTop10, g_sndConnectedGeneric);
-		g_ServerID = _sm_stats_get_serverid();
+		g_StatsID = _sm_stats_get_statsid();
+		bDebug = _sm_stats_get_debug();
 		bAllowBots = _sm_stats_get_allowbots();
 		bAllowAbuse = _sm_stats_get_allowabuse();
 		bAllowWarmup = _sm_stats_get_allowwarmup();
@@ -348,7 +378,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 {
 	sql = database;
 	
-	PrintToServer("%s Caught database connection.", core_chattag);
+	LogToGame(core_chattag..." : Caught database connection.");
 	
 	if(bOnPluginStart)
 	{
@@ -447,7 +477,32 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		//
 		
 		#if defined sql_loadtable_item_log
-		// item logs here
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_item_log);
+		switch(!!(file = OpenFile(path, "r")))
+		{
+			case false:
+			{
+				LogError("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking items found, traded, unboxed, etc.), Did you install it correctly?"
+				, sql_table_item_log);
+			}
+			
+			case true:
+			{
+				while(!file.EndOfFile() && file.ReadLine(table, sizeof(table)))
+				{
+					ReplaceString(table, sizeof(table), "\n", "");
+					ReplaceString(table, sizeof(table), "\r", "");
+					ReplaceString(table, sizeof(table), "\t", "");
+					
+					len += Format(query[len], sizeof(query)-len, table);
+				}
+				
+				sql.Query(DBQuery_InsertTables, query, 4);
+				
+				query = "";
+				len = 0;
+			}
+		}
 		#endif
 		
 		//
@@ -559,10 +614,17 @@ stock void DBQuery_Callback(Database database, DBResultSet results, const char[]
 }
 stock void TXN_Callback_Failure(Database db, int unique_query_id, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
-	LogError("\n%s Failed to query id %i"
+	LogError("\n"...core_chattag..." Failed to query id %i"
 	... "\nMake sure the database connection is available and/or stable."
 	... "\nError reason below:"
-	... "\n%s", core_chattag, unique_query_id, error);
+	... "\n%s", unique_query_id, error);
+}
+stock void TXN_OnGameFrameCallback_Failure(Database db, any data, int numQueries, const char[] error, int failIndex, int[] query_id)
+{
+	LogError("\n"...core_chattag..." MapTimer_GameTimer() : Query id %i failed (%i Total queries)"
+	... "\nMake sure the database connection is available and/or stable."
+	... "\nError reason below:"
+	... "\n%s", query_id[failIndex], numQueries, error);
 }
 
 //
@@ -610,7 +672,7 @@ stock void array_AddWeapon(int itemdef, const char[] cvar_name, int value, char[
 	
 	int maxlen = strlen(description)+52;
 	char[] fixed = new char[maxlen];
-	Format(fixed, maxlen, "%s - Points earned when fragging using %s.", core_chattag2, description);
+	Format(fixed, maxlen, "%s - Points earned when fragging with %s.", core_chattag2, description);
 	
 	CvarWeapon array;
 	array.itemdef = itemdef;
@@ -646,4 +708,140 @@ stock ConVar array_GetWeapon(int itemdef)
 	
 	return null;
 }
+
+// eraser
+
+Action _sm_stats_erase_db_cmd(int client, int args)
+{
+	if(client != 0)
+	{
+		ReplyToCommand(client, "%s You must be console to proceed erasing active gameserver database information!", core_chattag);
+		return Plugin_Handled;
+	}
+	
+	if(!sql)
+	{
+		ReplyToCommand(client, "%s Failed erasing active gameserver database information on invalid database connection.", core_chattag);
+		return Plugin_Handled;
+	}
+	
+	if(args != 1)
+	{
+		ReplyToCommand(client, "%s You must choose to erase everything or a specific table:"
+		... "\n 1 - Erase playerlist" ..." [ "...sql_table_playerlist..." ]"
+		... "\n 2 - Erase weapons" ..." [ "...sql_table_weapons..." ]"
+		... "\n 3 - Erase kill log" ..." [ "...sql_table_kill_log..." ]"
+		... "\n 4 - Erase item log" ..." [ "...sql_table_item_log..." ]"
+		... "\n 5 - Erase maps log" ..." [ "...sql_table_maps_log..." ]"
+		... "\n 6 - Erase achievements" ..." [ "...sql_table_achievements..." ]"
+		... "\n 7 - Erase settings" ..." [ "...sql_table_settings..." ]"
+		... "\n 8 - Erase everything", core_chattag);
+		return Plugin_Handled;
+	}
+	
+	char str_id[2];
+	if(GetCmdArg(1, str_id, sizeof(str_id)) < 1)
+	{
+		ReplyToCommand(client, "%s You must choose a valid table to erase, value cannot be NULL", core_chattag);
+		return Plugin_Handled;
+	}
+	
+	int id = StringToInt(str_id);
+	
+	ReplyToCommand(client, "%s Forced erasing active gameserver database information.. expect SQL errors..", core_chattag);
+	_sm_stats_erase_database_config(client, id);
+	return Plugin_Continue;
+}
+
+void _sm_stats_erase_database_config(int client, int id = 0)
+{
+	char query[256];
+	Transaction txn = new Transaction();
+	
+	#if defined sql_loadtable_playerlist
+	if(id == 1 || id == 8)
+	{
+		Format(query, sizeof(query), "drop table "...sql_table_playerlist);
+		txn.AddQuery(query, 0);
+	}
+	#endif
+	
+	#if defined sql_loadtable_weapons
+	if(id == 2 || id == 8)
+	{
+		Format(query, sizeof(query), "drop table "...sql_table_weapons);
+		txn.AddQuery(query, 1);
+	}
+	#endif
+	
+	#if defined sql_loadtable_kill_log
+	if(id == 3 || id == 8)
+	{
+		Format(query, sizeof(query), "drop table "...sql_table_kill_log);
+		txn.AddQuery(query, 2);
+	}
+	#endif
+	
+	#if defined sql_loadtable_item_log
+	if(id == 4 || id == 8)
+	{
+		Format(query, sizeof(query), "drop table "...sql_table_item_log);
+		txn.AddQuery(query, 3);
+	}
+	#endif
+	
+	#if defined sql_loadtable_maps_log
+	if(id == 5 || id == 8)
+	{
+		Format(query, sizeof(query), "drop table "...sql_table_maps_log);
+		txn.AddQuery(query, 4);
+	}
+	#endif
+	
+	#if defined sql_loadtable_achievements_log
+	if(id == 6)
+	{
+		Format(query, sizeof(query), "drop table "...sql_table_achievements);
+		txn.AddQuery(query, 5);
+	}
+	#endif
+	
+	if(id == 7 || id == 8)
+	{
+		Format(query, sizeof(query), "drop table "...sql_table_settings);
+		txn.AddQuery(query, 6);
+	}
+	
+	sql.Execute(txn, TXN_EraseDatabaseConfig_OnSuccess, TXN_EraseDatabaseConfig_OnFailure, client);
+}
+
+stock void TXN_EraseDatabaseConfig_OnSuccess(Database db, any data , int numQueries, DBResultSet[] results, int[] queryData)
+{
+	char txt[512];
+	int len = 0;
+	
+	len += FormatEx(txt[len], sizeof(txt)-len, "\n%s Removed %i tables:", core_chattag, numQueries);
+	for(int i = 0; i < numQueries; i++)
+	{
+		len += FormatEx(txt[len], sizeof(txt)-len, "\nRemoved table '%s'", g_strTableName[queryData[i]]);
+	}
+	
+	PrintToServer(txt);
+}
+stock void TXN_EraseDatabaseConfig_OnFailure(Database db, int client, int numQueries, const char[] error, int failIndex, any[] queryData)
+{
+	char txt[512];
+	int len = 0;
+	
+	len += FormatEx(txt[len], sizeof(txt)-len, "\n%s Failed to remove %i tables:", core_chattag, numQueries);
+	for(int i = 0; i < numQueries; i++)
+	{
+		len += FormatEx(txt[len], sizeof(txt)-len, "\ntable '%s'", g_strTableName[queryData[i]]);
+	}
+	
+	len += FormatEx(txt[len], sizeof(txt)-len, "\nError reason below:\n%s", error);
+	
+	PrintToServer(txt);
+}
+
 #endif

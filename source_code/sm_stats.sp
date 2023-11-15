@@ -35,6 +35,7 @@ bool bCachedSndConTop1;
 bool bCachedSndConGeneric;
 ConVar g_StatsID; // stats id.
 ConVar g_MinPlayers; // minimum required players for statistical tracking.
+ConVar g_Debug; // debugging.
 ConVar g_AllowBots; // allow bots.
 ConVar g_AllowAbuse; // allow abuse of commands during events.
 ConVar g_AllowWarmup; // allow tracking during warmup.
@@ -66,6 +67,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("_sm_stats_get_deathpoints", Native_GetDeathPoints);
 	CreateNative("_sm_stats_get_assistpoints", Native_GetAssistPoints);
 	CreateNative("_sm_stats_get_penaltyseconds", Native_GetPenaltySeconds);
+	CreateNative("_sm_stats_get_debug", Native_GetDebug);
 	CreateNative("_sm_stats_get_allowbots", Native_GetAllowBots);
 	CreateNative("_sm_stats_get_allowabuse", Native_GetAllowAbuse);
 	CreateNative("_sm_stats_get_allowwarmup", Native_GetAllowWarmup);
@@ -98,6 +100,9 @@ public void OnPluginStart()
 	
 	g_MinPlayers = CreateConVar("sm_stats_min_players", "4", "SM Stats: Core - Minimum players required for statistical tracking.", _, true, 1.0);
 	g_MinPlayers.AddChangeHook(OnUpdatedMinPlayers);
+	
+	g_Debug = CreateConVar("sm_stats_debug", "0", "SM Stats: Core - Debugging mode.", FCVAR_DEVELOPMENTONLY, true, _, true, 1.0);
+	g_Debug.AddChangeHook(OnUpdatedDebug);
 	
 	g_AllowAbuse = CreateConVar("sm_stats_allow_abuse", "0", "SM Stats: Core - Allow abuse of commands during events such as Noclip or sv_cheats 1.", _, true, _, true, 1.0);
 	g_AllowAbuse.AddChangeHook(OnUpdatedAllowAbuse);
@@ -164,6 +169,12 @@ void OnUpdatedStatsID(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 	char str_value[4];
 	IntToString(cvar.IntValue, str_value, sizeof(str_value));
 	SendUpdatedFwdValue(SMStatsUpdated_StatsID, str_value);
+}
+void OnUpdatedDebug(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	char str_value[2];
+	IntToString(view_as<int>(cvar.BoolValue), str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_Debug, str_value);
 }
 void OnUpdatedAllowBots(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
@@ -317,6 +328,10 @@ any Native_GetStatsID(Handle plugin, int params)
 any Native_GetSQL(Handle plugin, int params)
 {
 	return sql;
+}
+any Native_GetDebug(Handle plugin, int params)
+{
+	return g_Debug.BoolValue;
 }
 any Native_GetAllowBots(Handle plugin, int params)
 {

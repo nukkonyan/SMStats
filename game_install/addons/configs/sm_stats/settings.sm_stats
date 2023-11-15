@@ -7,6 +7,7 @@ create table if not exists `settings`
 	`LastConnectedStatsID` int(4) not null default '0',
 	`LastConnectedTime` int not null default '0',
 	`LastPenaltyTime` int not null default '0',
+	`PenaltyTime` int(6) not null default '-1',
 	`Penalty` bool not null default '0',
 	`PlayConnectSnd` bool not null default '1',
 	`ShowConnectMsg` bool not null default '1',

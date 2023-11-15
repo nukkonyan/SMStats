@@ -30,7 +30,7 @@ enum struct StatsMenuInfo
 		*/
 		
 		Panel panel = new Panel();
-		panel.DrawItem("SourceMod Stats - " ... VersionAlt ... " by Teamkiller324 ( Work in progress )");
+		panel.DrawItem("SourceMod Stats - "...VersionAlt..." by Teamkiller324 ( Work in progress )");
 		
 		switch(IsValidDeveloperType(client))
 		{

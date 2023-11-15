@@ -138,6 +138,8 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 	return Plugin_Continue;
 }
 
+ArrayList g_penaltySQLCheck;
+
 void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[] results, int[] queryData)
 {
 	int client = GetClientOfUserId(userid);
@@ -264,6 +266,8 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 		return;
 	}
 	
+	//
+	
 	for(int i = 0; i < numQueries; i++)
 	{
 		int query_id = queryData[i];
@@ -282,6 +286,17 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 					g_Player[client].bShowFragMsg = view_as<bool>(results[i].FetchInt(4));
 					g_Player[client].bShowAssistMsg = view_as<bool>(results[i].FetchInt(5));
 					g_Player[client].bShowDeathMsg = view_as<bool>(results[i].FetchInt(6));
+					
+					if(g_Player[client].bPenalty)
+					{
+						if(g_penaltySQLCheck == null)
+						{
+							g_penaltySQLCheck = new ArrayList(6);
+						}
+						
+						g_penaltySQLCheck.Push(userid);
+						g_penaltySQLCheck.PushString(g_Player[client].auth);
+					}
 				}
 			}
 			

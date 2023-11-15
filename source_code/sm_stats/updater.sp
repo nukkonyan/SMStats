@@ -13,7 +13,7 @@ Action Timer_PrepareUpdater(Handle timer)
 {
 	if(IsUpdaterAvailable())
 	{
-		PrintToServer("%s Adding plugin to updater..", core_chattag);
+		LogToGame(core_chattag..." : Adding plugin to updater..");
 		Updater_AddPlugin(UpdaterURL);
 		Updater_ForceUpdate();
 		bUpdaterURLAdded = true;
@@ -28,13 +28,13 @@ public void OnLibraryAdded(const char[] name)
 	{
 		if(!bUpdaterURLAdded)
 		{
-			PrintToServer("%s Adding plugin to updater..", core_chattag);
+			LogToGame(core_chattag..." : Adding plugin to updater..");
 			Updater_AddPlugin(UpdaterURL);
 		}
 		
 		if(!g_CheckUpdateTimer)
 		{
-			PrintToServer("%s Adding 5 minute timer update check repeater", core_chattag);
+			PrintToServer(core_chattag..." : Adding 5 minute timer update check repeater");
 			g_CheckUpdateTimer = CreateTimer(300.0, Timer_CheckForUpdate, _, TIMER_REPEAT|TIMER_FLAG_NO_MAPCHANGE);
 		}
 	}

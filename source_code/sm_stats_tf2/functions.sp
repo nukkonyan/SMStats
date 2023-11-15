@@ -12,6 +12,17 @@ char TF2_ClassTypeNameLC[][] = {
 	"civilian"		
 };
 
+enum TFBuilding
+{
+	TFBuilding_Invalid = -1,
+	TFBuilding_Sentrygun = 0,
+	TFBuilding_Dispenser = 1,
+	TFBuilding_Teleporter_Entrance = 2,
+	TFBuilding_Teleporter_Exit = 3,
+	TFBuilding_MiniSentry = 4,
+	TFBuilding_Sapper = 5
+}
+
 void GetPlayerName(int client, char[] name, int maxlen)
 {
 	switch(IsValidDeveloperType(client))
@@ -820,7 +831,7 @@ stock bool AssistedKills(Transaction txn
 					g_Player[assister].points += g_AssistPoints*assister_count[i];
 					
 					char points_plural[32];
-					PointsPluralSplitter(assister, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural));
+					PointsPluralSplitter(assister, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural), PointSplit_On);
 					
 					if(g_Player[assister].bShowAssistMsg)
 					{
@@ -946,8 +957,8 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 			
 			if(g_DeathPoints >= 1 && g_Player[victim].bShowDeathMsg)
 			{
-				char points_plural[32];
-				PointsPluralSplitter(victim, g_DeathPoints, points_plural, sizeof(points_plural));
+				char points_plural[64];
+				PointsPluralSplitter(victim, g_DeathPoints, points_plural, sizeof(points_plural), PointSplit_Minus);
 				
 				CPrintToChat(victim, "%s %T"
 				, g_ChatTag
@@ -972,6 +983,7 @@ bool TF2_IsMvMGameMode()
 
 // borrowing code of MGE
 // https://forums.alliedmods.net/showpost.php?p=2225745&postcount=23
+// https://forums.alliedmods.net/showthread.php?t=251473
 stock float DistanceAboveGround(int client)
 {
 	float vStart[3];
@@ -989,7 +1001,7 @@ stock float DistanceAboveGround(int client)
 		case false:
 		{
 			// There should always be some ground under the player.
-			if(DEBUG) PrintToServer("%s IsValidAirshot() trace error : (user index %i, userid %i)", core_chattag, client, g_Player[client].userid);
+			if(bDebug) PrintToServer("%s IsValidAirshot() trace error : (user index %i, userid %i)", core_chattag, client, g_Player[client].userid);
 		}
 		case true:
 		{
@@ -1002,7 +1014,7 @@ stock float DistanceAboveGround(int client)
 	// clean up 'n return.
 	delete trace;
 	
-	if(DEBUG) PrintToServer("%s IsValidAirshot() distance : %.1f (user index %i, userid %i)", core_chattag, distance, client, g_Player[client].userid);
+	if(bDebug) PrintToServer("%s IsValidAirshot() distance : %.1f (user index %i, userid %i)", core_chattag, distance, client, g_Player[client].userid);
 	return distance;
 }
 

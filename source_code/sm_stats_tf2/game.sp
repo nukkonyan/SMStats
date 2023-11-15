@@ -395,23 +395,18 @@ enum struct ItemEventInfo
 
 //
 
-float g_Time_ObjectPlaced = 5.0;
-float g_Time_ObjectDestroyed = 5.0;
-float g_Time_Ubercharged = 5.0;
-float g_Time_UsedTeleporter = 5.0;
+float g_Time_ObjectPlaced = 8.0;
+float g_Time_ObjectDestroyed = 2.5;
+float g_Time_Ubercharged = 6.0;
+float g_Time_UsedTeleporter = 7.0;
 float g_Time_PlayerUsedTeleporter = 5.0;
 float g_Time_StolenSandvich = 5.0;
-float g_Time_Stunned = 5.0;
-float g_Time_PassBallEvent = 5.0;
-float g_Time_PlayerJarated = 5.0;
-float g_Time_PlayerMilked = 5.0;
-float g_Time_PlayerGasPassed = 5.0;
-float g_Time_ExtEvent = 5.0;
-
-//
-
-ArrayList g_FeignDeaths;
-ArrayList g_MedicHealPointDeaths;
+float g_Time_Stunned = 9.0;
+float g_Time_PassBallEvent = 6.0;
+float g_Time_PlayerJarated = 7.0;
+float g_Time_PlayerMilked = 7.0;
+float g_Time_PlayerGasPassed = 7.0;
+float g_Time_ExtEvent = 6.0;
 
 //
 
@@ -771,23 +766,6 @@ void PrepareGame()
 	HookEvent("teamplay_round_win", OnRoundEnded, EventHookMode_Pre);
 	
 	AutoExecConfig(true);
-	
-	RegAdminCmd("sm_asdf1", asdf1Cmd, ADMFLAG_ROOT);
-}
-
-Action asdf1Cmd(int client, int args)
-{
-	char penalty_time[128], points_plural[32];
-	GetTimeFormat(client, g_PenaltySeconds, penalty_time, sizeof(penalty_time));
-	PointsPluralSplitter(client, g_Player[client].points, points_plural, sizeof(points_plural));
-	
-	CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_Player_Penalty", client
-	, g_Player[client].name
-	, g_Player[client].position
-	, points_plural
-	, penalty_time
-	, 69);
-	return Plugin_Continue;
 }
 
 /* Called as soon as a player is killed. */
@@ -813,7 +791,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	if(!sql)
 	{
-		LogError("%s OnPlayerDeath error: No database connection available.", core_chattag);
+		LogError(core_chattag..." OnPlayerDeath error: No database connection available.");
 		return;
 	}
 	
@@ -836,12 +814,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	{
 		if(!IsFakeClient(victim))
 		{
-			if(!g_FeignDeaths)
-			{
-				g_FeignDeaths = new ArrayList();
-			}
-			
-			g_FeignDeaths.PushString(g_Player[victim].auth);
+			g_Game[victim].iFrameFeignDeaths++
 		}
 		return;
 	}
@@ -852,13 +825,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		
 		if(healpoints > 0)
 		{
-			if(!g_MedicHealPointDeaths)
-			{
-				g_MedicHealPointDeaths = new ArrayList(8);
-			}
-			
-			g_MedicHealPointDeaths.PushString(g_Player[victim].auth);
-			g_MedicHealPointDeaths.Push(healpoints);
+			g_Game[victim].iFrameHealPoints = healpoints;
 		}
 	}
 	
@@ -889,7 +856,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	if(StrContains(classname, "trigger_") != -1
 	|| StrContains(classname, "prop_") != -1
-	|| (StrContains(classname, "world") != -1 && assister < 1))
+	|| (StrEqual(classname, "world") && assister < 1))
 	{
 		return;
 	}
@@ -905,6 +872,8 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	bool wranglerfrag = false;
 	
 	bool bValidMidAir = true;
+	
+	//
 	
 	/*
 	 * The 'weapon_def_index' on the player_death is same as if you're gathering the killers
@@ -1115,7 +1084,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	frag.wranglerfrag = wranglerfrag;
 	frag.suicide = (userid == attacker);
 	frag.suicide_assisted = assisted_suicide;
-	frag.headshot = (customkill == TF_CUSTOM_HEADSHOT || customkill == TF_CUSTOM_HEADSHOT_DECAPITATION);
+	frag.headshot = (customkill == TF_CUSTOM_HEADSHOT || customkill == TF_CUSTOM_PENETRATE_HEADSHOT || customkill == TF_CUSTOM_HEADSHOT_DECAPITATION);
 	frag.backstab = (customkill == TF_CUSTOM_BACKSTAB);
 	frag.noscope = ((customkill == 11 || itemdef == 1098) && !TF2_IsPlayerInCondition(client, TFCond_Zoomed));
 	frag.bleedfrag = bleedkill;
@@ -1149,15 +1118,67 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	frag.pumpkinbombfrag = (StrEqual(classname, "tf_pumpkin_bomb", false));
 	frag.telefrag = (StrEqual(classname, "telefrag", false));
 	
-	if(bValidMidAir)
+	float gd_attacker = DistanceAboveGround(client);
+	float gd_userid = DistanceAboveGround(victim);
+	
+	bool g_attacker;
+	bool g_userid;
+	if(GetEntityFlags(client) & FL_ONGROUND) g_attacker = true;
+	if(GetEntityFlags(victim) & FL_ONGROUND) g_userid = true;
+	
+	if(!g_attacker && bValidMidAir)
 	{
-		frag.midair = (DistanceAboveGround(client) >= 45.0);
+		frag.midair = (gd_attacker >= 65.2517525135751254595);
 	}
 	
-	frag.airshot = (DistanceAboveGround(victim) >= 60.0);
+	if(!g_userid)
+	{
+		frag.airshot = (gd_userid >= 65.2517525135751254595);
+	}
 	
 	strcopy(frag.classname, sizeof(frag.classname), classname);
 	frag.itemdef = itemdef;
+	
+	//
+	
+	if(bDebug)
+	{
+		int assist = (assister > 0) ? GetClientOfUserId(assister) : 0;
+		
+		char weapon[64];
+		event.GetString("weapon", weapon, sizeof(weapon));
+		
+		PrintToServer(core_chattag..." OnPlayerDeath() Debug : "
+		..."\nattacker : %i ['%s'] (gd : %.1f) (g : %s)"
+		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s)"
+		..."\nassister : %i ['%s']"
+		..."\nclass attacker : %i ['%s'] / victim : %i ['%s']"
+		..."\nweapon itemdef : %i ['%s'] / id : %i ['%s']"
+		..."\ninflictor entity : %i"
+		..."\ndeath_flags : %i"
+		..."\ncustomkill : %i"
+		..."\nhealers : %i"
+		..."\n"
+		, attacker, g_Player[client].name2, gd_attacker, g_attacker ? "true":"false"
+		, userid, g_Player[victim].name2, gd_userid, g_userid ? "true":"false"
+		, assister, (assist > 0) ? g_Player[assist].name2 : ""
+		, class, TF2_ClassTypeNameLC[class], frag.class, TF2_ClassTypeNameLC[frag.class]
+		, itemdef, classname, event.GetInt("weaponid"), weapon
+		, inflictor
+		, death_flags
+		, customkill
+		, frag.healers);
+	}
+	
+	// Corrects the headshot icon to be arrow headshot, not default bullet headshot. (deflect an arrow with a headshot)
+	// tf2 dev pls fix this ancient issue.
+	
+	if((customkill == 1 && StrEqual(classname, "deflect_arrow")))
+	{
+		event.SetString("weapon", "huntsman");
+	}
+	
+	//
 	
 	if(!g_Game[client].aFragEvent)
 	{
@@ -1165,6 +1186,13 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	}
 	
 	g_Game[client].aFragEvent.PushArray(frag, sizeof(frag));
+	
+	/*
+	if(g_Game[client].aFragEvent.Length == 1)
+	{
+		CreateTimer(0.1, Timer_OnPlayerDeath, attacker);
+	}
+	*/
 }
 
 /* Called as soon as a player finds, unboxes, trades, etc an item. */
@@ -1607,7 +1635,14 @@ void OnObjectPlaced(Event event, const char[] event_name, bool dontBroadcast)
 		LogError("%s OnObjectPlaced error: Building type index %i has invalid convar handle!", core_chattag, obj);
 		return;
 	}
-	else if(g_Game[client].bObjectPlaced[obj])
+	
+	//
+	
+	if(bDebug) PrintToServer(core_chattag..." OnObjectPlaced() : userid %i / object %i / index %i", userid, obj, index);
+	
+	//
+	
+	if(g_Game[client].bObjectPlaced[obj])
 	{
 		return;
 	}
@@ -2978,59 +3013,11 @@ Action MapTimer_GameTimer(Handle timer)
 {
 	if(bLoaded)
 	{
-		if(!!g_FeignDeaths)
-		{
-			if(g_FeignDeaths.Length > 0)
-			{
-				Transaction txn = new Transaction();
-				
-				for(int i = 0; i < g_FeignDeaths.Length; i++)
-				{
-					char auth[28];
-					g_FeignDeaths.GetString(i, auth, sizeof(auth));
-					
-					char query[256];
-					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `FeignDeaths`=`FeignDeaths`+1 where `SteamID`='%s' and `Stats`='%i'"
-					, auth, g_StatsID);
-					txn.AddQuery(query);
-				}
-				
-				sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnFeignDeathUpdate);
-				
-				g_FeignDeaths.Clear();
-			}
-		}
-		
-		if(!!g_MedicHealPointDeaths)
-		{
-			if(g_MedicHealPointDeaths.Length > 0)
-			{
-				Transaction txn = new Transaction();
-				
-				for(int i = 0; i < g_MedicHealPointDeaths.Length; i++)
-				{
-					char auth[28];
-					int healpoints;
-					
-					g_MedicHealPointDeaths.GetString(i, auth, sizeof(auth));
-					healpoints = g_MedicHealPointDeaths.Get(i+1);
-					i++;
-					
-					char query[256];
-					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HealPoints`=`HealPoints`+%i where `SteamID`='%s' and `StatsID`='%i'"
-					, healpoints, auth, g_StatsID);
-					txn.AddQuery(query);
-				}
-				
-				sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnMedicHealPointsUpdate);
-			}
-			
-			g_MedicHealPointDeaths.Clear();
-		}
+		Transaction txn; // All-In-One Query.
 		
 		// alternative over a for() loop.
 		int client = 0;
-		while((client = FindEntityByClassname(client, "player")) > 0)
+		while((client = FindEntityByClassname(client, "player")) != -1)
 		{
 			if(!IsValidClient(client))
 			{
@@ -3049,7 +3036,7 @@ Action MapTimer_GameTimer(Handle timer)
 				StatsMenu.Session(client, g_Player[client].active_page_session);
 			}
 			
-			if(!!g_Game[client].aFragEvent)
+			if(g_Game[client].aFragEvent != null)
 			{
 				int frags;
 				if((frags = g_Game[client].aFragEvent.Length) > 0)
@@ -3454,7 +3441,7 @@ Action MapTimer_GameTimer(Handle timer)
 					char dummy[256];
 					GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
 					
-					Transaction txn = new Transaction();
+					txn = new Transaction();
 					AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client, list_healercount, list_healer, list_steamid_assister, sizeof(list_steamid_assister));
 					VictimDied(txn, list, list_class, frags);
 					
@@ -3509,7 +3496,7 @@ Action MapTimer_GameTimer(Handle timer)
 							, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_StatsID);
 							txn.AddQuery(query_wep, queryId_frag_weapon);
 							
-							if(DEBUG) PrintToServer("%s OnPlayerDeath() DEBUG: [userid %i] classname '%s' / itemdef '%i' / quantity '%i'"
+							if(bDebug) PrintToServer("%s OnPlayerDeath() DEBUG: [userid %i] classname '%s' / itemdef '%i' / quantity '%i'"
 							, core_chattag, attacker, epic.classname, epic.itemdef, epic.quantity);
 						}
 						
@@ -3720,7 +3707,6 @@ Action MapTimer_GameTimer(Handle timer)
 					txn.AddQuery(query, queryId_frag_playerlist);
 					txn.AddQuery(query_map, queryId_frag_playerlist_MapUpdate);
 					
-					
 					// kill log
 					
 					int lenk;
@@ -3807,25 +3793,25 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					//
 					
-					sql.Execute(txn, _, TXNEvent_OnFailed, attacker);
-					
-					//
+					if(g_Player[client].active_page_session > 0)
+					{
+						StatsMenu.Session(client, g_Player[client].active_page_session);
+					}
 					
 					// translation, separated instead.
 					if(points >= 1 && g_Player[client].bShowFragMsg)
 					{
 						PrepareFragMessage(client, dummy, points, frags);
 					}
-					if(g_Player[client].active_page_session > 0)
-					{
-						StatsMenu.Session(client, g_Player[client].active_page_session);
-					}
 				}
 			}
 			
-			if(!!g_Game[client].aItemEvent)
+			if(g_Game[client].aItemEvent != null)
 			{
-				Transaction txn = new Transaction();
+				if(txn == null)
+				{
+					txn = new Transaction();
+				}
 				
 				for(int i = 0; i < g_Game[client].aItemEvent.Length; i++)
 				{
@@ -3860,14 +3846,14 @@ Action MapTimer_GameTimer(Handle timer)
 					len += Format(query[len], sizeof(query)-len, ",'%i'", item.weartype);
 					len += Format(query[len], sizeof(query)-len, ",'%i'", item.quantity);
 					len += Format(query[len], sizeof(query)-len, ")");
-					txn.AddQuery(query);
+					txn.AddQuery(query, query_error_uniqueid_OnItemEventInsert);
 				}
 				
-				sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnItemEventInsert);
+				//sql.Execute(txn, _, TXN_Callback_Failure, query_error_uniqueid_OnItemEventInsert);
 				g_Game[client].aItemEvent.Clear();
 			}
 			
-			if(!!g_Game[client].aObjectPlaced)
+			if(g_Game[client].aObjectPlaced != null)
 			{
 				int objects = 0;
 				if((objects = g_Game[client].aObjectPlaced.Length) > 0)
@@ -3947,7 +3933,11 @@ Action MapTimer_GameTimer(Handle timer)
 					}
 					
 					g_Game[client].aObjectPlaced.Clear();
-					Transaction txn = new Transaction();
+					
+					if(txn == null)
+					{
+						txn = new Transaction();
+					}
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
@@ -3983,7 +3973,7 @@ Action MapTimer_GameTimer(Handle timer)
 						len += Format(query[len], sizeof(query)-len, ",`SappersPlaced`=`SappersPlaced`+%i", sappers);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SappersPlaced`=`SappersPlaced`+%i", sappers);
 					}
-					if(points > 0)
+					if(points > 0 && !g_Player[client].bPenalty)
 					{
 						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 						
@@ -4024,7 +4014,7 @@ Action MapTimer_GameTimer(Handle timer)
 				}
 			}
 			
-			if(!!g_Game[client].aObjectDestroyed)
+			if(g_Game[client].aObjectDestroyed != null)
 			{
 				int objects = 0;
 				if((objects = g_Game[client].aObjectDestroyed.Length) > 0)
@@ -4104,7 +4094,10 @@ Action MapTimer_GameTimer(Handle timer)
 					}
 					
 					g_Game[client].aObjectDestroyed.Clear();
-					Transaction txn = new Transaction();
+					if(txn == null)
+					{
+						txn = new Transaction();
+					}
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
@@ -4140,7 +4133,7 @@ Action MapTimer_GameTimer(Handle timer)
 						len += Format(query[len], sizeof(query)-len, ",`SappersDestroyed`=`SappersDestroyed`+%i", sappers);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SappersDestroyed`=`SappersDestroyed`+%i", sappers);
 					}
-					if(points > 0)
+					if(points > 0 && g_Player[client].bPenalty)
 					{
 						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
 						
@@ -4180,7 +4173,7 @@ Action MapTimer_GameTimer(Handle timer)
 				}
 			}
 			
-			if(!!g_Game[client].aJarEvent)
+			if(g_Game[client].aJarEvent != null)
 			{
 				int jars = 0;
 				if((jars = g_Game[client].aJarEvent.Length) > 0)
@@ -4212,6 +4205,11 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							if(!g_Game[client].bPlayerJarated)
 							{
+								if(txn == null)
+								{
+									txn = new Transaction();
+								}
+								
 								int len;
 								char query[256];
 								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Coated`=`Coated`+%i", jars);
@@ -4223,7 +4221,7 @@ Action MapTimer_GameTimer(Handle timer)
 								}
 								len += Format(query[len], sizeof(query)-len, ",`CoatedPiss`=`CoatedPiss`+%i", jars);
 								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerJarated);
+								txn.AddQuery(query, query_error_uniqueid_OnPlayerJarated);
 								
 								g_Game[client].bPlayerJarated = true;
 								CreateTimer(g_Time_PlayerJarated, Timer_bPlayerJarated, g_Player[client].userid);
@@ -4250,6 +4248,11 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							if(!g_Game[client].bPlayerMilked)
 							{
+								if(txn == null)
+								{
+									txn = new Transaction();
+								}
+								
 								int len;
 								char query[256];
 								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Coated`=`Coated`+%i", jars);
@@ -4261,7 +4264,7 @@ Action MapTimer_GameTimer(Handle timer)
 								}
 								len += Format(query[len], sizeof(query)-len, ",`CoatedMilk`=`CoatedMilk`+%i", jars);
 								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerMilked);
+								txn.AddQuery(query, query_error_uniqueid_OnPlayerMilked);
 								
 								g_Game[client].bPlayerMilked = true;
 								CreateTimer(g_Time_PlayerMilked, Timer_bPlayerMilked, g_Player[client].userid);
@@ -4288,6 +4291,11 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							if(!g_Game[client].bPlayerGasPassed)
 							{
+								if(txn == null)
+								{
+									txn = new Transaction();
+								}
+								
 								int len;
 								char query[256];
 								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Coated = Coated+%i", jars);
@@ -4299,7 +4307,7 @@ Action MapTimer_GameTimer(Handle timer)
 								}
 								len += Format(query[len], sizeof(query)-len, ",`CoatedGasoline`=`CoatedGasoline`+%i", jars);
 								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-								sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerGasPassed);
+								txn.AddQuery(query, query_error_uniqueid_OnPlayerGasPassed);
 								
 								g_Game[client].bPlayerGasPassed = true;
 								CreateTimer(g_Time_PlayerGasPassed, Timer_bPlayerGasPassed, g_Player[client].userid);
@@ -4323,7 +4331,7 @@ Action MapTimer_GameTimer(Handle timer)
 				}
 			}
 			
-			if(!!g_Game[client].aExtEvent)
+			if(g_Game[client].aExtEvent != null)
 			{
 				int exts = 0;
 				if((exts = g_Game[client].aExtEvent.Length) > 0)
@@ -4344,6 +4352,11 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					if(!g_Game[client].bExtEvent)
 					{
+						if(txn == null)
+						{
+							txn = new Transaction();
+						}
+						
 						int points;
 						int len;
 						char query[256];
@@ -4355,7 +4368,7 @@ Action MapTimer_GameTimer(Handle timer)
 							g_Player[client].points += points;
 						}
 						len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-						sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerExtinguished);
+						txn.AddQuery(query, query_error_uniqueid_OnPlayerExtinguished);
 						
 						g_Game[client].bExtEvent = true;
 						CreateTimer(g_Time_ExtEvent, Timer_bExtEvent, GetClientUserId(client));
@@ -4380,6 +4393,11 @@ Action MapTimer_GameTimer(Handle timer)
 			int robots = 0;
 			if((robots = g_Game[client].iRobotFragEvent) > 0)
 			{
+				if(txn == null)
+				{
+					txn = new Transaction();
+				}
+				
 				g_Game[client].iRobotFragEvent = -1;
 				
 				g_Player[client].session[Stats_RobotsFragged] += robots;
@@ -4395,7 +4413,7 @@ Action MapTimer_GameTimer(Handle timer)
 					g_Player[client].points += points;
 				}
 				len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-				sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnRobotsFragged);
+				txn.AddQuery(query, query_error_uniqueid_OnRobotsFragged);
 				
 				if(points > 0 && !g_Player[client].bPenalty)
 				{
@@ -4415,6 +4433,45 @@ Action MapTimer_GameTimer(Handle timer)
 					, counter);
 				}
 			}
+			
+			int feigns = 0;
+			if((feigns = g_Game[client].iFrameFeignDeaths) > 0)
+			{
+				if(txn == null)
+				{
+					txn = new Transaction();
+				}
+				
+				g_Game[client].iFrameFeignDeaths = 0;
+				
+				char query[256];
+				Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `FeignDeaths`=`FeignDeaths`+%i where `SteamID`='%s' and `Stats`='%i'"
+				, feigns, g_Player[client].auth, g_StatsID);
+				txn.AddQuery(query, query_error_uniqueid_OnFeignDeathUpdate);
+			}
+			
+			int healpoints = 0;
+			if((healpoints = g_Game[client].iFrameHealPoints) > 0)
+			{
+				if(txn == null)
+				{
+					txn = new Transaction();
+				}
+				
+				g_Game[client].iFrameHealPoints = 0;
+				
+				char query[256];
+				Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HealPoints`=`HealPoints`+%i where `SteamID`='%s' and `StatsID`='%i'"
+				, healpoints, g_Player[client].auth, g_StatsID);
+				txn.AddQuery(query, query_error_uniqueid_OnMedicHealPointsUpdate);
+			}
+		}
+		
+		//
+		
+		if(txn != null)
+		{
+			sql.Execute(txn, _, TXN_OnGameFrameCallback_Failure);
 		}
 	}
 	
