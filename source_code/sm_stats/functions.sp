@@ -63,61 +63,6 @@ stock void PanelText(Panel panel, const char[] text, any ...)
 
 /* ============================================================== */
 
-stock int GetClientPosition(const char[] auth)
-{
-	int position = -1;
-	
-	if(!!sql)
-	{
-		char query[256];
-		Format(query, sizeof(query), "select Points from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'", auth, g_StatsID);
-		SQL_LockDatabase(sql); // lock database as it's non-threaded.
-		DBResultSet results = SQL_Query(sql, query);
-		SQL_UnlockDatabase(sql);
-		
-		switch(!!results && results.FetchRow())
-		{
-			case false:
-			{
-				char error[256];
-				SQL_GetError(sql, error, sizeof(error));
-				LogError("%s GetClientPosition error: Failed retrieving points for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
-			}
-			
-			case true:
-			{
-				int points = results.FetchInt(0);
-				
-				Format(query, sizeof(query), "select count(*) from `"...sql_table_playerlist..."` where Points >= %i and g_StatsID='%i'", points, g_StatsID);
-				SQL_LockDatabase(sql);
-				results = SQL_Query(sql, query);
-				SQL_UnlockDatabase(sql);
-				
-				switch(!!results)
-				{
-					case false:
-					{
-						char error[256];
-						SQL_GetError(sql, error, sizeof(error));
-						LogError("%s GetClientPosition error: Failed retrieving position for steam auth '%s' of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, auth, error);
-					}
-					case true:
-					{
-						while(results.FetchRow())
-						{
-							position = results.FetchInt(0);
-						}
-					}
-				}
-			}
-		}
-		
-		delete results;
-	}
-	
-	return position;
-}
-
 /**
  *	Returns the total player count in a database table.
  */
@@ -245,7 +190,7 @@ stock void OnRoundEnded(Event event, const char[] event_name, bool dontBroadcast
 		{
 			if(IsValidClient(player))
 			{
-				CPrintToChat(player, "%T", "#SMStats_RoundEnd", player);
+				CPrintToChat(player, "%s %T", g_ChatTag, "#SMStats_RoundEnd", player);
 			}
 		}
 	}
@@ -388,30 +333,24 @@ stock void GetMultipleTargets(int client, const int[] list, int counter, char[] 
 		int userid2 = list[1];
 		int target2 = GetClientOfUserId(userid2);
 		
-		Format(dummy, maxlen, "%s%T%s%T", g_Player[target1].name, "#SMStats_And", client, g_Player[target2].name, "#SMStats_Counter", client, counter);
+		Format(dummy, maxlen, "%s%T%s", g_Player[target1].name, "#SMStats_And", client, g_Player[target2].name);
 	}
-	else if(counter > 2 && counter < 4)
+	else if(counter == 3)
 	{
-		for(int i = 0; i < counter-1; i++)
-		{
-			int userid = list[i];
-			int target = GetClientOfUserId(userid);
-			
-			if(dummy[0] != '\0')
-			{
-				Format(dummy, maxlen, "%s%T", dummy, "#SMStats_Comma", client);
-			}
-			
-			Format(dummy, maxlen, "%s%s", dummy, g_Player[target].name);
-		}
+		int userid1 = list[0];
+		int target1 = GetClientOfUserId(userid1);
 		
-		int target = GetClientOfUserId(list[counter-1]);
-		Format(dummy, maxlen, "%s%T%s%T", dummy, "#SMStats_And", client, g_Player[target].name, "#SMStats_Counter", client, counter);
-		// outputs the "and last player".
+		int userid2 = list[1];
+		int target2 = GetClientOfUserId(userid2);
+		
+		int userid3 = list[2];
+		int target3 = GetClientOfUserId(userid3);
+		
+		Format(dummy, maxlen, "%s%T%s%T%s", g_Player[target1].name, "#SMStats_Comma", client, g_Player[target2].name2, "#SMStats_And", client, g_Player[target3].name);
 	}
 	else
 	{
-		Format(dummy, maxlen, "%T", "#SMStats_MultiplePlayers", client);
+		Format(dummy, maxlen, "%T%T", "#SMStats_MultiplePlayers", client, "#SMStats_Counter", client, counter);
 	}
 }
 
@@ -1103,9 +1042,9 @@ stock void PointsPrefix(int client, int points, char[] prefix, int maxlen, Point
 		
 		//
 		
-		Format(fmt_points, sizeof(fmt_points), "%T", "#SMStats_Points_Minus", client, points);
+		Format(fmt_points, sizeof(fmt_points), "{red}-%i{default}", points);
 	} else if((points >= 1 || type == PointSplit_Plus)) {
-		Format(fmt_points, sizeof(fmt_points), "%T", "#SMStats_Points_Plus", client, points);
+		Format(fmt_points, sizeof(fmt_points), "{green}+%i{default}", points);
 	} else {
 		Format(fmt_points, sizeof(fmt_points), "%i", points);
 	}
@@ -1237,6 +1176,7 @@ stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results,
 				, "#SMStats_Player_Connected", player
 				, name
 				, position
+				, g_TotalTablePlayers
 				, points_plural
 				, country_name);
 			}
@@ -1439,6 +1379,7 @@ stock void DBQuery_Send_Player_Disconnected(Database database, DBResultSet resul
 				, "#SMStats_Player_Disconnected", player
 				, name
 				, position
+				, g_TotalTablePlayers
 				, points_plural
 				, country_name
 				, event_reason);

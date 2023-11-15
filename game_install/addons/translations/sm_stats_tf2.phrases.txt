@@ -509,8 +509,8 @@
 		// {3} points earned
 		// {4} capture event
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {4}"
-		"sv" "{1} ({2}) Belönades med {3} för att {4}"
+		"en" "{1} ({2}) {3} {4}"
+		"sv" "{1} ({2}) {3} för att {4}"
 		"tr" "{1} ({2}) {4} noktasını ele geçirerek {3} kazandı"
 	}
 
@@ -554,8 +554,8 @@
 		// {3} points earned
 		// {4} flag event
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {4}"
-		"sv" "{1} ({2}} Belönades med {3} för att {4}"
+		"en" "{1} ({2}) {3} ({4})"
+		"sv" "{1} ({2}} {3} ({4})"
 		"tr" "{1} ({2}) {4} ve {3} kazandı"
 	}
 	"#SMStats_FlagEvent1" //Lost points on intelligence event.
@@ -565,8 +565,8 @@
 		// {3} points earned
 		// {4} flag event
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Lost {3} for {4}"
-		"sv" "{1} ({2}) Förlorade {3} för att {4}"
+		"en" "{1} ({2}) {3} ({4})"
+		"sv" "{1} ({2}) {3} ({4})"
 		"tr" "{1} ({2}) {4} ve {3} kaybetti"
 	}
 
@@ -634,8 +634,8 @@
 		// {4} building event
 		// {5} building name
 		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-		"en" "{1} ({2}) Earned {3} for {4} {5}"
-		"sv" "{1} ({2}) Belönades med {3} för att {4} {5}"
+		"en" "{1} ({2}) {3} {4} {5}"
+		"sv" "{1} ({2}) {3} för att {4} {5}"
 		"tr" "{1} ({2}) bir {5} {4} ve {3} kazandı"
 	}
 
@@ -649,7 +649,7 @@
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
 		"en" "{1} ({2}) Earned {3} for {green}Picking Up {default}neutral ball."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Plocka Upp {default}den neutrala bollen."
+		"sv" "{1} ({2}) {3} för att {green}Plocka Upp {default}den neutrala bollen."
 		"tr" "{1} ({2}) {green}Topu {default}kaparak {3} kazandı."
 	}
 	"#SMStats_PassBall_ScoreBall"
@@ -658,8 +658,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Scoring {default}the ball."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Göra mål {default}med bollen."
+		"en" "{1} ({2}) {3} for {green}Scoring {default}the ball."
+		"sv" "{1} ({2}) {3} för att {green}Göra mål {default}med bollen."
 		"tr" "{1} ({2}) {green}Gol Atarak {default}{3} kazandı."
 	}
 	"#SMStats_PassBall_DropBall"
@@ -668,8 +668,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Lost {3} for {green}Dropping {default}the ball."
-		"sv" "{1} ({2}) Förlorade {3} för att {green}Tappa {default}bollen."
+		"en" "{1} ({2}) {3} for {green}Dropping {default}the ball."
+		"sv" "{1} ({2}) {3} för att {green}Tappa {default}bollen."
 		"tr" "{1} ({2}) {green}Topu Düşürerek {default}{3} kaybetti."
 	}
 	"#SMStats_PassBall_CatchBall_Scenario0"
@@ -678,8 +678,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Catching {default}the ball."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Ta Emot {default}bollen."
+		"en" "{1} ({2}) {3} for {green}Catching {default}the ball."
+		"sv" "{1} ({2}) {3} för att {green}Ta Emot {default}bollen."
 		"tr" "{1} ({2}) {green}Topu Yakalayarak {default}{3} kazandı."
 	}
 	"#SMStats_PassBall_CatchBall_Scenario1"
@@ -689,8 +689,8 @@
 		// {3} earned points
 		// {4} victim name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Catching {default}the ball from {4}."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Ta Emot {default}bollen ifrån {4}."
+		"en" "{1} ({2}) {3} for {green}Catching {default}the ball from {4}."
+		"sv" "{1} ({2}) {3} för att {green}Ta Emot {default}bollen ifrån {4}."
 		"tr" "{1} ({2}) {4} tarafından atılan topu {green}yakalayarak {default}{3} kazandı."
 	}
 	"#SMStats_PassBall_StealBall_Scenario0"
@@ -699,8 +699,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Stealing {default}the ball."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Stjäla {default}bollen."
+		"en" "{1} ({2}) {3} for {green}Stealing {default}the ball."
+		"sv" "{1} ({2}) {3} för att {green}Stjäla {default}bollen."
 		"tr" "{1} ({2}) Topu {green}çalarak {default}{3} kazandı."
 	}
 	"#SMStats_PassBall_StealBall_Scenario1"
@@ -710,8 +710,8 @@
 		// {3} earned points
 		// {4} victim name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Stealing {default}the ball from {4}."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Stjäla {default}bollen ifrån {4}."
+		"en" "{1} ({2}) {3} for {green}Stealing {default}the ball from {4}."
+		"sv" "{1} ({2}) {3} för att {green}Stjäla {default}bollen ifrån {4}."
 		"tr" "{1} ({2}) {4} tarafından atılan topu {green}çalarak {default}{3} kazandı."
 	}
 	"#SMStats_PassBall_BlockBall_Scenario0"
@@ -720,8 +720,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Blocking {default}the ball."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Blockera {default}bollen."
+		"en" "{1} ({2}) {3} for {green}Blocking {default}the ball."
+		"sv" "{1} ({2}) {3} för att {green}Blockera {default}bollen."
 		"tr" "{1} ({2}) Topu {green}engelleyerek {default}{3} kazandı."
 	}
 	"#SMStats_PassBall_BlockBall_Scenario1"
@@ -731,8 +731,8 @@
 		// {3} earned points
 		// {4} victim name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Blocking {default}the ball from {4}."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Blockera {default}bollen ifrån {4}."
+		"en" "{1} ({2}) {3} for {green}Blocking {default}the ball from {4}."
+		"sv" "{1} ({2}) {3} för att {green}Blockera {default}bollen ifrån {4}."
 		"tr" "{1} ({2}) {4} tarafından atılan topu {green}engelleyerek {default}{3} kazandı."
 	}
 
@@ -747,19 +747,17 @@
 	}
 	"#SMStats_HalloweenBoss_Type2" //Monoculus.
 	{
-		"en" "{purple}Monoculus"
-		"tr" "{purple}Monoculus{default}'u"
+		"en" "{purple}MONOCULUS!"
 	}
 	"#SMStats_HalloweenBoss_Type3" //Merasmus.
 	{
 		"en" "{lightgreen}Merasmus"
-		"tr" "{lightgreen}Merasmus{default}'u"
 	}
 	"#SMStats_HalloweenBoss_Type4" //Skeleton King.
 	{
 		"en" "{lightgreen}Skeleton King"
 		"sv" "{lightgreen}Skelettkung"
-		"tr" "{lightgreen}İskelet Kral{default}'ı"
+		"tr" "{lightgreen}İskelet Kral"
 	}
 	"#SMStats_FragEvent_HalloweenBoss" //Killed boss.
 	{
@@ -768,8 +766,8 @@
 		// {3} earned points
 		// {4} halloween boss name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for neutralizing {4}"
-		"sv" "{1} ({2}) Belönades med {3} för att neutralizerat {4}."
+		"en" "{1} ({2}) {3} fragging halloween boss ({4})"
+		"sv" "{1} ({2}) {3} fragga halloween boss ({4})."
 		"tr" "{1} ({2}) {4} {green}öldürerek {3} kazandı."
 	}
 	"#SMStats_HalloweenBoss_StunEvent" //Stunned boss.
@@ -779,8 +777,8 @@
 		// {3} earned points
 		// {4} victim name
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Stunning {4}"
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Stunnat {4}"
+		"en" "{1} ({2}) {3} for {green}Stunning {4}"
+		"sv" "{1} ({2}) {3} för att {green}Stunnat {4}"
 		"tr" "{1} ({2}) {4} {green}sersemleterek {3} kazandı."
 	}
 
@@ -793,8 +791,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Earned {3} for destroying the {cyan}Tank{default}."
-		"sv" "{1} ({2}) Belönade med {3} för att förstört {cyan}Tanken{default}."
+		"en" "{1} ({2}) {3} for destroying the {cyan}Tank{default}."
+		"sv" "{1} ({2}) {3} för att förstört {cyan}Tanken{default}."
 		"tr" "{1} ({2}) {cyan}Tankı{default} yok ederek {3} kazandı."
 	}
 	"#SMStats_MvM_Player_FragRobot"
@@ -803,8 +801,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Earned {3} for fragging a {cyan}Robot{default}."
-		"sv" "{1} ({2}) Belönades med {3} för att ha fraggat {cyan}Roboten{default}."
+		"en" "{1} ({2}) {3} for fragging a {cyan}Robot{default}."
+		"sv" "{1} ({2}) {3} för att ha fraggat {cyan}Roboten{default}."
 		"tr" "{1} ({2}) {cyan}Robot{default} öldürerek {3} kazandı."
 	}
 	"#SMStats_MvM_Player_FragSentryBuster"
@@ -814,8 +812,8 @@
 		// {3} earned points
 		// {4} points plural splitter
 		"#format" "{1:s},{2:i},{3:i},{4:s}"
-		"en" "{1} ({2}) Earned {3} {4} for fragging {cyan}Sentry Buster{default}."
-		"sv" "{1} ({2}) Belönades med {3} {4} för att ha fraggat {cyan}Vaktgevärsförgöraren{default}."
+		"en" "{1} ({2}) {3} {4} for fragging {cyan}Sentry Buster{default}."
+		"sv" "{1} ({2}) {3} {4} för att ha fraggat {cyan}Vaktgevärsförgöraren{default}."
 		"tr" "{1} ({2}) {cyan}Sentry Buster{default} öldürerek {3} kazandı."
 	}
 	"#SMStats_MvM_Player_ResetBomb"
@@ -824,8 +822,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Resetting {default}the bomb."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Resetta {default}bomben."
+		"en" "{1} ({2}) {3} for {green}Resetting {default}the bomb."
+		"sv" "{1} ({2}) {3} för att {green}Resetta {default}bomben."
 		"tr" "{1} ({2}) {green}Bomba Sıfırlama{default} karşılığı {3} kazandı."
 	}
 
@@ -839,8 +837,8 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for übercharging {4}"
-		"sv" "{1} ({2}) Belönades med {3} för att überladda {4}"
+		"en" "{1} ({2}) {3} for übercharging {4}"
+		"sv" "{1} ({2}) {3} för att überladda {4}"
 		"tr" "{1} ({2}) {4} {green}über vererek {3} kazandı."
 	}
 	"#SMStats_Player_UsedTeleporter"
@@ -850,8 +848,8 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {4} using your teleporter."
-		"sv" "{1} ({2}) Belönades med {3} för att {4} använt din teleporter."
+		"en" "{1} ({2}) {3} for {4} using your teleporter."
+		"sv" "{1} ({2}) {3} för att {4} använt din teleporter."
 		"tr" "{1} ({2}) {4} Işınlayıcını kullandığı için {3} kazandın."
 	}
 	"#SMStats_Player_StealSandvich_Scenario0"
@@ -861,8 +859,8 @@
 		// {3} earned points
 		// {4} victim name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for stealing sandvich that belonged to {4}."
-		"sv" "{1} ({2}) Belönades med {3} för att stjäla en smörgåse tillhörande {4}."
+		"en" "{1} ({2}) {3} for stealing sandvich that belonged to {4}."
+		"sv" "{1} ({2}) {3} för att stjäla en smörgåse tillhörande {4}."
 		"tr" "{1} ({2}) {4} tarafından bırakılan sandviçi {green}çalarak {default}{3} kazandın."
 	}
 	"#SMStats_Player_StealSandvich_Scenario1"
@@ -871,8 +869,8 @@
 		// {2} player points
 		// {3} earned points
 		"#format" "{1:s},{2:i},{3:s}"
-		"en" "{1} ({2}) Earned {3} for stealing a sandvich."
-		"sv" "{1} ({2}) Belönades med {3} för att stjäla en smörgås."
+		"en" "{1} ({2}) {3} Stealing a sandvich."
+		"sv" "{1} ({2}) {3} för att Stjäla en smörgås."
 		"tr" "{1} ({2}) Sandviç {green}çalarak{default} {3} kazandın."
 	}
 
@@ -883,8 +881,8 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Stunning {4}"
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Stunna {4}"
+		"en" "{1} ({2}) {3} for {green}Stunning {4}"
+		"sv" "{1} ({2}) {3} för att {green}Stunna {4}"
 		"tr" "{1} ({2}) {4} oyuncusunu {green}sersemleterek{default} {3} kazandın."
 	}
 	"#SMStats_Player_StunScenario1"
@@ -894,8 +892,8 @@
 		// {3} earned points
 		// {4} victim name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for {green}Stunning {4} with a {green}Moon Shot{default}."
-		"sv" "{1} ({2}) Belönades med {3} för att {green}Stunna {4} med {green}Månskott{default}."
+		"en" "{1} ({2}) {3} for {green}Stunning {4} ({green}Moon Shot{default})."
+		"sv" "{1} ({2}) {3} för att {green}Stunna {4} ({green}Månskott{default})."
 		"tr" "{1} ({2}) {4} oyuncusunu {green}Ay Vuruşu{default} ile {green}sersemleterek {default}{3} kazandın."
 	}
 
@@ -906,8 +904,8 @@
 		// {3} earned points
 		// {4} victim name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for coating {4} with {green}Piss{default}."
-		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med {green}Urin{default}."
+		"en" "{1} ({2}) {3} coating {yellow}Piss {default}on {4}."
+		"sv" "{1} ({2}) {3} för att täcka {4} med {yellow}Urin{default}."
 		"tr" "{1} ({2}) {4} oyuncusunu {green}Kavate{default} ile kaplayarak {3} kazandın."
 	}
 	"#SMStats_Player_CoatedMilk" //Milked opponent.
@@ -917,8 +915,8 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for coating {4} with {green}Milk{default}."
-		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med {green}Mjölk{default}."
+		"en" "{1} ({2}) {3} coating {grey}Milk {default}on {4}."
+		"sv" "{1} ({2}) {3} för att täcka {4} med {grey}Mjölk{default}."
 		"tr" "{1} ({2}) {4} oyuncusunu {green}Süt{default} ile kaplayarak {3} kazandın."
 	}
 	"#SMStats_Player_CoatedGasoline" //Gasolined opponent.
@@ -928,8 +926,8 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for coating {4} with {green}Gasoline{default}."
-		"sv" "{1} ({2}) Belönades med {3} för att täcka {4} med {green}Bensin{default}."
+		"en" "{1} ({2}) {3} coating {lavender}Gasoline {default}on {4}."
+		"sv" "{1} ({2}) {3} för att täcka {4} med {lavender}Bensin{default}."
 		"tr" "{1} ({2}) {4} oyuncusunu {green}Benzin{default} ile kaplayarak {3} kazandın."
 	}
 
@@ -940,8 +938,8 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) Earned {3} for extinguishing {4}."
-		"sv" "{1} ({2}) Belönades med {3} för att släcka {4}."
+		"en" "{1} ({2}) {3} Extinguishing {4}."
+		"sv" "{1} ({2}) {3} för att släcka {4}."
 		"tr" "{1} ({2}) {4} oyuncusunu söndürerek {3} kazandın."
 	}
 }

@@ -1570,7 +1570,7 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 		case 4:
 		{
 			char points_plural[32];
-			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Minus);
 			Format(event_phrase, sizeof(event_phrase), "%T{default}", "#SMStats_FlagEvent_Type4", client);
 			
 			CPrintToChat(client, "%s %T"
