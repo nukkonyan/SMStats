@@ -1013,7 +1013,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 	}
 	
 	char points_plural[64];
-	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_On);
+	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 	
 	switch(strlen(buffer) > 0)
 	{

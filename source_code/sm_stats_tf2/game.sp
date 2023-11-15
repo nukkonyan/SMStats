@@ -1335,7 +1335,7 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 			
 			char phrase[64], points_plural[32];
 			Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_CaptureEvent_Type0", client, cpname);
-			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 			
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag
@@ -1404,7 +1404,7 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 		char cpname[64], phrase[64], points_plural[32];
 		event.GetString("cpname", cpname, sizeof(cpname));
 		Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_CaptureEvent_Type1", client, cpname);
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		CPrintToChat(client, "%s %T"
 		, g_ChatTag
@@ -1486,7 +1486,7 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			}
 			
 			char points_plural[32];
-			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 			
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag
@@ -1522,7 +1522,7 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 		case 2:
 		{
 			char points_plural[32];
-			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 			Format(event_phrase, sizeof(event_phrase), "%T{default}", "#SMStats_FlagEvent_Type2", client);
 			
 			CPrintToChat(client, "%s %T"
@@ -1742,7 +1742,7 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 	}
 	
 	int victim;
-	if(!IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots ? true : false))
+	if(!IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots))
 	{
 		return;
 	}
@@ -1772,7 +1772,7 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 	if(points > 0 && !g_Player[client].bPenalty)
 	{
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		CPrintToChat(client, "%s %T"
 		, g_ChatTag
@@ -1816,17 +1816,9 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 	}
 	
 	int victim = GetClientOfUserId(userid);
-	if(!IsValidClient(victim, false))
+	if(!IsValidClient(victim, !bAllowBots))
 	{
 		return;
-	}
-	
-	if(!bAllowBots)
-	{
-		if(IsFakeClient(victim))
-		{
-			return;
-		}
 	}
 	
 	g_Player[client].session[Stats_TeleportersUsed]++;
@@ -1934,10 +1926,10 @@ void OnPlayerStealSandvich(Event event, const char[] event_name, bool dontBroadc
 	if(points > 0 && !g_Player[client].bPenalty)
 	{
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		int victim = GetClientOfUserId(owner);
-		switch(IsValidClient(victim, !bAllowBots ? true : false))
+		switch(IsValidClient(victim, !bAllowBots))
 		{
 			case false:
 			{
@@ -1997,7 +1989,7 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 	}
 	
 	int victim = GetClientOfUserId(userid_victim);
-	if(!IsValidClient(userid_victim, bAllowBots ? true : false))
+	if(!IsValidClient(userid_victim, !bAllowBots))
 	{
 		return;
 	}
@@ -2050,7 +2042,7 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 	if(points > 0 && !g_Player[client].bPenalty)
 	{
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		switch(big_stun)
 		{
@@ -2130,7 +2122,7 @@ void OnHalloweenBossKill(Event event, const char[] event_name, bool dontBroadcas
 	if((points = g_BossFragged[boss-1].IntValue) > 0)
 	{
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		CPrintToChat(client, "%s %T"
 		, g_ChatTag
@@ -2201,7 +2193,7 @@ void OnHalloweenSkeletonKingKilled(Event event, const char[] event_name, bool do
 	{
 		char phrase[64], points_plural[32];
 		Format(phrase, sizeof(phrase), "%T", "#SMStats_HalloweenBoss_Type4", client);
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		CPrintToChat(client, "%s %T"
 		, g_ChatTag
@@ -2248,7 +2240,7 @@ void OnHalloweenStunned(Event event, const char[] event_name, bool dontBroadcast
 		{
 			char phrase[64], points_plural[32];
 			Format(phrase, sizeof(phrase), "%T", "#SMStats_HalloweenBoss_Type2", client);
-			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 			
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag
@@ -2275,7 +2267,7 @@ void OnHalloweenStunned(Event event, const char[] event_name, bool dontBroadcast
 		{
 			char phrase[64], points_plural[32];
 			Format(phrase, sizeof(phrase), "%T", "#SMStats_HalloweenBoss_Type2", client);
-			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 			
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag
@@ -2326,7 +2318,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].session[Stats_PassBallsGotten]++;
@@ -2362,7 +2354,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].session[Stats_PassBallsScored]++;
@@ -2398,7 +2390,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Minus);
 		
 		g_Player[client].session[Stats_Points] -= points;
 		g_Player[client].session[Stats_PassBallsDropped]++;
@@ -2434,7 +2426,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].session[Stats_PassBallsCatched]++;
@@ -2488,7 +2480,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].session[Stats_PassBallsStolen]++;
@@ -2542,7 +2534,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].session[Stats_PassBallsBlocked]++;
@@ -2628,7 +2620,7 @@ void MvM_OnTankDestroyed(Event event, const char[] event_name, bool dontBroadcas
 		if(TF2_GetClientTeam(client) == TFTeam_Red)
 		{
 			char points_plural[32];
-			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+			PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 			
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag
@@ -2724,7 +2716,7 @@ void MvM_OnRobotDeath(Event event, const char[] event_name, bool dontBroadcast)
 		}
 		
 		char points_plural[32];
-		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		CPrintToChat(client, "%s %T"
 		, g_ChatTag
@@ -2783,7 +2775,7 @@ void MvM_OnBombResetted(Event event, const char[] event_name, bool dontBroadcast
 	}
 	
 	char points_plural[32];
-	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 	
 	CPrintToChat(client, "%s %T"
 	, "#SMStats_MvM_Player_ResetBomb", client
@@ -4000,7 +3992,7 @@ Action MapTimer_GameTimer(Handle timer)
 						char dummy[255], phrase[64], points_plural[32];
 						GetMultipleObjects(client, list, objects, dummy, sizeof(dummy));
 						Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_ObjectEvent_Type0", client);
-						PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+						PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 						
 						CPrintToChat(client, "%s %T"
 						, g_ChatTag
@@ -4159,7 +4151,7 @@ Action MapTimer_GameTimer(Handle timer)
 						char dummy[256], phrase[64], points_plural[32];
 						GetMultipleObjects(client, list, objects, dummy, sizeof(dummy));
 						Format(phrase, sizeof(phrase), "%T{default}", "#SMStats_ObjectEvent_Type1", client);
-						PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+						PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 						
 						CPrintToChat(client, "%s %T"
 						, g_ChatTag
@@ -4229,7 +4221,7 @@ Action MapTimer_GameTimer(Handle timer)
 								if(points > 0 && !g_Player[client].bPenalty)
 								{
 									char points_plural[32];
-									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 									
 									CPrintToChat(client, "%s %T"
 									, g_ChatTag
@@ -4272,7 +4264,7 @@ Action MapTimer_GameTimer(Handle timer)
 								if(points > 0 && !g_Player[client].bPenalty)
 								{
 									char points_plural[32];
-									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 									
 									CPrintToChat(client, "%s %T"
 									, g_ChatTag
@@ -4315,7 +4307,7 @@ Action MapTimer_GameTimer(Handle timer)
 								if(points > 0 && !g_Player[client].bPenalty)
 								{
 									char points_plural[32];
-									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+									PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 									
 									CPrintToChat(client, "%s %T"
 									, g_ChatTag
@@ -4376,7 +4368,7 @@ Action MapTimer_GameTimer(Handle timer)
 						if(points > 0 && !g_Player[client].bPenalty)
 						{
 							char points_plural[32];
-							PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+							PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 							
 							CPrintToChat(client, "%s %T"
 							, g_ChatTag
@@ -4418,7 +4410,7 @@ Action MapTimer_GameTimer(Handle timer)
 				if(points > 0 && !g_Player[client].bPenalty)
 				{
 					char points_plural[32], counter[12];
-					PointsPluralSplitter(client, points, points_plural, sizeof(points_plural));
+					PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 					if(robots >= 2)
 					{
 						Format(counter, sizeof(counter), " %T", "#SMStats_FragCounter", client, robots);
