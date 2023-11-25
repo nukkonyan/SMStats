@@ -166,7 +166,6 @@
 		"tr" "{1} ve {2}"
 	}
 	//"#SMStats_PlayTimeFormat_Scenario5" // seconds
-
 	"#SMStats_TimeFormat_LastConnected"
 	{
 		// Year - {YEAR}
@@ -187,10 +186,10 @@
 		"no" "{YEAR}/{DAY}/{MONTH}"
 		"tr" "{YEAR}/{MONTH}/{DAY}"
 	}
+
 	//================================//
 	// sm_stats Command.
 	//================================//
-
 	"#SMStats_StatsCmd_Usage"
 	{
 		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid>  {grey}Example below:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
@@ -229,7 +228,6 @@
 	//================================//
 	// Top Player SQL Information.
 	//================================//
-
 	"#SMStats_TopSQLInfo_ErrorParsing"
 	{
 		"en" "{yellow}Error: {default}Unable to parse top players of the leaderboard."
@@ -262,7 +260,6 @@
 	//===================//
 	// Penalty.
 	//===================//
-
 	"#SMStats_Player_Penalty"
 	{
 		// {1} player name
@@ -285,7 +282,6 @@
 	//================================//
 	// Banned.
 	//================================//
-
 	"#SMStats_Player_Detected_Banned"
 	{
 		// {1} player name
@@ -308,7 +304,6 @@
 	//================================//
 	// Connection.
 	//================================//
-
 	"#SMStats_Player_Connected"
 	{
 		// {1} player name
@@ -324,7 +319,6 @@
 		"sv" "{1} (Pos #{2}/{4}, {4}) från {5} har gått med i spelet."
 		"tr" "{1} ({3}/{4} ile {2}. Sıra) {5} ülkesinden oyuna katıldı."
 	}
-
 	"#SMStats_Player_Disconnected"
 	{
 		// {1} player name
@@ -336,12 +330,11 @@
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
 		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has left the game. {grey}({6})"
 		"jp" "{1} （立{2}場、{3}）が{orange}{5}{default}からをゲームを抜けました。 {grey}（{6}）"
-		"nl" "{1} (Pos #{2}/{3}, {3}) van {5} heeft het spel verlaten {grey}({6})"
-		"no" "{1} (Pos #{2}/{3}, {3}) fra {5} har forlatt spillet. {grey}({6})"
-		"sv" "{1} (Pos #{2}/{3}, {3}) från {5} har lämnat spelet. {grey}({6})"
+		"nl" "{1} (Pos #{2}/{3}, {4}) van {5} heeft het spel verlaten {grey}({6})"
+		"no" "{1} (Pos #{2}/{3}, {4}) fra {5} har forlatt spillet. {grey}({6})"
+		"sv" "{1} (Pos #{2}/{3}, {4}) från {5} har lämnat spelet. {grey}({6})"
 		"tr" "{1} ({3}/{4} ile {2}. Sıra) {5} ülkesinden oyundan ayrıldı. {grey}({6})"
 	}
-
 	"#SMStats_Player_Connected_TopPlayer"
 	{
 		// {1} top player position
@@ -357,7 +350,6 @@
 	//================================//
 	// Menu.
 	//================================//
-
 	"#SMStats_Menu_Session"
 	{
 		"en" "Session"
@@ -464,41 +456,49 @@
 	"#SMStats_MenuInfo_DevType_Founder"
 	{
 		"en" "Creator of SMStats!"
+		"sv" "Skaparen av SMStats!"
 		"tr" "SMStats'ın Yaratıcısı!"
 	}
 	"#SMSTats_MenuInfo_DevType_Contributor"
 	{
 		"en" "Thanks for being a contributor to the project!"
+		"sv" "Tack för att du är kontributör till projektet!"
 		"tr" "Projemize katkı sağladığınız için teşekkür ederiz!"
 	}
 	"#SMStats_MenuInfo_DevType_Tester"
 	{
 		"en" "Thanks for being a tester!"
+		"jp" "テスター有難う御座います！"
+		"sv" "Tack för att du är en testare!"
 		"tr" "Projemizi test ettiğiniz için teşekkür ederiz!"
 	}
 	"#SMStats_MenuInfo_DevType_Translator"
 	{
 		"en" "Thanks for being a translator!"
+		"jp" "翻訳して有難う御座います！"
+		"sv" "Tack för att du är en översättare!"
 		"tr" "Çevirmen olduğunuz için teşekkür ederiz!"
 	}
 	"#SMStats_MenuInfo_Playername"
 	{
 		// {1} player name
 		"#format" "{1:N}"
-		"en" "Playername: {1}"
-		"jp" "プレイヤー名： {1}"
+		"en" "Playername : {1}"
+		"dk" "Spillernavn : {1}:"
+		"jp" "プレイヤー名 : {1}"
 		"no" "Spillernavn : {1}"
-		"sv" "Spelarnamn: {1}"
-		"tr" "Oyuncu Adı: {1}"
+		"sv" "Spelarnamn : {1}"
+		"tr" "Oyuncu Adı : {1}"
 	}
 	"#SMStats_MenuInfo_Positioned"
 	{
 		// {1} placed position
 		// {2} total players
 		"#format" "{1:i},{2:i}"
-		"en" "Placed #{1} of {2} players."
-		"no" "Plassert #{1} av {2} spillere."
-		"sv" "Placerad #{1} av {2} spelare."
+		"en" "Placed #{1} out of {2} players."
+		"dk" "Placered #{1} ud af {2} spillere."
+		"no" "Plassert #{1} ut av {2} spillere."
+		"sv" "Placerad #{1} ut av {2} spelare."
 		"tr" "{2} oyuncunun içinde {1}. sırada."
 	}
 	"#SMStats_MenuInfo_PlayTime"
@@ -545,6 +545,15 @@
 		"jp" "プロフィールに表示"
 		"sv" "Besök profilen"
 		"tr" "Profili Ziyaret Et"
+	}
+	"#SMStats_MenuInfo_Points"
+	{
+		// {1} points
+		"#format" "{1:i}"
+		"en" "Points : {1}"
+		"jp" "ポイント : {1}"
+		"sv" "Poäng : {1}"
+		"tr" "Puanlar : {1}"
 	}
 	"#SMStats_MenuInfo_PointsEarned"
 	{
@@ -647,7 +656,6 @@
 	//================================//
 	// Settings.
 	//================================//
-
 	"#SMStats_MenuInfo_PlayConnectSnd"
 	{
 	    // {1} on/off value
@@ -766,7 +774,6 @@
 	//================================//
 	// Translations.
 	//================================//
-
 	"#SMStats_MultiplePlayers"
 	{
 	    "en" "Multiple players"
@@ -840,7 +847,6 @@
 	//================================//
 	// Frag Event.
 	//================================//
-
 	//Kill event types. Will automatically merge with one and another if needed.
 	"#SMStats_FragEvent_Type0" //Mid Air.
 	{
@@ -973,7 +979,9 @@
 	    // {3} points earned
 	    "#format" "{1:s},{2:i},{3:s}"
 	    "en" "{1} ({2}) {3} for dying."
-	    "sv" "{1} ({2}) {3} på grund av att dö."
+	    "jp" "{1} ({2})が死んだたため{3}。"
+	    "no" "{1} ({2}) {3} på grunn av å dø."
+	    "sv" "{1} ({2}) {3} på grund av o dö."
 	    "tr" "{1} ({2}), öldüğün için {3} kaybettin."
 	}
 	"#SMStats_FragEvent_Special" //Special kill event.
@@ -984,9 +992,10 @@
 	    // {4} victim name
 	    // {5} special frag event
 	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-	    "en" "{1} ({2}) {3} fragging {4} ({5})."
-	    "sv" "{1} ({2}) {3} fragga {4} {5}."
-	    "tr" "{1} ({2}), {4} oyuncusunu {5} öldürdüğün için {3} kazandın."
+	    "en" "{1} ({2}) {3} fragging {4} ({5})"
+	    "jp" "{1} ({2})が{4}をFRAGしてたため{3} ({5})"
+	    "sv" "{1} ({2}) {3} fragga {4} ({5})"
+	    "tr" "{1} ({2}), {4} oyuncusunu öldürdüğün için {3} kazandın ({5})"
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
@@ -996,6 +1005,7 @@
 	    // {4} victim name
 	    "#format" "{1:s},{2:i},{3:s},{4:s}"
 	    "en" "{1} ({2}) {3} fragging {4}."
+	    "jp" "{1} ({2})が{4}をFRAGしてたため{3}。"
 	    "sv" "{1} ({2}) {3} fragga {4}."
 	    "tr" "{1} ({2}), {4} oyuncusunu öldürdüğün için {3} kazandın."
 	}
@@ -1020,6 +1030,7 @@
 	    "sv" "{yellow}Fel: {default}Vapnen itemdef {1} (classname '{2}') verkar ogiltig! (Nytt föremål kanske?)"
 	    "tr" "{yellow}Hata: {default}Silah ögeleme tanımı {1} (classname '{2}') geçersiz gibi görünüyor! (Yeni öge olabilir mi?)"
 	}
+
 	//================================//
 	// Achievement event.
 	//================================//

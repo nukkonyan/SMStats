@@ -42,6 +42,7 @@ enum struct StatsMenuInfo
 		PanelText(panel, "%T", "#SMStats_MenuInfo_Playername", client, client);
 		PanelText(panel, "%T", "#SMStats_MenuInfo_Country", client, country);
 		PanelText(panel, "%T", "#SMStats_MenuInfo_MapTime", client, map_time);
+		PanelText(panel, "%T", "#SMStats_MenuInfo_Points", client, g_Player[client].points);
 		PanelText(panel, "%T\n ", "#SMStats_MenuInfo_Positioned", client, g_Player[client].position, g_TotalTablePlayers);		
 		
 		switch(page)
