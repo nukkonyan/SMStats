@@ -843,25 +843,21 @@
 	{
 		"en" "K"
 		"jp" "万"
-		"sv" "k"
 	}
 	"#SMStats_PointsFormat_10K"
 	{
 		"en" "K"
 		"jp" "万"
-		"sv" "k"
 	}
 	"#SMStats_PointsFormat_100K"
 	{
 		"en" "K"
 		"jp" "万"
-		"sv" "k"
 	}
 	"#SMStats_PointsFormat_1M"
 	{
 		"en" "M"
 		"jp" "百万"
-		"sv" "m"
 	}
 	"#SMStats_FeatureUnavailable"
 	{
@@ -1003,7 +999,7 @@
 	    // {3} points earned
 		// {4} fragger name
 	    // {5} victim fragged
-	    "#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
+	    "#format" "{1:s},{2:s},{3:s},{4:s},{5:s}"
 	    "en" "{1} ({2}) {3} assisting {4} fragging {5}."
 	    "jp" "{1} ({2})が{4}は{5}をFRAGしてでアシストしてたため{3}。" // 変の日本語ごめん頑張るよ ;-;
 	    "sv" "{1} ({2}) {3} assisterar {4} fragga {5}."
@@ -1014,9 +1010,9 @@
 	    // {1} player name
 	    // {2} player points
 	    // {3} points earned
-	    "#format" "{1:s},{2:i},{3:s}"
+	    "#format" "{1:s},{2:s},{3:s}"
 	    "en" "{1} ({2}) {3} for dying."
-	    "jp" "{1} ({2})が死んだによって{3}。"
+	    "jp" "{1} ({2})が死んだたため{3}。"
 	    "no" "{1} ({2}) {3} på grunn av å dø."
 	    "sv" "{1} ({2}) {3} på grund av o dö."
 	    "tr" "{1} ({2}), öldüğün için {3} kaybettin."

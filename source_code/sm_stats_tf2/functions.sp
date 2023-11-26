@@ -830,7 +830,8 @@ stock bool AssistedKills(Transaction txn
 					g_Player[assister].session[Stats_Points] += g_AssistPoints*assister_count[i];
 					g_Player[assister].points += g_AssistPoints*assister_count[i];
 					
-					char points_plural[32];
+					char fmt_points[24], points_plural[32];
+					PointsFormat(assister, g_Player[assister].points, fmt_points, sizeof(fmt_points));
 					PointsPluralSplitter(assister, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural), PointSplit_On);
 					
 					if(g_Player[assister].bShowAssistMsg)
@@ -839,7 +840,7 @@ stock bool AssistedKills(Transaction txn
 						, g_ChatTag
 						, "#SMStats_FragEvent_Assisted", assister
 						, g_Player[assister].name
-						, g_Player[assister].points
+						, fmt_points
 						, points_plural
 						, g_Player[client].name
 						, dummy);
@@ -957,14 +958,15 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 			
 			if(g_DeathPoints >= 1 && g_Player[victim].bShowDeathMsg)
 			{
-				char points_plural[64];
+				char fmt_points[24], points_plural[64];
+				PointsFormat(victim, g_Player[victim].points, fmt_points, sizeof(fmt_points));
 				PointsPluralSplitter(victim, g_DeathPoints, points_plural, sizeof(points_plural), PointSplit_Minus);
 				
 				CPrintToChat(victim, "%s %T"
 				, g_ChatTag
 				, "#SMStats_FragEvent_Death", victim
 				, g_Player[victim].name
-				, g_Player[victim].points
+				, fmt_points
 				, points_plural);
 			}
 		}
