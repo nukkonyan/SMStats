@@ -951,8 +951,9 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		, Frag_Type[Frag_MidAir], client);
 	}
 	
-	char points_plural[64];
-	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
+	char points_plural1[64], points_plural2[64];
+	PointsFormat(client, g_Player[client].points-points, points_plural1, sizeof(points_plural1));
+	PointsPluralSplitter(client, points, points_plural2, sizeof(points_plural2), PointSplit_Plus);
 	
 	switch(strlen(buffer) > 0)
 	{
@@ -968,8 +969,8 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			, g_ChatTag
 			, "#SMStats_FragEvent_Default", client
 			, g_Player[client].name
-			, g_Player[client].points-points
-			, points_plural
+			, points_plural1
+			, points_plural2
 			, victim
 			, (frags > 4) ? str_counter : "");
 		}
@@ -984,8 +985,8 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			, g_ChatTag
 			, "#SMStats_FragEvent_Special", client
 			, g_Player[client].name
-			, g_Player[client].points-points
-			, points_plural
+			, points_plural1
+			, points_plural2
 			, victim
 			, buffer);
 		}
@@ -994,62 +995,74 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 	g_Player[client].fragmsg.Reset();
 }
 
-stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen, PointsSplitType type=PointSplit_Off) {
+stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen, PointsSplitType type=PointSplit_Off)
+{
 	char fmt_plural[64];
 	Format(fmt_plural, sizeof(fmt_plural), "%T", "#SMStats_Points", client);
-	switch(StrContains(fmt_plural, "#|#") != -1) {
+	switch(StrContains(fmt_plural, "#|#") != -1)
+	{
 		// this language defies the 'point' and 'points' with one word as both singular and plural.
-		case false: {
-			if(type >= PointSplit_On) {
+		case false:
+		{
+			if(type >= PointSplit_On)
+			{
 				char fmt_points[64];
 				PointsPrefix(client, points, fmt_points, sizeof(fmt_points), type);
 				Format(translation, maxlen, "%s%s", fmt_points, fmt_plural);
-			} else {
-				Format(translation, maxlen, "%i%s", points, fmt_plural);
+			}
+			else
+			{
+				char fmt_points[24];
+				PointsFormat(client, points, fmt_points, sizeof(fmt_points));
+				Format(translation, maxlen, "%s%s", fmt_points, fmt_plural);
 			}
 		}
 		// this language defies the 'point' and 'points' with one word as inflection-based singular and plural.
-		case true: {
+		case true:
+		{
 			bool bPlural = (points < -1 || points > 1);
 			char szPlural[2][16];
-			if(ExplodeString(fmt_plural, "#|#", szPlural, sizeof(szPlural), 16) == 2) {
+			if(ExplodeString(fmt_plural, "#|#", szPlural, sizeof(szPlural), 16) == 2)
+			{
 				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
 			}
 			
-			if(type >= PointSplit_On) {
+			if(type >= PointSplit_On)
+			{
 				char fmt_points[64];
 				PointsPrefix(client, points, fmt_points, sizeof(fmt_points), type);
 				Format(translation, maxlen, "%s%s", fmt_points, szPlural[view_as<int>(bPlural)]);
-			} else {
-				Format(translation, maxlen, "%i%s", points, szPlural[view_as<int>(bPlural)]);
+			}
+			else
+			{
+				char fmt_points[24];
+				PointsFormat(client, points, fmt_points, sizeof(fmt_points));
+				Format(translation, maxlen, "%s%s", fmt_points, szPlural[view_as<int>(bPlural)]);
 			}
 		}
 	}
 }
 
-stock void PointsPrefix(int client, int points, char[] prefix, int maxlen, PointsSplitType type) {
-	char fmt_points[64];
+stock void PointsPrefix(int client, int points, char[] output, int maxlen, PointsSplitType type)
+{
+	PointsFormat(client, points, output, maxlen);
 	
-	if((points <= -1 || type == PointSplit_Minus)) {
+	if((points <= -1 || type == PointSplit_Minus))
+	{
 		// remove minus of the points shown, because it'd be a double minus otherwise.
-		char str_points[11];
-		IntToString(points, str_points, sizeof(str_points));
-		if(StrContains(str_points, "-") != -1) {
-			ReplaceString(str_points, sizeof(str_points), "-", "");
+		if(StrContains(output, "-") != -1)
+		{
+			ReplaceString(output, maxlen, "-", "");
 		}
-		
-		points = StringToInt(str_points);
 		
 		//
 		
-		Format(fmt_points, sizeof(fmt_points), "{red}-%i{default}", points);
-	} else if((points >= 1 || type == PointSplit_Plus)) {
-		Format(fmt_points, sizeof(fmt_points), "{green}+%i{default}", points);
-	} else {
-		Format(fmt_points, sizeof(fmt_points), "%i", points);
+		Format(output, maxlen, "{red}-%s{default}", output);
 	}
-	
-	strcopy(prefix, maxlen, fmt_points)
+	else if((points >= 1 || type == PointSplit_Plus))
+	{
+		Format(output, maxlen, "{green}+%s{default}", output);
+	}
 }
 
 stock void OnOffPluralSplitter(int client, bool OffOn, char[] translation, int maxlen)
@@ -1063,6 +1076,201 @@ stock void OnOffPluralSplitter(int client, bool OffOn, char[] translation, int m
 		ReplaceString(onoff_plural[0], sizeof(onoff_plural[]), "#|#", "");
 		strcopy(translation, maxlen, onoff_plural[view_as<int>(OffOn)]);
 	}
+}
+
+//
+
+stock void PointsFormat(int client, int points, char[] output, int maxlen)
+{
+	char fmt_points[16];
+	IntToString(points, fmt_points, sizeof(fmt_points));
+	
+	//PrintToServer("%i = %s points", client, fmt_points);
+	
+	//
+	
+	// 1M
+	if(points >= 1000000 || points <= -1000000)
+	{
+		if(TranslationValid(client, "#SMStats_PointsFormat_1M"))
+		{
+			// 1.1M
+			if(points >= 1100000 || points <= -1100000)
+			{
+				char text_1[6], text_2[6], text_3[6];
+				switch(StrContains(fmt_points, "-") != -1)
+				{
+					case false:
+					{
+						strcopy(text_1, sizeof(text_1), fmt_points[0]);
+						strcopy(text_2, sizeof(text_2), fmt_points[1]);
+						strcopy(text_3, sizeof(text_3), fmt_points[2]);
+					}
+					case true:
+					{
+						Format(text_1, sizeof(text_1), "-%s", fmt_points[1]);
+						strcopy(text_2, sizeof(text_2), fmt_points[2]);
+						strcopy(text_3, sizeof(text_3), fmt_points[3]);
+					}
+				}
+				
+				//
+				
+				ReplaceString(text_1, sizeof(text_1), text_2, "");
+				ReplaceString(text_2, sizeof(text_2), text_3, "");
+				
+				//
+				
+				FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%T", text_1, text_2, "#SMStats_PointsFormat_1M", client);
+			}
+			// 1M
+			else
+			{
+				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_1M", client);
+			}
+		}
+	}
+	// 100K
+	else if(points >= 100000 || points <= -100000)
+	{
+		if(TranslationValid(client, "#SMStats_PointsFormat_100K"))
+		{
+			// 101K
+			if(points >= 101000 || points <= -101000)
+			{
+				char text_1[6], text_2[6], text_3[6];
+				switch(StrContains(fmt_points, "-") != -1)
+				{
+					case false:
+					{
+						strcopy(text_1, sizeof(text_1), fmt_points[1]);
+						strcopy(text_2, sizeof(text_2), fmt_points[2]);
+						strcopy(text_3, sizeof(text_3), fmt_points[3]);
+					}
+					case true:
+					{
+						Format(text_1, sizeof(text_1), "-%s", fmt_points[2]);
+						strcopy(text_2, sizeof(text_2), fmt_points[3]);
+						strcopy(text_3, sizeof(text_3), fmt_points[4]);
+					}
+				}
+				
+				//
+				
+				ReplaceString(text_1, sizeof(text_1), text_2, "");
+				ReplaceString(text_2, sizeof(text_2), text_3, "");
+				
+				//
+				
+				FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%T", text_1, text_2, "#SMStats_PointsFormat_100K", client);
+			}
+			// 100K
+			else
+			{
+				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_100K", client);
+			}
+		}
+	}
+	// 10K
+	else if(points >= 10000 || points <= -10000)
+	{
+		if(TranslationValid(client, "#SMStats_PointsFormat_10K"))
+		{
+			// 10.1K
+			if(points >= 10100 || points <= -10100)
+			{
+				char text_1[6], text_2[6], text_3[6];
+				switch(StrContains(fmt_points, "-") != -1)
+				{
+					case false:
+					{
+						strcopy(text_1, sizeof(text_1), fmt_points[0]);
+						strcopy(text_2, sizeof(text_2), fmt_points[1]);
+						strcopy(text_3, sizeof(text_3), fmt_points[2]);
+					}
+					case true:
+					{
+						FormatEx(text_1, sizeof(text_1), "-%s", fmt_points[1]);
+						strcopy(text_2, sizeof(text_2), fmt_points[2]);
+						strcopy(text_3, sizeof(text_3), fmt_points[3]);
+					}
+				}
+				
+				//
+				
+				ReplaceString(text_1, sizeof(text_1), text_2, "");
+				ReplaceString(text_2, sizeof(text_2), text_3, "");
+				
+				//
+				
+				FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%T", text_1, text_2, "#SMStats_PointsFormat_10K", client);
+			}
+			// 10K
+			else
+			{
+				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_10K", client);
+			}
+		}
+	}
+	// 1K
+	else if(points >= 1000 || points <= -1000)
+	{
+		if(TranslationValid(client, "#SMStats_PointsFormat_1K"))
+		{
+			// 1.1K
+			if(points >= 1100 || points <= -1100)
+			{
+				char text_1[6], text_2[6], text_3[6];
+				switch(StrContains(fmt_points, "-") != -1)
+				{
+					case false:
+					{
+						strcopy(text_1, sizeof(text_1), fmt_points[0]);
+						strcopy(text_2, sizeof(text_2), fmt_points[1]);
+						strcopy(text_3, sizeof(text_3), fmt_points[2]);
+					}
+					case true:
+					{
+						FormatEx(text_1, sizeof(text_1), "-%s", fmt_points[1]);
+						strcopy(text_2, sizeof(text_2), fmt_points[2]);
+						strcopy(text_3, sizeof(text_3), fmt_points[3]);
+					}
+				}
+				
+				//
+				
+				ReplaceString(text_1, sizeof(text_1), text_2, "");
+				ReplaceString(text_2, sizeof(text_2), text_3, "");
+				
+				//
+				
+				FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%T", text_1, text_2, "#SMStats_PointsFormat_1K", client);
+			}
+			// 10K
+			else
+			{
+				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_1K", client);
+			}
+		}
+	}
+	
+	strcopy(output, maxlen, fmt_points);
+}
+
+stock bool TranslationValid(int client, const char[] phrase)
+{
+	if(TranslationPhraseExists(phrase))
+	{
+		char text[6];
+		FormatEx(text, sizeof(text), "%T", phrase, client);		
+		
+		if(strlen(text) > 0)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 //

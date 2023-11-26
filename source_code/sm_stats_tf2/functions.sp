@@ -940,7 +940,7 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 				case TFClass_Spy:
 				{
 					g_Player[victim].session[Stats_SpyDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`SpyDeaths =`SpyDeaths`+1");
+					len += Format(query[len], sizeof(query)-len, ",`SpyDeaths`=`SpyDeaths`+1");
 				}
 			}
 			

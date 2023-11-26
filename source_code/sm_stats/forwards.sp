@@ -1,13 +1,25 @@
 stock void LoadForwardEvents()
 {
+	char player_con[22];
 	switch(GetEngineVersion())
 	{
-		case Engine_TF2, Engine_CSS:
+		case Engine_TF2
+		, Engine_CSS
+		, Engine_Contagion
+		, Engine_DODS
+		, Engine_SourceSDK2006
+		, Engine_SourceSDK2007
+		, Engine_SDK2013:
 		{
-			HookEvent("player_connect_client", OnPlayerConnected, EventHookMode_Pre);
+			player_con = "player_connect_client"
+		}
+		case Engine_Left4Dead2, Engine_CSGO:
+		{
+			player_con = "player_connect"
 		}
 	}
 	
+	HookEvent(player_con, OnPlayerConnected, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerDisconnected, EventHookMode_Pre);
 }
 
@@ -377,7 +389,11 @@ void CheckUserSQL_Query_Failed(Database db, int userid, int numQueries, const ch
 
 void OnPlayerConnected(Event event, const char[] event_name, bool dontBroadcast)
 {
-	if(bLoaded) event.BroadcastDisabled = true;
+	if(bLoaded)
+	{
+		//event.BroadcastDisabled = true; // this has no effect.
+		SetEventBroadcast(event, true);
+	}
 }
 
 // player disconnected event
@@ -412,7 +428,8 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 		{
 			if(IsValidClient((client = GetClientOfUserId(userid))))
 			{
-				event.BroadcastDisabled = true;
+				//event.BroadcastDisabled = true; // this has no effect as well, likely a bug.
+				SetEventBroadcast(event, true);
 				
 				char event_reason[256], auth[28], name[64];
 				event.GetString("reason", event_reason, sizeof(event_reason));
