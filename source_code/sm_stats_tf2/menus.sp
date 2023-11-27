@@ -15,9 +15,13 @@ enum struct StatsMenuInfo
 			return;
 		}
 		
-		char country[64], map_time[128];
+		char country[64], map_time[128], fmt_points[24];
 		GeoipCountryName(client, g_Player[client].ip, country, sizeof(country));
 		GetTimeFormat(client, iMapTimerSeconds, map_time, sizeof(map_time));
+		if(PointsFormat(client, g_Player[client].points, fmt_points, sizeof(fmt_points), false))
+		{
+			Format(fmt_points, sizeof(fmt_points), "%s (%i)", fmt_points, g_Player[client].points);
+		}
 		
 		// needs to be updated to not lag out the server, because of direct-sql query.
 		// doing direct-sql will make the proceeding actions wait for the query to finish.
@@ -42,7 +46,7 @@ enum struct StatsMenuInfo
 		PanelText(panel, "%T", "#SMStats_MenuInfo_Playername", client, client);
 		PanelText(panel, "%T", "#SMStats_MenuInfo_Country", client, country);
 		PanelText(panel, "%T", "#SMStats_MenuInfo_MapTime", client, map_time);
-		PanelText(panel, "%T", "#SMStats_MenuInfo_Points", client, g_Player[client].points);
+		PanelText(panel, "%T", "#SMStats_MenuInfo_Points", client, fmt_points);
 		PanelText(panel, "%T\n ", "#SMStats_MenuInfo_Positioned", client, g_Player[client].position, g_TotalTablePlayers);		
 		
 		switch(page)
@@ -1953,8 +1957,12 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 	{
 		case 1:
 		{
-			char play_time[256];
+			char play_time[256], fmt_points[24];
 			GetTimeFormat(client, stats[Stats_PlayTime], play_time, sizeof(play_time));
+			if(PointsFormat(client, stats[Stats_Points], fmt_points, sizeof(fmt_points), false))
+			{
+				Format(fmt_points, sizeof(fmt_points), "%s (%i)", fmt_points, stats[Stats_Points]);
+			}
 			
 			switch(top_player)
 			{
@@ -1977,16 +1985,16 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 				{
 					switch(penalty)
 					{
-						case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, stats[Stats_Points]);
-						case true: PanelText(panel, "  %T%T", "#SMStats_MenuInfo_PointsLost", client, stats[Stats_Points], "#SMStats_Points_Penalty", client);
+						case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsLost", client, fmt_points);
+						case true: PanelText(panel, "  %T%T", "#SMStats_MenuInfo_PointsLost", client, fmt_points, "#SMStats_Points_Penalty", client);
 					}
 				}
 				case true:
 				{
 					switch(penalty)
 					{
-						case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, stats[Stats_Points]);
-						case true: PanelText(panel, "  %T%T", "#SMStats_MenuInfo_PointsEarned", client, stats[Stats_Points], "#SMStats_Points_Penalty", client);
+						case false: PanelText(panel, "  %T", "#SMStats_MenuInfo_PointsEarned", client, fmt_points);
+						case true: PanelText(panel, "  %T%T", "#SMStats_MenuInfo_PointsEarned", client, fmt_points, "#SMStats_Points_Penalty", client);
 					}
 				}
 			}

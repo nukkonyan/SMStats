@@ -550,7 +550,7 @@
 	"#SMStats_MenuInfo_Points"
 	{
 		// {1} points
-		"#format" "{1:i}"
+		"#format" "{1:s}"
 		"en" "Points : {1}"
 		"jp" "点 : {1}"
 		"sv" "Poäng : {1}"
@@ -559,7 +559,7 @@
 	"#SMStats_MenuInfo_PointsEarned"
 	{
 		// {1} points earned
-		"#format" "{1:i}"
+		"#format" "{1:s}"
 		"en" "Points earned : {1}"
 		"sv" "Poäng belönad : {1}"
 		"tr" "Kazanılan Puanlar : {1}"
@@ -567,7 +567,7 @@
 	"#SMStats_MenuInfo_PointsLost"
 	{
 		// {1} points lost
-		"#format" "{1:i}"
+		"#format" "{1:s}"
 		"en" "Points lost : {1}"
 		"sv" "Poäng förlorat : {1}"
 		"tr" "Kaybedilen Puanlar : {1}"
@@ -848,16 +848,22 @@
 	{
 		"en" "K"
 		"jp" "万"
+		"chi" "万"
+		"zho" "万"
 	}
 	"#SMStats_PointsFormat_100K"
 	{
 		"en" "K"
 		"jp" "万"
+		"chi" "万"
+		"zho" "万"
 	}
 	"#SMStats_PointsFormat_1M"
 	{
 		"en" "M"
 		"jp" "百万"
+		"chi" "百万"
+		"zho" "百万"
 	}
 	"#SMStats_FeatureUnavailable"
 	{

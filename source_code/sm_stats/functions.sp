@@ -1080,10 +1080,11 @@ stock void OnOffPluralSplitter(int client, bool OffOn, char[] translation, int m
 
 //
 
-stock void PointsFormat(int client, int points, char[] output, int maxlen)
+stock bool PointsFormat(int client, int points, char[] output, int maxlen, bool bShowMinus=true)
 {
-	char fmt_points[16];
+	char fmt_points[24];
 	IntToString(points, fmt_points, sizeof(fmt_points));
+	bool bValue = false;
 	
 	//PrintToServer("%i = %s points", client, fmt_points);
 	
@@ -1092,7 +1093,7 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 	// 1M
 	if(points >= 1000000 || points <= -1000000)
 	{
-		if(TranslationValid(client, "#SMStats_PointsFormat_1M"))
+		if(PointsFormatTypeValid(client, "1M"))
 		{
 			// 1.1M
 			if(points >= 1100000 || points <= -1100000)
@@ -1108,7 +1109,7 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 					}
 					case true:
 					{
-						Format(text_1, sizeof(text_1), "-%s", fmt_points[1]);
+						Format(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
 						strcopy(text_2, sizeof(text_2), fmt_points[2]);
 						strcopy(text_3, sizeof(text_3), fmt_points[3]);
 					}
@@ -1128,12 +1129,14 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 			{
 				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_1M", client);
 			}
+			
+			bValue = true;
 		}
 	}
 	// 100K
 	else if(points >= 100000 || points <= -100000)
 	{
-		if(TranslationValid(client, "#SMStats_PointsFormat_100K"))
+		if(PointsFormatTypeValid(client, "100K"))
 		{
 			// 101K
 			if(points >= 101000 || points <= -101000)
@@ -1149,7 +1152,7 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 					}
 					case true:
 					{
-						Format(text_1, sizeof(text_1), "-%s", fmt_points[2]);
+						Format(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[2]);
 						strcopy(text_2, sizeof(text_2), fmt_points[3]);
 						strcopy(text_3, sizeof(text_3), fmt_points[4]);
 					}
@@ -1169,12 +1172,14 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 			{
 				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_100K", client);
 			}
+			
+			bValue = true;
 		}
 	}
 	// 10K
 	else if(points >= 10000 || points <= -10000)
 	{
-		if(TranslationValid(client, "#SMStats_PointsFormat_10K"))
+		if(PointsFormatTypeValid(client, "10K"))
 		{
 			// 10.1K
 			if(points >= 10100 || points <= -10100)
@@ -1190,7 +1195,7 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 					}
 					case true:
 					{
-						FormatEx(text_1, sizeof(text_1), "-%s", fmt_points[1]);
+						FormatEx(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
 						strcopy(text_2, sizeof(text_2), fmt_points[2]);
 						strcopy(text_3, sizeof(text_3), fmt_points[3]);
 					}
@@ -1211,11 +1216,13 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_10K", client);
 			}
 		}
+		
+		bValue = true;
 	}
 	// 1K
 	else if(points >= 1000 || points <= -1000)
 	{
-		if(TranslationValid(client, "#SMStats_PointsFormat_1K"))
+		if(PointsFormatTypeValid(client, "1K"))
 		{
 			// 1.1K
 			if(points >= 1100 || points <= -1100)
@@ -1231,7 +1238,7 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 					}
 					case true:
 					{
-						FormatEx(text_1, sizeof(text_1), "-%s", fmt_points[1]);
+						FormatEx(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
 						strcopy(text_2, sizeof(text_2), fmt_points[2]);
 						strcopy(text_3, sizeof(text_3), fmt_points[3]);
 					}
@@ -1252,22 +1259,50 @@ stock void PointsFormat(int client, int points, char[] output, int maxlen)
 				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_1K", client);
 			}
 		}
+		
+		bValue = true;
 	}
 	
 	strcopy(output, maxlen, fmt_points);
+	return bValue;
 }
 
-stock bool TranslationValid(int client, const char[] phrase)
+stock bool PointsFormatTypeValid(int client, const char[] type)
 {
-	if(TranslationPhraseExists(phrase))
+	char lang[3];
+	GetLanguageInfo(GetClientLanguage(client), lang, sizeof(lang));
+	
+	for(int i = 0; i < strlen(lang); i++)
 	{
-		char text[6];
-		FormatEx(text, sizeof(text), "%T", phrase, client);		
-		
-		if(strlen(text) > 0)
-		{
-			return true;
-		}
+		lang[i] = CharToLower(lang[i]);
+	}
+	
+	// temporary
+	if(StrEqual(type, "1M"))
+	{
+		return (
+			StrEqual(lang, "jp") ||StrEqual(lang, "en")
+		);
+	}
+	else if(StrEqual(type, "100K"))
+	{
+		return (
+			StrEqual(lang, "jp")
+		);
+	}
+	else if(StrEqual(type, "10K"))
+	{
+		return (
+			StrEqual(lang, "jp") ||
+			StrEqual(lang, "en")
+		);
+	}
+	else if(StrEqual(type, "1K"))
+	{
+		return (
+			StrEqual(lang, "jp") ||
+			StrEqual(lang, "en")
+		);
 	}
 	
 	return false;
