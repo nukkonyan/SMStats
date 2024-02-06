@@ -983,49 +983,6 @@ bool TF2_IsMvMGameMode()
 
 //
 
-// borrowing code of MGE
-// https://forums.alliedmods.net/showpost.php?p=2225745&postcount=23
-// https://forums.alliedmods.net/showthread.php?t=251473
-stock float DistanceAboveGround(int client)
-{
-	float vStart[3];
-	float vEnd[3];
-	float vAngles[] = {90.0, 0.0, 0.0};
-	Handle trace;
-	float distance = -1.0;
-	
-	// Get the user's origin vector and start up the trace ray.
-	GetClientAbsOrigin(client, vStart);
-	trace = TR_TraceRayFilterEx(vStart, vAngles, MASK_SHOT, RayType_Infinite, TraceEntityFilterPlayer);
-	
-	switch(TR_DidHit(trace))
-	{
-		case false:
-		{
-			// There should always be some ground under the player.
-			if(bDebug) PrintToServer("%s IsValidAirshot() trace error : (user index %i, userid %i)", core_chattag, client, g_Player[client].userid);
-		}
-		case true:
-		{
-			// calculate the distance
-			TR_GetEndPosition(vEnd, trace);
-			distance = GetVectorDistance(vStart, vEnd, false);
-		}
-	}
-	
-	// clean up 'n return.
-	delete trace;
-	
-	if(bDebug) PrintToServer("%s IsValidAirshot() distance : %.1f (user index %i, userid %i)", core_chattag, distance, client, g_Player[client].userid);
-	return distance;
-}
-
-// TraceEntityFilterPlayer() : ignore players in a trace ray
-bool TraceEntityFilterPlayer(int client, int contentsMask)
-{
-	return IsValidClient(client, !bAllowBots);
-}
-
 //
 
 /**

@@ -438,7 +438,7 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 				int timestamp = GetTime();
 				
 				char query[255];
-				Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where SteamID = '%s' and StatsID = %i"
+				Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'"
 				, auth, g_StatsID);
 				DataPack pack = new DataPack();
 				pack.WriteCell(strlen(name)+1);

@@ -1,0 +1,24 @@
+create table if not exists `kill_log_css`
+(
+	`ID` int not null auto_increment,
+	`StatsID` int not null default '1',
+	`SteamID_Attacker` varchar(28) not null default '',
+	`SteamID_Victim` varchar(448) not null default '',
+	`SteamID_Assister` varchar(448) not null default '',
+	`Timestamp` int not null default '0',
+	`Itemdefs` varchar(176) not null default '-1',
+	`Quantity` int(4) not null default '0',
+
+	`Dominations` int(4) not null default '0',
+	`Revenges` int(4) not null default '0',
+	`Airshots` int(4) not null default '0',
+	`Headshots` int(4) not null default '0',
+	`Noscopes` int(4) not null default '0',
+	`Backstabs` int(4) not null default '0',
+	`TeleFrags` int(4) not null default '0',
+	`Collaterals` int(4) not null default '0',
+	`MidAirFrags` int(4) not null default '0',
+	`BlindedFrags` int(4) not null default '0',
+
+	primary key (`ID`)
+)

@@ -142,7 +142,7 @@ int GetWeaponItemdef(char[] weapon)
 	return -1;
 }
 
-void CorrectWeaponClassname(char[] weapon, int maxlen, int itemdef)
+void CorrectWeaponClassname(char[] weapon, int maxlen, int itemdef, const char[] classname)
 {
 	switch(itemdef)
 	{
@@ -171,72 +171,173 @@ void CorrectWeaponClassname(char[] weapon, int maxlen, int itemdef)
 		case 22: strcopy(weapon, maxlen, "css_weapon_hegrenade");
 		case 23: strcopy(weapon, maxlen, "css_weapon_smokegrenade");
 		case 24: strcopy(weapon, maxlen, "css_weapon_c4");
+		default: strcopy(weapon, maxlen, classname);
 	}
 }
 
-bool AssistedKills(Transaction txn, const int[] list_assister, int frags, int client, FragEventInfo event)
+stock bool AssistedKills(Transaction txn
+					, const int[] list
+					, const int[] list_assister
+					, const bool[] list_assister_dominate
+					, const bool[] list_assister_revenge
+					, int frags
+					, int client
+					, char[] list_steamid_assister
+					, int list_steamid_assister_len)
 {
-	int victim = GetClientOfUserId(event.userid);
-	if(!IsValidClient(victim, false))
-	{
-		return false;
-	}
+	// spaghetti code
 	
-	int assist_points = 10;
-	
-	// needs to be further optimized for sql.
+	ArrayList assisters;
 	for(int i = 0; i < frags; i++)
 	{
-		int assister = list_assister[i];
-		int assist = GetClientOfUserId(assister);
-		
-		if(assist == client 
-		|| assister == event.userid)
+		int assist = list_assister[i];
+		if(assist > 0)
 		{
-			continue;
+			if(assisters == null)
+			{
+				assisters = new ArrayList();
+			}
+			
+			if(assisters.FindValue(assist) == -1)
+			{
+				assisters.Push(assist);
+			}
+		}
+	}
+	
+	if(assisters != null)
+	{
+		// create arrays per assisters domination and revenge count.
+		int[] assister_count = new int[assisters.Length];
+		int[] assister_dominations = new int[assisters.Length];
+		int[] assister_revenges = new int[assisters.Length];
+		
+		for(int i = 0; i < frags; i++)
+		{
+			int assist = list_assister[i];
+			if(assist > 0)
+			{
+				for(int x = 0; x < assisters.Length; x++)
+				{
+					if(assisters.Get(x) == assist)
+					{
+						assister_count[x]++;
+						
+						if(list_assister_dominate[i])
+						{
+							assister_dominations[x]++;
+						}
+						if(list_assister_revenge[i])
+						{
+							assister_revenges[x]++;
+						}
+					}
+				}
+			}
 		}
 		
-		if(IsValidClient(assist))
+		// loop information and obtain if the assister did dominate or revenge somebody.
+		for(int i = 0; i < assisters.Length; i++)
 		{
-			g_Player[assist].session[Stats_Assists]++;
-			
-			char query[1024];
-			int len = 0;
-			
-			len += Format(query[len], sizeof(query)-len, "update `%s` set ", sql_table_playerlist);
-			len += Format(query[len], sizeof(query)-len, "Assists = Assists+1");
-			
-			if(event.dominated_assister)
+			int assist = assisters.Get(i);
+			int assister = GetClientOfUserId(assist);
+			if(IsValidClient(assister))
 			{
-				len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+1");
-			}
-			else if(event.revenge_assister)
-			{
-				len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+1");
-			}
-			
-			// a little optimization.
-			if(assist_points > 0)
-			{
-				g_Player[assist].points += assist_points;
+				g_Player[assister].session[Stats_Assists]++;
 				
-				CPrintToChat(assist, "%s %T"
-				, g_ChatTag
-				, "#SMStats_FragEvent_Assisted", client
-				, g_Player[assist].name
-				, g_Player[assist].points
-				, assist_points
-				, g_Player[client].name
-				, g_Player[victim].name);
+				char dummy[256];
+				GetMultipleTargets(assister, list, frags, dummy, sizeof(dummy));
 				
-				len += Format(query, sizeof(query), ", Points = Points+%i", assist_points);
+				switch(strlen(list_steamid_assister) < 1)
+				{
+					case false: Format(list_steamid_assister, list_steamid_assister_len, "%s;%s", list_steamid_assister, g_Player[assister].auth);
+					case true: strcopy(list_steamid_assister, list_steamid_assister_len, g_Player[assister].auth);
+				}
+				
+				char query[1024];
+				int len = 0;
+				len += Format(query[len], sizeof(query)-len, "update `%s` set `Assists`=`Assists`+%i", sql_table_playerlist, assister_count[i]);
+				if(assister_dominations[i] > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ",`Dominations`=`Dominations`+%i", assister_dominations[i]);
+				}
+				if(assister_revenges[i] > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ",`Revenges`=`Revenges`+%i", assister_revenges[i]);
+				}
+				if(g_AssistPoints > 0)
+				{
+					len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", g_AssistPoints*assister_count[i]);
+				}
+				len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[assister].auth, g_StatsID);
+				txn.AddQuery(query, queryId_frag_assister);
+				
+				if(g_AssistPoints > 0)
+				{
+					g_Player[assister].session[Stats_Points] += g_AssistPoints*assister_count[i];
+					g_Player[assister].points += g_AssistPoints*assister_count[i];
+					
+					char fmt_points[24], points_plural[32];
+					PointsFormat(assister, g_Player[assister].points, fmt_points, sizeof(fmt_points));
+					PointsPluralSplitter(assister, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural), PointSplit_On);
+					
+					if(g_Player[assister].bShowAssistMsg)
+					{
+						CPrintToChat(assister, "%s %T"
+						, g_ChatTag
+						, "#SMStats_FragEvent_Assisted", assister
+						, g_Player[assister].name
+						, fmt_points
+						, points_plural
+						, g_Player[client].name
+						, dummy);
+					}
+				}
 			}
-			
-			len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[assist].auth, g_ServerID);
-
-			txn.AddQuery(query, queryId_frag_assister);
 		}
+		
+		delete assisters;
 	}
 	
 	return true;
+}
+
+stock void VictimDied(Transaction txn, const int[] list, int frags)
+{
+	for(int i = 0; i < frags; i++)
+	{
+		int victim;
+		if(IsValidClient((victim = GetClientOfUserId(list[i]))))
+		{
+			int len = 0;
+			char query[1024];
+			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set `Deaths`=`Deaths`+1");
+			
+			g_Player[victim].session[Stats_Deaths]++;
+			if(g_DeathPoints >= 1)
+			{
+				len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`-%i", g_DeathPoints);
+				
+				g_Player[victim].session[Stats_Points] -= g_DeathPoints;
+				g_Player[victim].points -= g_DeathPoints;
+			}
+			
+			len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[victim].auth, g_StatsID);
+			txn.AddQuery(query, queryId_frag_victim_death);
+			
+			if(g_DeathPoints >= 1 && g_Player[victim].bShowDeathMsg)
+			{
+				char fmt_points[24], points_plural[64];
+				PointsFormat(victim, g_Player[victim].points, fmt_points, sizeof(fmt_points));
+				PointsPluralSplitter(victim, g_DeathPoints, points_plural, sizeof(points_plural), PointSplit_Minus);
+				
+				CPrintToChat(victim, "%s %T"
+				, g_ChatTag
+				, "#SMStats_FragEvent_Death", victim
+				, g_Player[victim].name
+				, fmt_points
+				, points_plural);
+			}
+		}
+	}
 }

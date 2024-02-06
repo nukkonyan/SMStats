@@ -1,8 +1,8 @@
 create table if not exists `weapons_css`
 (
-	`ServerID` int not null default '1' comment 'Servers unique ID.',
-	`SteamID` varchar(64) not null default '' comment 'Players steam authentication ID.',
-	`css_weapon_hegrenade` int not null default '0' comment 'HE-Grenade kills.',
+	`StatsID` int not null default '1',
+	`SteamID` varchar(64) not null default '',
+	`weapon_hegrenade` int not null default '0' comment 'HE-Grenade kills.',
 	`css_weapon_flashbang` int not null default '0' comment 'Flashbang kills.',
 	`css_weapon_smokegrenade` int not null default '0' comment 'Smokegrenade kills.',
 	`css_weapon_deagle` int not null default '0' comment 'Desert eagle kills.',
@@ -28,5 +28,5 @@ create table if not exists `weapons_css`
 	`css_weapon_scout` int not null default '0' comment 'Scout kills.',
 	`css_weapon_knife_ct` int not null default '0' comment 'CT Knife kills.',
 	`css_weapon_knife_t` int not null default '0' comment 'T Knife kills.',
-	primary key (`ServerID`)
+	primary key (`SteamID`)
 )

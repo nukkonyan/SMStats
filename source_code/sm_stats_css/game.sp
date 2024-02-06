@@ -34,8 +34,10 @@ ConVar g_Collateral;
 
 enum struct FragEventInfo
 {
+	int timestamp;
 	int userid;
 	int assister;
+	int inflictor;
 	
 	int penetrated;
 	
@@ -163,12 +165,6 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	if(!sql)
-	{
-		LogError("%s OnPlayerDeath error: No database connection available.", core_chattag);
-		return;
-	}
-	
 	int userid = event.GetInt("userid");
 	int attacker = event.GetInt("attacker");
 	if(userid < 1
@@ -177,22 +173,34 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int client = 0;
-	if(!IsValidClient((client = GetClientOfUserId(attacker))))
+	if(!sql)
+	{
+		LogError(core_chattag..." OnPlayerDeath error: No database connection available.");
+		return;
+	}
+	
+	//
+	
+	int client = GetClientOfUserId(attacker);
+	if(!IsValidClient(client))
 	{
 		return;
 	}
+	
+	int victim = GetClientOfUserId(userid);
+	if(!IsValidClient(victim, !bAllowBots))
+	{
+		return;
+	}
+	
+	//
 	
 	if(IsValidAbuse(client))
 	{
 		return;
 	}
 	
-	int victim = 0;
-	if(!IsValidClient((victim = GetClientOfUserId(userid)), false))
-	{
-		return;
-	}
+	//
 	
 	if(!bAllowBots)
 	{
@@ -213,21 +221,43 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int assister = GetLatestAssister(victim, client);
+	//
+	
+	//int assister = GetLatestAssister(victim, client);
+	int assister;
 	
 	//
 	
+	int itemdef = 0;
 	bool assisted_suicide = false;
 	
 	char classname[64];
 	event.GetString("weapon", classname, sizeof(classname));
 	
-	if(!(assisted_suicide = (StrContains(classname, "world") != -1 && assister > 0)))
+	if(StrContains(classname, "trigger_") != -1
+	|| StrContains(classname, "prop_") != -1
+	|| (StrEqual(classname, "world") && assister < 1))
 	{
 		return;
 	}
 	
-	int itemdef = 0;
+	bool bValidMidAir = true;
+	
+	/* Assisted suicide. */
+	// this will get re-done.
+	if(StrEqual(classname, "world", false))
+	{
+		bValidMidAir = false;
+		assisted_suicide = (assister > 0);
+		itemdef = ITEMDEF_INVALID;
+	}
+	else if(StrEqual(classname, "player", false))
+	{
+		bValidMidAir = false;
+		assisted_suicide = (assister > 0);
+		itemdef = ITEMDEF_INVALID;
+	}
+	
 	if((itemdef = GetWeaponItemdef(classname)) == -1)
 	{
 		PrintToServer("%s An error has occured, unable to obtain itemdef of classname '%s'."
@@ -256,27 +286,37 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 
 	//
 	
-	bool headshot = event.GetBool("headshot");
-	
-	
-	//
-	
 	FragEventInfo frag;
 	frag.userid = userid;
 	frag.assister = assister;
 	
 	frag.suicide = (userid == attacker);
 	frag.suicide_assisted = assisted_suicide; // will be redone soon to be separated.
-	frag.headshot = headshot;
+	frag.headshot = event.GetBool("headshot");
 	frag.backstab = false;
 	frag.noscope = false;
 	
 	frag.collateral = false;
 	
-	frag.midair = IsClientMidAir(client);
-	frag.airshot = (GetClientFlags(victim) == 258);
-	
 	frag.blinded = m_bIsBlinded[client];
+	
+	float gd_attacker = DistanceAboveGround(client);
+	float gd_userid = DistanceAboveGround(victim);
+	
+	bool g_attacker;
+	bool g_userid;
+	if(GetEntityFlags(client) & FL_ONGROUND) g_attacker = true;
+	if(GetEntityFlags(victim) & FL_ONGROUND) g_userid = true;
+	
+	if(!g_attacker && bValidMidAir)
+	{
+		frag.midair = (gd_attacker >= 65.2517525135751254595);
+	}
+	
+	if(!g_userid)
+	{
+		frag.airshot = (gd_userid >= 65.2517525135751254595);
+	}
 	
 	strcopy(frag.classname, sizeof(frag.classname), classname);
 	frag.itemdef = itemdef;
@@ -329,8 +369,8 @@ void OnBombEvent(Event event, const char[] event_name, bool dontBroadcast)
 		m_hLastBombPlanter = client;
 		
 		g_Player[client].session[Stats_BombsPlanted]++;
-		Format(query, sizeof(query), "update `%s` set BombsPlanted = BombsPlanted+1 where SteamID='%s' and ServerID = %i"
-		, sql_table_playerlist, g_Player[client].auth, g_ServerID);
+		Format(query, sizeof(query), "update `%s` set BombsPlanted = BombsPlanted+1 where SteamID='%s' and StatsID='%i'"
+		, sql_table_playerlist, g_Player[client].auth, g_StatsID);
 		sql.Query(DBQuery_Callback, query);
 		
 		if((points = g_BombEvent[Bomb_Planted].IntValue) > 0)
@@ -348,8 +388,8 @@ void OnBombEvent(Event event, const char[] event_name, bool dontBroadcast)
 		m_hLastBombDefuser = client;
 		
 		g_Player[client].session[Stats_BombsDefused]++;
-		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID = '%s' and ServerID = %i"
-		, sql_table_playerlist, g_Player[client].auth, g_ServerID);
+		Format(query, sizeof(query), "update `%s` set BombsDefused = BombsDefused+1 where SteamID = '%s' and StatsID='%i'"
+		, sql_table_playerlist, g_Player[client].auth, g_StatsID);
 		sql.Query(DBQuery_Callback, query);
 		
 		if((points = g_BombEvent[Bomb_Defused].IntValue) > 0)
@@ -365,8 +405,8 @@ void OnBombEvent(Event event, const char[] event_name, bool dontBroadcast)
 	else if(StrEqual(event_name, "bomb_exploded") && GetClientTeam(client) == CS_TEAM_T)
 	{
 		g_Player[client].session[Stats_BombsExploded]++;
-		Format(query, sizeof(query), "update `%s` set BombsExploded = BombsExploded+1 where SteamID='%s' and ServerID = %i"
-		, sql_table_playerlist, g_Player[client].auth, g_ServerID);
+		Format(query, sizeof(query), "update `%s` set BombsExploded = BombsExploded+1 where SteamID='%s' and StatsID='%i'"
+		, sql_table_playerlist, g_Player[client].auth, g_StatsID);
 		sql.Query(DBQuery_Callback, query);
 		
 		if((points = g_BombEvent[Bomb_Exploded].IntValue) > 0)
@@ -412,8 +452,8 @@ void OnHostageEvent(Event event, const char[] event_name, bool dontBroadcast)
 		{
 			CPrintToChat(client, "%s %t", g_ChatTag, "#SMStats_Hostage_Rescued", g_Player[client].name, g_Player[client].points, points);
 			
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, HostagesRescued = HostagesRescued+1 where SteamID = '%s' and ServerID = %i",
-			sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			Format(query, sizeof(query), "update `%s` set Points=Points+'%i', HostagesRescued=HostagesRescued+1 where SteamID='%s' and StatsID='%i'",
+			sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 			sql.Query(DBQuery_Callback, query);
 			
 			g_Player[client].session[Stats_Points] += points;
@@ -428,8 +468,8 @@ void OnHostageEvent(Event event, const char[] event_name, bool dontBroadcast)
 		{
 			CPrintToChat(client, "%s %t", g_ChatTag, "#SMStats_Hostage_Fragged", g_Player[client].name, g_Player[client].points, points);
 			
-			Format(query, sizeof(query), "update `%s` set Points = Points+%i, HostagesFragged = HostagesFragged+1 where SteamID = '%s' and ServerID = %i",
-			sql_table_playerlist, points, g_Player[client].auth, g_ServerID);
+			Format(query, sizeof(query), "update `%s` set Points=Points+'%i', HostagesFragged=HostagesFragged+1 where SteamID='%s' and StatsID='%i'",
+			sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 			sql.Query(DBQuery_Callback, query);
 			
 			g_Player[client].session[Stats_Points] += points;
@@ -488,8 +528,8 @@ void OnPlayerBlinded(Event event, const char[] event_name, bool dontBroadcast)
 	g_Player[client].session[Stats_FlashedOpponents]++;
 	
 	char query[384];
-	Format(query, sizeof(query), "update `%s` set FlashedOpponents = FlashedOpponents+1 where SteamID = '%s' and ServerID = %i"
-	, sql_table_playerlist, g_Player[client].auth, g_ServerID);
+	Format(query, sizeof(query), "update `%s` set FlashedOpponents = FlashedOpponents+1 where SteamID = '%s' and StatsID='%i'"
+	, sql_table_playerlist, g_Player[client].auth, g_StatsID);
 	sql.Query(DBQuery_Callback, query);
 }
 
@@ -501,178 +541,466 @@ Action Timer_OnPlayerBlinded(Handle timer, int client)
 
 /* ===================================================================================== */
 
-public void OnGameFrame()
+enum struct TempLmao
 {
-	if(!bLoaded)
-	{
-		return;
-	}
-	
-	//CheckActivePlayers();
-	
-	// this is because it's called a little bit too early when you pull multiple kill within a short span,
-	// causing independant 'events' when it was within one 'event'.
-	CreateTimer(0.1, Timer_OnGameFrame);
+	char classname[64];
+	int itemdef;
+	int quantity;
 }
 
-Action Timer_OnGameFrame(Handle timer)
+// instead of OnGameFrame, we have custom delayed game timer.
+// For optimization purposes.
+// Workaround with OnGameFrame possible would be greatly appreciated.
+Action MapTimer_GameTimer(Handle timer)
 {
-	int client = 0;
-	
-	while((client = FindEntityByClassname(client, "player")) > 0)
+	if(bLoaded)
 	{
-		if(!IsValidClient(client))
-		{
-			continue;
-		}
+		Transaction txn; // All-In-One Query.
 		
-		if(!!g_Game[client].aFragEvent)
+		// alternative over a for() loop.
+		int client = 0;
+		while((client = FindEntityByClassname(client, "player")) != -1)
 		{
-			int frags;
-			if((frags = g_Game[client].aFragEvent.Length) > 0)
+			if(!IsValidClient(client))
 			{
-				FragEventInfo event;
-				int[] list = new int[frags];
-				int[] list_assister = new int[frags];
-				int count_frags;
-				int count_assisted_suicide;
-				
-				for(int i = 0; i < frags; i++)
+				continue;
+			}
+			
+			char str_playtime[11];
+			FloatToString(GetClientTime(client), str_playtime, sizeof(str_playtime));
+			g_Player[client].session[Stats_PlayTime] = StringToInt(str_playtime);
+			if(g_Player[client].active_page_mainmenu >= 1)
+			{
+				StatsMenu.Main(client, g_Player[client].active_page_mainmenu);
+			}
+			else if(g_Player[client].active_page_session == 1)
+			{
+				StatsMenu.Session(client, g_Player[client].active_page_session);
+			}
+			
+			if(g_Game[client].aFragEvent != null)
+			{
+				int frags;
+				if((frags = g_Game[client].aFragEvent.Length) > 0)
 				{
-					g_Game[client].aFragEvent.GetArray(i, event, sizeof(event));
-					list[i] = event.userid;
-					list_assister[i] = event.assister;
-					if(event.suicide_assisted)
-					{
-						count_assisted_suicide++;
-					}
-					else
-					{
-						count_frags++;
-					}
-				}
-				
-				g_Game[client].aFragEvent.Clear();
-				
-				int attacker = GetClientOfUserId(client);
-				_sm_stats_player_death_fwd(attacker, frags, list, list_assister, event.classname, event.itemdef);
-				
-				char dummy[256];
-				GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
-				
-				Transaction txn = new Transaction();
-				
-				int points = 0;
-				if(count_frags > 0)
-				{
-					points += (array_GetWeapon(event.itemdef).IntValue * frags);
-				}
-				if(count_assisted_suicide > 0)
-				{
-					points += (count_assisted_suicide * g_SuicideAssisted.IntValue);
-				}
-				
-				AssistedKills(txn, list_assister, frags, client, event);
-				VictimDied(txn, list, frags);
-				
-				//
-				
-				char query[512];
-				int len = 0;
-				len += Format(query[len], sizeof(query)-len, "update `%s` set Frags = Frags+%i", sql_table_playerlist, frags);
-				
-				char fix_weapon[256];
-				CorrectWeaponClassname(fix_weapon, sizeof(fix_weapon), event.itemdef);
-				
-				char query_wep[256];
-				Format(query_wep, sizeof(query_wep), "update `%s` set %s = %s+1 where SteamID = '%s' and ServerID = %i"
-				, sql_table_weapons, fix_weapon, fix_weapon, g_Player[client].auth, g_ServerID);
-				txn.AddQuery(query_wep, queryId_frag_weapon);
-				
-				//
-				
-				if(event.headshot)
-				{
-					g_Player[client].session[Stats_Headshots]++;
-					g_Player[client].fragmsg.Headshot = true;
-					len += Format(query[len], sizeof(query)-len, ", Headshots = Headshots+%i", frags);
-				}
-				
-				if(event.backstab)
-				{
-					g_Player[client].session[Stats_Backstabs]++;
-					g_Player[client].fragmsg.Backstab = true;
-					len += Format(query[len], sizeof(query)-len, ", Backstabs = Backstabs+%i", frags);
-				}
-				
-				if(event.dominated)
-				{
-					g_Player[client].session[Stats_Dominations]++;
-					g_Player[client].fragmsg.Domination = true;
-					len += Format(query[len], sizeof(query)-len, ", Dominations = Dominations+%i", frags);
-				}
-				
-				if(event.revenge)
-				{
-					g_Player[client].session[Stats_Revenges]++;
-					g_Player[client].fragmsg.Revenge = true;
-					len += Format(query[len], sizeof(query)-len, ", Revenges = Revenges+%i", frags);
-				}
-				
-				if(event.noscope)
-				{
-					g_Player[client].session[Stats_Noscopes]++;
-					g_Player[client].fragmsg.Noscope = true;
-					len += Format(query[len], sizeof(query)-len, ", Noscopes = Noscopes+%i", frags);
-				}
-				
-				if(event.airshot)
-				{
-					g_Player[client].session[Stats_Airshots]++;
-					g_Player[client].fragmsg.Airshot = true;
-					len += Format(query[len], sizeof(query)-len, ", Airshots = Airshots+%i", frags);
-				}
-				
-				if(event.collateral)
-				{
-					g_Player[client].session[Stats_Collaterals]++;
-					g_Player[client].fragmsg.Collateral = true;
-					len += Format(query[len], sizeof(query)-len, ", Collaterals = Collaterals+%i", frags);
+					FragEventInfo event;
+					int[] list = new int[frags];
+					int[] list_assister = new int[frags];
+					bool[] list_assister_dominate = new bool[frags];
+					bool[] list_assister_revenge = new bool[frags];
+					int[] list_itemdef = new int[frags];
+					bool[] list_wepfrag = new bool[frags];
+					char[][] list_classname = new char[frags][64];
 					
-					if(g_Collateral.IntValue)
-					{
-						points += g_Collateral.IntValue;
-					}
-				}
-				
-				if(event.midair)
-				{
-					g_Player[client].session[Stats_MidAirFrags]++;
-					g_Player[client].fragmsg.MidAir = true;
-					len += Format(query[len], sizeof(query)-len, ", MidAirFrags = MidAirFrags+%i", frags);
-				}
-				
-				g_Player[client].session[Stats_Frags] += frags;
-				
-				if(points > 0)
-				{
-					g_Player[client].session[Stats_Points] += points;
-					g_Player[client].points += points;
-					len += Format(query[len], sizeof(query)-len, ", Points = Points+%i", points);
+					// kill log
 					
-					PrepareFragMessage(client, dummy, points, frags);
-				}
-				
-				len += Format(query[len], sizeof(query)-len, " where SteamID = '%s' and ServerID = %i", g_Player[client].auth, g_ServerID);
-				txn.AddQuery(query, queryId_frag_playerlist);
-				
-				sql.Execute(txn, _, FragEvent_OnFailed, attacker);
-				
-				if(g_Player[client].active_page_session > 0)
-				{
-					StatsMenu.Session(g_Player[client].active_page_session);
+					char list_steamid_victim[448];
+					char list_steamid_assister[448];
+					int list_timestamp;
+					char list_itemdefs[176];
+					
+					//
+					
+					int iHeadshots;
+					int iBackstabs;
+					int iDominated;
+					int iRevenges;
+					int iNoscopes;
+					int iAirshots;
+					int iCollaterals;
+					int iMidAirFrags;
+					
+					int iWepFrags;
+					
+					int points = 0;
+					
+					// store temporary info for frag message
+					
+					bool bPrev_headshot;
+					bool bPrev_backstab;
+					bool bPrev_domination;
+					bool bPrev_revenge;
+					bool bPrev_noscope;
+					bool bPrev_airshot;
+					bool bPrev_collateral;
+					bool bPrev_midair;
+					
+					//
+					
+					for(int i = 0; i < frags; i++)
+					{
+						g_Game[client].aFragEvent.GetArray(i, event, sizeof(event));
+						list_timestamp = event.timestamp;
+						int userid_victim = (list[i] = event.userid);
+						list_assister[i] = event.assister;
+						list_assister_dominate[i] = event.dominated_assister;
+						list_assister_revenge[i] = event.revenge_assister;
+						list_itemdef[i] = event.itemdef;
+						strcopy(list_classname[i], sizeof(event.classname), event.classname);
+						
+						switch(strlen(list_itemdefs) < 1)
+						{
+							case false: Format(list_itemdefs, sizeof(list_itemdefs), "%s;%i", list_itemdefs, list_itemdef[i]);
+							case true: Format(list_itemdefs, sizeof(list_itemdefs), "%i", list_itemdef[i]);
+						}
+						
+						// kill log
+						int victim;
+						if(IsValidClient((victim = GetClientOfUserId(userid_victim))))
+						{
+							switch(strlen(list_steamid_victim) < 1)
+							{
+								case false: Format(list_steamid_victim, sizeof(list_steamid_victim), "%s;%s", list_steamid_victim, g_Player[victim].auth);
+								case true: strcopy(list_steamid_victim, sizeof(list_steamid_victim), g_Player[victim].auth);
+							}
+						}
+						
+						switch((g_Player[client].fragmsg.Headshot = event.headshot))
+						{
+							case false: bPrev_headshot = false;
+							case true:
+							{
+								iHeadshots++;
+								if(frags > 1 && !bPrev_headshot)
+								{
+									g_Player[client].fragmsg.Headshot = false;
+								}
+								bPrev_headshot = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Backstab = event.backstab))
+						{
+							case false: bPrev_backstab = false;
+							case true:
+							{
+								iBackstabs++;
+								if(frags > 1 && !bPrev_backstab)
+								{
+									g_Player[client].fragmsg.Backstab = false;
+								}
+								bPrev_backstab = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Domination = event.dominated))
+						{
+							case false: bPrev_domination = false;
+							case true:
+							{
+								iDominated++;
+								if(frags > 1 && !bPrev_domination)
+								{
+									g_Player[client].fragmsg.Domination = false;
+								}
+								bPrev_domination = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Revenge = event.revenge))
+						{
+							case false: bPrev_revenge = false;
+							case true:
+							{
+								iRevenges++;
+								if(frags > 1 && bPrev_revenge)
+								{
+									g_Player[client].fragmsg.Revenge = false;
+								}
+								bPrev_revenge = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Noscope = event.noscope))
+						{
+							case false: bPrev_noscope = false;
+							case true:
+							{
+								iNoscopes++;
+								if(frags > 1 && !bPrev_noscope)
+								{
+									g_Player[client].fragmsg.Noscope = false;
+								}
+								bPrev_noscope = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Airshot = event.airshot))
+						{
+							case false: bPrev_airshot = false;
+							case true:
+							{
+								iAirshots++;
+								if(frags > 1 && !bPrev_airshot)
+								{
+									g_Player[client].fragmsg.Airshot = false;
+								}
+								bPrev_airshot = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Collateral = event.collateral))
+						{
+							case false: bPrev_collateral = false;
+							case true:
+							{
+								iCollaterals++;
+								if(frags > 1 && !bPrev_collateral)
+								{
+									g_Player[client].fragmsg.Collateral = false;
+								}
+								bPrev_collateral = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.MidAir = event.midair))
+						{
+							case false: bPrev_midair = false;
+							case true:
+							{
+								iMidAirFrags++;
+								if(frags > 1 && !bPrev_midair)
+								{
+									g_Player[client].fragmsg.MidAir = false;
+								}
+								bPrev_midair = true;
+							}
+						}
+						
+						bool bValidWeapon = true;
+						if(event.suicide_assisted)
+						{
+							points += g_SuicideAssisted.IntValue;
+							bValidWeapon = false;
+						}
+						
+						if(bValidWeapon)
+						{
+							iWepFrags++;
+							list_wepfrag[i] = true;
+							
+							int itemdef = (list_itemdef[i] = event.itemdef);
+							ConVar cvar_points;
+							switch((cvar_points = array_GetWeapon(itemdef)) == null)
+							{
+								case false: points += cvar_points.IntValue;
+								case true:
+								{
+									LogError("%s itemdef %i has invalid convar!"
+									... "\nattacker userid : %i"
+									... "\nvictim userid : %i"
+									... "\nclassname : '%s'"
+									... "\n "
+									, core_chattag, itemdef
+									, GetClientUserId(client)
+									, list[i]
+									, list_classname[i]);
+									continue;
+								}
+							}
+						}
+					}
+					
+					g_Game[client].aFragEvent.Clear();
+					
+					int attacker = GetClientUserId(client); // native string arrays needs to be added (・`ω´・)
+					_sm_stats_player_death_fwd(attacker, frags, list, list_assister, event.classname, list_itemdef);
+					
+					char dummy[256];
+					GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
+					
+					txn = new Transaction();
+					AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client, list_steamid_assister, sizeof(list_steamid_assister));
+					VictimDied(txn, list, frags);
+					
+					char query[4096], query_map[4096];
+					int len = 0, len_map = 0;
+					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Frags`=`Frags`+%i", frags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set `Frags`=`Frags`+%i", frags);
+					
+					if(iWepFrags > 0)
+					{
+						// needs to be arrayed, multiple same classname calls for update.
+						
+						ArrayList lmao = new ArrayList(sizeof(TempLmao));
+						
+						for(int i = 0; i < frags; i++)
+						{
+							if(list_wepfrag[i])
+							{
+								int index;
+								switch((index = lmao.FindString(list_classname[i])) == -1)
+								{
+									// valid, updating..
+									case false:
+									{
+										TempLmao epic;
+										lmao.GetArray(index, epic, sizeof(epic));
+										epic.quantity++;
+										lmao.SetArray(index, epic, sizeof(epic));
+									}
+									
+									// not valid, adding..
+									case true:
+									{
+										TempLmao epic;
+										strcopy(epic.classname, sizeof(epic.classname), list_classname[i]);
+										epic.itemdef = list_itemdef[i];
+										epic.quantity = 1;
+										lmao.PushArray(epic, sizeof(epic));
+									}
+								}
+							}
+						}
+						
+						for(int i = 0; i < lmao.Length; i++)
+						{
+							TempLmao epic;
+							lmao.GetArray(i, epic, sizeof(epic));
+							
+							char fix_weapon[64], query_wep[256];
+							CorrectWeaponClassname(fix_weapon, sizeof(fix_weapon), epic.itemdef, epic.classname);
+							Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set `%s`=`%s`+'%i' where `SteamID`='%s' and `StatsID`='%i'"
+							, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_StatsID);
+							txn.AddQuery(query_wep, queryId_frag_weapon);
+							
+							if(bDebug) PrintToServer("%s OnPlayerDeath() DEBUG: [userid %i] classname '%s' / itemdef '%i' / quantity '%i'"
+							, core_chattag, attacker, epic.classname, epic.itemdef, epic.quantity);
+						}
+						
+						delete lmao;
+					}
+					if(iHeadshots > 0)
+					{
+						g_Player[client].session[Stats_Headshots] += iHeadshots;
+						len += Format(query[len], sizeof(query)-len, ",`Headshots`=`Headshots`+%i", iHeadshots);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Headshots`=`Headshots`+%i", iHeadshots);
+					}
+					if(iBackstabs > 0)
+					{
+						g_Player[client].session[Stats_Backstabs] += iBackstabs;
+						len += Format(query[len], sizeof(query)-len, ",`Backstabs`=`Backstabs`+%i", iBackstabs);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Backstabs`=`Backstabs`+%i", iBackstabs);
+					}
+					if(iDominated > 0)
+					{
+						g_Player[client].session[Stats_Dominations] += iDominated;
+						len += Format(query[len], sizeof(query)-len, ",`Dominations`=`Dominations`+%i", iDominated);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Dominations`=`Dominations`+%i", iDominated);
+					}
+					if(iRevenges > 0)
+					{
+						g_Player[client].session[Stats_Revenges] += iRevenges;
+						len += Format(query[len], sizeof(query)-len, ",`Revenges`=`Revenges`+%i", iRevenges);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Revenges`=`Revenges`+%i", iRevenges);
+					}
+					if(iNoscopes > 0)
+					{
+						g_Player[client].session[Stats_Noscopes] += iNoscopes;
+						len += Format(query[len], sizeof(query)-len, ",`Noscopes`=`Noscopes`+%i", iNoscopes);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Noscopes`=`Noscopes`+%i", iNoscopes);
+					}
+					if(iAirshots > 0)
+					{
+						g_Player[client].session[Stats_Airshots] += iAirshots;
+						len += Format(query[len], sizeof(query)-len, ", Airshots = Airshots+%i", iAirshots);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ", Airshots = Airshots+%i", iAirshots);
+					}
+					if(iCollaterals > 0)
+					{
+						g_Player[client].session[Stats_Collaterals] += iCollaterals;
+						len += Format(query[len], sizeof(query)-len, ",`Collaterals`=`Collaterals`+%i", iCollaterals);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Collaterals`=`Collaterals`+%i", iCollaterals);
+						
+						if(g_Collateral.IntValue)
+						{
+							points += g_Collateral.IntValue;
+						}
+					}
+					if(iMidAirFrags > 0)
+					{
+						g_Player[client].session[Stats_MidAirFrags] += iMidAirFrags;
+						len += Format(query[len], sizeof(query)-len, ",`MidAirFrags`=`MidAirFrags`+%i", iMidAirFrags);
+						len_map += Format(query[len_map], sizeof(query_map)-len_map, ",`MidAirFrags`=`MidAirFrags`+%i", iMidAirFrags);
+					}
+					
+					//
+					
+					g_Player[client].session[Stats_Frags] += frags;
+					
+					if(points >= 1 && !g_Player[client].bPenalty)
+					{
+						g_Player[client].session[Stats_Points] += points;
+						g_Player[client].points += points;
+						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Points`=`Points`+%i", points);
+					}
+					
+					len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `StatsID`='%i'", g_StatsID);
+					txn.AddQuery(query, queryId_frag_playerlist);
+					txn.AddQuery(query_map, queryId_frag_playerlist_MapUpdate);
+					
+					// kill log
+					
+					int lenk;
+					char queryk[4096];
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "insert into `"...sql_table_kill_log..."`");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "StatsID");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Attacker");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Victim");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Assister");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Timestamp");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Itemdefs");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Quantity");
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Dominations");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Revenges");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Airshots");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Headshots");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Noscopes");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Backstabs");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Collaterals");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",MidAirFrags");
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ")");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "values");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "%i", g_StatsID);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", g_Player[client].auth);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_victim);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_assister);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_timestamp);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_itemdefs);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", frags);
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iDominated);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iRevenges);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iAirshots);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iHeadshots);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iNoscopes);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iBackstabs);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iCollaterals);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", iMidAirFrags);
+					
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ")");
+					txn.AddQuery(queryk, query_error_uniqueid_OnKillLogInsert);
+					
+					//
+					
+					if(g_Player[client].active_page_session > 0)
+					{
+						StatsMenu.Session(client, g_Player[client].active_page_session);
+					}
+					
+					// translation, separated instead.
+					if(points >= 1 && g_Player[client].bShowFragMsg)
+					{
+						PrepareFragMessage(client, dummy, points, frags);
+					}
 				}
 			}
+		}
+		
+		//
+		
+		if(txn != null)
+		{
+			sql.Execute(txn, _, TXN_OnGameFrameCallback_Failure);
 		}
 	}
 	
@@ -681,52 +1009,7 @@ Action Timer_OnGameFrame(Handle timer)
 
 //
 
-void GetMultipleTargets(int client, int[] list, int counter, char[] dummy, int maxlen)
+stock void OnClientDisconnect_Post_Game(int client)
 {
-	if(counter == 1)
-	{
-		int userid = list[0];
-		int target = GetClientOfUserId(userid);
-		strcopy(dummy, maxlen, g_Player[target].name);
-	}
-	else if(counter == 2)
-	{
-		int userid1 = list[0];
-		int target1 = GetClientOfUserId(userid1);
-		
-		int userid2 = list[1];
-		int target2 = GetClientOfUserId(userid2);
-		
-		Format(dummy, maxlen, "%s%T%s%T", g_Player[target1].name, "#SMStats_And", client, g_Player[target2].name, "#SMStats_Counter", client, counter);
-	}
-	else if(counter > 2 && counter <= 4)
-	{
-		for(int i = 0; i < counter-1; i++)
-		{
-			int userid = list[i];
-			int target = GetClientOfUserId(userid);
-			
-			if(dummy[0] != '\0')
-			{
-				Format(dummy, maxlen, "%s%T", dummy, "#SMStats_Comma", client);
-			}
-			
-			Format(dummy, maxlen, "%s%s", dummy, g_Player[target].name);
-		}
-		
-		int target = GetClientOfUserId(list[counter-1]);
-		Format(dummy, maxlen, "%s%T%s%T", dummy, "#SMStats_And", client, g_Player[target].name, "#SMStats_Counter", client, counter);
-		// outputs the "and last player".
-	}
-	else
-	{
-		Format(dummy, maxlen, "%T", "#SMStats_MultipleTargets", client);
-	}
-}
-
-//
-
-void OnClientDisconnect_Post_Game(int client)
-{
-	g_Game[client].Reset();
+	//g_Game[client].Reset();
 }
