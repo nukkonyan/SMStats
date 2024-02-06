@@ -313,7 +313,7 @@
 		// {5} country name
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has joined the game."
-		"jp" "{1} (立{2}/{3}場、{4})が{orange}{default}{5}からを参加しました。"
+		"jp" "{1} ({2}/{3}立、{4})が{orange}{default}{5}からを参加しました。"
 		"nl" "{1} (Pos #{2}/{3}, {4}) van {5} neemt deel aan het spel."
 		"no" "{1} (Pos #{2}/{3}, {4}) fra {5} er blitt med i spillet."
 		"sv" "{1} (Pos #{2}/{3}, {4}) från {5} har gått med i spelet."
@@ -329,7 +329,7 @@
 		// {6} disconnect reason
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
 		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has left the game. {grey}({6})"
-		"jp" "{1} (立{2}/{3}場、{4})が{orange}{5}{default}からをゲームを抜けました。 {grey}（{6}）"
+		"jp" "{1} ({2}/{3}立、{4})が{orange}{5}{default}からをゲームを抜けました。 {grey}（{6}）"
 		"nl" "{1} (Pos #{2}/{3}, {4}) van {5} heeft het spel verlaten {grey}({6})"
 		"no" "{1} (Pos #{2}/{3}, {4}) fra {5} har forlatt spillet. {grey}({6})"
 		"sv" "{1} (Pos #{2}/{3}, {4}) från {5} har lämnat spelet. {grey}({6})"
@@ -359,6 +359,7 @@
 	"#SMStats_Menu_SessionInfo"
 	{
 		"en" "View your current session statistics."
+		"jp" "現在セッション統計を表示。"
 		"sv" "Kolla dina nuvarande session statistiker."
 		"tr" "Mevcut oturum istatistiklerinizi görüntüleyin."
 	}
@@ -377,7 +378,7 @@
 	"#SMStats_Menu_Top10"
 	{
 		"en" "Top 10 players"
-		"jp" "トップ10プレイヤー"
+		"jp" "トップ10のプレイヤー"
 		"no" "Topp 10 spillere"
 		"sv" "Topp 10 spelare"
 		"tr" "En İyi 10 Oyuncu"
@@ -399,12 +400,14 @@
 	"#SMStats_Menu_TopPlayers"
 	{
 		"en" "Current top players"
+		"jp" "現在のトッププレイヤー"
 		"sv" "Nuvarande topp spelare"
 		"tr" "En iyi oyuncular"
 	}
 	"#SMStats_Menu_TopPlayersInfo"
 	{
 		"en" "View the current top players on this server."
+		"jp" "現在このサーバーにはトップ10のプレーヤーを表示" // strange
 		"sv" "Visa nuvarande topp spelare på denna server."
 		"tr" "Bu sunucudaki en iyi oyuncuları görüntüleyin."
 	}
@@ -434,7 +437,7 @@
 	"#SMStats_Menu_PreviousPage"
 	{
 		"en" "Previous page"
-		"jp" "前へページ"
+		"jp" "前のページへ"
 		"no" "Forrige siden"
 		"sv" "Förra sidan"
 		"tr" "Önceki sayfa"
@@ -442,7 +445,7 @@
 	"#SMStats_Menu_NextPage"
 	{
 		"en" "Next page"
-		"jp" "次へページ"
+		"jp" "次のページへ"
 		"sv" "Nästa sida"
 		"tr" "Sonraki sayfa"
 	}
@@ -482,7 +485,7 @@
 	"#SMStats_MenuInfo_Playername"
 	{
 		// {1} player name
-		"#format" "{1:N}"
+		"#format" "{1:s}"
 		"en" "Playername : {1}"
 		"dk" "Spillernavn : {1}:"
 		"jp" "プレイヤー名 : {1}"
@@ -598,6 +601,18 @@
 		"jp" "死んだ : {1}"
 		"sv" "Dött : {1}"
 		"tr" "Ölümler : {1}"
+	}
+	"#SMStats_MenuInfo_KDR"
+	{
+		// {1} kill-death ratio
+		"#format" "{1:.2f}"
+		"en" "KDR : {1}"
+	}
+	"#SMStats_MenuInfo_KADR"
+	{
+		// {1} kill-assist-death ratio
+		"#format" "{1:.2f}"
+		"en" "KADR : {1}"
 	}
 	"#SMStats_MenuInfo_Suicides"
 	{

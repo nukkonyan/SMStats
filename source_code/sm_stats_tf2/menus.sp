@@ -43,11 +43,11 @@ enum struct StatsMenuInfo
 			case 3: PanelText(panel, "%T\n ", "#SMStats_MenuInfo_DevType_Tester", client);
 			case 4: PanelText(panel, "%T\n ", "#SMStats_MenuInfo_DevType_Translator", client);
 		}
-		PanelText(panel, "%T", "#SMStats_MenuInfo_Playername", client, client);
+		PanelText(panel, "%T", "#SMStats_MenuInfo_Playername", client, g_Player[client].name2);
 		PanelText(panel, "%T", "#SMStats_MenuInfo_Country", client, country);
-		PanelText(panel, "%T", "#SMStats_MenuInfo_MapTime", client, map_time);
 		PanelText(panel, "%T", "#SMStats_MenuInfo_Points", client, fmt_points);
-		PanelText(panel, "%T\n ", "#SMStats_MenuInfo_Positioned", client, g_Player[client].position, g_TotalTablePlayers);		
+		PanelText(panel, "%T", "#SMStats_MenuInfo_Positioned", client, g_Player[client].position, g_TotalTablePlayers);		
+		PanelText(panel, "%T\n ", "#SMStats_MenuInfo_MapTime", client, map_time);
 		
 		switch(page)
 		{
@@ -174,7 +174,7 @@ enum struct StatsMenuInfo
 	void TopStatsInfo(int client, int page=1, int top=10)
 	{
 		Panel panel = new Panel();
-		PanelItem(panel, "SourceMod Stats - " ... VersionAlt ... " > %T > %s > %T"
+		PanelItem(panel, "SourceMod Stats - " ... VersionAlt ... " > %T > \"%s\" > %T"
 		, "#SMStats_Menu_TopPlayer", client, top
 		, g_Player[client].menustats_name
 		, "#SMStats_Menu_Page", client, page);
@@ -1744,6 +1744,11 @@ void LoadMenus()
 	{
 		RegConsoleCmd(str_statsCmd[i], StatsCmd, "SMStats: TF2 - Statistical command.");
 	}
+	
+	for(int i = 0; i < sizeof(str_Top10Menu); i++)
+	{
+		RegConsoleCmd(str_Top10Menu[i], Top10Cmd, "SMStats: TF2 - Top 10 Statistics command.");
+	}
 }
 
 Action StatsMenuCmd(int client, int args)
@@ -1829,6 +1834,22 @@ Action StatsCmd(int client, int args)
 					StatsMenu.Main(client);
 				}
 			}
+		}
+		case true: ReplyToCommand(client, "%s This command may only be used in-game!", core_chattag);
+	}
+	return Plugin_Handled;
+}
+
+Action Top10Cmd(int client, int args)
+{
+	switch(client == 0)
+	{
+		case false:
+		{
+			g_Player[client].active_page_mainmenu = -1;
+			g_Player[client].active_page_session = -1;
+			g_Player[client].active_page_topstats = 1;
+			StatsMenu.TopStats(client);
 		}
 		case true: ReplyToCommand(client, "%s This command may only be used in-game!", core_chattag);
 	}
@@ -2001,6 +2022,7 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Frags", client, stats[Stats_Frags]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Assists", client, stats[Stats_Assists]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Deaths", client, stats[Stats_Deaths]);
+			PanelText(panel, "  %T", "#SMStats_MenuInfo_KDR", client, GetKDR(stats[Stats_Frags], stats[Stats_Deaths]));
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_Suicides", client, stats[Stats_Suicides]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_DamageDone", client, stats[Stats_DamageDone]);
 			PanelText(panel, "  %T", "#SMStats_MenuInfo_AchievementsEarned", client, stats[Stats_Achievements]);
@@ -2310,9 +2332,21 @@ void DBQuery_TopStats_1(Database database, DBResultSet results, const char[] err
 		
 		for(int i = 0; i < Players; i++)
 		{
+			bool bFormat;
 			char dummy[96], points_plural[32];
-			PointsPluralSplitter(client, Points[i], points_plural, sizeof(points_plural));
-			Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_TopPlayer", client, i+1, PlayerName[i], points_plural);
+			PointsPluralSplitter(client, Points[i], points_plural, sizeof(points_plural), _, bFormat);
+			switch(bFormat)
+			{
+				case true:
+				{
+					Format(dummy, sizeof(dummy), "%T (%i)", "#SMStats_MenuInfo_TopPlayer", client, i+1, PlayerName[i], points_plural, Points[i]);
+				}
+				case false:
+				{
+					Format(dummy, sizeof(dummy), "%T", "#SMStats_MenuInfo_TopPlayer", client, i+1, PlayerName[i], points_plural);
+				}
+			}
+			
 			menu.AddItem(SteamID[i], dummy);
 		}
 		

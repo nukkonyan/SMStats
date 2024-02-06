@@ -98,12 +98,27 @@ stock int GetTablePlayerCount()
 
 /* ============================================================== */
 
-stock int GetPlayerCount(bool count_bots=false)
+stock int GetPlayerCount(bool bCountBots=false, bool bCheckBotGameMode=false)
 {
+	bool bValidGameMode = true;
+	if(bCheckBotGameMode)
+	{
+		switch(GetEngineVersion())
+		{
+			case Engine_TF2:
+			{
+				if(view_as<bool>(GameRules_GetProp("m_bPlayingMannVsMachine")))
+				{
+					bValidGameMode = false;
+				}
+			}
+		}
+	}
+	
 	int count, player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(IsValidClient(player, !count_bots))
+		if(IsValidClient(player, (!bCountBots && bValidGameMode)))
 		{
 			count++;
 		}
@@ -198,7 +213,7 @@ stock void OnRoundEnded(Event event, const char[] event_name, bool dontBroadcast
 
 void CheckActivePlayers()
 {
-	int players = GetPlayerCount(bAllowBots);
+	int players = GetPlayerCount(bAllowBots, true);
 	
 	switch(bStatsActive)
 	{
@@ -995,7 +1010,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 	g_Player[client].fragmsg.Reset();
 }
 
-stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen, PointsSplitType type=PointSplit_Off)
+stock void PointsPluralSplitter(int client, int points, char[] translation, int maxlen, PointsSplitType type=PointSplit_Off, bool &bFormat=false)
 {
 	char fmt_plural[64];
 	Format(fmt_plural, sizeof(fmt_plural), "%T", "#SMStats_Points", client);
@@ -1013,7 +1028,7 @@ stock void PointsPluralSplitter(int client, int points, char[] translation, int 
 			else
 			{
 				char fmt_points[24];
-				PointsFormat(client, points, fmt_points, sizeof(fmt_points));
+				bFormat = PointsFormat(client, points, fmt_points, sizeof(fmt_points));
 				Format(translation, maxlen, "%s%s", fmt_points, fmt_plural);
 			}
 		}
@@ -1036,7 +1051,7 @@ stock void PointsPluralSplitter(int client, int points, char[] translation, int 
 			else
 			{
 				char fmt_points[24];
-				PointsFormat(client, points, fmt_points, sizeof(fmt_points));
+				bFormat = PointsFormat(client, points, fmt_points, sizeof(fmt_points));
 				Format(translation, maxlen, "%s%s", fmt_points, szPlural[view_as<int>(bPlural)]);
 			}
 		}
@@ -1045,18 +1060,10 @@ stock void PointsPluralSplitter(int client, int points, char[] translation, int 
 
 stock void PointsPrefix(int client, int points, char[] output, int maxlen, PointsSplitType type)
 {
-	PointsFormat(client, points, output, maxlen);
+	PointsFormat(client, points, output, maxlen, false);
 	
 	if((points <= -1 || type == PointSplit_Minus))
 	{
-		// remove minus of the points shown, because it'd be a double minus otherwise.
-		if(StrContains(output, "-") != -1)
-		{
-			ReplaceString(output, maxlen, "-", "");
-		}
-		
-		//
-		
 		Format(output, maxlen, "{red}-%s{default}", output);
 	}
 	else if((points >= 1 || type == PointSplit_Plus))
@@ -1080,6 +1087,15 @@ stock void OnOffPluralSplitter(int client, bool OffOn, char[] translation, int m
 
 //
 
+enum PointsFormatType
+{
+	PFT_1M = 0,
+	PFT_100K = 1,
+	PFT_10K = 2,
+	PFT_1K = 3,
+	PFT_100 = 4,
+}
+
 stock bool PointsFormat(int client, int points, char[] output, int maxlen, bool bShowMinus=true)
 {
 	char fmt_points[24];
@@ -1093,219 +1109,481 @@ stock bool PointsFormat(int client, int points, char[] output, int maxlen, bool 
 	// 1M
 	if(points >= 1000000 || points <= -1000000)
 	{
-		if(PointsFormatTypeValid(client, "1M"))
+		int type;
+		char decimal[16];
+		if(PointsFormatTypeValid(client, PFT_1M, type, decimal, sizeof(decimal)))
 		{
-			// 1.1M
-			if(points >= 1100000 || points <= -1100000)
+			switch(type)
 			{
-				char text_1[6], text_2[6], text_3[6];
-				switch(StrContains(fmt_points, "-") != -1)
+				case 1:
 				{
-					case false:
+					char text_1[11], text_2[11], text_3[11];
+					switch(StrContains(fmt_points, "-") != -1)
 					{
-						strcopy(text_1, sizeof(text_1), fmt_points[0]);
-						strcopy(text_2, sizeof(text_2), fmt_points[1]);
-						strcopy(text_3, sizeof(text_3), fmt_points[2]);
+						case false:
+						{
+							strcopy(text_1, sizeof(text_1), fmt_points[0]);
+							strcopy(text_2, sizeof(text_2), fmt_points[1]);
+							strcopy(text_3, sizeof(text_3), fmt_points[2]);
+						}
+						case true:
+						{
+							Format(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
+							strcopy(text_2, sizeof(text_2), fmt_points[2]);
+							strcopy(text_3, sizeof(text_3), fmt_points[3]);
+						}
 					}
-					case true:
+					
+					//
+					
+					ReplaceString(text_1, sizeof(text_1), text_2, "");
+					ReplaceString(text_2, sizeof(text_2), text_3, "");
+					
+					//
+					
+					switch(StrEqual(text_2, "0"))
 					{
-						Format(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
-						strcopy(text_2, sizeof(text_2), fmt_points[2]);
-						strcopy(text_3, sizeof(text_3), fmt_points[3]);
+						case false:
+						{
+							FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%s", text_1, text_2, decimal);
+						}
+						case true:
+						{
+							FormatEx(fmt_points, sizeof(fmt_points), "%s%s", text_1, decimal);
+						}
 					}
+					
+					bValue = true;
 				}
-				
-				//
-				
-				ReplaceString(text_1, sizeof(text_1), text_2, "");
-				ReplaceString(text_2, sizeof(text_2), text_3, "");
-				
-				//
-				
-				FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%T", text_1, text_2, "#SMStats_PointsFormat_1M", client);
+				case 2:
+				{
+					char text_1[11], text_2[11];
+					switch(StrContains(fmt_points, "-") != -1)
+					{
+						case false:
+						{
+							strcopy(text_1, sizeof(text_1), fmt_points[0]); // 100,150,0 > 100
+							strcopy(text_2, sizeof(text_2), fmt_points[3]); // 100,150,0 > 150,0 > remove remaining "150,0"
+						}
+						case true:
+						{
+							Format(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
+							strcopy(text_2, sizeof(text_2), fmt_points[4]);
+						}
+					}
+					
+					//
+					
+					ReplaceString(text_1, sizeof(text_1), text_2, "");
+					
+					//
+					
+					FormatEx(fmt_points, sizeof(fmt_points), "%s%s", text_1, decimal);
+					
+					bValue = true;
+				}
 			}
-			// 1M
-			else
-			{
-				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_1M", client);
-			}
-			
-			bValue = true;
 		}
 	}
 	// 100K
 	else if(points >= 100000 || points <= -100000)
 	{
-		if(PointsFormatTypeValid(client, "100K"))
+		int type;
+		char decimal[16];
+		if(PointsFormatTypeValid(client, PFT_100K, type, decimal, sizeof(decimal)))
 		{
-			// 101K
-			if(points >= 101000 || points <= -101000)
+			switch(type)
 			{
-				char text_1[6], text_2[6], text_3[6];
-				switch(StrContains(fmt_points, "-") != -1)
+				// format : 101K
+				case 1:
 				{
-					case false:
+					char text_1[11], text_2[11];
+					switch(StrContains(fmt_points, "-") != -1)
 					{
-						strcopy(text_1, sizeof(text_1), fmt_points[1]);
-						strcopy(text_2, sizeof(text_2), fmt_points[2]);
-						strcopy(text_3, sizeof(text_3), fmt_points[3]);
+						case false:
+						{
+							strcopy(text_1, sizeof(text_1), fmt_points[0]);
+							strcopy(text_2, sizeof(text_2), fmt_points[2]);
+						}
+						case true:
+						{
+							Format(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
+							strcopy(text_2, sizeof(text_2), fmt_points[3]);
+						}
 					}
-					case true:
-					{
-						Format(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[2]);
-						strcopy(text_2, sizeof(text_2), fmt_points[3]);
-						strcopy(text_3, sizeof(text_3), fmt_points[4]);
-					}
+					
+					//
+					
+					ReplaceString(text_1, sizeof(text_1), text_2, "");
+					
+					//
+					
+					FormatEx(fmt_points, sizeof(fmt_points), "%s%s", text_1, decimal);
+					
+					bValue = true;
 				}
-				
-				//
-				
-				ReplaceString(text_1, sizeof(text_1), text_2, "");
-				ReplaceString(text_2, sizeof(text_2), text_3, "");
-				
-				//
-				
-				FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%T", text_1, text_2, "#SMStats_PointsFormat_100K", client);
+				// format : 10.1万 (chinese character/kanji style of 101K)
+				case 2:
+				{
+					char text_1[11], text_2[11], text_3[11], text_4[11], text_5[11];
+					switch(StrContains(fmt_points, "-") != -1)
+					{
+						case false:
+						{
+							strcopy(text_1, sizeof(text_1), fmt_points[0]);
+							strcopy(text_2, sizeof(text_2), fmt_points[2]);
+							strcopy(text_3, sizeof(text_3), fmt_points[3]);
+							strcopy(text_4, sizeof(text_4), fmt_points[4]);
+							strcopy(text_5, sizeof(text_5), fmt_points[5]);
+						}
+						case true:
+						{
+							Format(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
+							strcopy(text_2, sizeof(text_2), fmt_points[3]);
+							strcopy(text_3, sizeof(text_3), fmt_points[4]);
+							strcopy(text_4, sizeof(text_4), fmt_points[5]);
+							strcopy(text_5, sizeof(text_5), fmt_points[6]);
+						}
+					}
+					
+					//
+					
+					ReplaceString(text_1, sizeof(text_1), text_2, "");
+					ReplaceString(text_2, sizeof(text_2), text_3, "");
+					ReplaceString(text_3, sizeof(text_3), text_4, "");
+					ReplaceString(text_4, sizeof(text_4), text_5, "");
+					
+					// 20.04万
+					if(!StrEqual(text_3, "0") && !StrEqual(text_4, "0"))
+					{
+						FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%s%s", text_1, text_2, text_3, decimal);
+					}
+					// 20.4万
+					else if(!StrEqual(text_2, "0"))
+					{
+						FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%s", text_1, text_2, decimal);
+					}
+					// 20.0万 -> 20万
+					else
+					{
+						FormatEx(fmt_points, sizeof(fmt_points), "%s%s", text_1, decimal);
+					}
+					
+					bValue = true;
+				}
 			}
-			// 100K
-			else
-			{
-				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_100K", client);
-			}
-			
-			bValue = true;
 		}
 	}
 	// 10K
 	else if(points >= 10000 || points <= -10000)
 	{
-		if(PointsFormatTypeValid(client, "10K"))
+		int type;
+		char decimal[16];
+		if(PointsFormatTypeValid(client, PFT_10K, type, decimal, sizeof(decimal)))
 		{
-			// 10.1K
-			if(points >= 10100 || points <= -10100)
+			switch(type)
 			{
-				char text_1[6], text_2[6], text_3[6];
-				switch(StrContains(fmt_points, "-") != -1)
+				case 1:
 				{
-					case false:
+					char text_1[11], text_2[11], text_3[11], text_4[11], text_5[11];
+					switch(StrContains(fmt_points, "-") != -1)
 					{
-						strcopy(text_1, sizeof(text_1), fmt_points[0]);
-						strcopy(text_2, sizeof(text_2), fmt_points[1]);
-						strcopy(text_3, sizeof(text_3), fmt_points[2]);
+						case false:
+						{
+							strcopy(text_1, sizeof(text_1), fmt_points[0]);
+							strcopy(text_2, sizeof(text_2), fmt_points[1]);
+							strcopy(text_3, sizeof(text_3), fmt_points[2]);
+							strcopy(text_4, sizeof(text_4), fmt_points[3]);
+							strcopy(text_5, sizeof(text_5), fmt_points[4]);
+						}
+						case true:
+						{
+							FormatEx(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
+							strcopy(text_2, sizeof(text_2), fmt_points[2]);
+							strcopy(text_3, sizeof(text_3), fmt_points[3]);
+							strcopy(text_4, sizeof(text_4), fmt_points[4]);
+							strcopy(text_5, sizeof(text_5), fmt_points[5]);
+						}
 					}
-					case true:
+					
+					//
+					
+					ReplaceString(text_1, sizeof(text_1), text_2, "");
+					ReplaceString(text_2, sizeof(text_2), text_3, "");
+					ReplaceString(text_3, sizeof(text_3), text_4, "");
+					ReplaceString(text_4, sizeof(text_4), text_5, "");
+					
+					//
+					
+					switch(StrEqual(text_2, "0"))
 					{
-						FormatEx(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
-						strcopy(text_2, sizeof(text_2), fmt_points[2]);
-						strcopy(text_3, sizeof(text_3), fmt_points[3]);
+						case false:
+						{
+							FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%s", text_1, text_2, decimal);
+						}
+						case true:
+						{
+							FormatEx(fmt_points, sizeof(fmt_points), "%s%s", text_1, decimal);
+						}
 					}
+					
+					bValue = true;
 				}
-				
-				//
-				
-				ReplaceString(text_1, sizeof(text_1), text_2, "");
-				ReplaceString(text_2, sizeof(text_2), text_3, "");
-				
-				//
-				
-				FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%T", text_1, text_2, "#SMStats_PointsFormat_10K", client);
-			}
-			// 10K
-			else
-			{
-				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_10K", client);
+				case 2:
+				{
+					char text_1[11], text_2[11], text_3[11], text_4[11];
+					switch(StrContains(fmt_points, "-") != -1)
+					{
+						case false:
+						{
+							strcopy(text_1, sizeof(text_1), fmt_points[0]);
+							strcopy(text_2, sizeof(text_2), fmt_points[1]);
+							strcopy(text_3, sizeof(text_3), fmt_points[2]);
+							strcopy(text_4, sizeof(text_4), fmt_points[3]);
+						}
+						case true:
+						{
+							FormatEx(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
+							strcopy(text_2, sizeof(text_2), fmt_points[2]);
+							strcopy(text_3, sizeof(text_3), fmt_points[3]);
+							strcopy(text_4, sizeof(text_4), fmt_points[4]);
+						}
+					}
+					
+					//
+					
+					ReplaceString(text_1, sizeof(text_1), text_2, "");
+					ReplaceString(text_2, sizeof(text_2), text_3, "");
+					ReplaceString(text_3, sizeof(text_3), text_4, "");
+					
+					//
+					
+					// 2.04万
+					if(!StrEqual(text_3, "0"))
+					{
+						FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%s%s", text_1, text_2, text_3, decimal);
+					}
+					//2.40万
+					else if(!StrEqual(text_2, "0"))
+					{
+						FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%s", text_1, text_2, decimal);
+					}
+					//2万
+					else
+					{
+						FormatEx(fmt_points, sizeof(fmt_points), "%s%s", text_1, decimal);
+					}
+					
+					bValue = true;
+				}
 			}
 		}
-		
-		bValue = true;
 	}
 	// 1K
 	else if(points >= 1000 || points <= -1000)
 	{
-		if(PointsFormatTypeValid(client, "1K"))
+		int type;
+		char decimal[16];
+		if(PointsFormatTypeValid(client, PFT_1K, type, decimal, sizeof(decimal)))
 		{
-			// 1.1K
-			if(points >= 1100 || points <= -1100)
+			switch(type)
 			{
-				char text_1[6], text_2[6], text_3[6];
-				switch(StrContains(fmt_points, "-") != -1)
+				case 1:
 				{
-					case false:
+					char text_1[11], text_2[11], text_3[11];
+					switch(StrContains(fmt_points, "-") != -1)
 					{
-						strcopy(text_1, sizeof(text_1), fmt_points[0]);
-						strcopy(text_2, sizeof(text_2), fmt_points[1]);
-						strcopy(text_3, sizeof(text_3), fmt_points[2]);
+						case false:
+						{
+							strcopy(text_1, sizeof(text_1), fmt_points[0]);
+							strcopy(text_2, sizeof(text_2), fmt_points[1]);
+							strcopy(text_3, sizeof(text_3), fmt_points[2]);
+						}
+						case true:
+						{
+							FormatEx(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
+							strcopy(text_2, sizeof(text_2), fmt_points[2]);
+							strcopy(text_3, sizeof(text_3), fmt_points[3]);
+						}
 					}
-					case true:
+					
+					//
+					
+					ReplaceString(text_1, sizeof(text_1), text_2, "");
+					ReplaceString(text_2, sizeof(text_2), text_3, "");
+					
+					//
+					
+					switch(StrEqual(text_2, "") || StrEqual(text_2, "0"))
 					{
-						FormatEx(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
-						strcopy(text_2, sizeof(text_2), fmt_points[2]);
-						strcopy(text_3, sizeof(text_3), fmt_points[3]);
+						case false:
+						{
+							FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%s", text_1, text_2, decimal);
+						}
+						case true:
+						{
+							FormatEx(fmt_points, sizeof(fmt_points), "%s%s", text_1, decimal);
+						}
 					}
+					
+					bValue = true;
 				}
-				
-				//
-				
-				ReplaceString(text_1, sizeof(text_1), text_2, "");
-				ReplaceString(text_2, sizeof(text_2), text_3, "");
-				
-				//
-				
-				FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%T", text_1, text_2, "#SMStats_PointsFormat_1K", client);
-			}
-			// 10K
-			else
-			{
-				FormatEx(fmt_points, sizeof(fmt_points), "%s%T", fmt_points, "#SMStats_PointsFormat_1K", client);
 			}
 		}
-		
-		bValue = true;
+	}
+	// 100
+	else if(points >= 100 || points <= -100)
+	{
+		int type;
+		char decimal[16];
+		if(PointsFormatTypeValid(client, PFT_100, type, decimal, sizeof(decimal)))
+		{
+			switch(type)
+			{
+				case 1:
+				{
+					char text_1[11], text_2[11], text_3[11];
+					switch(StrContains(fmt_points, "-") != -1)
+					{
+						case false:
+						{
+							strcopy(text_1, sizeof(text_1), fmt_points[0]);
+							strcopy(text_2, sizeof(text_2), fmt_points[1]);
+							strcopy(text_3, sizeof(text_3), fmt_points[2]);
+						}
+						case true:
+						{
+							FormatEx(text_1, sizeof(text_1), "%s%s", bShowMinus ? "-":"", fmt_points[1]);
+							strcopy(text_2, sizeof(text_2), fmt_points[2]);
+							strcopy(text_3, sizeof(text_3), fmt_points[3]);
+						}
+					}
+					
+					//
+					
+					ReplaceString(text_1, sizeof(text_1), text_2, "");
+					ReplaceString(text_2, sizeof(text_2), text_3, "");
+					
+					switch(StrEqual(text_2, "") || StrEqual(text_2, "0"))
+					{
+						case false:
+						{
+							FormatEx(fmt_points, sizeof(fmt_points), "%s.%s%s", text_1, text_2, decimal);
+						}
+						case true:
+						{
+							FormatEx(fmt_points, sizeof(fmt_points), "%s%s", text_1, decimal);
+						}
+					}
+					
+					bValue = true;
+				}
+			}
+		}
 	}
 	
 	strcopy(output, maxlen, fmt_points);
 	return bValue;
 }
 
-stock bool PointsFormatTypeValid(int client, const char[] type)
+stock bool PointsFormatTypeValid(int client, PointsFormatType type, int& fmt_type=0, char[] decimal, int maxlen)
 {
-	char lang[3];
-	GetLanguageInfo(GetClientLanguage(client), lang, sizeof(lang));
+	int lang = GetClientLanguage(client);
+	
+	static int lang_valid[5][40];
+	static int lang_fmt_type[5][40];
+	static char lang_decimal[5][40][16];
+	bool bReturn = false;
+	
+	switch(lang_valid[type][lang])
+	{
+		case 1:
+		{
+			return false;
+		}
+		case 2:
+		{
+			fmt_type = lang_fmt_type[type][lang];
+			strcopy(decimal, maxlen, lang_decimal[type][lang]);
+			return true;
+		}
+	}
+	
+	// temporary
+	if(core == null)
+	{
+		lang_valid[type][lang] = 1;
+		return false;
+	}
+	
+	char str_kv_type[][] =
+	{
+		"1M",
+		"100K",
+		"10K",
+		"1K",
+		"100",
+	};
+	
+	if(core.JumpToKey("PointsFormat"))
+	{
+		char str_lang[3];
+		GetPlayerLang(client, str_lang, sizeof(str_lang));
+		
+		if(core.JumpToKey(str_kv_type[type]))
+		{
+			if(core.JumpToKey(str_lang))
+			{
+				char text[16];
+				core.GetString("decimal", text, sizeof(text));
+				fmt_type = core.GetNum("type");
+				core.GoBack();
+				
+				if(strlen(text) > 0)
+				{
+					lang_valid[type][lang] = 2;
+					lang_fmt_type[type][lang] = fmt_type;
+					strcopy(lang_decimal[type][lang], sizeof(text), text);
+					strcopy(decimal, maxlen, text);
+					bReturn = true;
+				}
+				else
+				{
+					lang_valid[type][lang] = 1;
+				}
+						
+				core.GoBack();
+			}
+			else
+			{
+				lang_valid[type][lang] = 1;
+			}
+			
+			core.GoBack();
+		}
+		else
+		{
+			lang_valid[type][lang] = 1;
+		}
+		
+		core.GoBack();
+	}
+	else
+	{
+		lang_valid[type][lang] = 1;
+	}
+	
+	return bReturn;
+}
+
+stock void GetPlayerLang(int client, char[] lang, int maxlen)
+{
+	GetLanguageInfo(GetClientLanguage(client), lang, maxlen);
 	
 	for(int i = 0; i < strlen(lang); i++)
 	{
 		lang[i] = CharToLower(lang[i]);
 	}
-	
-	// temporary
-	if(StrEqual(type, "1M"))
-	{
-		return (
-			StrEqual(lang, "jp") ||StrEqual(lang, "en")
-		);
-	}
-	else if(StrEqual(type, "100K"))
-	{
-		return (
-			StrEqual(lang, "jp")
-		);
-	}
-	else if(StrEqual(type, "10K"))
-	{
-		return (
-			StrEqual(lang, "jp") ||
-			StrEqual(lang, "en")
-		);
-	}
-	else if(StrEqual(type, "1K"))
-	{
-		return (
-			StrEqual(lang, "jp") ||
-			StrEqual(lang, "en")
-		);
-	}
-	
-	return false;
 }
 
 //
@@ -1343,7 +1621,7 @@ stock void Send_Player_Connected(int client)
 	int points = g_Player[client].points;
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `StatsID`='%i'", g_StatsID);
+	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `StatsID`='%i' order by `Points` desc", g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(points);
@@ -1378,22 +1656,21 @@ stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results,
 	
 	//
 	
-	if(results == null)
-	{
-		return;
-	}
-	
 	int position = 0;
-	while(results.FetchRow())
+	
+	if(results != null)
 	{
-		position++;
-		
-		char row_auth[28];
-		results.FetchString(0, row_auth, sizeof(row_auth));
-		
-		if(StrEqual(row_auth, auth))
+		while(results.FetchRow())
 		{
-			break;
+			position++;
+			
+			char row_auth[28];
+			results.FetchString(0, row_auth, sizeof(row_auth));
+			
+			if(StrEqual(row_auth, auth))
+			{
+				break;
+			}
 		}
 	}
 	
@@ -1549,7 +1826,7 @@ stock void Send_Player_Disconnected(int client, const char[] event_reason)
 	strcopy(name, sizeof(name), g_Player[client].name);
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID`,`Points` from `"...sql_table_playerlist..."` where `StatsID`='%i'", g_StatsID);
+	Format(query, sizeof(query), "select `SteamID`,`Points` from `"...sql_table_playerlist..."` where `StatsID`='%i' order by `Points` desc", g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(strlen(auth)+1);
 	pack.WriteString(auth);
@@ -2224,6 +2501,35 @@ stock void DBQuery_PenaltyPlayer_Expire(Database database, DBResultSet results, 
 		... "\n%s", userid, error);
 		return;
 	}
+}
+
+// kill-death ratio, prototype. Will use 1.00 Ratio. similar to HLTV Ratio? (as in 1.00  ratio)
+
+stock float GetKDR(int kills, int deaths)
+{
+	float fkills = kills+0.0;
+	float fdeaths = deaths+0.0;
+	
+	//
+	
+	float ratio = (fkills / fdeaths) / 100.0;
+	
+	if(ratio < 1.00)
+	{
+		ratio = (1.00 - ratio);
+		
+		if(ratio <= 0.00)
+		{
+			ratio = 1.00;
+		}
+	}
+	
+	return ratio;
+}
+
+stock float GetKADR(int kills, int assists, int deaths)
+{
+	return 0.69;
 }
 
 // work in progress
