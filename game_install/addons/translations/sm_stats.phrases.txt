@@ -1094,6 +1094,7 @@
 		// {2} achievement name
 		"#format" "{1:s},{2:s}"
 		"en" "{1} has earned the achievement {olive}{2}"
+		"jp" "{1}が {2} の実績を獲得しました！"
 		"sv" "{1} har förtjänat uppdraget {olive}{2}"
 		"tr" "{1} oyuncusu {olive}{2} {default}başarımını kazandı"
 	}
