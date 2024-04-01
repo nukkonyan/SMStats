@@ -29,7 +29,7 @@
           - Somewhere between end of October and somewhere between mid november and early-mid december.
           - This will begin with Team Fortress 2 due to stability reasons.
       - Lookin to assist in development?
-          - Hit me up on [Steam](https://steamcommunity.com/id/Teamkiller324)!
+          - Hit me up on [Steam](https://steamcommunity.com/id/nukkonyan)!
           - Active SMStats development testing server, come in here to see for yourself how the plugin is doing:
             - 83.253.75.203:27018 (Team Fortress 2)
    - Credits
