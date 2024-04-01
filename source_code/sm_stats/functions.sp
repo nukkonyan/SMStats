@@ -966,9 +966,8 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		, Frag_Type[Frag_MidAir], client);
 	}
 	
-	char points_plural1[64], points_plural2[64];
-	PointsFormat(client, g_Player[client].points-points, points_plural1, sizeof(points_plural1));
-	PointsPluralSplitter(client, points, points_plural2, sizeof(points_plural2), PointSplit_Plus);
+	char points_plural[64];
+	PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 	
 	switch(strlen(buffer) > 0)
 	{
@@ -983,9 +982,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			CPrintToChat(client, "%s %T%s"
 			, g_ChatTag
 			, "#SMStats_FragEvent_Default", client
-			, g_Player[client].name
-			, points_plural1
-			, points_plural2
+			, points_plural
 			, victim
 			, (frags > 4) ? str_counter : "");
 		}
@@ -999,9 +996,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 			CPrintToChat(client, "%s %T"
 			, g_ChatTag
 			, "#SMStats_FragEvent_Special", client
-			, g_Player[client].name
-			, points_plural1
-			, points_plural2
+			, points_plural
 			, victim
 			, buffer);
 		}

@@ -15,7 +15,7 @@
 	"#SMStats_Error_SQLNotInitialized"
 	{
 		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
-		"jp" "{yellow}エラー: {grey}SQL 接続できません。"
+		"jp" "{yellow}エラー: {grey}SQL 接続が使用可能できません。"
 		"sv" "{yellow}Fel {grey}SQL Anslutning {yellow}är för tillfället otillgänglig."
 		"tr" "{yellow}Hata: {grey}SQL Bağlantısı {yellow}kurulamadı."
 	}
@@ -123,6 +123,7 @@
 		// {4} minutes
 		// {5} seconds
 		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s}"
+		"dk" "{1}, {2}, {3}, {4} og {5}"
 		"en" "{1}, {2}, {3}, {4} and {5}"
 		"jp" "{1}{2}{3}{4}{5}"
 		"no" "{1}, {2}, {3}, {4} og {5}"
@@ -136,6 +137,7 @@
 		// {3} minutes
 		// {4} seconds
 		"#format" "{1:s},{2:s},{3:s},{4:s}"
+		"dk" "{1}, {2}, {3} og {4}"
 		"en" "{1}, {2}, {3} and {4}"
 		"jp" "{1}{2}{3}{4}"
 		"no" "{1}, {2}, {3} og {4}"
@@ -148,6 +150,7 @@
 		// {2} minutes
 		// {3} seconds
 		"#format" "{1:s},{2:s},{3:s}"
+		"dk" "{1}, {2} og {3}"
 		"en" "{1}, {2} and {3}"
 		"jp" "{1}{2}{3}"
 		"no" "{1}, {2} og {3}"
@@ -159,6 +162,7 @@
 		// {1} minutes
 		// {2} seconds
 		"#format" "{1:s},{2:s}"
+		"dk" "{1} og {2}"
 		"en" "{1} and {2}"
 		"jp" "{1}{2}"
 		"no" "{1} og {2}"
@@ -194,12 +198,13 @@
 	{
 		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid>  {grey}Example below:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 		"sv" "{grey}Använding: {lightgreen}sm_stats <topp spelarplacering | steamid>  {grey}Exempel nedan:\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"jp" "{grey}使用： {lightgreen}sm_stats <トッププレイヤー | steamid>  {grey}例の下：\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 		"tr" "{grey}Kullanım: {lightgreen}sm_stats <Oyuncu sıralaması | steamid>  {grey}Örnek:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 	}
 	"#SMStats_StatsCmd_Error"
 	{
 		"en" "{yellow}Error: {default}You must enter a valid top player position or steamid."
-		"sv" "{yellow}Fel: {default}Du måste ange en giltig spelarplacering eller steamid."
+		"sv" "{yellow}Fel: {default}Du måste ange ett giltigt spelarplacering eller steamid."
 		"tr" "{yellow}Hata: {default}Geçerli bir sıralama veya steamid girmelisiniz."
 	}
 	"#SMStats_StatsCmd_NULL"
@@ -221,7 +226,7 @@
 		// {1} steamid
 		"#format" "{1:s}"
 		"en" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
-		"sv" "{yellow}Fel: {default}steamidn {lightgreen}{1} {default}är ej giltigt. steamidn bör se ut någonting likt {lightgreen}STEAM_0:0:12345{default}."
+		"sv" "{yellow}Fel: {default}steamidn {lightgreen}{1} {default}är ej giltigt. steamidn bör se ut någonting likt som {lightgreen}STEAM_0:0:12345{default}."
 		"tr" "{yellow}Hata: {default}Girdiğiniz steamid {lightgreen}{1} {default}geçersizdir. Steamid, {lightgreen}STEAM_0:0:12345{default} gibi bir şey olmalıdır."
 	}
 
@@ -237,7 +242,7 @@
 	"#SMStats_TopSQLInfo_NoPlayers"
 	{
 		"en" "{yellow}Error: {default}No player were found on the leaderboard."
-		"sv" "{yellow}Fel: {default}Ingen spelare var funnen på leaderboardet."
+		"sv" "{yellow}Fel: {default}Ingen spelare hittades på leaderboardet."
 		"tr" "{yellow}Hata: {default}Lider tablosunda oyuncu bulunamadı."
 	}
 	"#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist"
@@ -313,7 +318,7 @@
 		// {5} country name
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
 		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has joined the game."
-		"jp" "{1} ({2}/{3}立、{4})が{orange}{default}{5}からを参加しました。"
+		"jp" "{1} ({2}/{3}立、{4})が{orange}{default}{5}からに参加しました。"
 		"nl" "{1} (Pos #{2}/{3}, {4}) van {5} neemt deel aan het spel."
 		"no" "{1} (Pos #{2}/{3}, {4}) fra {5} er blitt med i spillet."
 		"sv" "{1} (Pos #{2}/{3}, {4}) från {5} har gått med i spelet."
@@ -329,7 +334,7 @@
 		// {6} disconnect reason
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
 		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has left the game. {grey}({6})"
-		"jp" "{1} ({2}/{3}立、{4})が{orange}{5}{default}からをゲームを抜けました。 {grey}（{6}）"
+		"jp" "{1} ({2}/{3}立、{4})が{orange}{5}{default}からをゲームを落ちました。 {grey}（{6}）"
 		"nl" "{1} (Pos #{2}/{3}, {4}) van {5} heeft het spel verlaten {grey}({6})"
 		"no" "{1} (Pos #{2}/{3}, {4}) fra {5} har forlatt spillet. {grey}({6})"
 		"sv" "{1} (Pos #{2}/{3}, {4}) från {5} har lämnat spelet. {grey}({6})"
@@ -460,6 +465,7 @@
 	{
 		"en" "Creator of SMStats!"
 		"sv" "Skaparen av SMStats!"
+		"jp" "SMStatsの作者！"
 		"tr" "SMStats'ın Yaratıcısı!"
 	}
 	"#SMSTats_MenuInfo_DevType_Contributor"
@@ -471,14 +477,14 @@
 	"#SMStats_MenuInfo_DevType_Tester"
 	{
 		"en" "Thanks for being a tester!"
-		"jp" "テスター有難う御座います！"
+		"jp" "テストをありがとう御座います！"
 		"sv" "Tack för att du är en testare!"
 		"tr" "Projemizi test ettiğiniz için teşekkür ederiz!"
 	}
 	"#SMStats_MenuInfo_DevType_Translator"
 	{
 		"en" "Thanks for being a translator!"
-		"jp" "翻訳して有難う御座います！"
+		"jp" "翻訳してありがとう御座います！"
 		"sv" "Tack för att du är en översättare!"
 		"tr" "Çevirmen olduğunuz için teşekkür ederiz!"
 	}
@@ -705,9 +711,9 @@
 	{
 	    // {1} on/off value
 	    "#format" "{1:s}"
-	    "en" "Display frag messages: {1}"
-	    "jp" "FRAGのメッセージを表示 : {1}"
-	    "sv" "Visa fragsmeddelanden: {1}"
+	    "en" "Display kill messages: {1}"
+	    "jp" "キルメッセージを表示 : {1}"
+	    "sv" "Visa dödningsmeddelanden: {1}"
 	    "tr" "Öldürme mesajlarını göster: {1}"
 	}
 	"#SMStats_MenuInfo_ShowAssistMsg"
@@ -715,7 +721,7 @@
 	    // {1} on/off value
 	    "#format" "{1:s}"
 	    "en" "Display assist messages : {1}"
-	    "jp" "ASSISTのメッセージを表示 : {1}"
+	    "jp" "アシストメッセージを表示 : {1}"
 	    "sv" "Visa assistmeddelanden: {1}"
 	    "tr" "Assist mesajlarını göster : {1}"
 	}
@@ -724,7 +730,7 @@
 	    // {1} on/off value
 	    "#format" "{1:s}"
 	    "en" "Display death messages: {1}"
-	    "jp" "死んだのメッセージを表示 : {1}"
+	    "jp" "死亡メッセージを表示 : {1}"
 	    "sv" "Visa dödsmeddelanden : {1}"
 	    "tr" "Ölüm mesajlarını göster : {1}"
 	}
@@ -735,7 +741,7 @@
 	"#SMStats_UpdateFound"
 	{
 	    "en" "New {lightgreen}Update {default}was found, restarting.."
-	    "jp" "{lightgreen}新しい更新が見つかりました... 再起動しています.."
+	    "jp" "{lightgreen}新しい更新が見つかりました... 再開しています.."
 	    "sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
 	    "tr" "Yeni {lightgreen}Güncelleme {default}bulundu, yeniden başlatılıyor.."
 	}
@@ -755,8 +761,9 @@
 	"#SMStats_RoundStart"
 	{
 	    "en" "Round Start: Tracking enabled."
-	    "sv" "Rundstart: Spårning aktiverad."
-	    "tr" "Round Başladı: Puanlama aktif."
+		"jp" "ラウンド開始：トラッキングが有効です。"
+		"sv" "Rundstart: Spårning aktiverad."
+		"tr" "Round Başladı: Puanlama aktif."
 	}
 	"#SMStats_RoundStart_Warmup"
 	{
@@ -766,7 +773,8 @@
 	}
 	"#SMStats_RoundEnd"
 	{
-	    "en" "Round End: Tracking disabled"
+	    "en" "Round End: Tracking disabled."
+	    "jp" "ラウンド終了：トラッキングが無効です。"
 	    "sv" "Rundslut: Spårning inaktiverad."
 	    "tr" "Round Bitti: Puanlama kapatıldı."
 	}
@@ -839,7 +847,7 @@
 	"#SMStats_OffOn"
 	{
 	    "en" "Off#|#On"
-	    "jp" "OFF#|#ON"
+	    "jp" "無効#|#有効"
 	    "sv" "Av#|#På"
 	    "tr" "Kapalı#|#Açık"
 	}
@@ -856,19 +864,19 @@
 	}
 	"#SMStats_PointsFormat_1K"
 	{
-		"en" "K"
+		"en" "k"
 		"jp" "万"
 	}
 	"#SMStats_PointsFormat_10K"
 	{
-		"en" "K"
+		"en" "k"
 		"jp" "万"
 		"chi" "万"
 		"zho" "万"
 	}
 	"#SMStats_PointsFormat_100K"
 	{
-		"en" "K"
+		"en" "k"
 		"jp" "万"
 		"chi" "万"
 		"zho" "万"
@@ -907,7 +915,7 @@
 	"#SMStats_FragEvent_Type2" //Noscope headshot
 	{
 	    "en" "{green}Noscope Headshot"
-	    "jp" "{green}未スコープのヘッドショット"
+	    "jp" "{green}ノースコープのヘッドショット"
 	    "sv" "{green}icke-zoomningshuvudskott"
 	    "tr" "{green}Duman içinden {default}ve {green}kafadan"
 	}
@@ -921,7 +929,7 @@
 	"#SMStats_FragEvent_Type4" //Noscope.
 	{
 	    "en" "{green}Noscope"
-	    "jp" "{green}未スコープ"
+	    "jp" "{green}ノースコープ"
 	    "sv" "{green}icke-zoomningsskott"
 	    "tr" "{green}Dürbünsüz"
 	}
@@ -953,7 +961,7 @@
 	}
 	"#SMStats_FragEvent_Type9" //Taunt frag.
 	{
-	    "en" "{green}Taunt Frag"
+	    "en" "{green}Tauntkill"
 	    "sv" "{green}Hånsfrag"
 	    "tr" "{green}Alay ederek"
 	}
@@ -982,7 +990,7 @@
 	"#SMStats_FragEvent_Type14" // Pumpkin Bomb frag.
 	{
 	    "en" "{green}Pumpkin Bomb"
-	    "sv" "{green}Pumpa Bomb"
+	    "sv" "{green}Pumpabomb"
 	    "tr" "{green}Kabak Bombası {default}ile"
 	}
 	"#SMStats_FragEvent_Type15" //Collateral.
@@ -1015,53 +1023,45 @@
 	//Kill events
 	"#SMStats_FragEvent_Assisted" //Assist
 	{
-	    // {1} assister name
-	    // {2} assister points
-	    // {3} points earned
-		// {4} fragger name
-	    // {5} victim fragged
-	    "#format" "{1:s},{2:s},{3:s},{4:s},{5:s}"
-	    "en" "{1} ({2}) {3} assisting {4} fragging {5}."
-	    "jp" "{1} ({2})が{4}は{5}をFRAGしてでアシストしてたため{3}。" // 変の日本語ごめん頑張るよ ;-;
-	    "sv" "{1} ({2}) {3} assisterar {4} fragga {5}."
-	    "tr" "{1} ({2}), {4} oyuncusunun {5} oyuncusunu öldürmesine yardım ederek {3} kazandın."
+	    // {1} points earned
+		// {2} fragger name
+	    // {3} victim fragged
+	    "#format" "{1:s},{2:s},{3:s}"
+	    "en" "{1} assisting {2} neutralizing {3}."
+	    "jp" "{2}が {3}を無力化したでアシストしてたため{1}。"
+	    "sv" "{1} assisterar {2} neutralizera {3}."
+	    "tr" "{2} oyuncusunun {3} oyuncusunu öldürmesine yardım ederek {1} kazandın."
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
-	    // {1} player name
-	    // {2} player points
-	    // {3} points earned
-	    "#format" "{1:s},{2:s},{3:s}"
-	    "en" "{1} ({2}) {3} for dying."
-	    "jp" "{1} ({2})が死んだたため{3}。"
-	    "no" "{1} ({2}) {3} på grunn av å dø."
-	    "sv" "{1} ({2}) {3} på grund av o dö."
-	    "tr" "{1} ({2}), öldüğün için {3} kaybettin."
+	    // {1} points lost
+	    "#format" "{1:s}"
+	    "en" "{1} for dying."
+	    "jp" "死亡ため{1}。"
+	    "no" "{1} for å dø."
+	    "sv" "{1} för att dö."
+	    "tr" "öldüğün için {1} kaybettin."
 	}
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
-	    // {1} player name
-	    // {2} player points
-	    // {3} points earned
-	    // {4} victim name
-	    // {5} special frag event
-	    "#format" "{1:s},{2:s},{3:s},{4:s},{5:s}"
-	    "en" "{1} ({2}) {3} fragging {4} ({5})"
-	    "jp" "{1} ({2})が{5}で{4}をFRAGしてたため{3}"
-	    "sv" "{1} ({2}) {3} för att fragga {4} ({5})"
-	    "tr" "{1} ({2}), {4} oyuncusunu öldürdüğün için {3} kazandın ({5})"
+	    // {1} points earned
+	    // {2} victim name
+	    // {3} special frag event
+	    "#format" "{1:s},{2:s},{3:s}"
+	    "en" "{3} neutralizing {4} ({5})"
+	    "jp" "{3}で{2}を無力化したため{1}。"
+	    "sv" "{1} för att neutralizera {2} ({3})"
+	    "tr" "{2} oyuncusunu öldürdüğün için {1} kazandın ({3})"
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
-	    // {1} player name
-	    // {2} player points
-	    // {3} points earned
-	    // {4} victim name
-	    "#format" "{1:s},{2:s},{3:s},{4:s}"
-	    "en" "{1} ({2}) {3} fragging {4}."
-	    "jp" "{1} ({2})が{4}をFRAGしてたため{3}。"
-	    "sv" "{1} ({2}) {3} fragga {4}."
-	    "tr" "{1} ({2}), {4} oyuncusunu öldürdüğün için {3} kazandın."
+		// {1} points earned
+		// {2} victim name
+		"#format" "{1:s},{2:s}"
+		"en" "{1} neutralizing {2}."
+		"jp" "{2}を無力化したため{1}。"
+		"sv" "{1} neutralizera {2}."
+		"tr" "{2} oyuncusunu öldürdüğün için {1} kazandın."
 	}
 	"#SMStats_FragEventError_NewItem"
 	{

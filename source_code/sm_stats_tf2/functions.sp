@@ -823,15 +823,14 @@ stock bool AssistedKills(Transaction txn
 					len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", g_AssistPoints*assister_count[i]);
 				}
 				len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[assister].auth, g_StatsID);
-				txn.AddQuery(query, queryId_frag_assister);
+				txn.AddQuery(query, queryId_kill_assister);
 				
 				if(g_AssistPoints > 0)
 				{
 					g_Player[assister].session[Stats_Points] += g_AssistPoints*assister_count[i];
 					g_Player[assister].points += g_AssistPoints*assister_count[i];
 					
-					char fmt_points[24], points_plural[32];
-					PointsFormat(assister, g_Player[assister].points, fmt_points, sizeof(fmt_points));
+					char points_plural[32];
 					PointsPluralSplitter(assister, g_AssistPoints*assister_count[i], points_plural, sizeof(points_plural), PointSplit_On);
 					
 					if(g_Player[assister].bShowAssistMsg)
@@ -839,8 +838,6 @@ stock bool AssistedKills(Transaction txn
 						CPrintToChat(assister, "%s %T"
 						, g_ChatTag
 						, "#SMStats_FragEvent_Assisted", assister
-						, g_Player[assister].name
-						, fmt_points
 						, points_plural
 						, g_Player[client].name
 						, dummy);
@@ -954,19 +951,16 @@ stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] lis
 			}
 			
 			len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[victim].auth, g_StatsID);
-			txn.AddQuery(query, queryId_frag_victim_death);
+			txn.AddQuery(query, queryId_kill_victim_death);
 			
 			if(g_DeathPoints >= 1 && g_Player[victim].bShowDeathMsg)
 			{
-				char fmt_points[24], points_plural[64];
-				PointsFormat(victim, g_Player[victim].points, fmt_points, sizeof(fmt_points));
+				char points_plural[64];
 				PointsPluralSplitter(victim, g_DeathPoints, points_plural, sizeof(points_plural), PointSplit_Minus);
 				
 				CPrintToChat(victim, "%s %T"
 				, g_ChatTag
 				, "#SMStats_FragEvent_Death", victim
-				, g_Player[victim].name
-				, fmt_points
 				, points_plural);
 			}
 		}

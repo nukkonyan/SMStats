@@ -413,10 +413,10 @@ float g_Time_ExtEvent = 6.0;
 void PrepareGame()
 {
 	/* other */
-	g_TeleFrag = CreateConVar("sm_stats_points_telefrag", "5", "SM Stats: TF2 - Points earned when Telefragging an opponent.", _, true);
+	g_TeleFrag = CreateConVar("sm_stats_points_telefrag", "5", "SM Stats: TF2 - Points earned when neutralizing with Teleporter.", _, true);
 	g_SuicideAssisted = CreateConVar("sm_stats_points_assisted_suicide", "1", "SM Stats: TF2 - Points earned when assisted in an opponents suicide.", _, true);
 	g_Collateral = CreateConVar("sm_stats_points_collateral", "2", "SM Stats: TF2 - Points earned when doing a collateral frag. Paired with frag event.", _, true);
-	g_PumpkinBomb = CreateConVar("sm_stats_points_pumpkinbomb", "5", "SM Stats: TF2 - Points earned when fragging using Pumpkin Bomb.", _, true);
+	g_PumpkinBomb = CreateConVar("sm_stats_points_pumpkinbomb", "5", "SM Stats: TF2 - Points earned when neutralizing with Pumpkin Bomb.", _, true);
 	
 	/* capture point */
 	g_PointCaptured = CreateConVar("sm_stats_points_point_captured", "5", "SM Stats: TF2 - Points earned when capturing a capture point.", _, true);
@@ -444,10 +444,10 @@ void PrepareGame()
 	g_Object_Destroyed[TFBuilding_MiniSentry] = CreateConVar("sm_stats_points_object_minisentry_destroyed", "1", "SM Stats: TF2 - Points earned when a Mini Sentrygun was destroyed.", _, true);
 	g_Object_Destroyed[TFBuilding_Sapper] = CreateConVar("sm_stats_points_sapper_destroyed", "5", "SM Stats: TF2 - Points earned when a Sapper was destroyed.", _, true);
 	
-	g_SentryFrags[SentryFrag_LVL1] = CreateConVar("sm_stats_points_sentryfrag_lvl1", "2", "SMStats: TF2 - Points earned when fragging with lvl 1 Sentry Gun.", _, true);
-	g_SentryFrags[SentryFrag_LVL2] = CreateConVar("sm_stats_points_sentryfrag_lvl2", "2", "SMStats: TF2 - Points earned when fragging with lvl 2 Sentry Gun.", _, true);
-	g_SentryFrags[SentryFrag_LVL3] = CreateConVar("sm_stats_points_sentryfrag_lvl3", "2", "SMStats: TF2 - Points earned when fragging with lvl 3 Sentry Gun.", _, true);
-	g_SentryFrags[SentryFrag_Mini] = CreateConVar("sm_stats_points_sentryfrag_mini", "2", "SMStats: TF2 - Points earned when fragging with Mini-Sentry Gun.", _, true);
+	g_SentryFrags[SentryFrag_LVL1] = CreateConVar("sm_stats_points_sentryfrag_lvl1", "2", "SMStats: TF2 - Points earned when neutralizing with lvl 1 Sentry Gun.", _, true);
+	g_SentryFrags[SentryFrag_LVL2] = CreateConVar("sm_stats_points_sentryfrag_lvl2", "2", "SMStats: TF2 - Points earned when neutralizing with lvl 2 Sentry Gun.", _, true);
+	g_SentryFrags[SentryFrag_LVL3] = CreateConVar("sm_stats_points_sentryfrag_lvl3", "2", "SMStats: TF2 - Points earned when neutralizing with lvl 3 Sentry Gun.", _, true);
+	g_SentryFrags[SentryFrag_Mini] = CreateConVar("sm_stats_points_sentryfrag_mini", "2", "SMStats: TF2 - Points earned when neutralizing with Mini-Sentry Gun.", _, true);
 	
 	/* player */
 	g_Ubercharged = CreateConVar("sm_stats_points_ubercharged", "5", "SM Stats: TF2 - Points earned when ubercharging.", _, true);
@@ -474,18 +474,18 @@ void PrepareGame()
 	g_PassBall[PassBall_BlockingBall] = CreateConVar("sm_stats_points_pass_block", "1", "SM Stats: TF2 - Points earned when blocking the ball.", _, true);
 	
 	/* bosses */
-	g_BossFragged[Boss_HHH] = CreateConVar("sm_stats_points_boss_hhh", "1", "SM Stats: TF2 - Points earned when fragging Headless Horseless Horsemann.", _, true);
-	g_BossFragged[Boss_Monoculus] = CreateConVar("sm_stats_points_boss_monoculus", "1", "SM Stats: TF2 - Points earned when fragging Monoculus.", _, true);
-	g_BossFragged[Boss_Merasmus] = CreateConVar("sm_stats_points_boss_merasmus", "1", "SM Stats: TF2 - Points earned when fragging Merasmus.", _, true);
-	g_BossFragged[Boss_Skeleton] = CreateConVar("sm_stats_points_boss_skeleton", "1", "SM Stats: TF2 - Points earned when fragging Skeleton.", _, true);
+	g_BossFragged[Boss_HHH] = CreateConVar("sm_stats_points_boss_hhh", "1", "SM Stats: TF2 - Points earned when neutralizing Headless Horseless Horsemann.", _, true);
+	g_BossFragged[Boss_Monoculus] = CreateConVar("sm_stats_points_boss_monoculus", "1", "SM Stats: TF2 - Points earned when neutralizing Monoculus.", _, true);
+	g_BossFragged[Boss_Merasmus] = CreateConVar("sm_stats_points_boss_merasmus", "1", "SM Stats: TF2 - Points earned when neutralizing Merasmus.", _, true);
+	g_BossFragged[Boss_Skeleton] = CreateConVar("sm_stats_points_boss_skeleton", "1", "SM Stats: TF2 - Points earned when neutralizing Skeleton.", _, true);
 	
 	g_BossStunned[Boss_Monoculus] = CreateConVar("sm_stats_points_boss_monoculus_stunned", "1", "SM Stats: TF2 - Points earned when stunning Monoculus.", _, true);
 	g_BossStunned[Boss_Merasmus] = CreateConVar("sm_stats_points_boss_merasmus_stunned", "1", "SM Stats: TF2 - Points earned when stunning Merasmus.", _, true);
 	
 	/* MvM related */
 	g_MvM[MvM_DestroyTank] = CreateConVar("sm_stats_points_mvm_destroytank", "1", "SM Stats: TF2 - Points the RED team earns when tank is destroyed.", _, true);
-	g_MvM[MvM_FragSentryBuster] = CreateConVar("sm_stats_points_mvm_fragsentrybuster", "1", "SM Stats: TF2 - Points earned when fragging the Sentry Buster.", _, true);
-	g_MvM[MvM_FragRobot] = CreateConVar("sm_stats_points_mvm_fragrobot", "1", "SM Stats: TF2 - Points earned when fragging a robot.", _, true);
+	g_MvM[MvM_FragSentryBuster] = CreateConVar("sm_stats_points_mvm_fragsentrybuster", "1", "SM Stats: TF2 - Points earned when neutralizing the Sentry Buster.", _, true);
+	g_MvM[MvM_FragRobot] = CreateConVar("sm_stats_points_mvm_fragrobot", "1", "SM Stats: TF2 - Points earned when neutralizing a robot.", _, true);
 	g_MvM[MvM_ResetBomb] = CreateConVar("sm_stats_points_mvm_resetbomb", "1", "SM Stats: TF2 - Points earned when resetting the bomb.", _, true);
 	
 	
@@ -3486,7 +3486,7 @@ Action MapTimer_GameTimer(Handle timer)
 							CorrectWeaponClassname(event.class_attacker, fix_weapon, sizeof(fix_weapon), epic.itemdef, epic.classname);
 							Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set `%s`=`%s`+'%i' where `SteamID`='%s' and `StatsID`='%i'"
 							, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_StatsID);
-							txn.AddQuery(query_wep, queryId_frag_weapon);
+							txn.AddQuery(query_wep, queryId_kill_weapon);
 							
 							if(bDebug) PrintToServer("%s OnPlayerDeath() DEBUG: [userid %i] classname '%s' / itemdef '%i' / quantity '%i'"
 							, core_chattag, attacker, epic.classname, epic.itemdef, epic.quantity);
@@ -3696,8 +3696,8 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `StatsID`='%i'", g_StatsID);
-					txn.AddQuery(query, queryId_frag_playerlist);
-					txn.AddQuery(query_map, queryId_frag_playerlist_MapUpdate);
+					txn.AddQuery(query, queryId_kill_playerlist);
+					txn.AddQuery(query_map, queryId_kill_playerlist_MapUpdate);
 					
 					// kill log
 					
