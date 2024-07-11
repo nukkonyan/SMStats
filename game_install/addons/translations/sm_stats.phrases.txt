@@ -382,6 +382,7 @@
 	"#SMStats_Menu_ActiveStatsInfo"
 	{
 		"en" "View your active statistics."
+		"jp" "現在スターツを表示"
 		"sv" "Kolla dina nuvarande statistiker."
 		"tr" "Aktif istatistiklerinizi görüntüleyin."
 	}
@@ -484,7 +485,7 @@
 	"#SMStats_MenuInfo_DevType_Tester"
 	{
 		"en" "Thanks for being a tester!"
-		"jp" "テストをありがとう御座います！"
+		"jp" "テストしてをありがとう御座います！"
 		"sv" "Tack för att du är en testare!"
 		"tr" "Projemizi test ettiğiniz için teşekkür ederiz!"
 	}
@@ -579,6 +580,7 @@
 		// {1} points earned
 		"#format" "{1:s}"
 		"en" "Points earned : {1}"
+		"jp" "ポイントをゲット : {1}"
 		"sv" "Poäng belönad : {1}"
 		"tr" "Kazanılan Puanlar : {1}"
 	}
@@ -595,7 +597,7 @@
 		// {1} kill count
 		"#format" "{1:i}"
 		"en" "Frags : {1}"
-		"jp" "FRAG : {1}"
+		"jp" "FRAG数 : {1}"
 		"tr" "Öldürme Sayısı : {1}"
 	}
 	"#SMStats_MenuInfo_Assists"
@@ -634,6 +636,7 @@
 		// {1} suicide count
 		"#format" "{1:i}"
 		"en" "Suicides : {1}"
+		"jp" "スーサイド数 : {1}"
 		"sv" "Självmordsantal : {1}"
 		"tr" "İntiharlar : {1}"
 	}
@@ -868,7 +871,7 @@
 	    // player points
 	    // this will automatically become 'x point or 'x points'
 	    "en" " point#|# points"
-	    "jp" "点"
+	    "jp" "ポイント"
 	    "sv" " poäng"
 	    "nl" " punt#|# punten"
 	    "no" " poeng"
