@@ -539,7 +539,7 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 				/* Airshot headshot kill */
 				case true:
 				{
-					Format(buffer, sizeof(buffer), "%T{default}"
+					Format(buffer, sizeof(buffer), "%T{default} %T{default}"
 					, Frag_Type[Frag_Headshot], client
 					, Frag_Type[Frag_Airshot], client);
 				}
@@ -1905,7 +1905,7 @@ stock void DBQuery_Send_Player_Disconnected(Database database, DBResultSet resul
 
 stock void TXNEvent_OnFailed(Database db, int userid, int numQueries, const char[] error, int failIndex, int[] queryId)
 {
-	PrintToServer("%s TXNEvent_OnFailed:\nQuery for '%s' (userid %i) failed\nError below:\n%s", core_chattag, g_strTXNqueryId[queryId[failIndex]], userid, error);
+	LogMessage(core_chattag ... " TXNEvent_OnFailed:\nQuery for '%s' (userid %i) failed\nError below:\n%s", g_strTXNqueryId[queryId[failIndex]], userid, error);
 }
 
 //

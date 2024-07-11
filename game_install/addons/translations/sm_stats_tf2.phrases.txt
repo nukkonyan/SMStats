@@ -24,6 +24,7 @@
 		// {1} airshot count
 		"#format" "{1:i}"
 		"en" "Airshots : {1}"
+		"jp" "エアショット : {1}"
 		"sv" "Luftskott : {1}"
 		"tr" "Havada Vuruşlar: {1}"
 	}
@@ -32,6 +33,7 @@
 		// {1} headshot count
 		"#format" "{1:i}"
 		"en" "Headshots : {1}"
+		"jp" "ヘッドショット : {1}"
 		"sv" "Huvudskott : {1}"
 		"tr" "Kafadan Vuruşlar: {1}"
 	}
@@ -40,6 +42,7 @@
 		// {1} noscope count
 		"#format" "{1:i}"
 		"en" "Noscopes : {1}"
+		"jp" "ノースコープ : {1}"
 		"sv" "Icke-zoomingsskott : {1}"
 		"tr" "Dürbünsüz Vuruşlar: {1}"
 	}
@@ -48,6 +51,7 @@
 		// {1} backstab count
 		"#format" "{1:i}"
 		"en" "Backstabs : {1}"
+		"jp" "バックスタッブ : {1}"
 		"sv" "Rygghugg : {1}"
 		"tr" "Sırt Bıçaklamaları: {1}"
 	}
@@ -55,8 +59,8 @@
 	{
 		// {1} tauntkill count
 		"#format" "{1:i}"
-		"en" "Taunt frags : {1}"
-		"sv" "Hånfrags : {1}"
+		"en" "Tauntkills : {1}"
+		"sv" "Håndödsantal : {1}"
 		"tr" "Alay Öldürmeleri: {1}"
 	}
 	"#SMStats_MenuInfo_GibFrags"
@@ -64,7 +68,7 @@
 		// {1} gibkill count
 		"#format" "{1:i}"
 		"en" "Gib frags : {1}"
-		"sv" "Gibbfraggad : {1}"
+		"sv" "Gibbfrags : {1}"
 		"tr" "Parçalanmış Kurbanlar: {1}"
 	}
 	"#SMStats_MenuInfo_DeflectFrags"
@@ -80,6 +84,7 @@
 		// {1} telefrag count
 		"#format" "{1:i}"
 		"en" "Tele frags : {1}"
+		"jp" "テレフラッグ : {1}"
 		"sv" "Telefraggade : {1}"
 		"tr" "Tele-Öldürmeler: {1}"
 	}
@@ -127,6 +132,7 @@
 		// {2} scout death count
 		"#format" "{1:i},{2:i}"
 		"en" "Scout : {1} Fragged / {2} Deaths"
+		"jp" "スカウト : {1}FRAG / {2}死亡"
 		"sv" "Löpare : {1} Fraggad / {2} Dödsfall"
 		"tr" "Scout : {1} Leş / {2} Ölüm"
 	}
@@ -136,6 +142,7 @@
 		// {2} soldier death count
 		"#format" "{1:i},{2:i}"
 		"en" "Soldier : {1} Fragged / {2} Deaths"
+		"jp" "ソルジャー : {1}FRAG / {2}死亡"
 		"sv" "Soldat : {1} Fraggad / {2} Dödsfall"
 		"tr" "Soldier : {1} Leş / {2} Ölüm"
 	}
@@ -145,6 +152,7 @@
 		// {2} pyro death count
 		"#format" "{1:i},{2:i}"
 		"en" "Pyro : {1} Fragged / {2} Deaths"
+		"jp" "パイロ : {1}FRAG / {2}死亡"
 		"sv" "Pyro : {1} Fraggad / {2} Dödsfall"
 		"tr" "Pyro : {1} Leş / {2} Ölüm"
 	}
@@ -154,6 +162,7 @@
 		// {2} demoman death count
 		"#format" "{1:i},{2:i}"
 		"en" "Demoman : {1} Fragged / {2} Deaths"
+		"jp" "デモマン : {1}FRAG / {2}死亡"
 		"sv" "Demoman : {1} Fraggad / {2} Dödsfall"
 		"tr" "Demoman : {1} Leş / {2} Ölüm"
 	}
@@ -163,6 +172,7 @@
 		// {2} heavy death count
 		"#format" "{1:i},{2:i}"
 		"en" "Heavy : {1} Fragged / {2} Deaths"
+		"jp" "ヘビー : {1}FRAG / {2}死亡"
 		"sv" "Heavy : {1} Fraggad / {2} Dödsfall"
 		"tr" "Heavy : {1} Leş / {2} Ölüm"
 	}
@@ -172,6 +182,7 @@
 		// {2} engineer death count
 		"#format" "{1:i},{2:i}"
 		"en" "Engineer : {1} Fragged / {2} Deaths"
+		"jp" "エンジニア : {1}FRAG / {2}死亡"
 		"sv" "Ingenjör : {1} Fraggad / {2} Dödsfall"
 		"tr" "Engineer : {1} Leş / {2} Ölüm"
 	}
@@ -181,6 +192,7 @@
 		// {2} medic death count
 		"#format" "{1:i},{2:i}"
 		"en" "Medic : {1} Fragged / {2} Deaths"
+		"jp" "メディック : {1}FRAG / {2}死亡"
 		"sv" "Sjukvårdare : {1} Fraggad / {2} Dödsfall"
 		"tr" "Medic : {1} Leş / {2} Ölüm"
 	}
@@ -190,6 +202,7 @@
 		// {2} sniper death count
 		"#format" "{1:i},{2:i}"
 		"en" "Sniper : {1} Fragged / {2} Deaths"
+		"jp" "スナイパー : {1}FRAG / {2}死亡"
 		"sv" "Krypskyttare : {1} Fraggad / {2} Dödsfall"
 		"tr" "Sniper : {1} Leş / {2} Ölüm"
 	}
@@ -199,6 +212,7 @@
 		// {2} spy death count
 		"#format" "{1:i},{2:i}"
 		"en" "Spy : {1} Fragged / {2} Deaths"
+		"jp" "スパイ : {1}FRAG / {2}死亡"
 		"sv" "Spion : {1} Fraggad / {2} Dödsfall"
 		"tr" "Spy : {1} Leş / {2} Ölüm"
 	}
@@ -273,7 +287,9 @@
 		// {3} lvl 3 sentry frags
 		// {4} total sentry frags
 		"#format" "{1:i},{2:i},{3:i},{4:i},{5:i}"
-		"en" "Sentry Gun Frags (Total {1}) :\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  Mini : {5}"
+		"en" "Sentry Gun Frags \nTotal : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  Mini : {5}"
+		"jp" "セントリーガンFRAG \n合計 : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  ミニ : {5}"
+		"sv" "Vaktgevärs Frags \nTotal : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  Mini : {5}"
 	}
 
 	"#SMStats_MenuInfo_CP_Captured"
@@ -338,6 +354,7 @@
 		// {1} teleporters used count
 		"#format" "{1:i}"
 		"en" "Teleporters used : {1}"
+		"jp" "テレポーター使った : {1}"
 		"sv" "Teleportrar använt : {1}"
 		"tr" "Kullanılmış Işınlayıcılar : {1}"
 	}
@@ -346,6 +363,7 @@
 		// {1} players teleported count count
 		"#format" "{1:i}"
 		"en" "Players teleported : {1}"
+		"jp" "プレイヤーをテレポートされた : {1}"
 		"sv" "Spelare teleporterad : {1}"
 		"tr" "Işınlanan Oyuncular : {1}"
 	}
@@ -446,6 +464,7 @@
 		// {1} horseless headless horsemann kill count
 		"#format" "{1:i}"
 		"en" "Horseless Headless Horsemann : {1} Fragged"
+		"jp" "Horseless Headless Horsemann : {1}FRAGした"
 		"sv" "Horseless Headless Horsemann : {1} Fraggade"
 		"tr" "Horseless Headless Horsemann : {1} Öldürüldü"
 	}
@@ -454,6 +473,7 @@
 		// {1} skeleton king kill count
 		"#format" "{1:i}"
 		"en" "Skeleton King : {1} Fragged"
+		"jp" "Skeleton King : {1}FRAGした"
 		"sv" "Skelettkung : {1} Fraggade"
 		"tr" "İskelet Kral : {1} Öldürüldü"
 	}
@@ -479,6 +499,7 @@
 		// {1} mvm bomb reset count
 		"#format" "{1:i}"
 		"en" "Bombs resetted : {1}"
+		"jp" "ボンブをリセット : {1}"
 		"sv" "Bomber resettad : {1}"
 		"tr" "Sıfırlanan bombalar : {1}"
 	}
@@ -510,6 +531,7 @@
 		// {4} capture event
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
 		"en" "{1} ({2}) {3} {4}"
+		"jp" "{1} ({2}) が {4} ため {3}"
 		"sv" "{1} ({2}) {3} för att {4}"
 		"tr" "{1} ({2}) {4} noktasını ele geçirerek {3} kazandı"
 	}
@@ -555,6 +577,7 @@
 		// {4} flag event
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
 		"en" "{1} ({2}) {3} ({4})"
+		"jp" "{1} ({2}) が {4} ため {3}"
 		"sv" "{1} ({2}} {3} ({4})"
 		"tr" "{1} ({2}) {4} ve {3} kazandı"
 	}
@@ -566,6 +589,7 @@
 		// {4} flag event
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
 		"en" "{1} ({2}) {3} ({4})"
+		"jp" "{1} ({2}) が {4} ため {3}"
 		"sv" "{1} ({2}) {3} ({4})"
 		"tr" "{1} ({2}) {4} ve {3} kaybetti"
 	}
@@ -837,8 +861,9 @@
 		// {3} earned points
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
-		"en" "{1} ({2}) {3} for übercharging {4}"
-		"sv" "{1} ({2}) {3} för att überladda {4}"
+		"en" "{1} ({2}) {3} for übercharging {4}."
+		"jp" "{1} ({2})が{4}をユーバーチャージしましたため{3}。"
+		"sv" "{1} ({2}) {3} för att überladda {4}."
 		"tr" "{1} ({2}) {4} {green}über vererek {3} kazandı."
 	}
 	"#SMStats_Player_UsedTeleporter"
@@ -849,6 +874,7 @@
 		// {4} target name
 		"#format" "{1:s},{2:i},{3:s},{4:s}"
 		"en" "{1} ({2}) {3} for {4} using your teleporter."
+		"jp" "{1} ({2})が{4}をあなたのテレポーターを使ったため{3}"
 		"sv" "{1} ({2}) {3} för att {4} använt din teleporter."
 		"tr" "{1} ({2}) {4} Işınlayıcını kullandığı için {3} kazandın."
 	}

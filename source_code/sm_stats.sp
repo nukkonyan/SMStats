@@ -9,13 +9,13 @@
 
 public Plugin myinfo = {
 	name = "SM Stats: Core",
-	author = "teamkiller324",
+	author = "nukkonyan",
 	description = "Tracks frags, maps, events, achievements, etc.",
 	version = Version,
-	url = "https://github.com/Teamkiller324"
+	url = "https://github.com/nukkonyan"
 }
 
-#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/updater/SMStats_Core.txt"
+#define UpdaterURL "https://raw.githubusercontent.com/nukkonyan/SMStats/main/updater/SMStats_Core.txt"
 #include "sm_stats/updater.sp"
 
 Database sql; // internal database.

@@ -115,5 +115,5 @@ public Plugin myinfo =
 #include "sm_stats/forwards.sp"
 
 // updater
-#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/sm_updater/SMStats_TF2.txt"
+#define UpdaterURL "https://raw.githubusercontent.com/nukkonyan/SMStats/main/sm_updater/SMStats_TF2.txt"
 #include "sm_stats/updater.sp"
