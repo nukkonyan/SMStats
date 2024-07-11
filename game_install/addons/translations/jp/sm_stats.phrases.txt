@@ -8,11 +8,11 @@
 	//================================//
 	"#SMStats_Error_NotInitialized"
 	{
-		"en" "{yellow}Error: {grey}SM Stats: Core {yellow}has yet initialized."
+		"jp" "{yellow}エラー: {grey}SM Stats: Core {yellow}が準備できませんでした。"
 	}
 	"#SMStats_Error_SQLNotInitialized"
 	{
-		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
+		"jp" "{yellow}エラー: {grey}SQL 接続が可能は無いです。"
 	}
 
 	//================================//
@@ -20,43 +20,43 @@
 	//================================//
 	"#SMStats_TimeFormat_Year"
 	{
-		"en" "year #|# years"
+		"jp" "ヶ年"
 	}
 	"#SMStats_TimeFormat_Month"
 	{
-		"en" " month#|# months"
+		"jp" "ヶ月"
 	}
 	"#SMStats_TimeFormat_Day"
 	{
-		"en" " day#|# days"
+		"jp" "日間"
 	}
 	"#SMStats_TimeFormat_Hour"
 	{
-		"en" " hour#|# hours"
+		"jp" "時間"
 	}
 	"#SMStats_TimeFormat_Minute"
 	{
-		"en" " minute#|# minutes"
+		"jp" "分"
 	}
 	"#SMStats_TimeFormat_Second"
 	{
-		"en" " second#|# seconds"
+		"jp" "秒"
 	}
 	"#SMStats_TimeFormatShort_Hour"
 	{
-		"en" "hr#|#hrs"
+		"jp" "時間"
 	}
 	"#SMStats_TimeFormatShort_Minute"
 	{
-		"en" "min"
+		"jp" "分"
 	}
 	"#SMStats_TimeFormatShort_Second"
 	{
-		"en" "sec"
+		"jp" "秒"
 	}
 	"#SMStats_TimeFormat_AM_PM"
 	{
-		"en" "AM#|#PM"
+		"jp" "午前#|#午後"
 	}
 	"#SMStats_PlayTimeFormat_Scenario0"
 	{
@@ -67,7 +67,7 @@
 		// {5} minutes
 		// {6} seconds
 		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s},{6:s}"
-		"en" "{1}, {2}, {3}, {4}, {5} and {6}"
+		"jp" "{1}{2}{3}{4}{5}{6}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario1"
 	{
@@ -77,7 +77,7 @@
 		// {4} minutes
 		// {5} seconds
 		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"en" "{1}, {2}, {3}, {4} and {5}"
+		"jp" "{1}{2}{3}{4}{5}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario2"
 	{
@@ -86,7 +86,7 @@
 		// {3} minutes
 		// {4} seconds
 		"#format" "{1:s},{2:s},{3:s},{4:s}"
-		"en" "{1}, {2}, {3} and {4}"
+		"jp" "{1}{2}{3}{4}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario3"
 	{
@@ -94,14 +94,14 @@
 		// {2} minutes
 		// {3} seconds
 		"#format" "{1:s},{2:s},{3:s}"
-		"en" "{1}, {2} and {3}"
+		"jp" "{1}{2}{3}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario4"
 	{
 		// {1} minutes
 		// {2} seconds
 		"#format" "{1:s},{2:s}"
-		"en" "{1} and {2}"
+		"jp" "{1}{2}"
 	}
 	//"#SMStats_PlayTimeFormat_Scenario5" // seconds
 	"#SMStats_TimeFormat_LastConnected"
@@ -116,7 +116,7 @@
 		// seconds - {SECOND}
 		// 2023-10-18 PM 2:56:43
 		// {YEAR}-{MONTH}-{DAY} {AM_PM} {12HOUR}-{MINUTE}-{SECOND}
-		"en" "{YEAR}-{MONTH}-{DAY}"
+		"jp" "{YEAR}年{MONTH}月{DAY}日"
 	}
 
 	//================================//
@@ -124,27 +124,27 @@
 	//================================//
 	"#SMStats_StatsCmd_Usage"
 	{
-		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid>  {grey}Example below:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"jp" "{grey}使用： {lightgreen}sm_stats <トッププレイヤー | steamid>  {grey}例の下：\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 	}
-	"#SMStats_StatsCmd_Error"
+	"#SMStats_StatsCmd_Error" // needs translation
 	{
-		"en" "{yellow}Error: {default}You must enter a valid top player position or steamid."
+		"jp" "{yellow}Error: {default}You must enter a valid top player position or steamid."
 	}
-	"#SMStats_StatsCmd_NULL"
+	"#SMStats_StatsCmd_NULL" // needs translation.
 	{
-		"en" "{yellow}Error: {default}The value may not be {red}NULL{default}."
+		"jp" "{yellow}Error: {default}The value may not be {red}NULL{default}."
 	}
-	"#SMStats_StatsCmd_InvalidTopPlayer"
+	"#SMStats_StatsCmd_InvalidTopPlayer" // needs translation.
 	{
 		// {1} top player position
 		"#format" "{1:i}"
-		"en" "{yellow}Error: {default}The enter top player position {lightgreen}{1} {default}you entered is invalid. The value must be 1 or greater."
+		"jp" "{yellow}Error: {default}The enter top player position {lightgreen}{1} {default}you entered is invalid. The value must be 1 or greater."
 	}
-	"#SMStats_StatsCmd_InvalidSteamID"
+	"#SMStats_StatsCmd_InvalidSteamID" // needs translation.
 	{
 		// {1} steamid
 		"#format" "{1:s}"
-		"en" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
+		"jp" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
 	}
 
 	//================================//
@@ -152,29 +152,29 @@
 	//================================//
 	"#SMStats_TopSQLInfo_ErrorParsing"
 	{
-		"en" "{yellow}Error: {default}Unable to parse top players of the leaderboard."
+		"jp" "{yellow}エラー：{default}リーダボードからトッププレイヤーを解析できませんでした。"
 	}
 	"#SMStats_TopSQLInfo_NoPlayers"
 	{
-		"en" "{yellow}Error: {default}No player were found on the leaderboard."
+		"jp" "{yellow}エラー：{default}リーダボードからトッププレイヤーを見つけれませんでした。"
 	}
 	"#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist"
 	{
 		// {1} top player position
 		"#format" "{1:i}"
-		"en" "{yellow}Error: {default}Top player placed {lightgreen}#{1} {default}does not exist on the leaderboard."
+		"jp" "{yellow}Error: {default}Top player placed {lightgreen}#{1} {default}does not exist on the leaderboard."
 	}
-	"#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist"
+	"#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist" // needs translation.
 	{
 		// {1} steamid
 		"#format" "{1:s}"
-		"en" "{yellow}Error: {default}Top player with steamid {lightgreen}{1} {default}does not exist on the leaderboard."
+		"jp" "{yellow}Error: {default}Top player with steamid {lightgreen}{1} {default}does not exist on the leaderboard."
 	}
 
 	//===================//
 	// Penalty.
 	//===================//
-	"#SMStats_Player_Penalty"
+	"#SMStats_Player_Penalty" // needs translation.
 	{
 		// {1} player name
 		// {2} player position
@@ -182,29 +182,29 @@
 		// {4} penalty time format
 		// {5} points reverted
 		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-		"en" "{1} (Pos #{2}, {3}) {yellow}was given {4} penalty due to spam abuse. Abused {5} were reverted."
+		"jp" "{1} (Pos #{2}, {3}) {yellow}was given {4} penalty due to spam abuse. Abused {5} were reverted."
 	}
 	"#SMStats_Points_Penalty"
 	{
-		"en" " (Penalty)"
+		"jp" " (罰されました)"
 	}
 
 	//================================//
 	// Banned.
 	//================================//
-	"#SMStats_Player_Detected_Banned"
+	"#SMStats_Player_Detected_Banned" // needs translation.
 	{
 		// {1} player name
 		// {2} steamid
 		"#format" "{1:s},{2:s}"
-		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got banned and were removed from SMStats completely."
+		"jp" "{grey}{1} {lightgreen}[{2}] {darkred}got banned and were removed from SMStats completely."
 	}
-	"#SMStats_Player_Detected_IPBanned"
+	"#SMStats_Player_Detected_IPBanned" // needs translation.
 	{
 		// {1} player name
 		// {2} steamid
 		"#format" "{1:s},{2:s}"
-		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got ip-banned and were removed from SMStats completely."
+		"jp" "{grey}{1} {lightgreen}[{2}] {darkred}got ip-banned and were removed from SMStats completely."
 	}
 
 	//================================//
@@ -218,7 +218,7 @@
 		// {4} player points
 		// {5} country name
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has joined the game."
+		"jp" "{1} ({2}/{3}立、{4})が{orange}{default}{5}からに参加しました。"
 	}
 	"#SMStats_Player_Disconnected"
 	{
@@ -229,7 +229,7 @@
 		// {5} country name
 		// {6} disconnect reason
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
-		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has left the game. {grey}({6})"
+		"jp" "{1} ({2}/{3}立、{4})が{orange}{5}{default}からをゲームを落ちました。 {grey}（{6}）"
 	}
 	"#SMStats_Player_Connected_TopPlayer"
 	{
@@ -237,7 +237,7 @@
 		// {2} player name
 		// {3} country name
 		"#format" "{1:i},{2:s},{3:s}"
-		"en" "Top {1} player {2} from {3} {default}has connected!"
+		"jp" "トップ{1}プレイヤー {2} が{orange}{3}{default}からを接続しました！"
 	}
 
 	//================================//
@@ -245,200 +245,200 @@
 	//================================//
 	"#SMStats_Menu_Session"
 	{
-		"en" "Session"
+		"jp" "セッション"
 	}
 	"#SMStats_Menu_SessionInfo"
 	{
-		"en" "View your current session statistics."
+		"jp" "現在セッション統計を表示。"
 	}
 	"#SMStats_Menu_ActiveStats"
 	{
-		"en" "Active stats"
+		"jp" "現在スターツ"
 	}
 	"#SMStats_Menu_ActiveStatsInfo"
 	{
-		"en" "View your active statistics."
+		"jp" "現在スターツを表示。"
 	}
 	"#SMStats_Menu_Top10"
 	{
-		"en" "Top 10 players"
+		"jp" "トップ10のプレイヤー"
 	}
 	"#SMStats_Menu_Top10Info"
 	{
-		"en" "View the current top 10 players on this server."
+		"jp" "現在トップ10プレイヤーを表示。"
 	}
 	"#SMStats_Menu_TopPlayer"
 	{
 		"#format" "{1:i}"
-		"en" "Top {1} player"
+		"jp" "トップ{1}プレイヤー"
 	}
 	"#SMStats_Menu_TopPlayers"
 	{
-		"en" "Current top players"
+		"jp" "現在のトッププレイヤー"
 	}
 	"#SMStats_Menu_TopPlayersInfo"
 	{
-		"en" "View the current top players on this server."
+		"jp" "現在サーバーのトップ10プレイヤーを表示。"
 	}
 	"#SMStats_Menu_Settings"
 	{
-		"en" "Settings"
+		"jp" "設定"
 	}
 	"#SMStats_Menu_SettingsInfo"
 	{
-		"en" "View your current settings."
+		"jp" "現在設定を表示。"
 	}
 	"#SMStats_Menu_Page"
 	{
 		// {1} menu page
 		"#format" "{1:i}"
-		"en" "Page {1}"
+		"jp" "ページ {1}"
 	}
 	"#SMStats_Menu_PreviousPage"
 	{
-		"en" "Previous page"
+		"jp" "前のページへ"
 	}
 	"#SMStats_Menu_NextPage"
 	{
-		"en" "Next page"
+		"jp" "次のページへ"
 	}
 	"#SMStats_Menu_ExitPage"
 	{
-		"en" "Close"
+		"jp" "閉める"
 	}
 	"#SMStats_MenuInfo_DevType_Founder"
 	{
-		"en" "Creator of SMStats!"
+		"jp" "SMStatsの作者！"
 	}
 	"#SMSTats_MenuInfo_DevType_Contributor"
 	{
-		"en" "Thanks for being a contributor to the project!"
+		"jp" "Thanks for being a contributor to the project!" // needs translation.
 	}
 	"#SMStats_MenuInfo_DevType_Tester"
 	{
-		"en" "Thanks for being a tester!"
+		"jp" "テストして有難う御座います！"
 	}
 	"#SMStats_MenuInfo_DevType_Translator"
 	{
-		"en" "Thanks for being a translator!"
+		"jp" "翻訳して有難う御座います！"
 	}
 	"#SMStats_MenuInfo_Playername"
 	{
 		// {1} player name
 		"#format" "{1:s}"
-		"en" "Playername : {1}"
+		"jp" "プレイヤー名 : {1}"
 	}
 	"#SMStats_MenuInfo_Positioned"
 	{
 		// {1} placed position
 		// {2} total players
 		"#format" "{1:i},{2:i}"
-		"en" "Placed #{1} out of {2} players."
+		"jp" "Placed #{1} out of {2} players." // needs translation.
 	}
 	"#SMStats_MenuInfo_PlayTime"
 	{
 		// {1} play time format
 		"#format" "{1:s}"
-		"en" "Playtime : {1}"
+		"jp" "プレイ時間 : {1}"
 	}
 	"#SMStats_MenuInfo_MapTime"
 	{
 		// {1} map time format
 		"#format" "{1:s}"
-		"en" "Maptime: {1}"
+		"jp" "マップ時間 : {1}"
 	}
 	"#SMStats_MenuInfo_Country"
 	{
 		// {1} country name
 		"#format" "{1:s}"
-		"en" "Country : {1}"
+		"jp" "国 : {1}"
 	}
 	"#SMStats_MenuInfo_LastConnected"
 	{
 		// {1} last connected time format
 		"#format" "{1:s}"
-		"en" "Last connected : {1}"
+		"jp" "最後接続しました : {1}"
 	}
 	"#SMStats_MenuInfo_Profile"
 	{
-		"en" "Visit profile"
+		"jp" "プロフィールに表示"
 	}
 	"#SMStats_MenuInfo_Points"
 	{
 		// {1} points
 		"#format" "{1:s}"
-		"en" "Points : {1}"
+		"jp" "ポイント : {1}"
 	}
 	"#SMStats_MenuInfo_PointsEarned"
 	{
 		// {1} points earned
 		"#format" "{1:s}"
-		"en" "Points earned : {1}"
+		"jp" "ポイントをゲット : {1}"
 	}
 	"#SMStats_MenuInfo_PointsLost"
 	{
 		// {1} points lost
 		"#format" "{1:s}"
-		"en" "Points lost : {1}"
+		"jp" "Points lost : {1}" // needs translation.
 	}
 	"#SMStats_MenuInfo_Frags"
 	{
 		// {1} kill count
 		"#format" "{1:i}"
-		"en" "Frags : {1}"
+		"jp" "FRAG : {1}"
 	}
 	"#SMStats_MenuInfo_Assists"
 	{
 		// {1} assist count
 		"#format" "{1:i}"
-		"en" "Assists : {1}"
+		"jp" "アシスト : {1}"
 	}
 	"#SMStats_MenuInfo_Deaths"
 	{
 		// {1} death count
 		"#format" "{1:i}"
-		"en" "Deaths : {1}"
+		"jp" "死亡 : {1}"
 	}
 	"#SMStats_MenuInfo_KDR"
 	{
 		// {1} kill-death ratio
 		"#format" "{1:.2f}"
-		"en" "KDR : {1}"
+		"jp" "KDR : {1}"
 	}
 	"#SMStats_MenuInfo_KADR"
 	{
 		// {1} kill-assist-death ratio
 		"#format" "{1:.2f}"
-		"en" "KADR : {1}"
+		"jp" "KADR : {1}"
 	}
 	"#SMStats_MenuInfo_Suicides"
 	{
 		// {1} suicide count
 		"#format" "{1:i}"
-		"en" "Suicides : {1}"
+		"jp" "スーサイド : {1}"
 	}
 	"#SMStats_MenuInfo_DamageDone"
 	{
 		// {1} damage count
 		"#format" "{1:i}"
-		"en" "Damage done : {1}"
+		"jp" "被ダメージ : {1}"
 	}
 	"#SMStats_MenuInfo_AchievementsEarned"
 	{
 		// {1} achievements earned count
 		"#format" "{1:i}"
-		"en" "Achievements Earned : {1}"
+		"jp" "実績をゲット : {1}"
 	}
 	"#SMStats_MenuInfo_Achievement"
 	{
 		// {1} achievement name
 		"#format" "{1:s}"
-		"en" "Achievement : "
+		"jp" "実績 : "
 	}
 	"#SMStats_MenuInfo_Description"
 	{
 		// {1} menu item description
-		"en" "Description : "
+		"jp" "説明 :"
 	}
 	"#SMStats_MenuInfo_TopPlayer"
 	{
@@ -446,7 +446,7 @@
 		// {2} top player name
 		// {3} top player points
 		"#format" "{1:i},{2:s},{3:s}"
-		"en" "Top {1} - {2} [{3}]"
+		"jp" "トップ{1} - {2} [{3}]"
 	}
 
 	//================================//
@@ -456,37 +456,37 @@
 	{
 	    // {1} on/off value
 	    "#format" "{1:s}"
-	    "en" "Player connect sound : {1}"
+	    "jp" "プレイヤーの接続音 : {1}"
 	}
 	"#SMStats_MenuInfo_ShowConnectMsg"
 	{
 	    // {1} on/off value
 	    "#format" "{1:s}"
-	    "en" "Display join messages : {1}"
+	    "jp" "接続のメッセージを表示 : {1}"
 	}
 	"#SMStats_MenuInfo_ShowTopConnectMsg"
 	{
 	    // {1} on/off value
 	    "#format" "{1:s}"
-	    "en" "Display top player connect messages : {1}"
+	    "jp" "トッププレイヤー接続のメッセージを表示 : {1}"
 	}
 	"#SMStats_MenuInfo_ShowFragMsg"
 	{
 	    // {1} on/off value
 	    "#format" "{1:s}"
-	    "en" "Display kill messages : {1}"
+	    "jp" "キルメッセージを表示 : {1}"
 	}
 	"#SMStats_MenuInfo_ShowAssistMsg"
 	{
 	    // {1} on/off value
 	    "#format" "{1:s}"
-	    "en" "Display assist messages : {1}"
+	    "jp" "アシストメッセージを表示 : {1}"
 	}
 	"#SMStats_MenuInfo_ShowDeathMsg"
 	{
 	    // {1} on/off value
 	    "#format" "{1:s}"
-	    "en" "Display death messages : {1}"
+	    "jp" "死亡メッセージを表示 : {1}"
 	}
 
 	//================================//
@@ -494,13 +494,13 @@
 	//================================//
 	"#SMStats_UpdateFound"
 	{
-	    "en" "New {lightgreen}Update {default}was found, restarting.."
+	    "jp" "{lightgreen}新しく更新が見つかりました... 再開しています.."
 	}
 	
 	"#SMStats_VersionLoaded"
 	{
 	    "#format" "{1:s}"
-	    "en" "{orange}Version {1} {lightgreen}has loaded!"
+	    "jp" "{orange}バージョン{1}{lightgreen}がロードされました！"
 	}
 
 	//================================//
@@ -508,29 +508,29 @@
 	//================================//
 	"#SMStats_RoundStart"
 	{
-	    "en" "Round Start: Tracking enabled."
+		"jp" "ラウンド開始：トラッキングが有効です。"
 	}
 	"#SMStats_RoundStart_Warmup"
 	{
-	    "en" "Round Start: Warmup/Waiting for players detected, ignoring statistical tracking."
+	    "jp" "Round Start: Warmup/Waiting for players detected, ignoring statistical tracking."
 	}
 	"#SMStats_RoundEnd"
 	{
-	    "en" "Round End: Tracking disabled."
+	    "jp" "ラウンド終了：トラッキングが無効です。"
 	}
 	"#SMStats_NotEnoughPlayers"
 	{
 	    // {1} current player count in the server
 	    // {2} required player count to start tracking
 	    "#format" "{1:i},{2:i}"
-	    "en" "Not enough players ({1} out of required {2}), disabling.."
+	    "jp" "Not enough players ({1} out of required {2}), disabling.."
 	}
 	"#SMStats_EnoughPlayers"
 	{
 	    // {1} current player count in the server
 	    // {2} required player count to start tracking
 	    "#format" "{1:i},{2:i}"
-	    "en" "Enough Players ({1} out of required {2}), enabling.."
+	    "jp" "Enough Players ({1} out of required {2}), enabling.."
 	}
 	
 	//================================//
@@ -538,136 +538,137 @@
 	//================================//
 	"#SMStats_MultiplePlayers"
 	{
-	    "en" "Multiple players"
+	    "jp" "複数のプレイヤー"
 	}
 	"#SMStats_MultipleObjects"
 	{
-	    "en" "Multiple objects"
+	    "jp" "複数のオブジェクト"
 	}
 	"#SMStats_And"
 	{
-	    "en" " and "
+	    "jp" "と"
 	}
 	"#SMStats_Comma"
 	{
-	    "en" ", "
+	    "jp" "、"
 	}
 	"#SMStats_Counter"
 	{
 	    // {1} counter
 	    "#format" "{1:i}"
-	    "en" " ({1})"
+	    "jp" " （{1}）"
 	}
 	"#SMStats_OffOn"
 	{
 	    "en" "Off#|#On"
+	    "jp" "無効#|#有効"
 	}
 	"#SMStats_Points" // points plural splitter false#|#true (non-plural#|#plural)
 	{
 	    // player points
 	    // this will automatically become 'x point or 'x points'
-	    "en" " point#|# points"
+	    "jp" "点"
 	}
 	"#SMStats_PointsFormat_1K"
 	{
-		"en" "k"
+		"jp" "万"
 	}
 	"#SMStats_PointsFormat_10K"
 	{
-		"en" "k"
+		"jp" "万"
 	}
 	"#SMStats_PointsFormat_100K"
 	{
-		"en" "k"
+		"jp" "万"
 	}
 	"#SMStats_PointsFormat_1M"
 	{
-		"en" "M"
+		"jp" "百万"
 	}
 	"#SMStats_FeatureUnavailable"
 	{
-	    "en" "Feature is currently unavailable."
+	    "jp" "この機能が可能は無いです。"
 	}
 	
 	//================================//
 	// Frag Event.
 	//================================//
 	//Kill event types. Will automatically merge with one and another if needed.
-	"#SMStats_FragEvent_Type0" //Mid Air.
+	"#SMStats_FragEvent_Type0" //Mid Air. // needs translation
 	{
-	    "en" "whilst {green}Mid Air"
+	    "jp" "whilst {green}Mid Air"
 	}
-	"#SMStats_FragEvent_Type1" //Noscope
+	"#SMStats_FragEvent_Type1" //Noscope // needs translation.
 	{
-	    "en" "{green}Through Smoke"
+	    "jp" "{green}Through Smoke"
 	}
 	"#SMStats_FragEvent_Type2" //Noscope headshot
 	{
-	    "en" "{green}Noscope Headshot"
+	    "jp" "{green}ノースコープヘッドショット"
 	}
 	"#SMStats_FragEvent_Type3" //Headshot.
 	{
-	    "en" "{green}Headshot"
+	    "jp" "{green}ヘッドショット"
 	}
 	"#SMStats_FragEvent_Type4" //Noscope.
 	{
-	    "en" "{green}Noscope"
+	    "jp" "{green}ノースコープ"
 	}
 	"#SMStats_FragEvent_Type5" //Backstab.
 	{
-	    "en" "{green}Backstab"
+	    "jp" "{green}バックスタッブ"
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
-	    "en" "{green}Airshot"
+	    "jp" "{green}イアショット"
 	}
 	"#SMStats_FragEvent_Type7" //Deflect frag.
 	{
-	    "en" "{green}Deflect"
+	    "jp" "{green}デフレクト"
 	}
 	"#SMStats_FragEvent_Type8" //Teleport frag.
 	{
-	    "en" "{green}Telefrag"
+	    "jp" "{green}テレFRAG"
 	}
 	"#SMStats_FragEvent_Type9" //Taunt frag.
 	{
-	    "en" "{green}Tauntkill"
+	    "jp" "{green}Tauntkill" // needs translation.
 	}
 	"#SMStats_FragEvent_Type10" //Sentry Gun frag.
 	{
-	    "en" "{green}Sentry Gun"
+	    "jp" "{green}セントリーガン"
 	}
 	"#SMStats_FragEvent_Type11" //Mini-Sentry Gun frag.
 	{
-	    "en" "{green}Mini-Sentry Gun"
+	    "jp" "{green}ミニセントリーガン"
 	}
 	"#SMStats_FragEvent_Type12" //Wrangled Sentry Gun frag.
 	{
-	    "en" "{green}Wrangled Sentry Gun"
+	    "jp" "{green}Wrangled Sentry Gun" // needs translation.
 	}
 	"#SMStats_FragEvent_Type13" //Wrangled Mini-Sentry Gun frag.
 	{
-	    "en" "{green}Wrangled Mini-Sentry Gun"
+	    "jp" "{green}Wrangled Mini-Sentry Gun" // needs translation.
 	}
 	"#SMStats_FragEvent_Type14" // Pumpkin Bomb frag.
 	{
-	    "en" "{green}Pumpkin Bomb"
+	    "jp" "{green}Pumpkin Bomb" // needs translation.
 	}
 	"#SMStats_FragEvent_Type15" //Collateral.
 	{
-	    "en" "{green}Collateral"
+	    "jp" "{green}Collateral" // needs translation.
 	}
 	"#SMStats_FragEvent_Type16" //Grenade frag.
 	{
-	    "en" "{green}Grenade"
+	    "jp" "{green}グレネード"
 	}
 	"#SMStats_FragEvent_Type17" //Bomb/C4 frag.
 	{
-	    "en" "{green}Bomb"
+	    "jp" "{green}爆弾"
 	}
 	"#SMStats_FragEvent_Type18" //Blinded frag.
 	{
-	    "en" "{green}Blinded"
+	    "jp" "{green}ブランド"
 	}
 
 	//Kill events
@@ -677,13 +678,14 @@
 		// {2} fragger name
 	    // {3} victim fragged
 	    "#format" "{1:s},{2:s},{3:s}"
-	    "en" "{1} assisting {2} neutralizing {3}."
+	    "jp" "{2}が {3}を無力化したでアシストしてたため{1}。"
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
 	    // {1} points lost
 	    "#format" "{1:s}"
 	    "en" "{1} for dying."
+	    "jp" "死亡ため{1}。"
 	}
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
@@ -691,29 +693,29 @@
 	    // {2} victim name
 	    // {3} special frag event
 	    "#format" "{1:s},{2:s},{3:s}"
-	    "en" "{3} neutralizing {4} ({5})"
+	    "jp" "{3}で{2}を無力化したため{1}。"
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
 		// {1} points earned
 		// {2} victim name
 		"#format" "{1:s},{2:s}"
-		"en" "{1} neutralizing {2}."
+		"jp" "{2}を無力化したため{1}。"
 	}
-	"#SMStats_FragEventError_NewItem"
+	"#SMStats_FragEventError_NewItem" // needs translation.
 	{
 	    "#format" "{1:i},{2:s},{3:s}"
-	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is new to the current version ({3}) and needs to be updated."
+	    "jp" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is new to the current version ({3}) and needs to be updated."
 	}
-	"#SMStats_FragEventError_InvalidItem"
+	"#SMStats_FragEventError_InvalidItem" // needs translation.
 	{
 	    "#format" "{1:i},{2:s}"
-	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is invalid."
+	    "jp" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is invalid."
 	}
-	"#SMStats_FragEventError_InvalidItemCvar"
+	"#SMStats_FragEventError_InvalidItemCvar" // needs translation.
 	{
 	    "#format" "{1:i},{2:s}"
-	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') seems to be invalid! (New item perhaps?)"
+	    "jp" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') seems to be invalid! (New item perhaps?)"
 	}
 
 	//================================//
@@ -724,6 +726,6 @@
 		// {1} player name
 		// {2} achievement name
 		"#format" "{1:s},{2:s}"
-		"en" "{1} has earned the achievement {olive}{2}"
+		"jp" "{1}が {2} の実績をゲットしました！"
 	}
 }

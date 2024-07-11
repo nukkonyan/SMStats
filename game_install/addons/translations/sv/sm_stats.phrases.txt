@@ -8,11 +8,11 @@
 	//================================//
 	"#SMStats_Error_NotInitialized"
 	{
-		"en" "{yellow}Error: {grey}SM Stats: Core {yellow}has yet initialized."
+		"sv" "{yellow}Fel: {grey}SM Stats: Core {yellow}har inte laddats ännu."
 	}
 	"#SMStats_Error_SQLNotInitialized"
 	{
-		"en" "{yellow}Error: {grey}SQL Connection {yellow}is unavailable."
+		"sv" "{yellow}Fel {grey}SQL Anslutning {yellow}är för tillfället otillgänglig."
 	}
 
 	//================================//
@@ -20,43 +20,35 @@
 	//================================//
 	"#SMStats_TimeFormat_Year"
 	{
-		"en" "year #|# years"
+		"sv" " år"
 	}
 	"#SMStats_TimeFormat_Month"
 	{
-		"en" " month#|# months"
+		"sv" " månad#|# månader"
 	}
 	"#SMStats_TimeFormat_Day"
 	{
-		"en" " day#|# days"
+		"sv" " dag#|# dagar"
 	}
 	"#SMStats_TimeFormat_Hour"
 	{
-		"en" " hour#|# hours"
+		"sv" " timme#|# timmar"
 	}
 	"#SMStats_TimeFormat_Minute"
 	{
-		"en" " minute#|# minutes"
+		"sv" " minut#|# minuter"
 	}
 	"#SMStats_TimeFormat_Second"
 	{
-		"en" " second#|# seconds"
-	}
-	"#SMStats_TimeFormatShort_Hour"
-	{
-		"en" "hr#|#hrs"
-	}
-	"#SMStats_TimeFormatShort_Minute"
-	{
-		"en" "min"
+		"sv" " sekund#|# sekunder"
 	}
 	"#SMStats_TimeFormatShort_Second"
 	{
-		"en" "sec"
+		"sv" "sek"
 	}
 	"#SMStats_TimeFormat_AM_PM"
 	{
-		"en" "AM#|#PM"
+		"sv" "Förmiddag#|#Eftermiddag"
 	}
 	"#SMStats_PlayTimeFormat_Scenario0"
 	{
@@ -66,8 +58,7 @@
 		// {4} hours
 		// {5} minutes
 		// {6} seconds
-		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s},{6:s}"
-		"en" "{1}, {2}, {3}, {4}, {5} and {6}"
+		"sv" "{1}, {2}, {3}, {4}, {5} och {6}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario1"
 	{
@@ -76,8 +67,7 @@
 		// {3} hours
 		// {4} minutes
 		// {5} seconds
-		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"en" "{1}, {2}, {3}, {4} and {5}"
+		"sv" "{1}, {2}, {3}, {4} och {5}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario2"
 	{
@@ -85,23 +75,20 @@
 		// {2} hours
 		// {3} minutes
 		// {4} seconds
-		"#format" "{1:s},{2:s},{3:s},{4:s}"
-		"en" "{1}, {2}, {3} and {4}"
+		"sv" "{1}, {2}, {3} och {4}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario3"
 	{
 		// {1} hours
 		// {2} minutes
 		// {3} seconds
-		"#format" "{1:s},{2:s},{3:s}"
-		"en" "{1}, {2} and {3}"
+		"sv" "{1}, {2} och {3}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario4"
 	{
 		// {1} minutes
 		// {2} seconds
-		"#format" "{1:s},{2:s}"
-		"en" "{1} and {2}"
+		"sv" "{1} och {2}"
 	}
 	//"#SMStats_PlayTimeFormat_Scenario5" // seconds
 	"#SMStats_TimeFormat_LastConnected"
@@ -116,7 +103,7 @@
 		// seconds - {SECOND}
 		// 2023-10-18 PM 2:56:43
 		// {YEAR}-{MONTH}-{DAY} {AM_PM} {12HOUR}-{MINUTE}-{SECOND}
-		"en" "{YEAR}-{MONTH}-{DAY}"
+		"sv" "{YEAR}/{DAY}/{MONTH}"
 	}
 
 	//================================//
@@ -124,27 +111,25 @@
 	//================================//
 	"#SMStats_StatsCmd_Usage"
 	{
-		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid>  {grey}Example below:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"sv" "{grey}Använding: {lightgreen}sm_stats <topp spelarplacering | steamid>  {grey}Exempel nedan:\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 	}
 	"#SMStats_StatsCmd_Error"
 	{
-		"en" "{yellow}Error: {default}You must enter a valid top player position or steamid."
+		"sv" "{yellow}Fel: {default}Du måste ange ett giltigt spelarplacering eller steamid."
 	}
 	"#SMStats_StatsCmd_NULL"
 	{
-		"en" "{yellow}Error: {default}The value may not be {red}NULL{default}."
+		"sv" "{yellow}Fel: {default}Värdet bör ej vara {red}tom{default}."
 	}
 	"#SMStats_StatsCmd_InvalidTopPlayer"
 	{
 		// {1} top player position
-		"#format" "{1:i}"
-		"en" "{yellow}Error: {default}The enter top player position {lightgreen}{1} {default}you entered is invalid. The value must be 1 or greater."
+		"sv" "{yellow}Fel: {default}Det angivna toppspelarplaceringen {lightgreen}{1} {default}är ej giltigt. Värdet bör vara 1 eller högre."
 	}
 	"#SMStats_StatsCmd_InvalidSteamID"
 	{
 		// {1} steamid
-		"#format" "{1:s}"
-		"en" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
+		"sv" "{yellow}Fel: {default}steamidn {lightgreen}{1} {default}är ej giltigt. steamidn bör se ut någonting likt som {lightgreen}STEAM_0:0:12345{default}."
 	}
 
 	//================================//
@@ -152,23 +137,21 @@
 	//================================//
 	"#SMStats_TopSQLInfo_ErrorParsing"
 	{
-		"en" "{yellow}Error: {default}Unable to parse top players of the leaderboard."
+		"sv" "{yellow}Fel: {default}Kunde inte parsa toppspelarna av leaderboardet."
 	}
 	"#SMStats_TopSQLInfo_NoPlayers"
 	{
-		"en" "{yellow}Error: {default}No player were found on the leaderboard."
+		"sv" "{yellow}Fel: {default}Ingen spelare hittades på leaderboardet."
 	}
 	"#SMStats_TopSQLInfo_TopPlayerIdDoesNotExist"
 	{
 		// {1} top player position
-		"#format" "{1:i}"
-		"en" "{yellow}Error: {default}Top player placed {lightgreen}#{1} {default}does not exist on the leaderboard."
+		"sv" "{yellow}Fel: {default}Toppspelaren placerad {lightgreen}#{1} {default}finns ej på leaderboardet."
 	}
 	"#SMStats_TopSQLInfo_TopPlayerSteamIDDoesNotExist"
 	{
 		// {1} steamid
-		"#format" "{1:s}"
-		"en" "{yellow}Error: {default}Top player with steamid {lightgreen}{1} {default}does not exist on the leaderboard."
+		"sv" "{yellow}Fel: {default}Toppspelaren med steamid {lightgreen}{1} {default}finns ej på leaderboardet."
 	}
 
 	//===================//
@@ -181,12 +164,11 @@
 		// {3} player points
 		// {4} penalty time format
 		// {5} points reverted
-		"#format" "{1:s},{2:i},{3:s},{4:s},{5:s}"
-		"en" "{1} (Pos #{2}, {3}) {yellow}was given {4} penalty due to spam abuse. Abused {5} were reverted."
+		"sv" "{1} (Pos #{2}, {3}) {yellow}blev straffad {4} på grund av spam-missbruka spam. Missbrukade {5} återställdes."
 	}
 	"#SMStats_Points_Penalty"
 	{
-		"en" " (Penalty)"
+		"sv" " (Straffad)"
 	}
 
 	//================================//
@@ -196,15 +178,13 @@
 	{
 		// {1} player name
 		// {2} steamid
-		"#format" "{1:s},{2:s}"
-		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got banned and were removed from SMStats completely."
+		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}blev bannad och borttagen från SMStats helt hållet."
 	}
 	"#SMStats_Player_Detected_IPBanned"
 	{
 		// {1} player name
 		// {2} steamid
-		"#format" "{1:s},{2:s}"
-		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got ip-banned and were removed from SMStats completely."
+		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}fick ip-ban och blev borttagen från SMStats helt hållet."
 	}
 
 	//================================//
@@ -217,8 +197,7 @@
 		// {3} total player count on the database.
 		// {4} player points
 		// {5} country name
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s}"
-		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has joined the game."
+		"sv" "{1} (Pos #{2}/{3}, {4}) från {5} har gått med i spelet."
 	}
 	"#SMStats_Player_Disconnected"
 	{
@@ -228,225 +207,183 @@
 		// {4} player points
 		// {5} country name
 		// {6} disconnect reason
-		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
-		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has left the game. {grey}({6})"
+		"sv" "{1} (Pos #{2}/{3}, {4}) från {5} har lämnat spelet. {grey}({6})"
 	}
 	"#SMStats_Player_Connected_TopPlayer"
 	{
 		// {1} top player position
 		// {2} player name
 		// {3} country name
-		"#format" "{1:i},{2:s},{3:s}"
-		"en" "Top {1} player {2} from {3} {default}has connected!"
+		"sv" "Topp {1} spelare {2} från {3} {default}har anslutit!"
 	}
 
 	//================================//
 	// Menu.
 	//================================//
-	"#SMStats_Menu_Session"
-	{
-		"en" "Session"
-	}
 	"#SMStats_Menu_SessionInfo"
 	{
-		"en" "View your current session statistics."
+		"sv" "Kolla dina nuvarande session statistiker."
 	}
 	"#SMStats_Menu_ActiveStats"
 	{
-		"en" "Active stats"
+		"sv" "Nuvarande stats."
 	}
 	"#SMStats_Menu_ActiveStatsInfo"
 	{
-		"en" "View your active statistics."
+		"sv" "Kolla dina nuvarande statistiker."
 	}
 	"#SMStats_Menu_Top10"
 	{
-		"en" "Top 10 players"
+		"sv" "Topp 10 spelare"
 	}
 	"#SMStats_Menu_Top10Info"
 	{
-		"en" "View the current top 10 players on this server."
+		"sv" "Visa nuvarande top 10 spelare on denna server."
 	}
 	"#SMStats_Menu_TopPlayer"
 	{
-		"#format" "{1:i}"
-		"en" "Top {1} player"
+		"sv" "Topp {1} spelare"
 	}
 	"#SMStats_Menu_TopPlayers"
 	{
-		"en" "Current top players"
+		"sv" "Nuvarande topp spelare"
 	}
 	"#SMStats_Menu_TopPlayersInfo"
 	{
-		"en" "View the current top players on this server."
+		"sv" "Visa nuvarande topp spelare på denna server."
 	}
 	"#SMStats_Menu_Settings"
 	{
-		"en" "Settings"
+		"sv" "Inställningar"
 	}
 	"#SMStats_Menu_SettingsInfo"
 	{
-		"en" "View your current settings."
+		"sv" "Kolla dina nuvarande inställningar."
 	}
 	"#SMStats_Menu_Page"
 	{
 		// {1} menu page
-		"#format" "{1:i}"
-		"en" "Page {1}"
+		"sv" "Sida {1}"
 	}
 	"#SMStats_Menu_PreviousPage"
 	{
-		"en" "Previous page"
+		"sv" "Förra sidan"
 	}
 	"#SMStats_Menu_NextPage"
 	{
-		"en" "Next page"
+		"sv" "Nästa sida"
 	}
 	"#SMStats_Menu_ExitPage"
 	{
-		"en" "Close"
+		"sv" "Stäng"
 	}
 	"#SMStats_MenuInfo_DevType_Founder"
 	{
-		"en" "Creator of SMStats!"
+		"sv" "Skaparen av SMStats!"
 	}
 	"#SMSTats_MenuInfo_DevType_Contributor"
 	{
-		"en" "Thanks for being a contributor to the project!"
+		"sv" "Tack för att du är kontributör till projektet!"
 	}
 	"#SMStats_MenuInfo_DevType_Tester"
 	{
-		"en" "Thanks for being a tester!"
+		"sv" "Tack för att du är en testare!"
 	}
 	"#SMStats_MenuInfo_DevType_Translator"
 	{
-		"en" "Thanks for being a translator!"
+		"sv" "Tack för att du är en översättare!"
 	}
 	"#SMStats_MenuInfo_Playername"
 	{
 		// {1} player name
-		"#format" "{1:s}"
-		"en" "Playername : {1}"
+		"sv" "Spelarnamn : {1}"
 	}
 	"#SMStats_MenuInfo_Positioned"
 	{
 		// {1} placed position
 		// {2} total players
-		"#format" "{1:i},{2:i}"
-		"en" "Placed #{1} out of {2} players."
+		"sv" "Placerad #{1} ut av {2} spelare."
 	}
 	"#SMStats_MenuInfo_PlayTime"
 	{
 		// {1} play time format
-		"#format" "{1:s}"
-		"en" "Playtime : {1}"
+		"sv" "Speltid : {1}"
 	}
 	"#SMStats_MenuInfo_MapTime"
 	{
 		// {1} map time format
-		"#format" "{1:s}"
-		"en" "Maptime: {1}"
+		"sv" "Karttid : {1}"
 	}
 	"#SMStats_MenuInfo_Country"
 	{
 		// {1} country name
-		"#format" "{1:s}"
-		"en" "Country : {1}"
+		"sv" "Land : {1}"
 	}
 	"#SMStats_MenuInfo_LastConnected"
 	{
 		// {1} last connected time format
-		"#format" "{1:s}"
-		"en" "Last connected : {1}"
+		"sv" "Senast ansluten : {1}"
 	}
 	"#SMStats_MenuInfo_Profile"
 	{
-		"en" "Visit profile"
+		"sv" "Besök profilen"
 	}
 	"#SMStats_MenuInfo_Points"
 	{
 		// {1} points
-		"#format" "{1:s}"
-		"en" "Points : {1}"
+		"sv" "Poäng : {1}"
 	}
 	"#SMStats_MenuInfo_PointsEarned"
 	{
 		// {1} points earned
-		"#format" "{1:s}"
-		"en" "Points earned : {1}"
+		"sv" "Poäng belönad : {1}"
 	}
 	"#SMStats_MenuInfo_PointsLost"
 	{
 		// {1} points lost
-		"#format" "{1:s}"
-		"en" "Points lost : {1}"
-	}
-	"#SMStats_MenuInfo_Frags"
-	{
-		// {1} kill count
-		"#format" "{1:i}"
-		"en" "Frags : {1}"
+		"sv" "Poäng förlorat : {1}"
 	}
 	"#SMStats_MenuInfo_Assists"
 	{
 		// {1} assist count
-		"#format" "{1:i}"
-		"en" "Assists : {1}"
+		"sv" "Assister : {1}"
 	}
 	"#SMStats_MenuInfo_Deaths"
 	{
 		// {1} death count
-		"#format" "{1:i}"
-		"en" "Deaths : {1}"
-	}
-	"#SMStats_MenuInfo_KDR"
-	{
-		// {1} kill-death ratio
-		"#format" "{1:.2f}"
-		"en" "KDR : {1}"
-	}
-	"#SMStats_MenuInfo_KADR"
-	{
-		// {1} kill-assist-death ratio
-		"#format" "{1:.2f}"
-		"en" "KADR : {1}"
+		"sv" "Dödsantal : {1}"
 	}
 	"#SMStats_MenuInfo_Suicides"
 	{
 		// {1} suicide count
-		"#format" "{1:i}"
-		"en" "Suicides : {1}"
+		"sv" "Självmordsantal : {1}"
 	}
 	"#SMStats_MenuInfo_DamageDone"
 	{
 		// {1} damage count
-		"#format" "{1:i}"
-		"en" "Damage done : {1}"
+		"sv" "Skada givet : {1}"
 	}
 	"#SMStats_MenuInfo_AchievementsEarned"
 	{
 		// {1} achievements earned count
-		"#format" "{1:i}"
-		"en" "Achievements Earned : {1}"
+		"sv" "Prestationer uppnått : {1}"
 	}
 	"#SMStats_MenuInfo_Achievement"
 	{
 		// {1} achievement name
-		"#format" "{1:s}"
-		"en" "Achievement : "
+		"sv" "Prestation:"
 	}
 	"#SMStats_MenuInfo_Description"
 	{
 		// {1} menu item description
-		"en" "Description : "
+		"sv" "Beskrivning:"
 	}
 	"#SMStats_MenuInfo_TopPlayer"
 	{
 		// {1} top player position
 		// {2} top player name
 		// {3} top player points
-		"#format" "{1:i},{2:s},{3:s}"
-		"en" "Top {1} - {2} [{3}]"
+		"sv" "Topp {1} - {2} [{3}]"
 	}
 
 	//================================//
@@ -455,38 +392,32 @@
 	"#SMStats_MenuInfo_PlayConnectSnd"
 	{
 	    // {1} on/off value
-	    "#format" "{1:s}"
-	    "en" "Player connect sound : {1}"
+	    "sv" "Spelaranslutningsljud : {1}"
 	}
 	"#SMStats_MenuInfo_ShowConnectMsg"
 	{
 	    // {1} on/off value
-	    "#format" "{1:s}"
-	    "en" "Display join messages : {1}"
+	    "sv" "Visa anslutningsmeddelanden: {1}"
 	}
 	"#SMStats_MenuInfo_ShowTopConnectMsg"
 	{
 	    // {1} on/off value
-	    "#format" "{1:s}"
-	    "en" "Display top player connect messages : {1}"
+	    "sv" "Visa toppspelaranslutningsmeddelanden: {1}"
 	}
 	"#SMStats_MenuInfo_ShowFragMsg"
 	{
 	    // {1} on/off value
-	    "#format" "{1:s}"
-	    "en" "Display kill messages : {1}"
+	    "sv" "Visa dödningsmeddelanden: {1}"
 	}
 	"#SMStats_MenuInfo_ShowAssistMsg"
 	{
 	    // {1} on/off value
-	    "#format" "{1:s}"
-	    "en" "Display assist messages : {1}"
+	    "sv" "Visa assistmeddelanden: {1}"
 	}
 	"#SMStats_MenuInfo_ShowDeathMsg"
 	{
 	    // {1} on/off value
-	    "#format" "{1:s}"
-	    "en" "Display death messages : {1}"
+	    "sv" "Visa dödsmeddelanden : {1}"
 	}
 
 	//================================//
@@ -494,13 +425,12 @@
 	//================================//
 	"#SMStats_UpdateFound"
 	{
-	    "en" "New {lightgreen}Update {default}was found, restarting.."
+	    "sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
 	}
 	
 	"#SMStats_VersionLoaded"
 	{
-	    "#format" "{1:s}"
-	    "en" "{orange}Version {1} {lightgreen}has loaded!"
+	    "sv" "{orange}Version {1} {lightgreen}har laddats!"
 	}
 
 	//================================//
@@ -508,29 +438,27 @@
 	//================================//
 	"#SMStats_RoundStart"
 	{
-	    "en" "Round Start: Tracking enabled."
+		"sv" "Rundstart: Spårning aktiverad."
 	}
 	"#SMStats_RoundStart_Warmup"
 	{
-	    "en" "Round Start: Warmup/Waiting for players detected, ignoring statistical tracking."
+	    "sv" "Rundstart: Uppvärmning/Väntar på spelare upptäckt, ignorerar statistiskt spårning."
 	}
 	"#SMStats_RoundEnd"
 	{
-	    "en" "Round End: Tracking disabled."
+	    "sv" "Rundslut: Spårning inaktiverad."
 	}
 	"#SMStats_NotEnoughPlayers"
 	{
 	    // {1} current player count in the server
 	    // {2} required player count to start tracking
-	    "#format" "{1:i},{2:i}"
-	    "en" "Not enough players ({1} out of required {2}), disabling.."
+	    "sv" "Inte tillräckligt med spelare ({1} utav krävande {2}), inaktiverar.."
 	}
 	"#SMStats_EnoughPlayers"
 	{
 	    // {1} current player count in the server
 	    // {2} required player count to start tracking
-	    "#format" "{1:i},{2:i}"
-	    "en" "Enough Players ({1} out of required {2}), enabling.."
+	    "sv" "Tillräckligt med spelare ({1} utav krävande {2}), aktiverar.."
 	}
 	
 	//================================//
@@ -538,55 +466,29 @@
 	//================================//
 	"#SMStats_MultiplePlayers"
 	{
-	    "en" "Multiple players"
+		"sv" "Flera spelare"
 	}
 	"#SMStats_MultipleObjects"
 	{
-	    "en" "Multiple objects"
+	    "sv" "Flera objekt"
 	}
 	"#SMStats_And"
 	{
-	    "en" " and "
-	}
-	"#SMStats_Comma"
-	{
-	    "en" ", "
-	}
-	"#SMStats_Counter"
-	{
-	    // {1} counter
-	    "#format" "{1:i}"
-	    "en" " ({1})"
+	    "sv" " och "
 	}
 	"#SMStats_OffOn"
 	{
-	    "en" "Off#|#On"
+	    "sv" "Av#|#På"
 	}
 	"#SMStats_Points" // points plural splitter false#|#true (non-plural#|#plural)
 	{
 	    // player points
 	    // this will automatically become 'x point or 'x points'
-	    "en" " point#|# points"
-	}
-	"#SMStats_PointsFormat_1K"
-	{
-		"en" "k"
-	}
-	"#SMStats_PointsFormat_10K"
-	{
-		"en" "k"
-	}
-	"#SMStats_PointsFormat_100K"
-	{
-		"en" "k"
-	}
-	"#SMStats_PointsFormat_1M"
-	{
-		"en" "M"
+	    "sv" " poäng"
 	}
 	"#SMStats_FeatureUnavailable"
 	{
-	    "en" "Feature is currently unavailable."
+	    "sv" "Funktionen är förnuvarande otillgänglig."
 	}
 	
 	//================================//
@@ -595,79 +497,67 @@
 	//Kill event types. Will automatically merge with one and another if needed.
 	"#SMStats_FragEvent_Type0" //Mid Air.
 	{
-	    "en" "whilst {green}Mid Air"
+	    "sv" "medans {green}I Luften"
 	}
 	"#SMStats_FragEvent_Type1" //Noscope
 	{
-	    "en" "{green}Through Smoke"
+	    "sv" "{green}Genom Röken"
 	}
 	"#SMStats_FragEvent_Type2" //Noscope headshot
 	{
-	    "en" "{green}Noscope Headshot"
+	    "sv" "{green}icke-zoomningshuvudskott"
 	}
 	"#SMStats_FragEvent_Type3" //Headshot.
 	{
-	    "en" "{green}Headshot"
+	    "sv" "{green}Huvudskott"
 	}
 	"#SMStats_FragEvent_Type4" //Noscope.
 	{
-	    "en" "{green}Noscope"
+	    "sv" "{green}icke-zoomningsskott"
 	}
 	"#SMStats_FragEvent_Type5" //Backstab.
 	{
-	    "en" "{green}Backstab"
+	    "sv" "{green}Rygghugg"
 	}
 	"#SMStats_FragEvent_Type6" //Airshot.
 	{
-	    "en" "{green}Airshot"
+	    "sv" "{green}Luftskott"
 	}
 	"#SMStats_FragEvent_Type7" //Deflect frag.
 	{
-	    "en" "{green}Deflect"
-	}
-	"#SMStats_FragEvent_Type8" //Teleport frag.
-	{
-	    "en" "{green}Telefrag"
-	}
-	"#SMStats_FragEvent_Type9" //Taunt frag.
-	{
-	    "en" "{green}Tauntkill"
+	    "sv" "{green}Deflektering"
 	}
 	"#SMStats_FragEvent_Type10" //Sentry Gun frag.
 	{
-	    "en" "{green}Sentry Gun"
+	    "sv" "{green}Vaktgevär"
 	}
 	"#SMStats_FragEvent_Type11" //Mini-Sentry Gun frag.
 	{
-	    "en" "{green}Mini-Sentry Gun"
+	    "sv" "{green}Mini-Vaktgevär"
 	}
 	"#SMStats_FragEvent_Type12" //Wrangled Sentry Gun frag.
 	{
-	    "en" "{green}Wrangled Sentry Gun"
+	    "sv" "{green}Förvrängd Vaktgevär"
 	}
 	"#SMStats_FragEvent_Type13" //Wrangled Mini-Sentry Gun frag.
 	{
-	    "en" "{green}Wrangled Mini-Sentry Gun"
+	    "sv" "{green}Förvrängd Mini-Vaktgevär"
 	}
 	"#SMStats_FragEvent_Type14" // Pumpkin Bomb frag.
 	{
-	    "en" "{green}Pumpkin Bomb"
+	    "sv" "{green}Pumpabomb"
 	}
 	"#SMStats_FragEvent_Type15" //Collateral.
 	{
-	    "en" "{green}Collateral"
+	    "sv" "{green}Kollateral"
 	}
 	"#SMStats_FragEvent_Type16" //Grenade frag.
 	{
-	    "en" "{green}Grenade"
-	}
-	"#SMStats_FragEvent_Type17" //Bomb/C4 frag.
-	{
-	    "en" "{green}Bomb"
+	    "sv" "{green}Granat"
 	}
 	"#SMStats_FragEvent_Type18" //Blinded frag.
 	{
-	    "en" "{green}Blinded"
+	    "sv" "{green}Förblindad"
 	}
 
 	//Kill events
@@ -676,44 +566,37 @@
 	    // {1} points earned
 		// {2} fragger name
 	    // {3} victim fragged
-	    "#format" "{1:s},{2:s},{3:s}"
-	    "en" "{1} assisting {2} neutralizing {3}."
+	    "sv" "{1} assisterar {2} neutralizera {3}."
 	}
 	"#SMStats_FragEvent_Death" //Death.
 	{
 	    // {1} points lost
-	    "#format" "{1:s}"
-	    "en" "{1} for dying."
+	    "sv" "{1} för att dö."
 	}
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
 	    // {1} points earned
 	    // {2} victim name
 	    // {3} special frag event
-	    "#format" "{1:s},{2:s},{3:s}"
-	    "en" "{3} neutralizing {4} ({5})"
+	    "sv" "{1} för att neutralizera {2} ({3})"
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
 	{
 		// {1} points earned
 		// {2} victim name
-		"#format" "{1:s},{2:s}"
-		"en" "{1} neutralizing {2}."
+		"sv" "{1} neutralizera {2}."
 	}
 	"#SMStats_FragEventError_NewItem"
 	{
-	    "#format" "{1:i},{2:s},{3:s}"
-	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is new to the current version ({3}) and needs to be updated."
+	    "sv" "{yellow}Fel: {default}Vapen itemdef {1} (classname '{2}') är ny för den nuvarande versionen ({3}) och behöver uppdateras."
 	}
 	"#SMStats_FragEventError_InvalidItem"
 	{
-	    "#format" "{1:i},{2:s}"
-	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') is invalid."
+	    "sv" "{yellow}Fel: {default}Vapen itemdef {1} (classname '{2}') är ogiltig."
 	}
 	"#SMStats_FragEventError_InvalidItemCvar"
 	{
-	    "#format" "{1:i},{2:s}"
-	    "en" "{yellow}Error: {default}The weapon itemdef {1} (classname '{2}') seems to be invalid! (New item perhaps?)"
+	    "sv" "{yellow}Fel: {default}Vapnen itemdef {1} (classname '{2}') verkar ogiltig! (Nytt föremål kanske?)"
 	}
 
 	//================================//
@@ -723,7 +606,6 @@
 	{
 		// {1} player name
 		// {2} achievement name
-		"#format" "{1:s},{2:s}"
-		"en" "{1} has earned the achievement {olive}{2}"
+		"sv" "{1} har förtjänat uppdraget {olive}{2}"
 	}
 }
