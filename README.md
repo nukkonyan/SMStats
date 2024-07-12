@@ -28,8 +28,8 @@
       - Expected early testing build
           - Somewhere between end of October and somewhere between mid november and early-mid december.
           - This will begin with Team Fortress 2 due to stability reasons.
-      - Lookin to assist in development?
-          - Hit me up on [Steam](https://steamcommunity.com/id/nukkonyan)!
+      - Development
+          - Lookin to assist in development? Hit me up on [Steam](https://steamcommunity.com/id/nukkonyan)!
    - Credits
       - [Neigeflocon](https://steamcommunity.com/profiles/76561197962831152) - Turkish translations.
 
