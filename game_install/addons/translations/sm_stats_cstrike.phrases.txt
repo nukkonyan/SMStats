@@ -1,0 +1,31 @@
+"Phrases"
+{
+	//================================//
+	// Menu.
+	//================================//
+	"#SMStats_CStrike_Bomb_Planted"
+	{
+		// {1} points earned
+		"#format" "{1:s}"
+		"en" "{1} for {green}Planting {default}the Bomb."
+	}
+	"#SMStats_CStrike_Bomb_Defused"
+	{
+		// {1} points earned
+		"#format" "{1:s}"
+		"en" "{1} for {green}Defusing {default}the Bomb."
+	}
+
+	"#SMStats_CStrike_Hostage_Rescued"
+	{
+		// {1} points earned
+		"#format" "{1:s}"
+		"en" "{1} for {green}Rescuing {default}a Hostage."
+	}
+	"#SMStats_CStrike_Hostage_Killed"
+	{
+		// {1} points lost
+		"#format" "{1:s}"
+		"en" "{1} for {red}Killing {default}a Hostage."
+	}
+}

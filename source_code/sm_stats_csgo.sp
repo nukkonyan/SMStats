@@ -10,6 +10,7 @@
 #define core_chattag2 "SM Stats: CSGO"
 
 #define load_plugin_core
+#define load_cstrike
 //#define load_menus
 #define load_forwards
 #define load_players
@@ -35,6 +36,10 @@
 #define query_error_uniqueid_OnUpdatedMenuSettingValue 87
 #define query_error_uniqueid_OnItemEventInsert 88
 #define query_error_uniqueid_OnKillLogInsert 89
+#define query_error_uniqueid_OnBombPlantedPlayerlist 90
+#define query_error_uniqueid_OnBombPlantedMapsLog 91
+#define query_error_uniqueid_OnBombDefusedPlayerlist 92
+#define query_error_uniqueid_OnBombDefusedMapsLog 93
 
 SMStats_CSGOGameInfo g_Game[MaxPlayers+1];
 
@@ -66,7 +71,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public Plugin myinfo =
 {
-	name = "SM Stats: Counter-Strike: Global Offensive",
+	name = "SM Stats: CSGO",
 	author = "nukkonyan",
 	description = "Tracks kills, maps, events, achievements, etc.",
 	version = Version,
@@ -76,6 +81,7 @@ public Plugin myinfo =
 //#include "sm_stats_csgo/menus.sp"
 #include "sm_stats_csgo/functions.sp"
 #include "sm_stats_csgo/game.sp"
+#include "sm_stats_cstrike/game.sp"
 
 #include "sm_stats/functions.sp"
 #include "sm_stats/damage_done.sp"
