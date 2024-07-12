@@ -18,7 +18,7 @@
       - Custom achievements. (Not added yet, but there are code mentions about it.)
       - Settings. (Saves settings obviously.)
    - Notes:
-      - [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
+      - [Geoip Country Name Translation](https://github.com/nukkonyan/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
       - No Web panel currently exists yet.
       - Currently in active re-writing process from scratch:
           - Better more efficient code-base and SQL-code as 'SM Stats' (renamed from XStats) with full extended translation support.
