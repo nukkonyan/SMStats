@@ -54,6 +54,8 @@
       - [ ] Open Fortress.
       - [ ] Counter-Strike: Source.
       - [ ] Counter-Strike: Global Offensive.
+      - [ ] Counter-Strike: Classic Offensive.
+      - [ ] Legacy Strike (2015 CS:GO)
       - [ ] Counter-Strike 2.
       - [ ] Left 4 Dead 2.
       - [ ] and many other.
