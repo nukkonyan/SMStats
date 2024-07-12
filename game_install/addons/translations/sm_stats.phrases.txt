@@ -1048,9 +1048,9 @@
 		// {2} fragger name
 	    // {3} victim fragged
 	    "#format" "{1:s},{2:s},{3:s}"
-	    "en" "{1} assisting {2} neutralizing {3}."
-	    "jp" "{2}が {3}を無力化したでアシストしてたため{1}。"
-	    "sv" "{1} assisterar {2} neutralizera {3}."
+	    "en" "{1} for assisting {2} in neutralizing {3}."
+	    "jp" "{2}が{3}を無力化したでアシストしてたため{1}。"
+	    "sv" "{1} för att assistera {2} att neutralizera {3}."
 	    "tr" "{2} oyuncusunun {3} oyuncusunu öldürmesine yardım ederek {1} kazandın."
 	}
 	"#SMStats_FragEvent_Death" //Death.
@@ -1070,7 +1070,7 @@
 	    // {3} special frag event
 	    "#format" "{1:s},{2:s},{3:s}"
 	    "en" "{1} for neutralizing {2} ({3})"
-	    "jp" "{3}で{2}を無力化したため{1}。"
+	    "jp" "【{3}】 {2}を無力化したため{1}。"
 	    "sv" "{1} för att neutralizera {2} ({3})"
 	    "tr" "{2} oyuncusunu öldürdüğün için {1} kazandın ({3})"
 	}
