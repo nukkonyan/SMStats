@@ -544,10 +544,12 @@ Action Timer_TimePlayed(Handle timer, int userid)
 		, g_Player[client].auth, g_StatsID);
 		sql.Query(DBQuery_TimePlayed, query, userid);
 		
+		#if defined load_menus
 		if(g_Player[client].active_page_session == 1)
 		{
 			StatsMenu.Session(client, 1);
 		}
+		#endif
 	}
 	
 	return Plugin_Continue;

@@ -756,7 +756,7 @@
 	"#SMStats_UpdateFound"
 	{
 	    "en" "New {lightgreen}Update {default}was found, restarting.."
-	    "jp" "{lightgreen}新しい更新が見つかりました... 再開しています.."
+	    "jp" "{lightgreen}新しい更新が見つかりました。再開しています.."
 	    "sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
 	    "tr" "Yeni {lightgreen}Güncelleme {default}bulundu, yeniden başlatılıyor.."
 	}
@@ -1035,6 +1035,11 @@
 	    "sv" "{green}Förblindad"
 	    "tr" "{green}Kör {default}iken"
 	}
+	"#SMStats_FragEvent_Type19" //Quickscope frag.
+	{
+		"en" "{green}Quickscope"
+		"jp" "{green}クイックスコープ"
+	}
 
 	//Kill events
 	"#SMStats_FragEvent_Assisted" //Assist
@@ -1064,7 +1069,7 @@
 	    // {2} victim name
 	    // {3} special frag event
 	    "#format" "{1:s},{2:s},{3:s}"
-	    "en" "{3} neutralizing {4} ({5})"
+	    "en" "{1} for neutralizing {2} ({3})"
 	    "jp" "{3}で{2}を無力化したため{1}。"
 	    "sv" "{1} för att neutralizera {2} ({3})"
 	    "tr" "{2} oyuncusunu öldürdüğün için {1} kazandın ({3})"
@@ -1074,9 +1079,9 @@
 		// {1} points earned
 		// {2} victim name
 		"#format" "{1:s},{2:s}"
-		"en" "{1} neutralizing {2}."
+		"en" "{1} for neutralizing {2}."
 		"jp" "{2}を無力化したため{1}。"
-		"sv" "{1} neutralizera {2}."
+		"sv" "{1} för att neutralizera {2}."
 		"tr" "{2} oyuncusunu öldürdüğün için {1} kazandın."
 	}
 	"#SMStats_FragEventError_NewItem"

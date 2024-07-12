@@ -1,0 +1,74 @@
+"Phrases"
+{
+	//================================//
+	// Menu.
+	//================================//
+	"#SMStats_MenuInfo_Dominations"
+	{
+		// {1} domination count
+		"#format" "{1:i}"
+		"en" "Dominations : {1}"
+		"sv" "Domineringar : {1}"
+		"tr" "Hükümler: {1}"
+	}
+	"#SMStats_MenuInfo_Revenges"
+	{
+		// {1} revenge count
+		"#format" "{1:i}"
+		"en" "Revenges : {1}"
+		"sv" "Hämningar : {1}"
+		"tr" "İntikamlar: {1}"
+	}
+	"#SMStats_MenuInfo_Airshots"
+	{
+		// {1} airshot count
+		"#format" "{1:i}"
+		"en" "Airshots : {1}"
+		"jp" "エアショット : {1}"
+		"sv" "Luftskott : {1}"
+		"tr" "Havada Vuruşlar: {1}"
+	}
+	"#SMStats_MenuInfo_Headshots"
+	{
+		// {1} headshot count
+		"#format" "{1:i}"
+		"en" "Headshots : {1}"
+		"jp" "ヘッドショット : {1}"
+		"sv" "Huvudskott : {1}"
+		"tr" "Kafadan Vuruşlar: {1}"
+	}
+	"#SMStats_MenuInfo_Noscopes"
+	{
+		// {1} noscope count
+		"#format" "{1:i}"
+		"en" "Noscopes : {1}"
+		"jp" "ノースコープ : {1}"
+		"sv" "Icke-zoomingsskott : {1}"
+		"tr" "Dürbünsüz Vuruşlar: {1}"
+	}
+	"#SMStats_MenuInfo_Backstabs"
+	{
+		// {1} backstab count
+		"#format" "{1:i}"
+		"en" "Backstabs : {1}"
+		"jp" "バックスタッブ : {1}"
+		"sv" "Rygghugg : {1}"
+		"tr" "Sırt Bıçaklamaları: {1}"
+	}
+	"#SMStats_MenuInfo_Collaterals"
+	{
+		// {1} collateral count
+		"#format" "{1:i}"
+		"en" "Collaterals : {1}"
+		"sv" "Kollateraler : {1}"
+		"tr" "Doğal Yollar ile Ölüm: {1}"
+	}
+	"#SMStats_MenuInfo_MidAirFrags"
+	{
+		// {1} mid-air kill count
+		"#format" "{1:i}"
+		"en" "Mid Air frags : {1}"
+		"sv" "Mitt-i-luftenfrags : {1}"
+		"tr" "Havada Öldürmeler: {1}"
+	}
+}

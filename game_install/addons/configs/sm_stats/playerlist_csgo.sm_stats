@@ -1,4 +1,4 @@
-create table if not exists `playerlist_css`
+create table if not exists `playerlist_csgo`
 (
 	`ID` int not null auto_increment,
 	`StatsID` int not null default '1',
@@ -13,7 +13,7 @@ create table if not exists `playerlist_css`
 	`Suicides` int not null default '0',
 	`DamageDone` int not null default '0',
 	`Achievements` int not null default '0',
-
+	
 	`Dominations` int not null default '0',
 	`Revenges` int not null default '0',
 	`Airshots` int not null default '0',
@@ -23,6 +23,8 @@ create table if not exists `playerlist_css`
 	`Collaterals` int not null default '0',
 	`MidAirFrags` int not null default '0',
 	`BlindedFrags` int not null default '0',
-
+	
+	`BombsPlanted` int not null default '0',
+	`BombsDefused` int not null default '0',
 	primary key (`ID`)
 )

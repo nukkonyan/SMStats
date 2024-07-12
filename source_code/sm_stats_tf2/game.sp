@@ -3119,13 +3119,13 @@ Action MapTimer_GameTimer(Handle timer)
 						list_class[i] = event.class;
 						strcopy(list_classname[i], sizeof(event.classname), event.classname);
 						
+						// kill log
 						switch(strlen(list_itemdefs) < 1)
 						{
 							case false: Format(list_itemdefs, sizeof(list_itemdefs), "%s;%i", list_itemdefs, list_itemdef[i]);
 							case true: Format(list_itemdefs, sizeof(list_itemdefs), "%i", list_itemdef[i]);
 						}
 						
-						// kill log
 						int victim;
 						if(IsValidClient((victim = GetClientOfUserId(userid_victim))))
 						{

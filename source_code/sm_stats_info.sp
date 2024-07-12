@@ -10,18 +10,19 @@
 
 public Plugin myinfo = {
 	name = "SM Stats: Info",
-	author = "teamkiller324",
+	author = "nukkonyan",
 	description = "Tracks player statistics. Keeps the stats when SMStats is updated.",
 	version = Version,
-	url = "https://github.com/Teamkiller324"
+	url = "https://github.com/nukkonyan"
 }
 
-#define UpdaterURL "https://raw.githubusercontent.com/Teamkiller324/SMStats/main/updater/SMStats_Info.txt"
+#define UpdaterURL "https://raw.githubusercontent.com/nukkonyan/SMStats/main/updater/SMStats_Info.txt"
 #include "sm_stats/updater.sp"
 
 // game related
 SMStats_PlayerInfo g_Player[MAXPLAYERS+1];
 SMStats_TF2GameInfo g_TF2GameStats[MAXPLAYERS+1];
+SMStats_CSGOGameInfo g_CSGOGameStats[MAXPLAYERS+1];
 
 // crucial stuff
 bool bLoaded;
@@ -80,6 +81,7 @@ int Native_GetGameStats(Handle plugin, int params)
 	switch(GetEngineVersion())
 	{
 		case Engine_TF2: SetNativeArray(2, g_TF2GameStats[client], sizeof(g_TF2GameStats[]));
+		case Engine_CSGO: SetNativeArray(2, g_CSGOGameStats[client], sizeof(g_CSGOGameStats[]));
 	}
 	return -69;
 }
@@ -89,6 +91,7 @@ int Native_SaveGameStats(Handle plugin, int params)
 	switch(GetEngineVersion())
 	{
 		case Engine_TF2: GetNativeArray(2, g_TF2GameStats[client], sizeof(g_TF2GameStats[]));
+		case Engine_CSGO: GetNativeArray(2, g_CSGOGameStats[client], sizeof(g_CSGOGameStats[]));
 	}
 	return -69;
 }
@@ -98,6 +101,7 @@ int Native_ResetGameStats(Handle plugin, int params)
 	switch(GetEngineVersion())
 	{
 		case Engine_TF2: g_TF2GameStats[client].Reset();
+		case Engine_CSGO: g_CSGOGameStats[client].Reset();
 	}
 	return -69;
 }
