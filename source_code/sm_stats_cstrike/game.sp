@@ -116,5 +116,27 @@ void OnBombDefused(Event event, const char[] event_name, bool asdf)
 /* Called as soon as the bomb has exploded. */
 void OnBombExploded(Event event, const char[] event_name, bool asdf)
 {
+	if(!IsValidStats())
+	{
+		return;
+	}
 	
+	int userid = event.GetInt("userid");
+	if(userid < 1)
+	{
+		return;
+	}
+	
+	int client = GetClientOfUserId(userid);
+	if(!IsValidClient(client))
+	{
+		return;
+	}
+	
+	if(IsValidAbuse(client))
+	{
+		return;
+	}
+	
+	g_Player[client].session[Stats_BombsExploded] += 1;
 }
