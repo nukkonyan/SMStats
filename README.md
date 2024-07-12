@@ -1,3 +1,6 @@
+> [!NOTE]
+> This project is only just a hobby and is in no way made to compete with **HLStatsX:CE** nor **gameME**.
+
 ### SMStats
    - 100% translation supported.
       - Including a custom **'plural splitter'**, similar to Counter-Strike 2's new translation syntax.
@@ -15,7 +18,6 @@
       - Custom achievements. (Not added yet, but there are code mentions about it.)
       - Settings. (Saves settings obviously.)
    - Notes:
-      - **This project is only just a hobby and is in no way made to compete with HLStatsX:CE nor gameME.**
       - [Geoip Country Name Translation](https://github.com/Teamkiller324/SM-Geoip-CountryName) - Required for country name translation and compiling, aswell as for plugin to function.
       - No Web panel currently exists yet.
       - Currently in active re-writing process from scratch:
@@ -29,7 +31,7 @@
           - Somewhere between end of October and somewhere between mid november and early-mid december.
           - This will begin with Team Fortress 2 due to stability reasons.
       - Development
-          - Lookin to assist in development? Hit me up on [Steam](https://steamcommunity.com/id/nukkonyan)!
+          - Perhaps interested in development assistance? Hit me up on [Steam](https://steamcommunity.com/id/nukkonyan)!
    - Credits
       - [Neigeflocon](https://steamcommunity.com/profiles/76561197962831152) - Turkish translations.
 
