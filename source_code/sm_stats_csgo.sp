@@ -40,6 +40,8 @@
 #define query_error_uniqueid_OnBombPlantedMapsLog 91
 #define query_error_uniqueid_OnBombDefusedPlayerlist 92
 #define query_error_uniqueid_OnBombDefusedMapsLog 93
+#define query_error_uniqueid_OnHostageRescuedPlayerlist 94
+#define query_error_uniqueid_OnHostageRescuedMapsLog 95
 
 SMStats_CSGOGameInfo g_Game[MaxPlayers+1];
 
