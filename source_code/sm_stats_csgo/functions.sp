@@ -239,7 +239,7 @@ stock void VictimDied(Transaction txn, const int[] list, int frags)
 	{
 		int victim;
 		if(IsValidClient((victim = GetClientOfUserId(list[i]))))
-		{			
+		{
 			int len = 0;
 			char query[1024];
 			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set `Deaths`=`Deaths`+1");

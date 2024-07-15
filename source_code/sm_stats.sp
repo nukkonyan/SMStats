@@ -39,8 +39,10 @@ ConVar g_Debug; // debugging.
 ConVar g_AllowBots; // allow bots.
 ConVar g_AllowAbuse; // allow abuse of commands during events.
 ConVar g_AllowWarmup; // allow tracking during warmup.
+ConVar g_AllowTeamFrag; // allow teamkills to be tracked.
 ConVar g_DisableAfterRoundEnd; // disable tracking after round end.
 ConVar g_DeathPoints; // death points.
+ConVar g_TeamFragPoints; // team frag points.
 ConVar g_AssistPoints; // assist points.
 ConVar g_PenaltySeconds; // seconds for the penalty.
 ConVar g_ConSndTop10; // Top 10 player connected.
@@ -65,12 +67,14 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 	CreateNative("_sm_stats_get_sql", Native_GetSQL);
 	CreateNative("_sm_stats_get_minplayers", Native_GetMinPlayers);
 	CreateNative("_sm_stats_get_deathpoints", Native_GetDeathPoints);
+	CreateNative("_sm_stats_get_teamfragpoints", Native_GetTeamFragPoints);
 	CreateNative("_sm_stats_get_assistpoints", Native_GetAssistPoints);
 	CreateNative("_sm_stats_get_penaltyseconds", Native_GetPenaltySeconds);
 	CreateNative("_sm_stats_get_debug", Native_GetDebug);
 	CreateNative("_sm_stats_get_allowbots", Native_GetAllowBots);
 	CreateNative("_sm_stats_get_allowabuse", Native_GetAllowAbuse);
 	CreateNative("_sm_stats_get_allowwarmup", Native_GetAllowWarmup);
+	CreateNative("_sm_stats_get_allowteamfrag", Native_GetAllowTeamFrag);
 	CreateNative("_sm_stats_get_disableafterroundend", Native_GetDisableAfterRoundEnd);
 	CreateNative("_sm_stats_get_connectsounds", Native_GetConnectSounds);
 	CreateNative("_sm_stats_player_death_fwd", Native_PlayerDeathFwd);
@@ -110,14 +114,20 @@ public void OnPluginStart()
 	g_AllowWarmup = CreateConVar("sm_stats_allow_warmup", "0", "SM Stats: Core - Allow tracking during warmup.", _, true, _, true, 1.0);
 	g_AllowWarmup.AddChangeHook(OnUpdatedAllowWarmup);
 	
+	g_AllowTeamFrag = CreateConVar("sm_stats_allow_teamkill", "0", "SM Stats: Core - Should teamkills be counted?.", _, true, _, true, 1.0);
+	g_AllowTeamFrag.AddChangeHook(OnUpdatedAllowTeamFrag);
+	
 	g_DisableAfterRoundEnd = CreateConVar("sm_stats_disable_after_round_end", "1", "SM Stats: Core - Disable after round end.", _, true, _, true, 1.0);
 	g_AllowWarmup.AddChangeHook(OnUpdatedDisableAfterRoundEnd);
 	
 	g_DeathPoints = CreateConVar("sm_stats_points_death", "10", "SM Stats: Core - Points taken when dying.", _, true);
 	g_DeathPoints.AddChangeHook(OnUpdatedDeathPoints);
 	
+	g_TeamFragPoints = CreateConVar("sm_stats_points_teamkill", "15", "SM Stats: Core - Points taken when teamkilling.", _, true);
+	g_TeamFragPoints.AddChangeHook(OnUpdatedTeamFragPoints);
+	
 	g_AssistPoints = CreateConVar("sm_stats_points_assist", "5", "SM Stats: Core - Points given when assisting.", _, true);
-	g_DeathPoints.AddChangeHook(OnUpdatedAssistPoints);
+	g_AssistPoints.AddChangeHook(OnUpdatedAssistPoints);
 	
 	g_PenaltySeconds = CreateConVar("sm_stats_penalty_seconds", "3600", "SM Stats: Core - Seconds of the points-spam penalty.", _, true);
 	g_PenaltySeconds.AddChangeHook(OnUpdatedPenaltySeconds);
@@ -200,6 +210,12 @@ void OnUpdatedAllowWarmup(ConVar cvar, const char[] oldvalue, const char[] newva
 	IntToString(view_as<bool>(cvar.BoolValue), str_value, sizeof(str_value));
 	SendUpdatedFwdValue(SMStatsUpdated_AllowWarmup, str_value);
 }
+void OnUpdatedAllowTeamFrag(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	char str_value[2];
+	IntToString(view_as<bool>(cvar.BoolValue), str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_AllowTeamFrag, str_value);
+}
 void OnUpdatedDisableAfterRoundEnd(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
 	char str_value[2];
@@ -211,6 +227,12 @@ void OnUpdatedDeathPoints(ConVar cvar, const char[] oldvalue, const char[] newva
 	char str_value[11];
 	IntToString(cvar.IntValue, str_value, sizeof(str_value));
 	SendUpdatedFwdValue(SMStatsUpdated_DeathPoints, str_value);
+}
+void OnUpdatedTeamFragPoints(ConVar cvar, const char[] oldvalue, const char[] newvalue)
+{
+	char str_value[11];
+	IntToString(cvar.IntValue, str_value, sizeof(str_value));
+	SendUpdatedFwdValue(SMStatsUpdated_TeamFragPoints, str_value);
 }
 void OnUpdatedAssistPoints(ConVar cvar, const char[] oldvalue, const char[] newvalue)
 {
@@ -345,6 +367,10 @@ any Native_GetDeathPoints(Handle plugin, int params)
 {
 	return g_DeathPoints.IntValue;
 }
+any Native_GetTeamFragPoints(Handle plugin, int params)
+{
+	return g_TeamFragPoints.IntValue;
+}
 any Native_GetAssistPoints(Handle plugin, int params)
 {
 	return g_AssistPoints.IntValue;
@@ -360,6 +386,10 @@ any Native_GetAllowAbuse(Handle plugin, int params)
 any Native_GetAllowWarmup(Handle plugin, int params)
 {
 	return g_AllowWarmup.BoolValue;
+}
+any Native_GetAllowTeamFrag(Handle plugin, int params)
+{
+	return g_AllowTeamFrag.BoolValue;
 }
 any Native_GetDisableAfterRoundEnd(Handle plugin, int params)
 {

@@ -14,6 +14,7 @@ enum struct FragEventInfo
 	
 	int penetrated;
 	
+	bool teamfrag;
 	bool suicide;
 	bool headshot;
 	bool backstab;
@@ -176,9 +177,15 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 		return;
 	}
 	
+	bool bTeamFrag;
 	if(GetClientTeam(client) == GetClientTeam(victim))
 	{
-		return;
+		bTeamFrag = true;
+		
+		if(!bAllowTeamFrag)
+		{
+			return;
+		}
 	}
 	
 	int assister = event.GetInt("assister");
@@ -258,6 +265,7 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 	frag.timestamp = GetTime();
 	frag.userid = userid;
 	frag.assister = assister;
+	frag.teamfrag = bTeamFrag;
 	frag.suicide = (userid == attacker);
 	frag.headshot = event.GetBool("headshot");
 	frag.backstab = bBackstab;
@@ -304,11 +312,13 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nassister : %i ['%s']"
 		..."\nweapon itemdef : %i ['%s'] / id : %i ['%s']"
+		..."\nteamfrag : %s"
 		..."\n"
 		, attacker, g_Player[client].name2, gd_attacker, g_attacker ? "true":"false"
 		, userid, g_Player[victim].name2, gd_userid, g_userid ? "true":"false"
 		, assister, (assist > 0) ? g_Player[assist].name2 : ""
-		, itemdef, classname, event.GetInt("weapon_itemid"), weapon);
+		, itemdef, classname, event.GetInt("weapon_itemid"), weapon
+		, bTeamFrag ? "true" : "false");
 	}
 	
 	//
