@@ -14,34 +14,37 @@ stock char str_cmdMenu[][] =
 {
 	"sm_rank",
 	"sm_ranks",
-	"sm_top10",
-	"sm_top",
 	"sm_plats",
 	"sm_placering",
 	"sm_placerad",
 	"sm_rang",
+};
+stock char str_Top10Menu[][] =
+{
+	"sm_top10",
+	"sm_top",
 	"sm_topp",
 	"sm_topp10"
 };
 
 //
 
-#define queryId_frag_assister 0
-#define queryId_frag_weapon 1
-#define queryId_frag_victim_death 2
-#define queryId_frag_playerlist 3
-#define queryId_frag_playerlist_MapUpdate 4
+#define queryId_kill_assister 0
+#define queryId_kill_weapon 1
+#define queryId_kill_victim_death 2
+#define queryId_kill_playerlist 3
+#define queryId_kill_playerlist_MapUpdate 4
 #define queryId_object_placed 5
 #define queryId_object_placed_MapUpdate 6
 #define queryId_object_destroyed 7
 #define queryId_object_destroyed_MapUpdate 8
 stock char g_strTXNqueryId[][] = 
 {
-	/*0*/"frag event: assister",
-	/*1*/"frag event: weapon",
-	/*2*/"frag event: victim death",
-	/*3*/"frag event: playerlist",
-	/*4*/"frag event: playerlist map update",
+	/*0*/"kill event: assister",
+	/*1*/"kill event: weapon",
+	/*2*/"kill event: victim death",
+	/*3*/"kill event: playerlist",
+	/*4*/"kill event: playerlist map update",
 	/*5*/"object event: placed",
 	/*6*/"object event: placed map update",
 	/*7*/"object event: destroyed",
@@ -146,7 +149,7 @@ native int _sm_stats_get_connectsounds(char[] snd_top1, char[] snd_top10, char[]
  *	SourceMod Stats: Core.
  *	Call the player death forward.
  */
-native void _sm_stats_player_death_fwd(int attacker, int frags, int[] userids, int[] assisters, const char[] classname, int[] itemdef);
+native void _sm_stats_player_death_fwd(int attacker, int kills, int[] userids, int[] assisters, const char[] classname, int[] itemdef);
 
 // crucial stuff, re-instate lost data after restart.
 native void _sm_stats_info_update_stats_active(bool bStatsActive);
@@ -200,6 +203,7 @@ char g_sndConnectedTop10[96]
 , g_sndConnectedTop1[96]
 , g_sndConnectedGeneric[96];
 Database sql = null;
+KeyValues core = null;
 bool bDebug = false;
 bool bLoaded = false;
 bool bStatsActive = false;
@@ -229,8 +233,8 @@ char cMap[64];
 
 public void _sm_stats_loaded_core()
 {
-	PrintToServer(core_chattag..." Version "...Version..." (https://github.com/SMStats)");
-	LogToGame(core_chattag..." Version "...Version..." (https://github.com/SMStats)");
+	PrintToServer(core_chattag..." Version "...Version..." (https://github.com/nukkonyan/SMStats)");
+	LogToGame(core_chattag..." Version "...Version..." (https://github.com/nukkonyan/SMStats)");
 	bLoaded = true;
 	
 	_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
@@ -253,6 +257,9 @@ void PrepareTranslations()
 {
 	LoadTranslations("sm_stats.phrases");
 	LoadTranslations(game_translation);
+	#if defined load_cstrike
+	LoadTranslations("sm_stats_cstrike.phrases");
+	#endif
 	GeoipCountryLoadTranslation();
 }
 
@@ -288,6 +295,10 @@ public void OnPluginStart()
 {
 	PrepareTranslations();
 	PrepareGame();
+	#if defined load_cstrike
+	PrepareGame_CStrike();
+	#endif
+	PrepareCoreCFG();
 	
 	#if defined load_menus
 	LoadMenus();
@@ -303,7 +314,7 @@ public void OnPluginStart()
 	
 	RegAdminCmd("sm_stats_erase_database", _sm_stats_erase_db_cmd, ADMFLAG_ROOT, "SMStats: Core - Erase all database information.");
 	
-	// plugin was restarted, manually or via update.
+	// plugin was restarted, manually started or restarted via update.
 	// make sure the natives are loaded.
 	if(SMStatsInfo.IsLoaded())
 	{
@@ -326,8 +337,7 @@ public void OnPluginStart()
 			iMapTimerSeconds = this_way_with_arrays_sucks_pls_add_SetNativeCell.iMapTimerSeconds;
 		}
 		
-		PrintToServer(core_chattag..." Version "...Version..." (https://github.com/SMStats)");
-		LogToGame(core_chattag..." Version "...Version..." (https://github.com/SMStats)");
+		LogMessage(" Version "...Version..." (https://github.com/nukkonyan/SMStats)");
 		
 		_sm_stats_get_chattag(g_ChatTag, sizeof(g_ChatTag));
 		_sm_stats_get_connectsounds(g_sndConnectedTop1, g_sndConnectedTop10, g_sndConnectedGeneric);
@@ -422,7 +432,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		{
 			case false:
 			{
-				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking weapon frags.), Did you install it correctly?", sql_table_weapons);
+				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking weapon kills.), Did you install it correctly?", sql_table_weapons);
 			}
 			
 			case true:
@@ -452,7 +462,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		{
 			case false:
 			{
-				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking frag events.), Did you install it correctly?", sql_table_kill_log);
+				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking kills events.), Did you install it correctly?", sql_table_kill_log);
 			}
 			
 			case true:
@@ -639,7 +649,7 @@ Action Timer_PluginLoaded(Handle timer)
 		if(IsValidClient(client, false))
 		{
 			// obtain the names.
-			GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
+			GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
 			
 			#if defined load_players
 			if(!IsFakeClient(client))
@@ -672,7 +682,7 @@ stock void array_AddWeapon(int itemdef, const char[] cvar_name, int value, char[
 	
 	int maxlen = strlen(description)+52;
 	char[] fixed = new char[maxlen];
-	Format(fixed, maxlen, "%s - Points earned when fragging with %s.", core_chattag2, description);
+	Format(fixed, maxlen, "%s - Points earned when killing with %s.", core_chattag2, description);
 	
 	CvarWeapon array;
 	array.itemdef = itemdef;
@@ -842,6 +852,38 @@ stock void TXN_EraseDatabaseConfig_OnFailure(Database db, int client, int numQue
 	len += FormatEx(txt[len], sizeof(txt)-len, "\nError reason below:\n%s", error);
 	
 	PrintToServer(txt);
+}
+
+// core cfg
+
+stock void PrepareCoreCFG()
+{
+	char path[64];
+	BuildPath(Path_SM, path, sizeof(path), "configs/sm_stats/core.cfg");
+	if(!FileExists(path))
+	{
+		LogError(core_chattag..." Core CFG Error : File 'configs/sm_stats/core.cfg' was not found!");
+		return;
+	}
+	
+	core = new KeyValues("SMStatsCFG");
+	
+	if(!core.ImportFromFile(path))
+	{
+		delete core;
+		LogError(core_chattag..." Core CFG Error : Could not convert into readable KeyValue!");
+		return;
+	}
+	
+	if(!core.GotoFirstSubKey())
+	{
+		delete core;
+		LogError(core_chattag..." Core CFG Error : Could not read first subkey!");
+		return;
+	}
+	
+	LogToGame(core_chattag..." Loaded Core CFG ('configs/sm_stats/core.cfg')");
+	core.Rewind();
 }
 
 #endif

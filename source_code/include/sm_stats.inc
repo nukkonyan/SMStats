@@ -132,24 +132,39 @@ enum SMStats_Type
 	Stats_BombsResetted = 100,
 	
 	/* CS:GO */
-	Stats_BlindedFrags = 101,
-	Stats_ThroughSmokeFrags = 102,
-	Stats_Wipes = 103,
-	Stats_ChickenFrags = 104,
+	Stats_ThroughSmokeFrags = 101,
+	Stats_Wipes = 102,
+	Stats_ChickenFrags = 103,
 	
-	/* counter-strike overall */
-	Stats_MVPs = 105,
-	Stats_BombsPlanted = 106,
-	Stats_BombsDefused = 107,
-	Stats_BombsExploded = 108,
-	Stats_BombFrags = 109,
-	Stats_MoneySpent = 110,
-	Stats_FlashedOpponents = 111,
-	Stats_KnifeFrags = 112,
-	Stats_HostagesRescued = 113,
-	Stats_HostagesFragged = 114,
+	/* Counter-Strike overall */
+	Stats_MVPs = 104,
+	Stats_BombsPlanted = 105,
+	Stats_BombsDefused = 106,
+	Stats_BombsExploded = 107,
+	Stats_BombFrags = 108,
+	Stats_MoneySpent = 109,
+	Stats_Blinded = 110,
+	Stats_BlindedFrags = 111,
+	Stats_BlindedOpponents = 112,
+	Stats_KnifeFrags = 113,
+	Stats_HostagesRescued = 114,
+	Stats_HostagesFragged = 115,
+	
+	/* Other */
+	Stats_Hit_Head = 130,
+	Stats_Hit_Shoulder = 131,
+	Stats_Hit_LeftArm = 132,
+	Stats_Hit_RightArm = 133,
+	Stats_Hit_LeftHand = 134,
+	Stats_Hit_RightHand = 135,
+	Stats_Hit_LeftLeg = 136,
+	Stats_Hit_RightLeg = 137,
+	Stats_Hit_LeftKnee = 138,
+	Stats_Hit_RightKnee = 139,
+	Stats_Hit_LeftFeet = 140,
+	Stats_Hit_RightFeet = 141,
 }
-#define SMStats_StatsSize 115
+#define SMStats_StatsSize 142
 enum SMStatsUpdatedFwdType
 {
 	SMStatsUpdated_ChatTag = 0,

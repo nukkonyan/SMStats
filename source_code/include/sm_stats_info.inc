@@ -20,6 +20,7 @@ enum struct SMStats_FragMsgInfo
 	bool Bomb;
 	bool Blinded;
 	bool PumpkinBomb;
+	bool Quickscope;
 	
 	void Reset()
 	{
@@ -43,6 +44,7 @@ enum struct SMStats_FragMsgInfo
 		this.Bomb = false;
 		this.Blinded = false;
 		this.PumpkinBomb = false;
+		this.Quickscope = false;
 	}
 }
 
@@ -247,6 +249,30 @@ enum struct SMStats_TF2GameInfo
 		this.iRobotFragEvent = 0;
 		this.iFrameFeignDeaths = 0;
 		this.iFrameHealPoints = -1;
+	}
+}
+
+enum struct SMStats_CSSGameInfo
+{
+	int work_in_progress;
+}
+
+enum struct SMStats_CSGOGameInfo
+{
+	ArrayList aFragEvent;
+	ArrayList aFrameBlinded;
+	
+	void Reset()
+	{
+		if(!!this.aFragEvent)
+		{
+			delete this.aFragEvent;
+		}
+		
+		if(!!this.aFrameBlinded)
+		{
+			delete this.aFrameBlinded;
+		}
 	}
 }
 
