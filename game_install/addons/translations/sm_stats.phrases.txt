@@ -351,7 +351,7 @@
 		// {3} country name
 		"#format" "{1:i},{2:s},{3:s}"
 		"en" "Top {1} player {2} from {3} {default}has connected!"
-		"jp" "トップ{1}プレイヤー {2} が{orange}{3}{default}からを接続しました！"
+		"jp" "トップ{1}プレイヤー {2} が{orange}{3}{default}から接続しました！"
 		"sv" "Topp {1} spelare {2} från {3} {default}har anslutit!"
 		"tr" "Sunucunun en iyi {1}. oyuncusu {2} {3} ülkesinden {default}oyuna katıldı!"
 	}
