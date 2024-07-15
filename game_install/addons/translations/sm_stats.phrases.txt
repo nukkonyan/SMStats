@@ -338,7 +338,7 @@
 		// {6} disconnect reason
 		"#format" "{1:s},{2:i},{3:i},{4:s},{5:s},{6:s}"
 		"en" "{1} (Pos #{2}/{3}, {4}) from {5} has left the game. {grey}({6})"
-		"jp" "{1} ({2}/{3}立、{4})が{orange}{5}{default}からをゲームを落ちました。 {grey}（{6}）"
+		"jp" "{1} ({2}/{3}立、{4})が{orange}{5}{default}からゲームによって切断されました。 {grey}（{6}）"
 		"nl" "{1} (Pos #{2}/{3}, {4}) van {5} heeft het spel verlaten {grey}({6})"
 		"no" "{1} (Pos #{2}/{3}, {4}) fra {5} har forlatt spillet. {grey}({6})"
 		"sv" "{1} (Pos #{2}/{3}, {4}) från {5} har lämnat spelet. {grey}({6})"
@@ -580,7 +580,7 @@
 		// {1} points earned
 		"#format" "{1:s}"
 		"en" "Points earned : {1}"
-		"jp" "ポイントをゲット : {1}"
+		"jp" "点を獲得した : {1}"
 		"sv" "Poäng belönad : {1}"
 		"tr" "Kazanılan Puanlar : {1}"
 	}
@@ -654,7 +654,7 @@
 		// {1} achievements earned count
 		"#format" "{1:i}"
 		"en" "Achievements Earned : {1}"
-		"jp" "実績をゲット : {1}"
+		"jp" "実績を獲得した : {1}"
 		"sv" "Prestationer uppnått : {1}"
 		"tr" "Kazanılan Başarımlar : {1}"
 	}
@@ -871,7 +871,7 @@
 	    // player points
 	    // this will automatically become 'x point or 'x points'
 	    "en" " point#|# points"
-	    "jp" "ポイント"
+	    "jp" "点"
 	    "sv" " poäng"
 	    "nl" " punt#|# punten"
 	    "no" " poeng"
@@ -1049,7 +1049,7 @@
 	    // {3} victim fragged
 	    "#format" "{1:s},{2:s},{3:s}"
 	    "en" "{1} for assisting {2} in neutralizing {3}."
-	    "jp" "{2}が{3}を無力化したでアシストしてたため{1}。"
+	    "jp" "{2}が{3}を無力化したでアシストしてたため{1}"
 	    "sv" "{1} för att assistera {2} att neutralizera {3}."
 	    "tr" "{2} oyuncusunun {3} oyuncusunu öldürmesine yardım ederek {1} kazandın."
 	}
@@ -1058,7 +1058,7 @@
 	    // {1} points lost
 	    "#format" "{1:s}"
 	    "en" "{1} for dying."
-	    "jp" "死亡ため{1}。"
+	    "jp" "死亡ため{1}"
 	    "no" "{1} for å dø."
 	    "sv" "{1} för att dö."
 	    "tr" "öldüğün için {1} kaybettin."
@@ -1070,7 +1070,7 @@
 	    // {3} special frag event
 	    "#format" "{1:s},{2:s},{3:s}"
 	    "en" "{1} for neutralizing {2} ({3})"
-	    "jp" "【{3}】{2}を無力化したため{1}。"
+	    "jp" "【{3}】{2}を無力化したため{1}"
 	    "sv" "{1} för att neutralizera {2} ({3})"
 	    "tr" "{2} oyuncusunu öldürdüğün için {1} kazandın ({3})"
 	}
@@ -1080,7 +1080,7 @@
 		// {2} victim name
 		"#format" "{1:s},{2:s}"
 		"en" "{1} for neutralizing {2}."
-		"jp" "{2}を無力化したため{1}。"
+		"jp" "{2}を無力化したため{1}"
 		"sv" "{1} för att neutralizera {2}."
 		"tr" "{2} oyuncusunu öldürdüğün için {1} kazandın."
 	}
