@@ -1063,6 +1063,13 @@
 	    "sv" "{1} för att dö."
 	    "tr" "öldüğün için {1} kaybettin."
 	}
+	"#SMStats_FragEvent_TeamFrag" //Death.
+	{
+	    // {1} points lost
+	    "#format" "{1:s}"
+	    "en" "{1} for teamkilling."
+	    "jp" "チームキルしたため{1}"
+	}
 	"#SMStats_FragEvent_Special" //Special kill event.
 	{
 	    // {1} points earned

@@ -82,8 +82,8 @@ public Plugin myinfo =
 
 //#include "sm_stats_csgo/menus.sp"
 #include "sm_stats_csgo/functions.sp"
-#include "sm_stats_csgo/game.sp"
 #include "sm_stats_cstrike/game.sp"
+#include "sm_stats_csgo/game.sp"
 
 #include "sm_stats/functions.sp"
 #include "sm_stats/damage_done.sp"

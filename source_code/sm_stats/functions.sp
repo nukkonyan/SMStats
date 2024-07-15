@@ -363,7 +363,7 @@ stock void GetMultipleTargets(int client, const int[] list, int counter, char[] 
 		int userid3 = list[2];
 		int target3 = GetClientOfUserId(userid3);
 		
-		Format(dummy, maxlen, "%s%T%s%T%s", g_Player[target1].name, "#SMStats_Comma", client, g_Player[target2].name2, "#SMStats_And", client, g_Player[target3].name);
+		Format(dummy, maxlen, "%s%T%s%T%s", g_Player[target1].name, "#SMStats_Comma", client, g_Player[target2].name, "#SMStats_And", client, g_Player[target3].name);
 	}
 	else
 	{
@@ -1966,9 +1966,9 @@ stock bool CS_IsClientInSmoke(int client)
 
 stock void UpdatePlayerName(int client)
 {
-	if(IsValidClient(client, !bAllowBots ? true : false))
+	if(IsValidClient(client, !bAllowBots))
 	{
-		GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
+		GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
 	}
 }
 
@@ -2423,13 +2423,13 @@ stock void PenaltyPlayer(int client, int pPoints)
 	
 	//
 	
-	if(bDebug) PrintToServer(core_chattag..." PenaltyPlayer()"
+	if(bDebug) LogMessage("PenaltyPlayer()"
 	... "\nUserID : %i ['%s']"
 	... "\nPosition : #%i"
 	... "\nPenalty : %i seconds"
 	... "\nReverted Points : %i"
 	... "\n"
-	, g_Player[client].name2
+	, g_Player[client].userid, g_Player[client].name2
 	, position
 	, penalty
 	, pPoints);

@@ -1,3 +1,16 @@
+/* custom network props */
+stock int m_hLastFlashBangGrenade = 0;
+stock int m_hLastHeGrenade = 0;
+stock int m_hLastSmokeGrenade = 0;
+stock int m_hLastFirebombGrenade[MAXPLAYERS+1] = {-1, ...};
+stock int m_hLastGrenade[MAXPLAYERS+1] = {-1, ...};
+
+stock int m_hLastBombPlanter = 0;
+stock int m_hLastBombDefuser = 0;
+
+stock bool m_bIsBlinded[MAXPLAYERS+1] = {false, ...};
+
+/* cvars */
 ConVar g_cvarBombPlanted;
 ConVar g_cvarBombDefused;
 
@@ -22,6 +35,9 @@ void PrepareGame_CStrike()
 	HookEvent("bomb_defused", OnBombDefused, EventHookMode_Pre);
 	HookEvent("bomb_exploded", OnBombExploded, EventHookMode_Pre);
 	HookEvent("hostage_rescued", OnHostageRescued, EventHookMode_Pre);
+	
+	/* weapons */
+	HookEventEx("weapon_fire", OnWeaponFired, EventHookMode_Pre);
 	
 	/* grenades */
 	HookEvent("player_blind", OnPlayerBlinded, EventHookMode_Pre);
@@ -53,6 +69,8 @@ void OnBombPlanted(Event event, const char[] event_name, bool asdf)
 	}
 	
 	g_Player[client].session[Stats_BombsPlanted] += 1;
+	
+	m_hLastBombPlanter = client;
 	
 	int points;
 	if((points = g_cvarBombPlanted.IntValue) > 0)
@@ -105,6 +123,8 @@ void OnBombDefused(Event event, const char[] event_name, bool asdf)
 	}
 	
 	g_Player[client].session[Stats_BombsDefused] += 1;
+	
+	m_hLastBombDefuser = client;
 	
 	int points;
 	if((points = g_cvarBombDefused.IntValue) > 0)
@@ -208,6 +228,72 @@ void OnHostageRescued(Event event, const char[] event_name, bool asdf)
 		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
 		CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_CStrike_Hostage_Rescued", client, points_plural);
+	}
+}
+
+/* Called as soon as a weapon was fired. */
+void OnWeaponFired(Event event, const char[] event_name, bool asdf)
+{
+	if(!IsValidStats())
+	{
+		return;
+	}
+	
+	int userid = event.GetInt("userid");
+	if(userid < 1)
+	{
+		return;
+	}
+	
+	int client;
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		return;
+	}
+	
+	if(IsValidAbuse(client))
+	{
+		return;
+	}
+	
+	/* Since both incendiary and molotov counts as 'firebomb' in 'player_death' event, we need to get the correct grenade. */
+	char weapon[64];
+	event.GetString("weapon", weapon, sizeof(weapon));
+	
+	bool bGrenade;
+	if(StrEqual(weapon, "weapon_incgrenade", false))
+	{
+		m_hLastFirebombGrenade[client] = 48;
+		bGrenade = true;
+	}
+	else if(StrEqual(weapon, "weapon_molotov", false))
+	{
+		m_hLastFirebombGrenade[client] = 46;
+		bGrenade = true;
+	}
+	
+	//
+	
+	if(bDebug && bGrenade)
+	{
+		char t[11];
+		
+		switch(GetClientTeam(client))
+		{
+			case 1: t = "SPEC"
+			case 2: t = "T";
+			case 3: t = "CT";
+			default:t = "UNASSIGNED"
+		}
+		
+		LogMessage("OnWeaponFired() Debug : "
+		..."\nuserid : %i ['%s'] (team : %s)"
+		..."\nweapon : '%s'"
+		..."\nsilenced : %s"
+		..."\n"
+		, userid, g_Player[client].name2, t
+		, weapon
+		, event.GetBool("silenced") ? "true" : "false");
 	}
 }
 

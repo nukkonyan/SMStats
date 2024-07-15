@@ -1,4 +1,4 @@
-void GetPlayerName(int client, char[] name, int maxlen)
+void GetPlayerName(int client, char[] name, int maxlen, char[] name2, int maxlen2)
 {
 	switch(IsValidDeveloperType(client))
 	{
@@ -24,6 +24,8 @@ void GetPlayerName(int client, char[] name, int maxlen)
 			}
 		}
 	}
+	
+	Format(name2, maxlen2, "%N", client);
 }
 
 /**

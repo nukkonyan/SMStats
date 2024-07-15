@@ -197,6 +197,26 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 	
 	bool bValidMidAir = true;
 	bool bBackstab = false;
+	//bool bBurned = false;
+	
+	if(StrEqual(classname, "inferno", false))
+	{
+		switch(m_hLastFirebombGrenade[client])
+		{
+			// weapon_molotov
+			case 46:
+			{
+				strcopy(classname, sizeof(classname), "weapon_molotov");
+				itemdef = 46;
+			}
+			// weapon_incgrenade
+			case 48:
+			{
+				strcopy(classname, sizeof(classname), "weapon_incgrenade");
+				itemdef = 48;
+			}
+		}
+	}
 	
 	//
 	

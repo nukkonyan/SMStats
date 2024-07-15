@@ -68,8 +68,7 @@ public void OnClientConnected(int client)
 	}
 	
 	g_Player[client].userid = userid;
-	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name));
-	Format(g_Player[client].name2, sizeof(g_Player[].name2), "%N", client);
+	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
 	
 	if(!GetClientIP(client, g_Player[client].ip, sizeof(g_Player[].ip)))
 	{
@@ -139,7 +138,7 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 		// duplicate runs of same event.
 		else if(!StrEqual(name, g_Player[client].name2))
 		{
-			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
+			strcopy(g_Player[client].name2, sizeof(g_Player[].name), name);
 			
 			CallbackQuery("update `"...sql_table_settings..."` set `PlayerName`='%s' where `SteamID`='%s'"
 			, query_error_uniqueid_OnPlayerNameUpdate
