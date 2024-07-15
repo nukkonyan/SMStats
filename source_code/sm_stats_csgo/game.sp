@@ -137,6 +137,12 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 		return;
 	}
 	
+	if(!sql)
+	{
+		LogError(core_chattag..." OnPlayerDeath error: No database connection available.");
+		return;
+	}
+	
 	int userid = event.GetInt("userid");
 	int attacker = event.GetInt("attacker");
 	if(userid < 1
@@ -145,22 +151,12 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 		return;
 	}
 	
-	if(!sql)
-	{
-		LogError(core_chattag..." OnPlayerDeath error: No database connection available.");
-		return;
-	}
-	
 	//
 	
-	int client = GetClientOfUserId(attacker);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	int victim = GetClientOfUserId(userid);
-	if(!IsValidClient(victim, !bAllowBots))
+	int client;
+	int victim;
+	if(!IsValidClient((client = GetClientOfUserId(attacker)))
+	|| !IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots))
 	{
 		return;
 	}
@@ -283,7 +279,7 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 		char weapon[64];
 		event.GetString("weapon", weapon, sizeof(weapon));
 		
-		PrintToServer(core_chattag..." OnPlayerDeath() Debug : "
+		LogMessage(" OnPlayerDeath() Debug : "
 		..."\nattacker : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nassister : %i ['%s']"
@@ -769,6 +765,10 @@ Action MapTimer_GameTimer(Handle timer)
 					}
 				}
 			}
+			
+			// \sm_stats_cstrike\game.sp
+			
+			MapTimer_GameTimer_CStrike(client, txn);
 		}
 		
 		//

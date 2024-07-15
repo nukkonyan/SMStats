@@ -276,24 +276,24 @@ stock bool IsValidStats()
 {
 	if(!bLoaded)
 	{
-		if(bDebug) PrintToServer("IsValidStats() Procedure Halted: - bLoaded : false");
+		if(bDebug) PrintToServer("IsValidStats() Procedure Halted- bLoaded : false");
 		return false;
 	}
 	else if(!bStatsActive)
 	{
-		if(bDebug) PrintToServer("IsValidStats() Procedure Halted:  - bStatsActive : false");
+		if(bDebug) PrintToServer("IsValidStats() Procedure Halted - bStatsActive : false");
 		return false;
 	}
 	else if(!bRoundActive)
 	{
-		if(bDebug) PrintToServer("IsValidStats() Procedure Halted:  - bRoundActive : false");
+		if(bDebug) PrintToServer("IsValidStats() Procedure Halted - bRoundActive : false");
 		return false;
 	}
 	else if(bWarmupActive)
 	{
 		if(!bAllowWarmup)
 		{
-			if(bDebug) PrintToServer("IsValidStats() Procedure Halted:  - bWarmupActive : false (not allowed)");
+			if(bDebug) PrintToServer("IsValidStats() Procedure Halted - bWarmupActive : false (not allowed)");
 			return false;
 		}
 	}

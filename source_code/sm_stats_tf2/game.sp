@@ -1148,7 +1148,7 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		char weapon[64];
 		event.GetString("weapon", weapon, sizeof(weapon));
 		
-		PrintToServer(core_chattag..." OnPlayerDeath() Debug : "
+		LogMessage("OnPlayerDeath() Debug : "
 		..."\nattacker : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nassister : %i ['%s']"

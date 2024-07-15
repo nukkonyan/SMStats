@@ -1,10 +1,10 @@
 #pragma semicolon 1
 #pragma newdecls required
 #pragma tabsize 0
-#define Version "1.0.0@testing1"
+#define Version "1.0@beta1"
 #define VersionAlt "v" ... Version
 #define MaxPlayers 65
-#define MaxItemDef 530 // will later be updated to use indexes instead of itemdef
+#define MaxItemDef 527 // will later be updated to use indexes instead of itemdef
 #define GameType "csgo"
 #define core_chattag "[SM Stats: CSGO]"
 #define core_chattag2 "SM Stats: CSGO"
@@ -93,4 +93,4 @@ public Plugin myinfo =
 
 // updater
 #define UpdaterURL "https://raw.githubusercontent.com/nukkonyan/SMStats/main/sm_updater/SMStats_CSGO.txt"
-#include "sm_stats/updater.sp"
+//#include "sm_stats/updater.sp"
