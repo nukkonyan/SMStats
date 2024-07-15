@@ -554,7 +554,7 @@
 		// {1} last connected time format
 		"#format" "{1:s}"
 		"en" "Last connected : {1}"
-		"jp" "最後接続しました : {1}"
+		"jp" "最後接続されました : {1}"
 		"sv" "Senast ansluten : {1}"
 		"tr" "Son bağlantı : {1}"
 	}
@@ -580,7 +580,7 @@
 		// {1} points earned
 		"#format" "{1:s}"
 		"en" "Points earned : {1}"
-		"jp" "点を獲得した : {1}"
+		"jp" "点獲得した : {1}"
 		"sv" "Poäng belönad : {1}"
 		"tr" "Kazanılan Puanlar : {1}"
 	}
