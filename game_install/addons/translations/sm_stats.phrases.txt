@@ -1040,6 +1040,11 @@
 		"en" "{green}Quickscope"
 		"jp" "{green}クイックスコープ"
 	}
+	"#SMStats_FragEvent_Type20" //Wallbang frag.
+	{
+		"en" "{green}Wallbang"
+		"jp" "{green}ウォールバング"
+	}
 
 	//Kill events
 	"#SMStats_FragEvent_Assisted" //Assist
