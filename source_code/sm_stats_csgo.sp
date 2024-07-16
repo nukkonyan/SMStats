@@ -6,8 +6,8 @@
 #define MaxPlayers 65
 #define MaxItemDef 527 // will later be updated to use indexes instead of itemdef
 #define GameType "csgo"
-#define core_chattag "[SM Stats: CSGO]"
-#define core_chattag2 "SM Stats: CSGO"
+#define core_chattag "[SMStats: CSGO]"
+#define core_chattag2 "SMStats: CSGO"
 
 #define load_plugin_core
 #define load_cstrike
@@ -73,7 +73,7 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 
 public Plugin myinfo =
 {
-	name = "SM Stats: CSGO",
+	name = "SMStats: CSGO",
 	author = "nukkonyan",
 	description = "Tracks kills, maps, events, achievements, etc.",
 	version = Version,

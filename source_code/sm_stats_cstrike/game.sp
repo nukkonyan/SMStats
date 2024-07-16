@@ -10,6 +10,9 @@ stock int m_hLastBombDefuser = 0;
 
 stock bool m_bIsBlinded[MAXPLAYERS+1] = {false, ...};
 
+stock bool m_bIsScoped[MAXPLAYERS+1] = {false, ...};
+stock bool m_bWasJustScoped[MAXPLAYERS+1] = {false, ...};
+
 /* cvars */
 ConVar g_cvarBombPlanted;
 ConVar g_cvarBombDefused;
@@ -38,6 +41,7 @@ void PrepareGame_CStrike()
 	
 	/* weapons */
 	HookEventEx("weapon_fire", OnWeaponFired, EventHookMode_Pre);
+	HookEventEx("weapon_zoom", OnWeaponZoomed, EventHookMode_Pre);
 	
 	/* grenades */
 	HookEvent("player_blind", OnPlayerBlinded, EventHookMode_Pre);
@@ -234,7 +238,7 @@ void OnHostageRescued(Event event, const char[] event_name, bool asdf)
 /* Called as soon as a weapon was fired. */
 void OnWeaponFired(Event event, const char[] event_name, bool asdf)
 {
-	if(!IsValidStats())
+	if(!bLoaded || !bStatsActive)
 	{
 		return;
 	}
@@ -295,6 +299,49 @@ void OnWeaponFired(Event event, const char[] event_name, bool asdf)
 		, weapon
 		, event.GetBool("silenced") ? "true" : "false");
 	}
+}
+
+/* Called as soon as a weapon was zoomed. */
+void OnWeaponZoomed(Event event, const char[] event_name, bool asdf)
+{
+	if(!bLoaded || !bStatsActive)
+	{
+		return;
+	}
+	
+	int userid;
+	if((userid = event.GetInt("userid")) < 1)
+	{
+		return;
+	}
+	
+	int client;
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		return;
+	}
+	
+	int weapon;
+	if(!IsValidEntity((weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))))
+	{
+		return;
+	}
+	
+	int m_zoomLevel = GetEntProp(weapon, Prop_Send, "m_zoomLevel");
+	if(m_zoomLevel < 1)
+	{
+		m_bIsScoped[client] = false;
+		
+		if(m_bWasJustScoped[client])
+		{
+			m_bWasJustScoped[client] = false;
+		}
+		
+		return;
+	}
+	
+	m_bIsScoped[client] = true;
+	m_bWasJustScoped[client] = true;
 }
 
 /* Called as soon as a player was blinded. */

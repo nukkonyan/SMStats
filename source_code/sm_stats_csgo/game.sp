@@ -1,5 +1,4 @@
 /* ========== Convars ========= */
-/* other */
 stock ConVar g_Collateral;
 
 //
@@ -19,12 +18,15 @@ enum struct FragEventInfo
 	bool headshot;
 	bool backstab;
 	bool noscope;
+	bool blinded;
 	bool dominated;
 	bool revenge;
 	bool gibfrag;
 	bool collateral;
 	bool midair;
 	bool airshot;
+	bool quickscope;
+	bool wallbang;
 	
 	char classname[64];
 	int itemdef;
@@ -259,7 +261,17 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 		}
 	}
 	
+	// quickscope check
+	
+	bool bQuickscope = false; // will use timestamp check to correctly identify if the kill was a quickscope.
+	
+	// wallbang check
+	
+	bool bWallbang = false;
+	
 	//
+	
+	int penetrated;
 	
 	FragEventInfo frag;
 	frag.timestamp = GetTime();
@@ -270,11 +282,14 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 	frag.headshot = event.GetBool("headshot");
 	frag.backstab = bBackstab;
 	frag.noscope =  event.GetBool("noscope");
+	frag.blinded = event.GetBool("attackerblind");
+	frag.quickscope = bQuickscope;
+	frag.wallbang = bWallbang;
 	
 	frag.dominated = event.GetBool("dominated");
 	frag.revenge = event.GetBool("revenge");
 	
-	frag.collateral = (event.GetInt("penetrated") > 0);
+	frag.collateral = ((penetrated = event.GetInt("penetrated")) > 0);
 	
 	float gd_attacker = DistanceAboveGround(client);
 	float gd_userid = DistanceAboveGround(victim);
@@ -307,17 +322,23 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 		char weapon[64];
 		event.GetString("weapon", weapon, sizeof(weapon));
 		
-		LogMessage(" OnPlayerDeath() Debug : "
+		LogMessage("OnPlayerDeath() Debug : "
 		..."\nattacker : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nassister : %i ['%s']"
 		..."\nweapon itemdef : %i ['%s'] / id : %i ['%s']"
+		..."\npenetrated objects : %i"
+		..."\nquickscope : %s"
+		..."\nwallbang : %s"
 		..."\nteamfrag : %s"
 		..."\n"
 		, attacker, g_Player[client].name2, gd_attacker, g_attacker ? "true":"false"
 		, userid, g_Player[victim].name2, gd_userid, g_userid ? "true":"false"
 		, assister, (assist > 0) ? g_Player[assist].name2 : ""
 		, itemdef, classname, event.GetInt("weapon_itemid"), weapon
+		, penetrated
+		, bQuickscope ? "true" : "false"
+		, bWallbang ? "true" : "false"
 		, bTeamFrag ? "true" : "false");
 	}
 	
@@ -432,6 +453,7 @@ Action MapTimer_GameTimer(Handle timer)
 					bool bPrev_domination;
 					bool bPrev_revenge;
 					bool bPrev_noscope;
+					bool bPrev_blinded;
 					bool bPrev_airshot;
 					bool bPrev_collateral;
 					bool bPrev_midair;
@@ -527,6 +549,18 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Noscope = false;
 								}
 								bPrev_noscope = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Blinded = event.blinded))
+						{
+							case false: bPrev_blinded = false;
+							case true:
+							{
+								if(frags > 1 && !bPrev_blinded)
+								{
+									g_Player[client].fragmsg.Blinded = false;
+								}
+								bPrev_blinded = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Airshot = event.airshot))

@@ -597,7 +597,7 @@
 		// {1} kill count
 		"#format" "{1:i}"
 		"en" "Frags : {1}"
-		"jp" "FRAG数 : {1}"
+		"jp" "キル数 : {1}"
 		"tr" "Öldürme Sayısı : {1}"
 	}
 	"#SMStats_MenuInfo_Assists"
@@ -1012,7 +1012,6 @@
 	"#SMStats_FragEvent_Type15" //Collateral.
 	{
 	    "en" "{green}Collateral"
-	    "sv" "{green}Kollateral"
 	    "tr" "{green}Doğal yollar {default}ile"
 	}
 	"#SMStats_FragEvent_Type16" //Grenade frag.
@@ -1031,7 +1030,7 @@
 	"#SMStats_FragEvent_Type18" //Blinded frag.
 	{
 	    "en" "{green}Blinded"
-	    "jp" "{green}ブランド"
+	    "jp" "{green}ブラインド"
 	    "sv" "{green}Förblindad"
 	    "tr" "{green}Kör {default}iken"
 	}

@@ -406,6 +406,8 @@ enum
 	Frag_Grenade = 16,
 	Frag_Bomb = 17,
 	Frag_Blinded = 18,
+	Frag_Quickscope = 19,
+	Frag_Wallbang = 20,
 }
 char Frag_Type[][] = {
 /*0*/"#SMStats_FragEvent_Type0", //Mid-Air.
@@ -422,11 +424,13 @@ char Frag_Type[][] = {
 /*11*/"#SMStats_FragEvent_Type11", //Mini-Sentry Gun.
 /*12*/"#SMStats_FragEvent_Type12", //Wrangled Sentry Gun.
 /*13*/"#SMStats_FragEvent_Type13", //Wrangled Mini-Sentry Gun.
-/*12*/"#SMStats_FragEvent_Type14", //Pumpkin Bomb frag.
-/*13*/"#SMStats_FragEvent_Type15", //Collateral.
-/*14*/"#SMStats_FragEvent_Type16", //Grenade frag.
-/*15*/"#SMStats_FragEvent_Type17", //Bomb frag.
-/*16*/"#SMStats_FragEvent_Type18", //Blinded frag.
+/*14*/"#SMStats_FragEvent_Type14", //Pumpkin Bomb frag.
+/*15*/"#SMStats_FragEvent_Type15", //Collateral.
+/*16*/"#SMStats_FragEvent_Type16", //Grenade frag.
+/*17*/"#SMStats_FragEvent_Type17", //Bomb frag.
+/*18*/"#SMStats_FragEvent_Type18", //Blinded frag.
+/*19*/"#SMStats_FragEvent_Type19", //Quickscope frag.
+/*20*/"#SMStats_FragEvent_Type20", //Wallbang frag.
 };
 
 /**
@@ -438,7 +442,7 @@ char Frag_Type[][] = {
  */
 stock void PrepareFragMessage(int client, const char[] victim, int points, int frags)
 {
-	if(bDebug) PrintToServer("%s PrepareFragMessage(client %i, victim '%s', points %i, frags %i)", core_chattag, client, victim, points, frags);
+	if(bDebug) LogMessage("PrepareFragMessage(client index %i, victim names '%s', points %i, frags %i)", client, victim, points, frags);
 	char buffer[196];
 	
 	/* Le ol' messy code but has to be it. */
@@ -941,6 +945,20 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		Format(buffer, sizeof(buffer), "%T{default}"
 		, Frag_Type[Frag_Bomb], client);
 	}
+	
+	/* Wallbang Kill */
+	else if(g_Player[client].fragmsg.Wallbang)
+	{
+		Format(buffer, sizeof(buffer), "%T{default}"
+		, Frag_Type[Frag_Wallbang], client);
+	}
+	/* Quickscope Kill */
+	else if(g_Player[client].fragmsg.Quickscope)
+	{
+		Format(buffer, sizeof(buffer), "%T{default}"
+		, Frag_Type[Frag_Quickscope], client);
+	}
+	
 	/* Blinded Kill */
 	else if(g_Player[client].fragmsg.Blinded)
 	{
