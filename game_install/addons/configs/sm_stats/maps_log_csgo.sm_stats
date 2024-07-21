@@ -21,6 +21,7 @@ create table if not exists `maps_log_csgo`
 	`Collaterals` int not null default '0',
 	`MidAirFrags` int not null default '0',
 	`BlindedFrags` int not null default '0',
+	`BurnedFrags` int not null default '0',
 
 	primary key (`ID`)
 )

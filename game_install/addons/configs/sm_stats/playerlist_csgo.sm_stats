@@ -23,6 +23,7 @@ create table if not exists `playerlist_csgo`
 	`Collaterals` int not null default '0',
 	`MidAirFrags` int not null default '0',
 	`BlindedFrags` int not null default '0',
+	`BurnedFrags` int not null default '0',
 	
 	`BombsPlanted` int not null default '0',
 	`BombsDefused` int not null default '0',

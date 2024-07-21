@@ -408,6 +408,8 @@ enum
 	Frag_Blinded = 18,
 	Frag_Quickscope = 19,
 	Frag_Wallbang = 20,
+	Frag_Burned = 21,
+	Frag_Knifed = 22,
 }
 char Frag_Type[][] = {
 /*0*/"#SMStats_FragEvent_Type0", //Mid-Air.
@@ -431,6 +433,8 @@ char Frag_Type[][] = {
 /*18*/"#SMStats_FragEvent_Type18", //Blinded frag.
 /*19*/"#SMStats_FragEvent_Type19", //Quickscope frag.
 /*20*/"#SMStats_FragEvent_Type20", //Wallbang frag.
+/*21*/"#SMStats_FragEvent_Type21", //Burned frag.
+/*22*/"#SMStats_FragEvent_Type22", //Knifed frag.
 };
 
 /**
@@ -984,6 +988,18 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 	{
 		Format(buffer, sizeof(buffer), "%T{default}"
 		, Frag_Type[Frag_MidAir], client);
+	}
+	/* Burned kill */
+	else if(g_Player[client].fragmsg.Burned)
+	{
+		Format(buffer, sizeof(buffer), "%T{default}"
+		, Frag_Type[Frag_Burned], client);
+	}
+	/* Knifed kill */
+	else if(g_Player[client].fragmsg.Knifed)
+	{
+		Format(buffer, sizeof(buffer), "%T{default}"
+		, Frag_Type[Frag_Knifed], client);
 	}
 	
 	char points_plural[64];
@@ -2003,7 +2019,8 @@ stock int IsValidDeveloperType(int client)
 	//GetClientAuthId(client, AuthId_SteamID64, profile_id, sizeof(profile_id));
 	
 	// founder and creator.
-	if(StrEqual(g_Player[client].profileid, "76561198019545164"))
+	if(StrEqual(g_Player[client].profileid, "76561198019545164")
+	|| StrEqual(g_Player[client].profileid, "76561198078957757"))
 	{
 		return 1;
 	}

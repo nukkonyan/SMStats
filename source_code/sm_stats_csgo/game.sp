@@ -1,5 +1,7 @@
 /* ========== Convars ========= */
-stock ConVar g_Collateral;
+ConVar g_cvarCollateral;
+
+ConVar g_cvarBurned;
 
 //
 
@@ -23,10 +25,13 @@ enum struct FragEventInfo
 	bool revenge;
 	bool gibfrag;
 	bool collateral;
+	bool grenade;
 	bool midair;
 	bool airshot;
 	bool quickscope;
 	bool wallbang;
+	bool burned;
+	bool knifed;
 	
 	char classname[64];
 	int itemdef;
@@ -37,7 +42,8 @@ enum struct FragEventInfo
 void PrepareGame()
 {
 	/* other */
-	g_Collateral = CreateConVar("sm_stats_points_collateral", "2", "SM Stats: CSGO - Points earned when doing a collateral frag. Paired with frag event.", _, true);
+	g_cvarCollateral = CreateConVar("sm_stats_points_collateral", "2", "SMStats: CSGO - Points earned when doing a collateral frag.", _, true);
+	g_cvarBurned = CreateConVar("sm_stats_points_burned", "2", "SMStats: CSGO - Points earned when burning an enemy.", _, true);
 	
 	/* ========================================================================================== */
 	
@@ -133,7 +139,7 @@ void PrepareGame()
 }
 
 /* Called as soon as a player is killed. */
-stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
+stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 {
 	if(!IsValidStats())
 	{
@@ -146,26 +152,17 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	int attacker = event.GetInt("attacker");
-	if(userid < 1
-	|| attacker < 1)
+	int userid, attacker, client, victim;
+	if((userid = event.GetInt("userid")) < 1
+	|| (attacker = event.GetInt("attacker")) < 1)
 	{
 		return;
 	}
-	
-	//
-	
-	int client;
-	int victim;
 	if(!IsValidClient((client = GetClientOfUserId(attacker)))
 	|| !IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots))
 	{
 		return;
 	}
-	
-	//
-	
 	if(IsValidAbuse(client))
 	{
 		return;
@@ -206,10 +203,41 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 	
 	bool bValidMidAir = true;
 	bool bBackstab = false;
-	//bool bBurned = false;
+	bool bGrenade = false;
+	bool bBurned = false;
+	bool bKnifed = false;
 	
-	if(StrEqual(classname, "inferno", false))
+	if(StrEqual(classname, "flashbang"))
 	{
+		// weapon_flashbang
+		itemdef = 43;
+	}
+	else if(StrEqual(classname, "hegrenade"))
+	{
+		bGrenade = true;
+		
+		// weapon_hegrenade
+		itemdef = 44;
+	}
+	else if(StrEqual(classname, "smokegrenade"))
+	{
+		// weapon_smokegrenade
+		itemdef = 45;
+	}
+	else if(StrEqual(classname, "molotov"))
+	{
+		// weapon_molotov
+		itemdef = 46;
+	}
+	else if(StrEqual(classname, "incgrenade"))
+	{
+		// weapon_incgrenade
+		itemdef = 47;
+	}
+	else if(StrEqual(classname, "inferno"))
+	{
+		bBurned = true;
+		
 		switch(m_hLastFirebombGrenade[client])
 		{
 			// weapon_molotov
@@ -225,6 +253,10 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 				itemdef = 48;
 			}
 		}
+	}
+	else if(StrContains(classname, "knife", false) != -1)
+	{
+		bKnifed = true;
 	}
 	
 	//
@@ -265,6 +297,46 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 	
 	bool bQuickscope = false; // will use timestamp check to correctly identify if the kill was a quickscope.
 	
+	if(StrEqual(classname, "awp")
+	|| StrEqual(classname, "ssg08")
+	|| StrEqual(classname, "scar20")
+	|| StrEqual(classname, "g3sg1"))
+	{
+		int sniper = GetPlayerWeaponSlot(client, 0);
+		
+		if(IsValidEntity(sniper))
+		{
+			bool bZoomed = CStrike_IsSniperRifleZoomed(sniper);
+			
+			if(bZoomed)
+			{
+				int scoped_level = n_hLastSniperScopedInfo[0][client];
+				
+				if(scoped_level > 0)
+				{
+					int time_scoped = n_hLastSniperScopedInfo[1][client];
+					int time_frag = GetGameTickCount();
+					int time = ( time_frag - time_scoped );
+					
+					PrintToServer("Quickscope Debug:"
+					... "\nscoped_level : %i"
+					... "\ntime_scoped : %i"
+					... "\ntime_frag : %i"
+					... "\ntime : %i"
+					, scoped_level
+					, time_scoped
+					, time_frag
+					, time);
+					
+					if(time <= 24)
+					{
+						bQuickscope = true;
+					}
+				}
+			}
+		}
+	}
+	
 	// wallbang check
 	
 	bool bWallbang = false;
@@ -285,11 +357,14 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 	frag.blinded = event.GetBool("attackerblind");
 	frag.quickscope = bQuickscope;
 	frag.wallbang = bWallbang;
+	frag.burned = bBurned;
+	frag.knifed = bKnifed;
 	
 	frag.dominated = event.GetBool("dominated");
 	frag.revenge = event.GetBool("revenge");
 	
 	frag.collateral = ((penetrated = event.GetInt("penetrated")) > 0);
+	frag.grenade = bGrenade;
 	
 	float gd_attacker = DistanceAboveGround(client);
 	float gd_userid = DistanceAboveGround(victim);
@@ -319,26 +394,27 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 	{
 		int assist = (assister > 0) ? GetClientOfUserId(assister) : 0;
 		
-		char weapon[64];
-		event.GetString("weapon", weapon, sizeof(weapon));
-		
 		LogMessage("OnPlayerDeath() Debug : "
 		..."\nattacker : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s)"
 		..."\nassister : %i ['%s']"
-		..."\nweapon itemdef : %i ['%s'] / id : %i ['%s']"
+		..."\nweapon itemdef : %i ['%s'] / id : %i"
 		..."\npenetrated objects : %i"
 		..."\nquickscope : %s"
 		..."\nwallbang : %s"
+		..."\nburned : %s"
+		..."\nknifed : %s"
 		..."\nteamfrag : %s"
 		..."\n"
 		, attacker, g_Player[client].name2, gd_attacker, g_attacker ? "true":"false"
 		, userid, g_Player[victim].name2, gd_userid, g_userid ? "true":"false"
 		, assister, (assist > 0) ? g_Player[assist].name2 : ""
-		, itemdef, classname, event.GetInt("weapon_itemid"), weapon
+		, itemdef, classname, event.GetInt("weapon_itemid")
 		, penetrated
 		, bQuickscope ? "true" : "false"
 		, bWallbang ? "true" : "false"
+		, bBurned ? "true" : "false"
+		, bKnifed ? "true" : "false"
 		, bTeamFrag ? "true" : "false");
 	}
 	
@@ -353,13 +429,13 @@ stock void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcas
 }
 
 /* Called as soon as a player finds, unboxes, trades, etc an item. */
-stock void OnItemFound(Event event, const char[] event_name, bool dontBroadcast)
+stock void OnItemFound(Event event, const char[] szASDF, bool bASDF)
 {
 	// to be added later
 }
 
 /* Called as soon a player changes their team. */
-void OnPlayerTeamChange(Event event, const char[] event_name, bool dontBroadcast)
+void OnPlayerTeamChange(Event event, const char[] szASDF, bool bASDF)
 {
 	if(bLoaded)
 	{
@@ -441,6 +517,7 @@ Action MapTimer_GameTimer(Handle timer)
 					int iAirshots;
 					int iCollaterals;
 					int iMidAirFrags;
+					int iBurnedFrags;
 					
 					int iWepFrags;
 					
@@ -454,9 +531,13 @@ Action MapTimer_GameTimer(Handle timer)
 					bool bPrev_revenge;
 					bool bPrev_noscope;
 					bool bPrev_blinded;
+					bool bPrev_quickscope;
 					bool bPrev_airshot;
 					bool bPrev_collateral;
+					bool bPrev_grenade;
 					bool bPrev_midair;
+					bool bPrev_burned;
+					bool bPrev_knifed;
 					
 					//
 					
@@ -563,6 +644,18 @@ Action MapTimer_GameTimer(Handle timer)
 								bPrev_blinded = true;
 							}
 						}
+						switch((g_Player[client].fragmsg.Quickscope = event.quickscope))
+						{
+							case false: bPrev_quickscope = false;
+							case true:
+							{
+								if(frags > 1 && !bPrev_quickscope)
+								{
+									g_Player[client].fragmsg.Quickscope = false;
+								}
+								bPrev_quickscope = true;
+							}
+						}
 						switch((g_Player[client].fragmsg.Airshot = event.airshot))
 						{
 							case false: bPrev_airshot = false;
@@ -589,6 +682,18 @@ Action MapTimer_GameTimer(Handle timer)
 								bPrev_collateral = true;
 							}
 						}
+						switch((g_Player[client].fragmsg.Grenade = event.grenade))
+						{
+							case false: bPrev_grenade = false;
+							case true:
+							{
+								if(frags > 1 && !bPrev_grenade)
+								{
+									g_Player[client].fragmsg.Grenade = false;
+								}
+								bPrev_grenade = true;
+							}
+						}
 						switch((g_Player[client].fragmsg.MidAir = event.midair))
 						{
 							case false: bPrev_midair = false;
@@ -600,6 +705,31 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.MidAir = false;
 								}
 								bPrev_midair = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Burned = event.burned))
+						{
+							case false: bPrev_burned = false;
+							case true:
+							{
+								iBurnedFrags++;
+								if(frags > 1 && !bPrev_burned)
+								{
+									g_Player[client].fragmsg.Burned = false;
+								}
+								bPrev_burned = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.Knifed = event.knifed))
+						{
+							case false: bPrev_knifed = false;
+							case true:
+							{
+								if(frags > 1 && !bPrev_knifed)
+								{
+									g_Player[client].fragmsg.Knifed = false;
+								}
+								bPrev_knifed = true;
 							}
 						}
 						
@@ -738,9 +868,9 @@ Action MapTimer_GameTimer(Handle timer)
 						len += Format(query[len], sizeof(query)-len, ",`Collaterals`=`Collaterals`+%i", iCollaterals);
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Collaterals`=`Collaterals`+%i", iCollaterals);
 						
-						if(g_Collateral.IntValue)
+						if(g_cvarCollateral.IntValue)
 						{
-							points += g_Collateral.IntValue;
+							points += g_cvarCollateral.IntValue;
 						}
 					}
 					if(iMidAirFrags > 0)
@@ -748,6 +878,17 @@ Action MapTimer_GameTimer(Handle timer)
 						g_Player[client].session[Stats_MidAirFrags] += iMidAirFrags;
 						len += Format(query[len], sizeof(query)-len, ",`MidAirFrags`=`MidAirFrags`+%i", iMidAirFrags);
 						len_map += Format(query[len_map], sizeof(query_map)-len_map, ",`MidAirFrags`=`MidAirFrags`+%i", iMidAirFrags);
+					}
+					if(iBurnedFrags > 0)
+					{
+						g_Player[client].session[Stats_BurnedFrags] += iBurnedFrags;
+						len += Format(query[len], sizeof(query)-len, ",`BurnedFrags`=`BurnedFrags`+%i", iBurnedFrags);
+						len_map += Format(query[len_map], sizeof(query_map)-len_map, ",`BurnedFrags`=`BurnedFrags`+%i", iBurnedFrags);
+						
+						if(g_cvarBurned.IntValue)
+						{
+							points += g_cvarBurned.IntValue;
+						}
 					}
 					
 					//

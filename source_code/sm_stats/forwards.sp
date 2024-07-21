@@ -597,6 +597,10 @@ public void OnMapStart()
 	{
 		hGameTimer = CreateTimer(0.215751257555125, MapTimer_GameTimer, _, TIMER_REPEAT);
 	}
+	
+	#if defined load_cstrike
+	OnMapStart_CStrike();
+	#endif
 }
 
 public void OnMapEnd()
@@ -620,6 +624,10 @@ public void OnMapEnd()
 		KillTimer(hGameTimer);
 		hGameTimer = null;
 	}
+	
+	#if defined load_cstrike
+	OnMapEnd_CStrike();
+	#endif
 }
 
 Action MapTimer_OnMapStart_Timer(Handle timer)

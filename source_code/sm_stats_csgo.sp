@@ -36,12 +36,6 @@
 #define query_error_uniqueid_OnUpdatedMenuSettingValue 87
 #define query_error_uniqueid_OnItemEventInsert 88
 #define query_error_uniqueid_OnKillLogInsert 89
-#define query_error_uniqueid_OnBombPlantedPlayerlist 90
-#define query_error_uniqueid_OnBombPlantedMapsLog 91
-#define query_error_uniqueid_OnBombDefusedPlayerlist 92
-#define query_error_uniqueid_OnBombDefusedMapsLog 93
-#define query_error_uniqueid_OnHostageRescuedPlayerlist 94
-#define query_error_uniqueid_OnHostageRescuedMapsLog 95
 
 SMStats_CSGOGameInfo g_Game[MaxPlayers+1];
 
@@ -82,6 +76,7 @@ public Plugin myinfo =
 
 //#include "sm_stats_csgo/menus.sp"
 #include "sm_stats_csgo/functions.sp"
+#include "sm_stats_cstrike/functions.sp"
 #include "sm_stats_cstrike/game.sp"
 #include "sm_stats_csgo/game.sp"
 

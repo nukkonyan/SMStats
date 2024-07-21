@@ -931,7 +931,7 @@
 	{
 	    "en" "{green}Noscope Headshot"
 	    "jp" "{green}ノースコープのヘッドショット"
-	    "sv" "{green}icke-zoomningshuvudskott"
+	    "sv" "{green}Noscope Huvudskott"
 	    "tr" "{green}Duman içinden {default}ve {green}kafadan"
 	}
 	"#SMStats_FragEvent_Type3" //Headshot.
@@ -1044,6 +1044,17 @@
 		"en" "{green}Wallbang"
 		"jp" "{green}ウォールバング"
 	}
+	"#SMStats_FragEvent_Type21" //Burning frag.
+	{
+		"en" "{green}Burned"
+		"sv" "{green}Eldad"
+	}
+	"#SMStats_FragEvent_Type22" //Knife frag.
+	{
+		"en" "{green}Knifed"
+		"sv" "{green}Knivad"
+		"jp" "{green}ナイフ"
+	}
 
 	//Kill events
 	"#SMStats_FragEvent_Assisted" //Assist
@@ -1054,7 +1065,7 @@
 	    "#format" "{1:s},{2:s},{3:s}"
 	    "en" "{1} for assisting {2} in neutralizing {3}."
 	    "jp" "{2}が{3}を無力化したでアシストしてたため{1}"
-	    "sv" "{1} för att assistera {2} att neutralizera {3}."
+	    "sv" "{1} för att assistera {2} att neutralisera {3}."
 	    "tr" "{2} oyuncusunun {3} oyuncusunu öldürmesine yardım ederek {1} kazandın."
 	}
 	"#SMStats_FragEvent_Death" //Death.
@@ -1082,7 +1093,7 @@
 	    "#format" "{1:s},{2:s},{3:s}"
 	    "en" "{1} for neutralizing {2} ({3})"
 	    "jp" "【{3}】{2}を無力化したため{1}"
-	    "sv" "{1} för att neutralizera {2} ({3})"
+	    "sv" "{1} för att neutralisera {2} ({3})"
 	    "tr" "{2} oyuncusunu öldürdüğün için {1} kazandın ({3})"
 	}
 	"#SMStats_FragEvent_Default" //Default kill event.
@@ -1092,7 +1103,7 @@
 		"#format" "{1:s},{2:s}"
 		"en" "{1} for neutralizing {2}."
 		"jp" "{2}を無力化したため{1}"
-		"sv" "{1} för att neutralizera {2}."
+		"sv" "{1} för att neutralisera {2}."
 		"tr" "{2} oyuncusunu öldürdüğün için {1} kazandın."
 	}
 	"#SMStats_FragEventError_NewItem"

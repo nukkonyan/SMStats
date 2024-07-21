@@ -10,8 +10,7 @@ stock int m_hLastBombDefuser = 0;
 
 stock bool m_bIsBlinded[MAXPLAYERS+1] = {false, ...};
 
-stock bool m_bIsScoped[MAXPLAYERS+1] = {false, ...};
-stock bool m_bWasJustScoped[MAXPLAYERS+1] = {false, ...};
+stock int n_hLastSniperScopedInfo[2][MAXPLAYERS+1] = { {-1, -1}, {-1, ...} };
 
 /* cvars */
 ConVar g_cvarBombPlanted;
@@ -19,25 +18,42 @@ ConVar g_cvarBombDefused;
 
 ConVar g_cvarHostageRescued;
 //ConVar g_cvarHostageRescuedAll;
-//ConVar g_cvarHostageFragged;
+ConVar g_cvarHostageFragged;
 
 ConVar g_cvarBlindedMulti;
+
+// query errors
+
+#define query_error_uniqueid_OnBombPlantedPlayerlist 90
+#define query_error_uniqueid_OnBombPlantedMapsLog 91
+#define query_error_uniqueid_OnBombDefusedPlayerlist 92
+#define query_error_uniqueid_OnBombDefusedMapsLog 93
+#define query_error_uniqueid_OnHostageRescuedPlayerlist 94
+#define query_error_uniqueid_OnHostageRescuedMapsLog 95
+#define query_error_uniqueid_OnHostageFraggedPlayerlist 94
+#define query_error_uniqueid_OnHostageFraggedMapsLog 95
+
+//
 
 void PrepareGame_CStrike()
 {
 	/* cvars */
-	g_cvarBombPlanted = CreateConVar("sm_stats_points_bomb_planted", "2", "SM Stats : CStrike - Points earned when planting the Bomb.", _, true);
-	g_cvarBombDefused = CreateConVar("sm_stats_points_bomb_defused", "2", "SM Stats : CStrike - Points earned when defusing the Bomb.", _, true);
+	g_cvarBombPlanted = CreateConVar("sm_stats_points_bomb_planted", "2", "SMStats : CStrike - Points earned when planting the Bomb.", _, true);
+	g_cvarBombDefused = CreateConVar("sm_stats_points_bomb_defused", "2", "SMStats : CStrike - Points earned when defusing the Bomb.", _, true);
 	
-	g_cvarHostageRescued = CreateConVar("sm_stats_points_bomb_defused", "2", "SM Stats : CStrike - Points earned when rescuing a Hostage.", _, true);
+	g_cvarHostageRescued = CreateConVar("sm_stats_points_hostage_rescued", "2", "SMStats : CStrike - Points earned when rescuing a Hostage.", _, true);
+	g_cvarHostageFragged = CreateConVar("sm_stats_points_hostage_killed", "2", "SMStats : CStrike - Points lost when killing a Hostage.", _, true);
 	
-	g_cvarBlindedMulti = CreateConVar("sm_stats_points_blinded_multi", "1", "SM Stats : CStrike - Points earned when blinding multiple opponents at once.", _, true);
+	g_cvarBlindedMulti = CreateConVar("sm_stats_points_blinded_multi", "1", "SMStats : CStrike - Points earned when blinding multiple opponents at once.", _, true);
 	
 	/* bomb */
 	HookEvent("bomb_planted", OnBombPlanted, EventHookMode_Pre);
 	HookEvent("bomb_defused", OnBombDefused, EventHookMode_Pre);
 	HookEvent("bomb_exploded", OnBombExploded, EventHookMode_Pre);
+	
+	/* hostages */
 	HookEvent("hostage_rescued", OnHostageRescued, EventHookMode_Pre);
+	HookEvent("hostage_killed", OnHostageFragged, EventHookMode_Pre);
 	
 	/* weapons */
 	HookEventEx("weapon_fire", OnWeaponFired, EventHookMode_Pre);
@@ -48,25 +64,22 @@ void PrepareGame_CStrike()
 }
 
 /* Called as soon as the bomb has been planted. */
-void OnBombPlanted(Event event, const char[] event_name, bool asdf)
+void OnBombPlanted(Event event, const char[] szASDF, bool bASDF)
 {
-	if(!IsValidStats())
+	if(!bLoaded || !bStatsActive)
 	{
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	if(userid < 1)
+	int userid, client;
+	if((userid = event.GetInt("userid")) < 1)
 	{
 		return;
 	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
 		return;
 	}
-	
 	if(IsValidAbuse(client))
 	{
 		return;
@@ -102,25 +115,22 @@ void OnBombPlanted(Event event, const char[] event_name, bool asdf)
 }
 
 /* Called as soon as the bomb has been defused. */
-void OnBombDefused(Event event, const char[] event_name, bool asdf)
+void OnBombDefused(Event event, const char[] szASDF, bool bASDF)
 {
-	if(!IsValidStats())
+	if(!bLoaded || !bStatsActive)
 	{
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	if(userid < 1)
+	int userid, client;
+	if((userid = event.GetInt("userid")) < 1)
 	{
 		return;
 	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
 		return;
 	}
-	
 	if(IsValidAbuse(client))
 	{
 		return;
@@ -156,25 +166,22 @@ void OnBombDefused(Event event, const char[] event_name, bool asdf)
 }
 
 /* Called as soon as the bomb has exploded. */
-void OnBombExploded(Event event, const char[] event_name, bool asdf)
+void OnBombExploded(Event event, const char[] szASDF, bool bASDF)
 {
-	if(!IsValidStats())
+	if(!bLoaded || !bStatsActive)
 	{
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	if(userid < 1)
+	int userid, client;
+	if((userid = event.GetInt("userid")) < 1)
 	{
 		return;
 	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
 		return;
 	}
-	
 	if(IsValidAbuse(client))
 	{
 		return;
@@ -183,26 +190,25 @@ void OnBombExploded(Event event, const char[] event_name, bool asdf)
 	g_Player[client].session[Stats_BombsExploded] += 1;
 }
 
+// ======================================================================== //
+
 /* Called as soon as a hostage has been rescued. */
-void OnHostageRescued(Event event, const char[] event_name, bool asdf)
+void OnHostageRescued(Event event, const char[] szASDF, bool bASDF)
 {
-	if(!IsValidStats())
+	if(!bLoaded || !bStatsActive)
 	{
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	if(userid < 1)
+	int userid, client;
+	if((userid = event.GetInt("userid")) < 1)
 	{
 		return;
 	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
 		return;
 	}
-	
 	if(IsValidAbuse(client))
 	{
 		return;
@@ -235,26 +241,74 @@ void OnHostageRescued(Event event, const char[] event_name, bool asdf)
 	}
 }
 
-/* Called as soon as a weapon was fired. */
-void OnWeaponFired(Event event, const char[] event_name, bool asdf)
+/* Called as soon as a hostage was killed. */
+void OnHostageFragged(Event event, const char[] szASDF, bool bASDF)
 {
 	if(!bLoaded || !bStatsActive)
 	{
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	if(userid < 1)
+	int userid, client;
+	if((userid = event.GetInt("userid")) < 1)
 	{
 		return;
 	}
-	
-	int client;
 	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
 		return;
 	}
+	if(IsValidAbuse(client))
+	{
+		return;
+	}
 	
+	g_Player[client].session[Stats_HostagesFragged]++;
+	
+	int points;
+	if((points = g_cvarHostageFragged.IntValue) > 0)
+	{
+		g_Player[client].session[Stats_Points] -= points;
+		
+		Transaction txn = new Transaction();
+		char query[256];
+		
+		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HostagesFragged`=`HostagesFragged`+1 where SteamID=`%s` and StatsID=`%i`"
+		, g_Player[client].auth, g_StatsID);
+		txn.AddQuery(query, query_error_uniqueid_OnHostageFraggedPlayerlist);
+		
+		Format(query, sizeof(query), "update"...sql_table_maps_log..."` set `HostagesFragged`=`HostagesFragged`+1 where StatsID='%i'"
+		, g_StatsID);
+		txn.AddQuery(query, query_error_uniqueid_OnHostageFraggedMapsLog);
+		
+		sql.Execute(txn, _, TXN_Callback_Failure);
+		
+		char points_plural[64];
+		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Minus);
+		
+		CPrintToChat(client, "%s %T", g_ChatTag, "#SMStats_CStrike_Hostage_Fragged", client, points_plural);
+	}
+}
+
+// ======================================================================== //
+
+/* Called as soon as a weapon was fired. */
+void OnWeaponFired(Event event, const char[] szASDF, bool bASDF)
+{
+	if(!bLoaded || !bStatsActive)
+	{
+		return;
+	}
+	
+	int userid, client;
+	if((userid = event.GetInt("userid")) < 1)
+	{
+		return;
+	}
+	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	{
+		return;
+	}
 	if(IsValidAbuse(client))
 	{
 		return;
@@ -302,50 +356,40 @@ void OnWeaponFired(Event event, const char[] event_name, bool asdf)
 }
 
 /* Called as soon as a weapon was zoomed. */
-void OnWeaponZoomed(Event event, const char[] event_name, bool asdf)
+void OnWeaponZoomed(Event event, const char[] szASDF, bool bASDF)
 {
 	if(!bLoaded || !bStatsActive)
 	{
 		return;
 	}
 	
-	int userid;
+	int userid, client;
 	if((userid = event.GetInt("userid")) < 1)
 	{
 		return;
 	}
-	
-	int client;
 	if(!IsValidClient((client = GetClientOfUserId(userid))))
 	{
 		return;
 	}
 	
-	int weapon;
-	if(!IsValidEntity((weapon = GetEntPropEnt(client, Prop_Send, "m_hActiveWeapon"))))
+	int sniper = GetPlayerWeaponSlot(client, 0);
+	if(IsValidEntity(sniper))
 	{
-		return;
+		int m_zoomLevel = GetEntProp(sniper, Prop_Send, "m_zoomLevel");
+		
+		n_hLastSniperScopedInfo[0][client] = m_zoomLevel;
+		n_hLastSniperScopedInfo[1][client] = GetGameTickCount();
 	}
-	
-	int m_zoomLevel = GetEntProp(weapon, Prop_Send, "m_zoomLevel");
-	if(m_zoomLevel < 1)
+	else
 	{
-		m_bIsScoped[client] = false;
-		
-		if(m_bWasJustScoped[client])
-		{
-			m_bWasJustScoped[client] = false;
-		}
-		
-		return;
+		n_hLastSniperScopedInfo[0][client] = -1;
+		n_hLastSniperScopedInfo[1][client] = -1;
 	}
-	
-	m_bIsScoped[client] = true;
-	m_bWasJustScoped[client] = true;
 }
 
 /* Called as soon as a player was blinded. */
-void OnPlayerBlinded(Event event, const char[] event_name, bool asdf)
+void OnPlayerBlinded(Event event, const char[] szASDF, bool bASDF)
 {
 	if(!IsValidStats())
 	{
@@ -479,4 +523,16 @@ void MapTimer_GameTimer_CStrike(int client, Transaction txn)
 			}
 		}
 	}
+}
+
+// CStrike related post OnMapStart() and OnMapEnd() stuff
+
+void OnMapStart_CStrike()
+{
+	//
+}
+
+void OnMapEnd_CStrike()
+{
+	//
 }
