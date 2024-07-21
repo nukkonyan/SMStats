@@ -35,6 +35,17 @@
    - Credits
       - [Neigeflocon](https://steamcommunity.com/profiles/76561197962831152) - Turkish translations.
 
+### Supported games
+   - [x] Team Fortress 2
+   - [ ] Team Fortress 2 Classic.
+   - [ ] Open Fortress
+   - [ ] Counter-Strike: Source
+   - [x] Counter-Strike: Global Offensive
+   - [ ] Counter-Strike: Classic Offensive.
+   - [ ] Counter-Strike 2
+   - [ ] Legacy Strike (2015 CS:GO)
+   - [ ] Left 4 Dead 1
+   - [ ] Left 4 Dead 2
 ### To-do
    - [x] Update Stats Menu
       -  [x] Implement sm_stats <top index | steamid > to manually check statistics of a particular player.
@@ -51,14 +62,5 @@
    - [ ] Fix playtime timer. Right now it is buggy and not working correctly. **(At the moment somewhat fixed.)**
    - [x] Add connect sounds (when a top 10 and top 1 player connects.
    - [ ] Deprecate SMStats Info (temporary solution) and instead use temporary KeyValue file storing. **(Or use SQLite)**
-   - [ ] Support more source games in the future. such as:
-      - [ ] Team Fortress 2 Classic.
-      - [ ] Open Fortress.
-      - [ ] Counter-Strike: Source.
-      - [ ] Counter-Strike: Global Offensive.
-      - [ ] Counter-Strike: Classic Offensive.
-      - [ ] Legacy Strike (2015 CS:GO)
-      - [ ] Counter-Strike 2.
-      - [ ] Left 4 Dead 2.
-      - [ ] and many other.
+   - [ ] Support more source games in the future.
    - [ ] Create website.
