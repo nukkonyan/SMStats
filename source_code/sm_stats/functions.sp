@@ -760,8 +760,58 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 	/* Headshot kill */
 	else if(g_Player[client].fragmsg.Headshot)
 	{
+		/* Quickscope Headshot */
+		if(g_Player[client].fragmsg.Quickscope)
+		{
+			/* Quickscope headshot kill through smoke */
+			if(g_Player[client].fragmsg.ThroughSmoke)
+			{
+				switch(g_Player[client].fragmsg.Blinded)
+				{
+					/* Quickscope headshot kill through smoke while blinded */
+					case true:
+					{
+						Format(buffer, sizeof(buffer), "%T {default} %T{default} %T{default} %T{default}"
+						, Frag_Type[Frag_Quickscope], client
+						, Frag_Type[Frag_Headshot], client
+						, Frag_Type[Frag_ThroughSmoke], client
+						, Frag_Type[Frag_Blinded], client);
+					}
+					/* Quickscope headshot kill through smoke */
+					case false:
+					{
+						Format(buffer, sizeof(buffer), "%T{default} %T{default} %T{default}"
+						, Frag_Type[Frag_Quickscope], client
+						, Frag_Type[Frag_Headshot], client
+						, Frag_Type[Frag_ThroughSmoke], client);
+					}
+				}
+			}
+			/* Quickscope headshot kill */
+			else
+			{
+				switch(g_Player[client].fragmsg.Blinded)
+				{
+					/* Quickscope headshot kill whilst blinded */
+					case true:
+					{
+						Format(buffer, sizeof(buffer), "%T{default} %T{default} %T{default}"
+						, Frag_Type[Frag_Quickscope], client
+						, Frag_Type[Frag_Headshot], client
+						, Frag_Type[Frag_Blinded], client);
+					}
+					/* Quickscope headshot kill */
+					case false:
+					{
+						Format(buffer, sizeof(buffer), "%T{default} %T{default}"
+						, Frag_Type[Frag_Quickscope], client
+						, Frag_Type[Frag_Headshot], client);
+					}
+				}
+			}
+		}
 		/* Headshot kill through smoke */
-		if(g_Player[client].fragmsg.ThroughSmoke)
+		else if(g_Player[client].fragmsg.ThroughSmoke)
 		{
 			/* Headshot through smoke whilst blinded */
 			if(g_Player[client].fragmsg.Blinded)
@@ -949,7 +999,6 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 		Format(buffer, sizeof(buffer), "%T{default}"
 		, Frag_Type[Frag_Bomb], client);
 	}
-	
 	/* Wallbang Kill */
 	else if(g_Player[client].fragmsg.Wallbang)
 	{
@@ -959,10 +1008,69 @@ stock void PrepareFragMessage(int client, const char[] victim, int points, int f
 	/* Quickscope Kill */
 	else if(g_Player[client].fragmsg.Quickscope)
 	{
-		Format(buffer, sizeof(buffer), "%T{default}"
-		, Frag_Type[Frag_Quickscope], client);
+		/* Quickscope kill through smoke */
+		if(g_Player[client].fragmsg.ThroughSmoke)
+		{
+			switch(g_Player[client].fragmsg.Blinded)
+			{
+				/* Quickscope headshot kill through smoke while blinded */
+				case true:
+				{
+					Format(buffer, sizeof(buffer), "%T{default} %T{default} %T{default}"
+					, Frag_Type[Frag_Headshot], client
+					, Frag_Type[Frag_ThroughSmoke], client
+					, Frag_Type[Frag_Blinded], client);
+				}
+				/* Quickscope headshot kill through smoke */
+				case false:
+				{
+					Format(buffer, sizeof(buffer), "%T{default} %T{default}"
+					, Frag_Type[Frag_Quickscope], client
+					, Frag_Type[Frag_ThroughSmoke], client);
+				}
+			}
+		}
+		/* Quickscope kill */
+		else
+		{
+			switch(g_Player[client].fragmsg.Blinded)
+			{
+				/* Quickscope headshot kill whilst blinded */
+				case true:
+				{
+					Format(buffer, sizeof(buffer), "%T{default} %T{default}"
+					, Frag_Type[Frag_Quickscope], client
+					, Frag_Type[Frag_Blinded], client);
+				}
+				/* Quickscope headshot kill */
+				case false:
+				{
+					Format(buffer, sizeof(buffer), "%T{default}"
+					, Frag_Type[Frag_Quickscope], client);
+				}
+			}
+		}
 	}
-	
+	/* Through Smoke kill */
+	else if(g_Player[client].fragmsg.ThroughSmoke)
+	{
+		switch(g_Player[client].fragmsg.Blinded)
+		{
+			/* Through the smoke kill whilst blinded */
+			case true:
+			{
+				Format(buffer, sizeof(buffer), "%T{default} %T{default}"
+				, Frag_Type[Frag_ThroughSmoke], client
+				, Frag_Type[Frag_Blinded], client);
+			}
+			/* Through the smoke kill */
+			case false:
+			{
+				Format(buffer, sizeof(buffer), "%T{default}"
+				, Frag_Type[Frag_ThroughSmoke], client);
+			}
+		}
+	}
 	/* Blinded Kill */
 	else if(g_Player[client].fragmsg.Blinded)
 	{

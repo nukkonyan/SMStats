@@ -921,7 +921,7 @@
 	    "sv" "medans {green}I Luften"
 	    "tr" "{green}Havada {default}iken"
 	}
-	"#SMStats_FragEvent_Type1" //Noscope
+	"#SMStats_FragEvent_Type1" //Through smoke
 	{
 	    "en" "{green}Through Smoke"
 	    "sv" "{green}Genom Röken"

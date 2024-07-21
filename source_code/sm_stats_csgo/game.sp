@@ -20,6 +20,7 @@ enum struct FragEventInfo
 	bool headshot;
 	bool backstab;
 	bool noscope;
+	bool smoked;
 	bool blinded;
 	bool dominated;
 	bool revenge;
@@ -354,6 +355,7 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 	frag.headshot = event.GetBool("headshot");
 	frag.backstab = bBackstab;
 	frag.noscope =  event.GetBool("noscope");
+	frag.smoked = event.GetBool("thrusmoke");
 	frag.blinded = event.GetBool("attackerblind");
 	frag.quickscope = bQuickscope;
 	frag.wallbang = bWallbang;
@@ -400,6 +402,7 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 		..."\nassister : %i ['%s']"
 		..."\nweapon itemdef : %i ['%s'] / id : %i"
 		..."\npenetrated objects : %i"
+		..."\nthrough smoke : %s"
 		..."\nquickscope : %s"
 		..."\nwallbang : %s"
 		..."\nburned : %s"
@@ -411,11 +414,12 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 		, assister, (assist > 0) ? g_Player[assist].name2 : ""
 		, itemdef, classname, event.GetInt("weapon_itemid")
 		, penetrated
-		, bQuickscope ? "true" : "false"
-		, bWallbang ? "true" : "false"
-		, bBurned ? "true" : "false"
-		, bKnifed ? "true" : "false"
-		, bTeamFrag ? "true" : "false");
+		, frag.smoked ? "true" : "false"
+		, frag.quickscope ? "true" : "false"
+		, frag.wallbang ? "true" : "false"
+		, frag.burned ? "true" : "false"
+		, frag.knifed ? "true" : "false"
+		, frag.teamfrag ? "true" : "false");
 	}
 	
 	//
@@ -514,6 +518,7 @@ Action MapTimer_GameTimer(Handle timer)
 					int iDominated;
 					int iRevenges;
 					int iNoscopes;
+					//int iThroughSmokes;
 					int iAirshots;
 					int iCollaterals;
 					int iMidAirFrags;
@@ -530,6 +535,7 @@ Action MapTimer_GameTimer(Handle timer)
 					bool bPrev_domination;
 					bool bPrev_revenge;
 					bool bPrev_noscope;
+					bool bPrev_smoked;
 					bool bPrev_blinded;
 					bool bPrev_quickscope;
 					bool bPrev_airshot;
@@ -630,6 +636,19 @@ Action MapTimer_GameTimer(Handle timer)
 									g_Player[client].fragmsg.Noscope = false;
 								}
 								bPrev_noscope = true;
+							}
+						}
+						switch((g_Player[client].fragmsg.ThroughSmoke = event.smoked))
+						{
+							case false: bPrev_smoked = false;
+							case true:
+							{
+								//iThroughSmokes++;
+								if(frags > 1 && !bPrev_smoked)
+								{
+									g_Player[client].fragmsg.ThroughSmoke = false;
+								}
+								bPrev_smoked = true;
 							}
 						}
 						switch((g_Player[client].fragmsg.Blinded = event.blinded))
