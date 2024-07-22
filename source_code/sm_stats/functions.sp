@@ -2108,74 +2108,180 @@ stock bool CS_IsClientInSmoke(int client)
 
 stock void UpdatePlayerInfo(int client)
 {
-	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
 	GetPlayerTeam(client, g_Player[client].team, sizeof(g_Player[].team), g_Player[client].iTeam);
+	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
+}
+
+void GetPlayerName(int client, char[] name, int maxlen, char[] name2, int maxlen2)
+{
+	int game_type;
+	switch(GetEngineVersion())
+	{
+		case Engine_TF2: game_type = 0;
+		case Engine_CSS: game_type = 1;
+		case Engine_CSGO:game_type = 2;
+		case Engine_Left4Dead: game_type = 3;
+		case Engine_Left4Dead2: game_type = 3;
+	}
+	
+	char prefixes[][][][] =
+	{
+		// Team Fortress 2
+		{
+			// regular
+			{
+				// Team colour
+				"{grey}",
+				"{red}",
+				"{blue}",
+				"{green}",
+				"{yellow}"
+			},
+			// developer
+			{
+				"{unusual}",
+				"{cyan}",
+				"{orange}",
+				"{lightgreen}",
+				""
+			}
+		},
+		// Counter-Strike: Source
+		{
+			// regular
+			{
+				"{grey}",
+				"{red}",
+				"{blue}",
+				"",
+				""
+			},
+			{
+				"{purple}",
+				"{cyan}",
+				"{orange}",
+				"{lightgreen}",
+				""
+			}
+		},
+		// Counter-Strike: Global Offensive
+		{
+			// regular
+			{
+				"{grey}",
+				"{orange}",
+				"{blue}",
+				"",
+				""
+			},
+			{
+				"{purple}",
+				"{green}",
+				"{orchid}",
+				"{lightgreen}",
+				""
+			}
+		},
+		// Left 4 Dead
+		{
+			// regular
+			{
+				"{grey}",
+				"{red}",
+				"{orange}",
+				"",
+				""
+			},
+			{
+				"{purple}",
+				"{green}",
+				"{orchid}",
+				"{lightgreen}",
+				""
+			}
+		}
+	}
+	
+	//
+	
+	int bValidDev = 0;
+	int prefix_type = 0;
+	switch((prefix_type = IsValidDeveloperType(client)) != -1)
+	{
+		case false: prefix_type = g_Player[client].iTeam; // not a developer type, use team colour instead.
+		case true: bValidDev = 1;
+	}
+	
+	Format(name, maxlen, "%s%N{default}", prefixes[game_type][bValidDev][prefix_type], client);
+	Format(name2, maxlen2, "%N", client);
 }
 
 void GetPlayerTeam(int client, char[] team, int maxlen, int &iTeam)
 {
-	switch((iTeam = GetClientTeam(client)))
+	if((iTeam = GetClientTeam(client)) < 1)
 	{
-		case 0: strcopy(team, maxlen, "UNASSIGNED");
-		case 1: strcopy(team, maxlen, "SPEC");
-		
-		case 2:
-		{
-			switch(GetEngineVersion())
-			{
-				case Engine_TF2: strcopy(team, maxlen, "RED");
-				case Engine_CSS, Engine_CSGO: strcopy(team, maxlen, "T");
-			}
-		}
-		
-		case 3:
-		{
-			switch(GetEngineVersion())
-			{
-				case Engine_TF2: strcopy(team, maxlen, "BLU");
-				case Engine_CSS, Engine_CSGO: strcopy(team, maxlen, "CT");
-			}
-		}
-		
-		case 4:
-		{
-			switch(GetEngineVersion())
-			{
-				// team fortress 2 classic
-				case Engine_TF2: strcopy(team, maxlen, "GRN");
-			}
-		}
-		
-		case 5:
-		{
-			switch(GetEngineVersion())
-			{
-				// team fortress 2 classic
-				case Engine_TF2: strcopy(team, maxlen, "YLW");
-			}
-		}
-		
-		default: strcopy(team, maxlen, "UNKNOWN");
+		iTeam = 0;
 	}
+	
+	int game_type;
+	switch(GetEngineVersion())
+	{
+		case Engine_TF2: game_type = 0;
+		case Engine_CSS: game_type = 1;
+		case Engine_CSGO:game_type = 1;
+		case Engine_Left4Dead: game_type = 2;
+		case Engine_Left4Dead2: game_type = 2;
+	}
+	
+	char teams[][][] =
+	{
+		// Team Fortress 2
+		{
+			"UNASSIGNED",
+			"SPEC",
+			"RED",
+			"BLU",
+			"GRN", // team fortress 2 classic
+			"YLW" // team fortress 2 classic
+		},
+		// Counter-Strike
+		{
+			"UNASSIGNED",
+			"SPEC",
+			"T",
+			"CT",
+			"", // must include these empty strings, else forces invalid array size error bug which needs to be fixed.
+			""
+		},
+		// Left 4 Dead
+		{
+			"UNASSIGNED",
+			"SPEC",
+			"ZOMBIE",
+			"SURVIVOR",
+			"",
+			""
+		}
+	};
+	
+	strcopy(team, maxlen, teams[game_type][iTeam]);
 }
 
 /*
  * Returns the developer role.
- * 1 - owner & founder.
- * 2 - contributor.
- * 3 - tester.
- * 4 - translator.
+ * -1 : invalid.
+ * 0  : owner & founder.
+ * 1  : contributor.
+ * 2  : tester.
+ * 3  : translator.
  */
 stock int IsValidDeveloperType(int client)
 {
-	//char profile_id[24]; // safest way to check
-	//GetClientAuthId(client, AuthId_SteamID64, profile_id, sizeof(profile_id));
-	
 	// founder and creator.
-	if(StrEqual(g_Player[client].profileid, "76561198019545164")
+	if(StrEqual(g_Player[client].profileid, "76561198019545164") // nukkonyan
 	|| StrEqual(g_Player[client].profileid, "76561198078957757"))
 	{
-		return 1;
+		return 0;
 	}
 	
 	// contributor
@@ -2185,7 +2291,7 @@ stock int IsValidDeveloperType(int client)
 	// translator
 	if(StrEqual(g_Player[client].profileid, "76561197962831152")) // Neigeflocon
 	{
-		return 4;
+		return 3;
 	}
 	
 	return -1;

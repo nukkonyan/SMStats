@@ -9,7 +9,7 @@
 #include <multicolors>
 
 public Plugin myinfo = {
-	name = "SM Stats: Info",
+	name = "SMStats: Info",
 	author = "nukkonyan",
 	description = "Tracks player statistics. Keeps the stats when SMStats is updated.",
 	version = Version,
@@ -34,9 +34,9 @@ public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max
 {
 	RegPluginLibrary("SMStatsInfo");
 	
-	CreateNative("SMStatsInfo.GetPlayerStats", Native_GetPlayerStats);
-	CreateNative("SMStatsInfo.SavePlayerStats", Native_SavePlayerStats);
-	CreateNative("SMStatsInfo.ResetPlayerStats", Native_ResetPlayerStats);
+	CreateNative("SMStatsInfo.GetPlayerInfo", Native_GetPlayerInfo);
+	CreateNative("SMStatsInfo.SavePlayerInfo", Native_SavePlayerInfo);
+	CreateNative("SMStatsInfo.ResetPlayerInfo", Native_ResetPlayerInfo);
 	
 	CreateNative("SMStatsInfo.GetGameStats", Native_GetGameStats);
 	CreateNative("SMStatsInfo.SaveGameStats", Native_SaveGameStats);
@@ -56,19 +56,19 @@ public void _sm_stats_loaded_core()
 	bLoaded = true;
 }
 
-any Native_GetPlayerStats(Handle plugin, int params)
+any Native_GetPlayerInfo(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);
 	SetNativeArray(2, g_Player[client], sizeof(g_Player[]));
 	return -69;
 }
-any Native_SavePlayerStats(Handle plugin, int params)
+any Native_SavePlayerInfo(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);
 	GetNativeArray(2, g_Player[client], sizeof(g_Player[]));
 	return -69;
 }
-any Native_ResetPlayerStats(Handle plugin, int params)
+any Native_ResetPlayerInfo(Handle plugin, int params)
 {
 	int client = GetNativeCell(1);
 	g_Player[client].Reset();

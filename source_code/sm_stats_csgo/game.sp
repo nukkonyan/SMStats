@@ -397,8 +397,8 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 		int assist = (assister > 0) ? GetClientOfUserId(assister) : 0;
 		
 		LogMessage("OnPlayerDeath() Debug : "
-		..."\nattacker : %i ['%s'] (gd : %.1f) (g : %s)"
-		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s)"
+		..."\nattacker : %i ['%s'] (gd : %.1f) (g : %s) (team : %s)"
+		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s) (team : %s)"
 		..."\nassister : %i ['%s']"
 		..."\nweapon itemdef : %i ['%s'] / id : %i"
 		..."\npenetrated objects : %i"
@@ -409,8 +409,8 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 		..."\nknifed : %s"
 		..."\nteamfrag : %s"
 		..."\n"
-		, attacker, g_Player[client].name2, gd_attacker, g_attacker ? "true":"false"
-		, userid, g_Player[victim].name2, gd_userid, g_userid ? "true":"false"
+		, attacker, g_Player[client].name2, gd_attacker, g_attacker ? "true":"false", g_Player[client].team
+		, userid, g_Player[victim].name2, gd_userid, g_userid ? "true":"false", g_Player[victim].team
 		, assister, (assist > 0) ? g_Player[assist].name2 : ""
 		, itemdef, classname, event.GetInt("weapon_itemid")
 		, penetrated

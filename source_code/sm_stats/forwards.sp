@@ -43,31 +43,30 @@ public void OnClientConnected(int client)
 		return;
 	}
 	
-	int userid = GetClientUserId(client);
+	int userid = (g_Player[client].userid = GetClientUserId(client));
 	
 	if(!GetClientAuthId(client, AuthId_Steam2, g_Player[client].auth, sizeof(g_Player[].auth), false))
 	{
-		PrintToServer("%s OnClientConnected error: Failed to authenticate steamid of user index %i (userid %i)", core_chattag, client, userid);
+		LogMessage("OnClientConnected error: Failed to authenticate steamid of user index %i (userid %i)", client, userid);
 		return;
 	}
 	if(!GetClientAuthId(client, AuthId_SteamID64, g_Player[client].profileid, sizeof(g_Player[].profileid), false))
 	{
-		PrintToServer("%s OnClientConnected error: Failed to authenticate profileid of user index %i (userid %i)", core_chattag, client, userid);
+		LogMessage("OnClientConnected error: Failed to authenticate profileid of user index %i (userid %i)", client, userid);
 		return;
 	}
 	
 	if(strlen(g_Player[client].auth) < 1)
 	{
-		PrintToServer("%s OnClientConnected error: Obtained an empty steamid from user index (userid %i)", core_chattag, client, userid);
+		LogMessage("OnClientConnected error: Obtained an empty steamid from user index (userid %i)", client, userid);
 		return;
 	}
 	if(strlen(g_Player[client].profileid) < 1)
 	{
-		PrintToServer("%s OnClientConnected error: Obtained an empty profileid from user index (userid %i)", core_chattag, client, userid);
+		LogMessage("OnClientConnected error: Obtained an empty profileid from user index (userid %i)", client, userid);
 		return;
 	}
 	
-	g_Player[client].userid = userid;
 	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
 	
 	if(!GetClientIP(client, g_Player[client].ip, sizeof(g_Player[].ip)))
@@ -88,7 +87,7 @@ public void OnClientConnected(int client)
 	Format(query, sizeof(query), "select StatsID from `"...sql_table_weapons..."` where SteamID = '%s' and StatsID = %i", g_Player[client].auth, g_StatsID);
 	txn.AddQuery(query, 3);
 	
-	sql.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, userid);
+	sql.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, g_Player[client].userid);
 	
 	//g_Player[client].bAlreadyConnected = true;
 }
