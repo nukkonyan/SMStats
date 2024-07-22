@@ -213,10 +213,12 @@ bool bDisableAfterRoundEnd = false;
 bool bAllowBots = false;
 bool bAllowAbuse = false;
 bool bAllowWarmup = false;
+stock bool bAllowTeamFrag = false;
 int g_StatsID = -1;
 int g_TotalTablePlayers = -1;
 int g_MinPlayers = -1;
 int g_DeathPoints = -1;
+stock int g_TeamFragPoints = -1;
 int g_AssistPoints = -1;
 int g_PenaltySeconds = -1;
 
@@ -276,6 +278,7 @@ public void _sm_stats_updatedfwd(SMStatsUpdatedFwdType type, const char[] value)
 		}
 		case SMStatsUpdated_AllowAbuse: bAllowAbuse = view_as<bool>(StringToInt(value));
 		case SMStatsUpdated_AllowWarmup: bAllowWarmup = view_as<bool>(StringToInt(value));
+		case SMStatsUpdated_AllowTeamFrag: bAllowTeamFrag = view_as<bool>(StringToInt(value));
 		case SMStatsUpdated_DisableAfterRoundEnd: bDisableAfterRoundEnd = view_as<bool>(StringToInt(value));
 		case SMStatsUpdated_MinPlayers:
 		{
@@ -283,6 +286,7 @@ public void _sm_stats_updatedfwd(SMStatsUpdatedFwdType type, const char[] value)
 			CheckActivePlayers();
 		}
 		case SMStatsUpdated_DeathPoints: g_DeathPoints = view_as<int>(StringToInt(value));
+		case SMStatsUpdated_TeamFragPoints: g_TeamFragPoints = view_as<int>(StringToInt(value));
 		case SMStatsUpdated_AssistPoints: g_AssistPoints = view_as<int>(StringToInt(value));
 		case SMStatsUpdated_SndConnectedTop10: strcopy(g_sndConnectedTop10, sizeof(g_sndConnectedTop10), value);
 		case SMStatsUpdated_SndConnectedTop1: strcopy(g_sndConnectedTop1, sizeof(g_sndConnectedTop1), value);
@@ -648,8 +652,8 @@ Action Timer_PluginLoaded(Handle timer)
 	{
 		if(IsValidClient(client, false))
 		{
-			// obtain the names.
-			GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
+			// obtain the player info.
+			UpdatePlayerInfo(client);
 			
 			#if defined load_players
 			if(!IsFakeClient(client))

@@ -178,7 +178,7 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 	}
 	
 	bool bTeamFrag;
-	if(GetClientTeam(client) == GetClientTeam(victim))
+	if(g_Player[client].iTeam == g_Player[victim].iTeam)
 	{
 		bTeamFrag = true;
 		

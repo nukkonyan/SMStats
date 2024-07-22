@@ -49,7 +49,7 @@ create table if not exists `weapons_csgo`
 	`weapon_knife_spectral` int not null default '0',
 	`weapon_knife_bayonet` int not null default '0',
 	`weapon_knife_karambit` int not null default '0',
-	`weapon_knife_m9bayonet` int not null default '0',
+	`weapon_knife_m9_bayonet` int not null default '0',
 	`weapon_knife_huntsman` int not null default '0',
 	`weapon_knife_falchion` int not null default '0',
 	`weapon_knife_bowie` int not null default '0',

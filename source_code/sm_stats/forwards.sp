@@ -124,7 +124,7 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 	int client = 0;
 	if(IsValidClient((client = GetClientOfUserId(userid)), false))
 	{
-		UpdatePlayerName(client);
+		UpdatePlayerInfo(client);
 		
 		// check & obtain player name
 		char name[64];

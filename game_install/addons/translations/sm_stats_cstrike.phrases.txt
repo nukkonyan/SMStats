@@ -34,6 +34,6 @@
 		// {1} points earned
 		"#format" "{1:s}"
 		"en" "{1} for {green}Blinding {default}multiple opponents."
-		"jp" "敵は{green}多い{default}をブランドしたため{1}"
+		"jp" "複数の敵を{green}ブラインドした{default}ため{1}"
 	}
 }

@@ -21,6 +21,9 @@ enum struct SMStats_FragMsgInfo
 	bool Blinded;
 	bool PumpkinBomb;
 	bool Quickscope;
+	bool Wallbang;
+	bool Burned;
+	bool Knifed;
 	
 	void Reset()
 	{
@@ -45,16 +48,21 @@ enum struct SMStats_FragMsgInfo
 		this.Blinded = false;
 		this.PumpkinBomb = false;
 		this.Quickscope = false;
+		this.Wallbang = false;
+		this.Burned = false;
+		this.Knifed = false;
 	}
 }
 
 enum struct SMStats_PlayerInfo
 {
 	int userid;
+	int iTeam;
 	char auth[28];
 	char profileid[24];
 	char name[64];
 	char name2[64];
+	char team[11];
 	char ip[16];
 	//bool bAlreadyConnected;
 	bool bPenalty;

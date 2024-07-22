@@ -417,63 +417,25 @@ void OnPlayerBlinded(Event event, const char[] szASDF, bool bASDF)
 		return;
 	}
 	
-	if(GetClientTeam(client) == GetClientTeam(victim))
+	if(g_Player[client].iTeam == g_Player[victim].iTeam)
 	{
 		return;
 	}
 	
-	float duration;
-	if((duration = event.GetFloat("blind_duration")) < 5.0)
+	if(event.GetFloat("blind_duration") >= 4.785)
 	{
-		return;
-	}
-	
-	if(!g_Game[client].aFrameBlinded)
-	{
-		g_Game[client].aFrameBlinded = new ArrayList();
-	}
-	
-	if(!IsFakeClient(victim))
-	{
-		g_Player[victim].session[Stats_Blinded] += 1;
-	}
-	
-	//
-	
-	if(bDebug)
-	{
-		char t1[11];
-		char t2[11];
-		int entityid = event.GetInt("entityid");
-		
-		switch(GetClientTeam(client))
+		if(!g_Game[client].aFrameBlinded)
 		{
-			case 1: t1 = "SPEC"
-			case 2: t1 = "T";
-			case 3: t1 = "CT";
-			default:t1 = "UNASSIGNED"
-		}
-		switch(GetClientTeam(victim))
-		{
-			case 1: t2 = "SPEC";
-			case 2: t2 = "T";
-			case 3: t2 = "CT";
-			default:t2 = "UNASSIGNED";
+			g_Game[client].aFrameBlinded = new ArrayList();
 		}
 		
-		LogMessage("OnPlayerBlinded() Debug : "
-		..."\nattacker : %i ['%s'] (team : %s)"
-		..."\nvictim : %i ['%s'] (team : %s)"
-		..."\nflashbang entityid : %i"
-		..."\nduration : %.6f"
-		..."\n"
-		, attacker, g_Player[client].name2, t1
-		, userid, g_Player[victim].name2, t2
-		, entityid
-		, duration);
+		g_Game[client].aFrameBlinded.Push(userid);
+		
+		if(!IsFakeClient(victim))
+		{
+			g_Player[victim].session[Stats_Blinded] += 1;
+		}
 	}
-	
-	//
 }
 
 //
@@ -488,6 +450,13 @@ void MapTimer_GameTimer_CStrike(int client, Transaction txn)
 			if(txn == null)
 			{
 				txn = new Transaction();
+			}
+			
+			int[] list = new int[blinded];
+			
+			for(int i = 0; i < blinded; i++)
+			{
+				list[i] = g_Game[client].aFrameBlinded.Get(i);
 			}
 			
 			g_Game[client].aFrameBlinded.Clear();
@@ -512,6 +481,30 @@ void MapTimer_GameTimer_CStrike(int client, Transaction txn)
 			len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
 			txn.AddQuery(query);
 			
+			if(bDebug)
+			{
+				int msglen = 0;
+				char msg[256];
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "OnPlayerBlindedDebug() :");
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nattacker :");
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n{");
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n   userid %i ['%s'] (team : %s)", g_Player[client].userid, g_Player[client].name2, g_Player[client].team);
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n}");
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nvictims :");
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n{");
+				
+				for(int i = 0; i < blinded; i++)
+				{
+					int victim = GetClientOfUserId(list[i]);
+					msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n   userid %i ['%s'] (Team : %s)", list[i], g_Player[victim].name2, g_Player[victim].team);
+				}
+				
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n}");
+				msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n");
+				
+				LogMessage(msg);
+			}
+			
 			// in case the text was not formatted correctly, this is to prevent a sql query halt and cause server to crash.
 			
 			if(blinded >= 3 && points >= 1)
@@ -519,7 +512,7 @@ void MapTimer_GameTimer_CStrike(int client, Transaction txn)
 				char points_plural[64];
 				PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 				
-				CPrintToChat(client, "%s %T%T", g_ChatTag, "#SMStats_CStrike_Blinded_Multi", client, points_plural, "#SMStats_Counter", blinded);
+				CPrintToChat(client, "%s %T%T", g_ChatTag, "#SMStats_CStrike_Blinded_Multi", client, points_plural, "#SMStats_Counter", client, blinded);
 			}
 		}
 	}

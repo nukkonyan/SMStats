@@ -26,24 +26,14 @@ stock void Assister_PlayerHurt(Event event, const char[] event_name, bool dontBr
 		return;
 	}
 	
-	int client = 0;
+	int client, victim;
 	if(!IsValidClient((client = GetClientOfUserId(attacker))))
 	{
 		return;
 	}
-	
-	int victim = 0;
-	if(!IsValidClient((victim = GetClientOfUserId(userid)), false))
+	if(!IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots))
 	{
 		return;
-	}
-	
-	if(!bAllowBots)
-	{
-		if(IsFakeClient(victim))
-		{
-			return;
-		}
 	}
 	
 	int dmg;
@@ -79,29 +69,14 @@ stock void Assister_PlayerDeath(Event event, const char[] event_name, bool dontB
 		return;
 	}
 	
-	int client = 0;
-	if(!IsValidClient((client = GetClientOfUserId(attacker)), false))
+	int client, victim;
+	if(!IsValidClient((client = GetClientOfUserId(attacker)), !bAllowBots))
 	{
 		return;
 	}
-	
-	int victim = 0;
-	if(!IsValidClient((victim = GetClientOfUserId(userid)), false))
+	if(!IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots))
 	{
 		return;
-	}
-	
-	if(!bAllowBots)
-	{
-		if(IsFakeClient(client))
-		{
-			return;
-		}
-		
-		if(IsFakeClient(victim))
-		{
-			return;
-		}
 	}
 	
 	g_PlayerDamaged[client][victim] = 0;
@@ -134,16 +109,8 @@ stock int GetLatestAssister(int victim, int client)
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
 		//Make sure the user is in the game.
-		if(IsValidClient(player, false))
+		if(IsValidClient(player, !bAllowBots))
 		{
-			if(!bAllowBots)
-			{
-				if(IsFakeClient(player))
-				{
-					continue;
-				}
-			}
-			
 			//Make sure to not return the attacker, only return the player who did the most damage.
 			if(client != player && g_PlayerDamaged[victim][player] > 50)
 			{

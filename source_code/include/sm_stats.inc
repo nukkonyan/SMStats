@@ -151,6 +151,7 @@ enum SMStats_Type
 	Stats_HostagesFragged = 115,
 	
 	/* Other */
+	Stats_BurnedFrags = 116,
 	Stats_Hit_Head = 130,
 	Stats_Hit_Shoulder = 131,
 	Stats_Hit_LeftArm = 132,
@@ -172,15 +173,17 @@ enum SMStatsUpdatedFwdType
 	SMStatsUpdated_AllowBots = 2,
 	SMStatsUpdated_AllowAbuse = 3,
 	SMStatsUpdated_AllowWarmup = 4,
-	SMStatsUpdated_DisableAfterRoundEnd = 5,
-	SMStatsUpdated_MinPlayers = 6,
-	SMStatsUpdated_DeathPoints = 7,
-	SMStatsUpdated_AssistPoints = 8,
-	SMStatsUpdated_PenaltySeconds = 9,
-	SMStatsUpdated_SndConnectedTop10 = 10,
-	SMStatsUpdated_SndConnectedTop1 = 11,
-	SMStatsUpdated_SndConnectedGeneric = 12,
-	SMStatsUpdated_Debug = 13,
+	SMStatsUpdated_AllowTeamFrag = 5,
+	SMStatsUpdated_DisableAfterRoundEnd = 6,
+	SMStatsUpdated_MinPlayers = 7,
+	SMStatsUpdated_DeathPoints = 8,
+	SMStatsUpdated_TeamFragPoints = 9,
+	SMStatsUpdated_AssistPoints = 10,
+	SMStatsUpdated_PenaltySeconds = 11,
+	SMStatsUpdated_SndConnectedTop10 = 12,
+	SMStatsUpdated_SndConnectedTop1 = 13,
+	SMStatsUpdated_SndConnectedGeneric = 14,
+	SMStatsUpdated_Debug = 15,
 }
 
 typeset SMStats_Callback

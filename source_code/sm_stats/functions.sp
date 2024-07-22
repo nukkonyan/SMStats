@@ -2106,11 +2106,56 @@ stock bool CS_IsClientInSmoke(int client)
 
 //
 
-stock void UpdatePlayerName(int client)
+stock void UpdatePlayerInfo(int client)
 {
-	if(IsValidClient(client, !bAllowBots))
+	GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
+	GetPlayerTeam(client, g_Player[client].team, sizeof(g_Player[].team), g_Player[client].iTeam);
+}
+
+void GetPlayerTeam(int client, char[] team, int maxlen, int &iTeam)
+{
+	switch((iTeam = GetClientTeam(client)))
 	{
-		GetPlayerName(client, g_Player[client].name, sizeof(g_Player[].name), g_Player[client].name2, sizeof(g_Player[].name2));
+		case 0: strcopy(team, maxlen, "UNASSIGNED");
+		case 1: strcopy(team, maxlen, "SPEC");
+		
+		case 2:
+		{
+			switch(GetEngineVersion())
+			{
+				case Engine_TF2: strcopy(team, maxlen, "RED");
+				case Engine_CSS, Engine_CSGO: strcopy(team, maxlen, "T");
+			}
+		}
+		
+		case 3:
+		{
+			switch(GetEngineVersion())
+			{
+				case Engine_TF2: strcopy(team, maxlen, "BLU");
+				case Engine_CSS, Engine_CSGO: strcopy(team, maxlen, "CT");
+			}
+		}
+		
+		case 4:
+		{
+			switch(GetEngineVersion())
+			{
+				// team fortress 2 classic
+				case Engine_TF2: strcopy(team, maxlen, "GRN");
+			}
+		}
+		
+		case 5:
+		{
+			switch(GetEngineVersion())
+			{
+				// team fortress 2 classic
+				case Engine_TF2: strcopy(team, maxlen, "YLW");
+			}
+		}
+		
+		default: strcopy(team, maxlen, "UNKNOWN");
 	}
 }
 
