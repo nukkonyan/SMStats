@@ -460,26 +460,6 @@ void MapTimer_GameTimer_CStrike(int client, Transaction txn)
 			}
 			
 			g_Game[client].aFrameBlinded.Clear();
-			g_Player[client].session[Stats_BlindedOpponents] += blinded;
-			
-			int len;
-			char query[256];
-			len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set");
-			len += Format(query[len], sizeof(query)-len, "`BlindedOpponents`=`BlindedOpponents`+'%i'", blinded);
-			
-			int points;
-			if(blinded >= 3)
-			{
-				if((points = g_cvarBlindedMulti.IntValue) > 0)
-				{
-					g_Player[client].session[Stats_Points] += points;
-					
-					len += Format(query[len], sizeof(query)-len, ", `Points`=`Points`='%i'", points);
-				}
-			}
-			
-			len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-			txn.AddQuery(query);
 			
 			if(bDebug)
 			{
@@ -504,6 +484,27 @@ void MapTimer_GameTimer_CStrike(int client, Transaction txn)
 				
 				LogMessage(msg);
 			}
+			
+			g_Player[client].session[Stats_BlindedOpponents] += blinded;
+			
+			int len;
+			char query[256];
+			len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set");
+			len += Format(query[len], sizeof(query)-len, "`BlindedOpponents`=`BlindedOpponents`+'%i'", blinded);
+			
+			int points;
+			if(blinded >= 3)
+			{
+				if((points = g_cvarBlindedMulti.IntValue) > 0)
+				{
+					g_Player[client].session[Stats_Points] += points;
+					
+					len += Format(query[len], sizeof(query)-len, ", `Points`=`Points`='%i'", points);
+				}
+			}
+			
+			len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+			txn.AddQuery(query);
 			
 			// in case the text was not formatted correctly, this is to prevent a sql query halt and cause server to crash.
 			

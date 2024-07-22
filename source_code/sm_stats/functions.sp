@@ -2218,7 +2218,11 @@ void GetPlayerName(int client, char[] name, int maxlen, char[] name2, int maxlen
 
 void GetPlayerTeam(int client, char[] team, int maxlen, int &iTeam)
 {
-	if((iTeam = GetClientTeam(client)) < 1)
+	if(!IsClientInGame(client))
+	{
+		iTeam = 0;
+	}
+	else if((iTeam = GetClientTeam(client)) < 1)
 	{
 		iTeam = 0;
 	}

@@ -319,16 +319,6 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 					int time_frag = GetGameTickCount();
 					int time = ( time_frag - time_scoped );
 					
-					PrintToServer("Quickscope Debug:"
-					... "\nscoped_level : %i"
-					... "\ntime_scoped : %i"
-					... "\ntime_frag : %i"
-					... "\ntime : %i"
-					, scoped_level
-					, time_scoped
-					, time_frag
-					, time);
-					
 					if(time <= 24)
 					{
 						bQuickscope = true;
@@ -343,8 +333,6 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 	bool bWallbang = false;
 	
 	//
-	
-	int penetrated;
 	
 	FragEventInfo frag;
 	frag.timestamp = GetTime();
@@ -365,7 +353,7 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 	frag.dominated = event.GetBool("dominated");
 	frag.revenge = event.GetBool("revenge");
 	
-	frag.collateral = ((penetrated = event.GetInt("penetrated")) > 0);
+	frag.collateral = (event.GetInt("penetrated") > 0);
 	frag.grenade = bGrenade;
 	
 	float gd_attacker = DistanceAboveGround(client);
@@ -389,38 +377,6 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 	
 	strcopy(frag.classname, sizeof(frag.classname), classname);
 	frag.itemdef = itemdef;
-	
-	//
-	
-	if(bDebug)
-	{
-		int assist = (assister > 0) ? GetClientOfUserId(assister) : 0;
-		
-		LogMessage("OnPlayerDeath() Debug : "
-		..."\nattacker : %i ['%s'] (gd : %.1f) (g : %s) (team : %s)"
-		..."\nvictim : %i ['%s'] (gd : %.1f) (g : %s) (team : %s)"
-		..."\nassister : %i ['%s']"
-		..."\nweapon itemdef : %i ['%s'] / id : %i"
-		..."\npenetrated objects : %i"
-		..."\nthrough smoke : %s"
-		..."\nquickscope : %s"
-		..."\nwallbang : %s"
-		..."\nburned : %s"
-		..."\nknifed : %s"
-		..."\nteamfrag : %s"
-		..."\n"
-		, attacker, g_Player[client].name2, gd_attacker, g_attacker ? "true":"false", g_Player[client].team
-		, userid, g_Player[victim].name2, gd_userid, g_userid ? "true":"false", g_Player[victim].team
-		, assister, (assist > 0) ? g_Player[assist].name2 : ""
-		, itemdef, classname, event.GetInt("weapon_itemid")
-		, penetrated
-		, frag.smoked ? "true" : "false"
-		, frag.quickscope ? "true" : "false"
-		, frag.wallbang ? "true" : "false"
-		, frag.burned ? "true" : "false"
-		, frag.knifed ? "true" : "false"
-		, frag.teamfrag ? "true" : "false");
-	}
 	
 	//
 	
@@ -504,6 +460,16 @@ Action MapTimer_GameTimer(Handle timer)
 					bool[] list_wepfrag = new bool[frags];
 					char[][] list_classname = new char[frags][64];
 					
+					// debug
+					
+					bool[] list_headshot = new bool[frags];
+					bool[] list_throughsmoke = new bool[frags];
+					bool[] list_quickscope = new bool[frags];
+					bool[] list_wallbang = new bool[frags];
+					bool[] list_burned = new bool[frags];
+					bool[] list_knifed = new bool[frags];
+					bool[] list_teamfrag = new bool[frags];
+					
 					// kill log
 					
 					char list_steamid_victim[448];
@@ -513,16 +479,23 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					//
 					
+					int iAssists;
+					
 					int iHeadshots;
 					int iBackstabs;
 					int iDominated;
 					int iRevenges;
 					int iNoscopes;
-					//int iThroughSmokes;
+					int iThroughSmokes;
+					int iQuickscopes;
 					int iAirshots;
 					int iCollaterals;
 					int iMidAirFrags;
 					int iBurnedFrags;
+					int iKnifedFrags;
+					int iWallbangs;
+					
+					int iTeamFrags;
 					
 					int iWepFrags;
 					
@@ -544,6 +517,7 @@ Action MapTimer_GameTimer(Handle timer)
 					bool bPrev_midair;
 					bool bPrev_burned;
 					bool bPrev_knifed;
+					//bool bPrev_wallbang;
 					
 					//
 					
@@ -555,6 +529,40 @@ Action MapTimer_GameTimer(Handle timer)
 						list_assister[i] = event.assister;
 						list_itemdef[i] = event.itemdef;
 						strcopy(list_classname[i], sizeof(event.classname), event.classname);
+						
+						// debug
+						
+						if(event.smoked)
+						{
+							list_throughsmoke[i] = true;
+						}
+						if(event.quickscope)
+						{
+							list_quickscope[i] = true;
+						}
+						if(event.wallbang)
+						{
+							list_wallbang[i] = true;
+							iWallbangs++;
+						}
+						if(event.burned)
+						{
+							list_burned[i] = true;
+						}
+						if(event.knifed)
+						{
+							list_knifed[i] = true;
+						}
+						if(event.teamfrag)
+						{
+							list_teamfrag[i] = true;
+							iTeamFrags++;
+						}
+						
+						if(event.assister > 0)
+						{
+							iAssists++;
+						}
 						
 						// kill log
 						switch(strlen(list_itemdefs) < 1)
@@ -744,6 +752,7 @@ Action MapTimer_GameTimer(Handle timer)
 							case false: bPrev_knifed = false;
 							case true:
 							{
+								iKnifedFrags++;
 								if(frags > 1 && !bPrev_knifed)
 								{
 									g_Player[client].fragmsg.Knifed = false;
@@ -927,6 +936,87 @@ Action MapTimer_GameTimer(Handle timer)
 					txn.AddQuery(query, queryId_kill_playerlist);
 					txn.AddQuery(query_map, queryId_kill_playerlist_MapUpdate);
 					
+					// debug
+					
+					if(bDebug)
+					{
+						int msglen;
+						char msg[8192];
+						
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "OnPlayerDeath() Debug :");
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nattacker : ");
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n{");
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n   userid %i ['%s'] (team : %s)"
+						, g_Player[client].userid, g_Player[client].name2, g_Player[client].team);
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "}");
+						
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nassister : ");
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n{");
+						if(iAssists > 0)
+						{
+							for(int i = 0; i < frags; i++)
+							{
+								int assist = GetClientOfUserId(list_assister[i]);
+								if(assist < 1)
+								{
+								msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n   userid %i ['%s'] (team : %s)"
+								, g_Player[assist].userid, g_Player[assist].name2, g_Player[assist].team);
+								}
+							}
+						}
+						else
+						{
+							msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n   no assisters");
+						}
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n}");
+						
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nvictim : ");
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n{");
+						for(int i = 0; i < frags; i++)
+						{
+							int victim = GetClientOfUserId(list[i]);
+							if(victim < 1)
+							{
+								continue;
+							}
+							
+							msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n   userid %i ['%s'] (team : %s) / hs : %s"
+							, g_Player[victim].userid
+							, g_Player[victim].name2
+							, g_Player[victim].team
+							, list_headshot[i] ? "yes" : "no");
+						}
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n}");
+						
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nweapon :");
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n{");
+						
+						for(int i = 0; i < frags; i++)
+						{
+							static int prev_itemdef;
+							
+							if(list_itemdef[i] != prev_itemdef)
+							{
+								msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n   itemdef : %i ['%s']", list_itemdef[i], list_classname[i]);
+							}
+							
+							prev_itemdef = list_itemdef[i];
+						}
+						
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n}");
+						
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nthrough smoke : %i", iThroughSmokes);
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nquickscopes : %i", iQuickscopes);
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nwallbangs : %i", iWallbangs);
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nburned : %i", iBurnedFrags);
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nknifed : %i", iKnifedFrags);
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\nteamfrag : %i", iTeamFrags);
+						
+						msglen += Format(msg[msglen], sizeof(msg)-msglen, "\n");
+						
+						LogMessage(msg);
+					}
+					
 					// kill log
 					
 					int lenk;
@@ -981,6 +1071,9 @@ Action MapTimer_GameTimer(Handle timer)
 						StatsMenu.Session(client, g_Player[client].active_page_session);
 					}
 					#endif
+					
+					
+					//
 					
 					// translation, separated instead.
 					if(points >= 1 && g_Player[client].bShowFragMsg)
