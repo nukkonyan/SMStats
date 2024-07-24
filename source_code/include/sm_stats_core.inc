@@ -63,19 +63,21 @@ enum PointsSplitType
 
 //
 
-enum SMStats_TFType
+enum SMStats_CustomGameType
 {
-	TFType_TF2 = 0,
-	TFType_TF2C = 1,
-	TFType_OP = 2,
+	GameType_TF2 = 0,
+	GameType_TF2C = 1,
+	GameType_OpenFortress = 2,
+	
+	GameType_CSS = 3,
+	GameType_CSProMod = 4,
+	
+	GameType_CSGO = 5,
+	GameType_CSCO = 6,
+	GameType_Legacy = 7,
 }
 
-enum SMStats_CSGOType
-{
-	CSGOType_CSGO = 0,
-	CSGOType_CSCO = 1,
-	CSGOType_Legacy = 2,
-}
+stock SMStats_CustomGameType g_CustomGameType;
 
 //
 
@@ -479,8 +481,43 @@ Action Timer_OnRestarted(Handle timer)
 
 //
 
-stock void PostAskPluginLoad()
+stock void PostAskPluginLoad(EngineVersion engine)
 {
+	char gamefolder[16];
+	GetGameFolderName(gamefolder, sizeof(gamefolder));
+	bool bValid = false;
+	
+	switch(engine)
+	{
+		case Engine_TF2:
+		{
+			if(StrEqual(gamefolder, "tf", false))
+			{
+				g_CustomGameType = GameType_TF2;
+			}
+		}
+		case Engine_CSGO:
+		{
+			if(StrEqual(gamefolder, "csgo", false))
+			{
+				g_CustomGameType = GameType_CSGO;
+				GameType = "csgo";
+				bValid = true;
+			}
+			else if(StrEqual(gamefolder, "cscomod", false))
+			{
+				g_CustomGameType = GameType_CSCO;
+				GameType = "csco";
+				bValid = true;
+			}
+		}
+	}
+	
+	if(!bValid)
+	{
+		SetFailState("This game is unsupported.");
+	}
+	
 	CreateNative("SMStats.Native_GetPlayerSessionInfo", Native_GetPlayerSessionInfo);
 	CreateNative("_sm_stats_detect_ban_player_auth", Native_BanPlayer_Auth);
 	CreateNative("_sm_stats_detect_ban_player_ip", Native_BanPlayer_IPAddress);

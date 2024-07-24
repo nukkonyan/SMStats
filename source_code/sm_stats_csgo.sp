@@ -44,39 +44,19 @@ SMStats_CSGOGameInfo g_Game[MaxPlayers+1];
 #include <cstrike>
 #include <sdktools>
 
-stock SMStats_CSGOType g_CSGOType;
-
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	switch(GetEngineVersion())
+	EngineVersion engine;
+	if((engine = GetEngineVersion()) != Engine_CSGO)
 	{
-		case Engine_CSGO:
-		{
-			char gamefolder[16];
-			GetGameFolderName(gamefolder, sizeof(gamefolder));
-			
-			if(StrEqual(gamefolder, "csgo", false))
-			{
-				g_CSGOType = CSGOType_CSGO;
-				GameType = "csgo";
-			}
-			else if(StrEqual(gamefolder, "cscomod", false))
-			{
-				g_CSGOType = CSGOType_CSCO;
-				GameType = "csco";
-			}
-		}
-		default:
-		{
-			SetFailState("This SMStats game addon may only be running in:"
-			... "\nCounter-Strike: Global Offensive."
-			... "\nCounter-Strike: Classic Offensive."
-			... "\nLegacy Strike."
-			);
-		}
+		SetFailState("This SMStats game addon may only be running in:"
+		... "\nCounter-Strike: Global Offensive."
+		... "\nCounter-Strike: Classic Offensive."
+		... "\nLegacy Strike."
+		);
 	}
 	
-	PostAskPluginLoad();
+	PostAskPluginLoad(engine);
 	
 	return APLRes_Success;
 }
