@@ -212,7 +212,7 @@ methodmap SMStats __nullable__
 }
 
 /*
- *	SourceMod Statistics.
+ *	SourceMod Stats
  *	Called as soon as player frags enemies.
  *
  *	@param	attacker	The userid of the attacking player.

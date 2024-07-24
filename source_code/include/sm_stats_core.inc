@@ -63,6 +63,22 @@ enum PointsSplitType
 
 //
 
+enum SMStats_TFType
+{
+	TFType_TF2 = 0,
+	TFType_TF2C = 1,
+	TFType_OP = 2,
+}
+
+enum SMStats_CSGOType
+{
+	CSGOType_CSGO = 0,
+	CSGOType_CSCO = 1,
+	CSGOType_Legacy = 2,
+}
+
+//
+
 /*
  *	SourceMod Stats: Core.
  *	Retrieve the active chat tag.
@@ -186,15 +202,88 @@ native void _sm_stats_detect_ban_player_ip(const char[] ip, bool only_same_games
 
 // default important things
 
-#define sql_table_playerlist "playerlist_"...GameType
-#define sql_table_weapons "weapons_"...GameType
-#define sql_table_kill_log "kill_log_"...GameType
-#define sql_table_item_log "item_log_"...GameType
-#define sql_table_maps_log "maps_log_"... GameType
-#define sql_table_achievements "achievements_"... GameType
-#define sql_table_settings "settings"
-#define game_translation "sm_stats_"... GameType...".phrases"
-#define ach_translation "sm_stats_"... GameType..."_achievements.phrases"
+// sql
+
+char g_strTableName[7][24];
+
+enum struct SMStats_SQLInfo
+{
+	Database setsuzoku;
+	
+	
+	char playerlist[24];
+	char weapons[24];
+	char kill_log[24];
+	char item_log[24];
+	char maps_log[24];
+	char achievements[24];
+	char settings[9];
+	
+	void init_tablenames()
+	{
+		PrintToServer("init_tablenames()");
+		
+		Format(this.playerlist, sizeof(this.playerlist), "playerlist_%s", GameType);
+		strcopy(g_strTableName[0], sizeof(g_strTableName[]), this.playerlist);
+		
+		Format(this.weapons, sizeof(this.weapons), "weapons_%s", GameType);
+		strcopy(g_strTableName[1], sizeof(g_strTableName[]), this.weapons);
+		
+		Format(this.kill_log, sizeof(this.kill_log), "kill_log_%s", GameType);
+		strcopy(g_strTableName[2], sizeof(g_strTableName[]), this.kill_log);
+		
+		Format(this.item_log, sizeof(this.item_log), "item_log_%s", GameType);
+		strcopy(g_strTableName[3], sizeof(g_strTableName[]), this.item_log);
+		
+		Format(this.maps_log, sizeof(this.maps_log), "maps_log_%s", GameType);
+		strcopy(g_strTableName[4], sizeof(g_strTableName[]), this.maps_log);
+		
+		Format(this.achievements, sizeof(this.achievements), "achievements_log_%s", GameType);
+		strcopy(g_strTableName[5], sizeof(g_strTableName[]), this.achievements);
+		
+		strcopy(this.settings, sizeof(this.settings), "settings");
+		strcopy(g_strTableName[6], 9, "settings");
+	}
+	
+	void lock()
+	{
+		SQL_LockDatabase(this.setsuzoku);
+	}
+	
+	void unlock()
+	{
+		SQL_UnlockDatabase(this.setsuzoku);
+	}
+	
+	DBResultSet query(char[] query)
+	{
+		return SQL_Query(this.setsuzoku, query);
+	}
+	
+	void tquery(SQLQueryCallback callback, char[] query, any data=0, DBPriority prio=DBPrio_Normal)
+	{
+		this.setsuzoku.Query(callback, query, data, prio)
+	}
+	
+	bool error(char[] error, int maxlen)
+	{
+		return SQL_GetError(this.setsuzoku, error, maxlen);
+	}
+	
+	void exec(Transaction txn, SQLTxnSuccess success=INVALID_FUNCTION, SQLTxnFailure error=INVALID_FUNCTION, any data=0, DBPriority prio=DBPrio_Normal)
+	{
+		this.setsuzoku.Execute(txn, success, error, data, prio);
+	}
+	
+	bool valid()
+	{
+		return (this.setsuzoku != null);
+	}
+}
+SMStats_SQLInfo sql;
+
+char game_translation[24];
+char ach_translation[24];
 
 #define ITEMDEF_INVALID -1
 
@@ -202,7 +291,6 @@ char g_ChatTag[96];
 char g_sndConnectedTop10[96]
 , g_sndConnectedTop1[96]
 , g_sndConnectedGeneric[96];
-Database sql = null;
 KeyValues core = null;
 bool bDebug = false;
 bool bLoaded = false;
@@ -235,6 +323,13 @@ char cMap[64];
 
 public void _sm_stats_loaded_core()
 {
+	sql.init_tablenames();
+	
+	Format(game_translation, sizeof(game_translation), "sm_stats_%s.phrases", GameType);
+	Format(ach_translation, sizeof(ach_translation), "sm_stats_%s_achievements.phrases", GameType);
+	
+	//
+	
 	PrintToServer(core_chattag..." Version "...Version..." (https://github.com/nukkonyan/SMStats)");
 	LogToGame(core_chattag..." Version "...Version..." (https://github.com/nukkonyan/SMStats)");
 	bLoaded = true;
@@ -297,6 +392,13 @@ public void _sm_stats_updatedfwd(SMStatsUpdatedFwdType type, const char[] value)
 
 public void OnPluginStart()
 {
+	sql.init_tablenames();
+	
+	Format(game_translation, sizeof(game_translation), "sm_stats_%s.phrases", GameType);
+	Format(ach_translation, sizeof(ach_translation), "sm_stats_%s_achievements.phrases", GameType);
+	
+	//
+	
 	PrepareTranslations();
 	PrepareGame();
 	#if defined load_cstrike
@@ -358,9 +460,9 @@ public void OnPluginStart()
 		
 		if(SMStats.IsLoaded())
 		{
-			if((sql = _sm_stats_get_sql()) != null)
+			if((sql.setsuzoku = _sm_stats_get_sql()) != null)
 			{
-				_sm_stats_loaded_sql(sql, true);
+				_sm_stats_loaded_sql(sql.setsuzoku, true);
 			}
 			
 			CreateTimer(1.25, Timer_OnRestarted);
@@ -377,20 +479,9 @@ Action Timer_OnRestarted(Handle timer)
 
 //
 
-char g_strTableName[][] =
-{
-	/*0*/sql_table_playerlist
-	/*1*/,sql_table_weapons
-	/*2*/,sql_table_kill_log
-	/*3*/,sql_table_item_log
-	/*4*/,sql_table_maps_log
-	/*5*/,sql_table_achievements
-	/*6*/,sql_table_settings
-};
-
 public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 {
-	sql = database;
+	sql.setsuzoku = database;
 	
 	LogToGame(core_chattag..." : Caught database connection.");
 	
@@ -401,12 +492,12 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		int len;
 		
 		#if defined sql_loadtable_playerlist
-		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_playerlist);
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql.playerlist);
 		switch(!!(file = OpenFile(path, "r")))
 		{
 			case false:
 			{
-				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for statistical tracking.), Did you install it correctly?", sql_table_playerlist);
+				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for statistical tracking.), Did you install it correctly?", sql.playerlist);
 			}
 			
 			case true:
@@ -420,7 +511,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 					len += Format(query[len], sizeof(query)-len, table);
 				}
 				
-				sql.Query(DBQuery_InsertTables, query, 0);
+				sql.tquery(DBQuery_InsertTables, query, 0);
 				
 				query = "";
 				len = 0;
@@ -431,12 +522,12 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		//
 		
 		#if defined sql_loadtable_weapons
-		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_weapons);
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql.weapons);
 		switch(!!(file = OpenFile(path, "r")))
 		{
 			case false:
 			{
-				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking weapon kills.), Did you install it correctly?", sql_table_weapons);
+				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking weapon kills.), Did you install it correctly?", sql.weapons);
 			}
 			
 			case true:
@@ -450,7 +541,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 					len += Format(query[len], sizeof(query)-len, table);
 				}
 				
-				sql.Query(DBQuery_InsertTables, query, 1);
+				sql.tquery(DBQuery_InsertTables, query, 1);
 				
 				query = "";
 				len = 0;
@@ -461,12 +552,12 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		//
 		
 		#if defined sql_loadtable_kill_log
-		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_kill_log);
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql.kill_log);
 		switch(!!(file = OpenFile(path, "r")))
 		{
 			case false:
 			{
-				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking kills events.), Did you install it correctly?", sql_table_kill_log);
+				SetFailState("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking kills events.), Did you install it correctly?", sql.kill_log);
 			}
 			
 			case true:
@@ -480,7 +571,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 					len += Format(query[len], sizeof(query)-len, table);
 				}
 				
-				sql.Query(DBQuery_InsertTables, query, 1);
+				sql.tquery(DBQuery_InsertTables, query, 1);
 				
 				query = "";
 				len = 0;
@@ -511,7 +602,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 					len += Format(query[len], sizeof(query)-len, table);
 				}
 				
-				sql.Query(DBQuery_InsertTables, query, 4);
+				sql.tquery(DBQuery_InsertTables, query, 4);
 				
 				query = "";
 				len = 0;
@@ -522,12 +613,12 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		//
 		
 		#if defined sql_loadtable_maps_log
-		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_maps_log);
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql.maps_log);
 		switch(!!(file = OpenFile(path, "r")))
 		{
 			case false:
 			{
-				LogError("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking maps.), Did you install it correctly?", sql_table_maps_log);
+				LogError("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for tracking maps.), Did you install it correctly?", sql.maps_log);
 			}
 			
 			case true:
@@ -541,7 +632,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 					len += Format(query[len], sizeof(query)-len, table);
 				}
 				
-				sql.Query(DBQuery_InsertTables, query, 4);
+				sql.tquery(DBQuery_InsertTables, query, 4);
 				
 				query = "";
 				len = 0;
@@ -558,12 +649,12 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		//
 		
 		#if defined sql_loadtable_settings
-		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql_table_settings);
+		BuildPath(Path_SM, path, sizeof(path), "/configs/sm_stats/%s.sm_stats", sql.settings);
 		switch(!!(file = OpenFile(path, "r")))
 		{
 			case false:
 			{
-				LogError("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for saving settings.), Did you install it correctly?", sql_table_settings);
+				LogError("Failed loading database file '/configs/sm_stats/%s.sm_stats' (Required for saving settings.), Did you install it correctly?", sql.settings);
 			}
 			
 			case true:
@@ -577,7 +668,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 					len += Format(query[len], sizeof(query)-len, table);
 				}
 				
-				sql.Query(DBQuery_InsertTables, query, 6);
+				sql.tquery(DBQuery_InsertTables, query, 6);
 				
 				query = "";
 				len = 0;
@@ -614,7 +705,7 @@ stock void CallbackQuery(const char[] query, int unique_query_id, any ...)
 	int maxlen = strlen(query)+1025;
 	char[] format = new char[maxlen];
 	VFormat(format, maxlen, query, 3);
-	sql.Query(DBQuery_Callback, format, unique_query_id);
+	sql.tquery(DBQuery_Callback, format, unique_query_id);
 }
 stock void DBQuery_Callback(Database database, DBResultSet results, const char[] error, int unique_query_id)
 {	
@@ -742,14 +833,22 @@ Action _sm_stats_erase_db_cmd(int client, int args)
 	if(args != 1)
 	{
 		ReplyToCommand(client, "%s You must choose to erase everything or a specific table:"
-		... "\n 1 - Erase playerlist" ..." [ "...sql_table_playerlist..." ]"
-		... "\n 2 - Erase weapons" ..." [ "...sql_table_weapons..." ]"
-		... "\n 3 - Erase kill log" ..." [ "...sql_table_kill_log..." ]"
-		... "\n 4 - Erase item log" ..." [ "...sql_table_item_log..." ]"
-		... "\n 5 - Erase maps log" ..." [ "...sql_table_maps_log..." ]"
-		... "\n 6 - Erase achievements" ..." [ "...sql_table_achievements..." ]"
-		... "\n 7 - Erase settings" ..." [ "...sql_table_settings..." ]"
-		... "\n 8 - Erase everything", core_chattag);
+		... "\n 1 - Erase playerlist" ..." [ %s ]"
+		... "\n 2 - Erase weapons" ..." [ %s ]"
+		... "\n 3 - Erase kill log" ..." [ %s ]"
+		... "\n 4 - Erase item log" ..." [ %s ]"
+		... "\n 5 - Erase maps log" ..." [ %s ]"
+		... "\n 6 - Erase achievements" ..." [ %s ]"
+		... "\n 7 - Erase settings" ..." [ %s ]"
+		... "\n 8 - Erase everything"
+		, core_chattag
+		, sql.playerlist
+		, sql.weapons
+		, sql.kill_log
+		, sql.item_log
+		, sql.maps_log
+		, sql.achievements
+		, sql.settings);
 		return Plugin_Handled;
 	}
 	
@@ -775,7 +874,7 @@ void _sm_stats_erase_database_config(int client, int id = 0)
 	#if defined sql_loadtable_playerlist
 	if(id == 1 || id == 8)
 	{
-		Format(query, sizeof(query), "drop table "...sql_table_playerlist);
+		Format(query, sizeof(query), "drop table %s", sql.playerlist);
 		txn.AddQuery(query, 0);
 	}
 	#endif
@@ -783,7 +882,7 @@ void _sm_stats_erase_database_config(int client, int id = 0)
 	#if defined sql_loadtable_weapons
 	if(id == 2 || id == 8)
 	{
-		Format(query, sizeof(query), "drop table "...sql_table_weapons);
+		Format(query, sizeof(query), "drop table %s", sql.weapons);
 		txn.AddQuery(query, 1);
 	}
 	#endif
@@ -791,7 +890,7 @@ void _sm_stats_erase_database_config(int client, int id = 0)
 	#if defined sql_loadtable_kill_log
 	if(id == 3 || id == 8)
 	{
-		Format(query, sizeof(query), "drop table "...sql_table_kill_log);
+		Format(query, sizeof(query), "drop table %s", sql.kill_log);
 		txn.AddQuery(query, 2);
 	}
 	#endif
@@ -799,7 +898,7 @@ void _sm_stats_erase_database_config(int client, int id = 0)
 	#if defined sql_loadtable_item_log
 	if(id == 4 || id == 8)
 	{
-		Format(query, sizeof(query), "drop table "...sql_table_item_log);
+		Format(query, sizeof(query), "drop table %s", sql.item_log);
 		txn.AddQuery(query, 3);
 	}
 	#endif
@@ -807,7 +906,7 @@ void _sm_stats_erase_database_config(int client, int id = 0)
 	#if defined sql_loadtable_maps_log
 	if(id == 5 || id == 8)
 	{
-		Format(query, sizeof(query), "drop table "...sql_table_maps_log);
+		Format(query, sizeof(query), "drop table %s", sql.maps_log);
 		txn.AddQuery(query, 4);
 	}
 	#endif
@@ -815,18 +914,18 @@ void _sm_stats_erase_database_config(int client, int id = 0)
 	#if defined sql_loadtable_achievements_log
 	if(id == 6)
 	{
-		Format(query, sizeof(query), "drop table "...sql_table_achievements);
+		Format(query, sizeof(query), "drop table %s", sql.achievements);
 		txn.AddQuery(query, 5);
 	}
 	#endif
 	
 	if(id == 7 || id == 8)
 	{
-		Format(query, sizeof(query), "drop table "...sql_table_settings);
+		Format(query, sizeof(query), "drop table %s", sql.settings);
 		txn.AddQuery(query, 6);
 	}
 	
-	sql.Execute(txn, TXN_EraseDatabaseConfig_OnSuccess, TXN_EraseDatabaseConfig_OnFailure, client);
+	sql.exec(txn, TXN_EraseDatabaseConfig_OnSuccess, TXN_EraseDatabaseConfig_OnFailure, client);
 }
 
 stock void TXN_EraseDatabaseConfig_OnSuccess(Database db, any data , int numQueries, DBResultSet[] results, int[] queryData)

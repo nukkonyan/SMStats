@@ -799,8 +799,8 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
-					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Frags`=`Frags`+%i", frags);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set `Frags`=`Frags`+%i", frags);
+					len += Format(query[len], sizeof(query)-len, "update `%s` set `Frags`=`Frags`+%i", sql.playerlist, frags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `%s` set `Frags`=`Frags`+%i", sql.maps_log, frags);
 					
 					if(iWepFrags > 0)
 					{
@@ -844,8 +844,8 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							char fix_weapon[64], query_wep[256];
 							CorrectWeaponClassname(fix_weapon, sizeof(fix_weapon), epic.itemdef, epic.classname);
-							Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set `%s`=`%s`+'%i' where `SteamID`='%s' and `StatsID`='%i'"
-							, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_StatsID);
+							Format(query_wep, sizeof(query_wep), "update `%s` set `%s`=`%s`+'%i' where `SteamID`='%s' and `StatsID`='%i'"
+							, sql.weapons, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_StatsID);
 							txn.AddQuery(query_wep, queryId_kill_weapon);
 							
 							if(bDebug) PrintToServer("%s OnPlayerDeath() DEBUG: [userid %i] classname '%s' / itemdef '%i' / quantity '%i'"
@@ -1021,7 +1021,7 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					int lenk;
 					char queryk[4096];
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "insert into `"...sql_table_kill_log..."`");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "insert into `%s`", sql.kill_log);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "StatsID");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Attacker");
@@ -1092,7 +1092,7 @@ Action MapTimer_GameTimer(Handle timer)
 		
 		if(txn != null)
 		{
-			sql.Execute(txn, _, TXN_OnGameFrameCallback_Failure);
+			sql.exec(txn, _, TXN_OnGameFrameCallback_Failure);
 		}
 	}
 	

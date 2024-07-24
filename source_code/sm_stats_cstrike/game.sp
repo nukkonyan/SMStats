@@ -97,15 +97,15 @@ void OnBombPlanted(Event event, const char[] szASDF, bool bASDF)
 		Transaction txn = new Transaction();
 		char query[256];
 		
-		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `BombsPlanted`=`BombsPlanted`+1 where SteamID=`%s` and StatsID=`%i`"
-		, g_Player[client].auth, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set `BombsPlanted`=`BombsPlanted`+1 where SteamID=`%s` and StatsID=`%i`"
+		, sql.playerlist, g_Player[client].auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnBombPlantedPlayerlist);
 		
-		Format(query, sizeof(query), "update"...sql_table_maps_log..."` set `BombsPlanted`=`BombsPlanted`+1 where StatsID='%i'"
-		, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set `BombsPlanted`=`BombsPlanted`+1 where StatsID='%i'"
+		, sql.maps_log, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnBombPlantedMapsLog);
 		
-		sql.Execute(txn, _, TXN_Callback_Failure);
+		sql.exec(txn, _, TXN_Callback_Failure);
 		
 		char points_plural[64];
 		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
@@ -148,15 +148,15 @@ void OnBombDefused(Event event, const char[] szASDF, bool bASDF)
 		Transaction txn = new Transaction();
 		char query[256];
 		
-		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `BombsDefused`=`BombsDefused`+1 where SteamID=`%s` and StatsID=`%i`"
-		, g_Player[client].auth, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set `BombsDefused`=`BombsDefused`+1 where SteamID=`%s` and StatsID=`%i`"
+		, sql.playerlist, g_Player[client].auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnBombDefusedPlayerlist);
 		
-		Format(query, sizeof(query), "update"...sql_table_maps_log..."` set `BombsDefused`=`BombsDefused`+1 where StatsID='%i'"
-		, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set `BombsDefused`=`BombsDefused`+1 where StatsID='%i'"
+		, sql.maps_log, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnBombDefusedMapsLog);
 		
-		sql.Execute(txn, _, TXN_Callback_Failure);
+		sql.exec(txn, _, TXN_Callback_Failure);
 		
 		char points_plural[64];
 		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
@@ -224,15 +224,15 @@ void OnHostageRescued(Event event, const char[] szASDF, bool bASDF)
 		Transaction txn = new Transaction();
 		char query[256];
 		
-		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HostagesRescued`=`HostagesRescued`+1 where SteamID=`%s` and StatsID=`%i`"
-		, g_Player[client].auth, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set `HostagesRescued`=`HostagesRescued`+1 where SteamID=`%s` and StatsID=`%i`"
+		, sql.playerlist, g_Player[client].auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnHostageRescuedPlayerlist);
 		
-		Format(query, sizeof(query), "update"...sql_table_maps_log..."` set `HostagesRescued`=`HostagesRescued`+1 where StatsID='%i'"
-		, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set `HostagesRescued`=`HostagesRescued`+1 where StatsID='%i'"
+		, sql.maps_log, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnHostageRescuedMapsLog);
 		
-		sql.Execute(txn, _, TXN_Callback_Failure);
+		sql.exec(txn, _, TXN_Callback_Failure);
 		
 		char points_plural[64];
 		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
@@ -273,15 +273,15 @@ void OnHostageFragged(Event event, const char[] szASDF, bool bASDF)
 		Transaction txn = new Transaction();
 		char query[256];
 		
-		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HostagesFragged`=`HostagesFragged`+1 where SteamID=`%s` and StatsID=`%i`"
-		, g_Player[client].auth, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set `HostagesFragged`=`HostagesFragged`+1 where SteamID=`%s` and StatsID=`%i`"
+		, sql.playerlist, g_Player[client].auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnHostageFraggedPlayerlist);
 		
-		Format(query, sizeof(query), "update"...sql_table_maps_log..."` set `HostagesFragged`=`HostagesFragged`+1 where StatsID='%i'"
-		, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set `HostagesFragged`=`HostagesFragged`+1 where StatsID='%i'"
+		, sql.maps_log, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnHostageFraggedMapsLog);
 		
-		sql.Execute(txn, _, TXN_Callback_Failure);
+		sql.exec(txn, _, TXN_Callback_Failure);
 		
 		char points_plural[64];
 		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Minus);
@@ -489,7 +489,7 @@ void MapTimer_GameTimer_CStrike(int client, Transaction txn)
 			
 			int len;
 			char query[256];
-			len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set");
+			len += Format(query[len], sizeof(query)-len, "update `%s` set", sql.playerlist);
 			len += Format(query[len], sizeof(query)-len, "`BlindedOpponents`=`BlindedOpponents`+'%i'", blinded);
 			
 			int points;

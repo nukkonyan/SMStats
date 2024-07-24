@@ -35,13 +35,13 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 	
 	char query[256], error[256];
 	Format(query, sizeof(query), "select `PlayerName` from settings where SteamID = '%s'", auth);
-	SQL_LockDatabase(sql);
+	sql.lock();
 	DBResultSet results;
-	if(!(results = SQL_Query(sql, query)))
+	if(!(results = sql.query(query)))
 	{
-		SQL_GetError(sql, error, sizeof(error));
+		sql.error(error, sizeof(error));
 	}
-	SQL_UnlockDatabase(sql);
+	sql.unlock();
 	
 	//
 	
@@ -87,7 +87,7 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 			Format(query, sizeof(query), "select from weapon_* where SteamID = '%s'", auth);
 			txn.AddQuery(query, 2);
 			
-			//Format(query, sizeof(query), "delete * from kill_log_* where SteamID = '%s'", auth);
+			//Format(query, sizeof(query), "delete from kill_log_* where SteamID = '%s'", auth);
 			//txn.AddQuery(query, 3);
 			
 			//Format(query, sizeof(query), "delete from item_log_* where SteamID = '%s'", auth);
@@ -99,19 +99,19 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 		
 		case true:
 		{
-			Format(query, sizeof(query), "delete from `"...sql_table_playerlist..."` where SteamID = '%s'", auth);
+			Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.playerlist, auth);
 			txn.AddQuery(query, 1);
 			
-			Format(query, sizeof(query), "delete * from `"...sql_table_weapons..."` where SteamID = '%s'", auth);
+			Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.weapons, auth);
 			txn.AddQuery(query, 2);
 			
-			//Format(query, sizeof(query), "delete from `"...sql_table_kill_log..."` where SteamID = '%s'", auth);
+			//Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.kill_log, auth);
 			//txn.AddQuery(query, 3);
 			
-			//Format(query, sizeof(query), "delete from `"...sql_table_item_log..."` * where SteamID = '%s'", auth);
+			//Format(query, sizeof(query), "delete from `%s` * where SteamID = '%s'", sql.item_log, auth);
 			//txn.AddQuery(query, 4);
 			
-			//Format(query, sizeof(query), "delete from achievements_* where SteamID = '%s'", auth);
+			//Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.achievements, auth);
 			//txn.AddQuery(query, 5);
 		}
 	}
@@ -119,7 +119,7 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 	Format(query, sizeof(query), "delete from settings where SteamID = '%s'", auth);
 	txn.AddQuery(query, 6);
 	
-	sql.Execute(txn);
+	sql.setsuzoku.Execute(txn);
 	
 	//
 	
@@ -160,21 +160,21 @@ stock any Native_BanPlayer_IPAddress(Handle plugin, int params)
 	
 	char query[256];
 	DBResultSet results;
-	SQL_LockDatabase(sql);
+	sql.lock();
 	switch(only_same_gameserver)
 	{
 		case false:
 		{
 			Format(query, sizeof(query), "select PlayerName, SteamID from playerlist_* where IPAddress = '%s'", ip);
-			results = SQL_Query(sql, query);
+			results = sql.query(query);
 		}
 		case true:
 		{
-			Format(query, sizeof(query), "select PlayerName, SteamID from `"...sql_table_playerlist..."` where IPAddress = '%s'", ip);
-			results = SQL_Query(sql, query);
+			Format(query, sizeof(query), "select PlayerName, SteamID from `%s` where IPAddress = '%s'", sql.playerlist, ip);
+			results = sql.query(query);
 		}
 	}
-	SQL_UnlockDatabase(sql);
+	sql.unlock();
 	
 	//
 	
@@ -236,10 +236,10 @@ stock any Native_BanPlayer_IPAddress(Handle plugin, int params)
 			
 			case true:
 			{
-				Format(query, sizeof(query), "delete from `"...sql_table_playerlist..."` where SteamID = '%s'", thing.auth);
+				Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.playerlist, thing.auth);
 				txn.AddQuery(query, 1);
 				
-				Format(query, sizeof(query), "delete from `"...sql_table_weapons..."` where SteamID = '%s'", thing.auth);
+				Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.weapons, thing.auth);
 				txn.AddQuery(query, 2);
 				
 				//Format(query, sizeof(query), "delete from `"...sql_table_kill_log..."` where SteamID = '%s'", thing.auth);
@@ -258,7 +258,7 @@ stock any Native_BanPlayer_IPAddress(Handle plugin, int params)
 	}
 	delete list;
 	
-	sql.Execute(txn);
+	sql.exec(txn);
 	
 	//
 	

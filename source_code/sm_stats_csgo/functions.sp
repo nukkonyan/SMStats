@@ -159,7 +159,7 @@ stock bool AssistedKills(Transaction txn
 				
 				char query[1024];
 				int len = 0;
-				len += Format(query[len], sizeof(query)-len, "update `%s` set `Assists`=`Assists`+%i", sql_table_playerlist, assister_count[i]);
+				len += Format(query[len], sizeof(query)-len, "update `%s` set `Assists`=`Assists`+%i", sql.playerlist, assister_count[i]);
 				if(assister_dominations[i] > 0)
 				{
 					len += Format(query[len], sizeof(query)-len, ",`Dominations`=`Dominations`+%i", assister_dominations[i]);
@@ -212,7 +212,7 @@ stock void VictimDied(Transaction txn, const int[] list, int frags)
 		{
 			int len = 0;
 			char query[1024];
-			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set `Deaths`=`Deaths`+1");
+			len += Format(query[len], sizeof(query)-len, "update `%s` set `Deaths`=`Deaths`+1", sql.playerlist);
 			
 			g_Player[victim].session[Stats_Deaths]++;
 			

@@ -78,16 +78,16 @@ public void OnClientConnected(int client)
 	Transaction txn = new Transaction();
 	char query[255];
 	
-	Format(query, sizeof(query), "select * from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
+	Format(query, sizeof(query), "select * from `%s` where SteamID = '%s'", sql.settings, g_Player[client].auth);
 	txn.AddQuery(query, 1);
 	
-	Format(query, sizeof(query), "select StatsID from `"...sql_table_playerlist..."` where SteamID = '%s' and StatsID = %i", g_Player[client].auth, g_StatsID);
+	Format(query, sizeof(query), "select StatsID from `%s` where SteamID = '%s' and StatsID = %i", sql.playerlist, g_Player[client].auth, g_StatsID);
 	txn.AddQuery(query, 2);
 	
-	Format(query, sizeof(query), "select StatsID from `"...sql_table_weapons..."` where SteamID = '%s' and StatsID = %i", g_Player[client].auth, g_StatsID);
+	Format(query, sizeof(query), "select StatsID from `%s` where SteamID = '%s' and StatsID = %i", sql.weapons, g_Player[client].auth, g_StatsID);
 	txn.AddQuery(query, 3);
 	
-	sql.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, g_Player[client].userid);
+	sql.setsuzoku.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, g_Player[client].userid);
 	
 	//g_Player[client].bAlreadyConnected = true;
 }
@@ -139,9 +139,9 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 		{
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name), name);
 			
-			CallbackQuery("update `"...sql_table_settings..."` set `PlayerName`='%s' where `SteamID`='%s'"
+			CallbackQuery("update `%s` set `PlayerName`='%s' where `SteamID`='%s'"
 			, query_error_uniqueid_OnPlayerNameUpdate
-			, name, g_Player[client].auth);
+			, sql.settings, name, g_Player[client].auth);
 		}
 	}
 	
@@ -187,21 +187,21 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 						/*4*/...",ShowFragMsg"
 						/*5*/...",ShowAssistMsg"
 						/*6*/...",ShowDeathMsg"
-						..." from `"...sql_table_settings..."` where `SteamID`='%s'", g_Player[client].auth);
+						..." from `%s` where `SteamID`='%s'", sql.settings, g_Player[client].auth);
 						txn.AddQuery(query, 1);
 						
-						Format(query, sizeof(query), "update `"...sql_table_settings..."` set `PlayerName`='%s' where `SteamID`='%s'"
-						, g_Player[client].name2, g_Player[client].auth);
+						Format(query, sizeof(query), "update `%s` set `PlayerName`='%s' where `SteamID`='%s'"
+						, sql.settings, g_Player[client].name2, g_Player[client].auth);
 						txn.AddQuery(query, 2);
 					}
 					case false:
 					{
 						// table not found, insert it.
 						char query[1024];
-						Format(query, sizeof(query), "insert into `"...sql_table_settings..."`"
+						Format(query, sizeof(query), "insert into `%s`"
 						... " (`PlayerName`,`SteamID`,`IPAddress`,`LastConnectedGame`,`LastConnectedStatsID`,`LastConnectedTime`) values"
 						... " ('%s', '%s', '%s', '%s', '%i', '%i')"
-						, g_Player[client].name2, g_Player[client].auth, g_Player[client].ip, GameType, g_StatsID, timestamp);
+						, sql.settings, g_Player[client].name2, g_Player[client].auth, g_Player[client].ip, GameType, g_StatsID, timestamp);
 						txn.AddQuery(query, 3);
 					}
 				}
@@ -221,16 +221,16 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				{
 					// found table, update it.
 					char query[256];
-					Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `LastConnectedName`='%s',`LastConnectedTime`='%i' where `SteamID`='%s' and `StatsID`='%i'"
-					, g_Player[client].name2, timestamp, g_Player[client].auth, g_StatsID);
+					Format(query, sizeof(query), "update `%s` set `LastConnectedName`='%s',`LastConnectedTime`='%i' where `SteamID`='%s' and `StatsID`='%i'"
+					, sql.playerlist, g_Player[client].name2, timestamp, g_Player[client].auth, g_StatsID);
 					txn.AddQuery(query, 4);
 				}
 				else
 				{
 					// table not found, insert it.
 					char query[256];
-					Format(query, sizeof(query), "insert into `"...sql_table_playerlist..."` (`LastConnectedName`,`LastConnectedTime`,`SteamID`,`StatsID`) values ('%s','%i','%s','%i')"
-					, g_Player[client].name2, timestamp, g_Player[client].auth, g_StatsID);
+					Format(query, sizeof(query), "insert into `%s` (`LastConnectedName`,`LastConnectedTime`,`SteamID`,`StatsID`) values ('%s','%i','%s','%i')"
+					, sql.playerlist, g_Player[client].name2, timestamp, g_Player[client].auth, g_StatsID);
 					txn.AddQuery(query, 5);
 				}
 			}
@@ -252,7 +252,8 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				{
 					// table not found, insert it.
 					char query[256];
-					Format(query, sizeof(query), "insert into `"...sql_table_weapons..."` (`SteamID`,`StatsID`) values ('%s','%i')", g_Player[client].auth, g_StatsID);
+					Format(query, sizeof(query), "insert into `%s` (`SteamID`,`StatsID`) values ('%s','%i')"
+					, sql.weapons, g_Player[client].auth, g_StatsID);
 					txn.AddQuery(query, 7);
 				}
 			}
@@ -334,9 +335,9 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 				g_TotalTablePlayers = GetTablePlayerCount();
 				
 				char query[256];
-				Format(query, sizeof(query), "select `Points` from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'"
-				, g_Player[client].auth, g_StatsID);
-				sql.Query(DBQuery_CheckUserSQL_Points, query, client);
+				Format(query, sizeof(query), "select `Points` from `%s` where `SteamID`='%s' and `StatsID`='%i'"
+				, sql.playerlist, g_Player[client].auth, g_StatsID);
+				sql.setsuzoku.Query(DBQuery_CheckUserSQL_Points, query, client);
 			}
 			
 			// inserted playerlist table
@@ -436,8 +437,8 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 				int timestamp = GetTime();
 				
 				char query[255];
-				Format(query, sizeof(query), "select PlayTime from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'"
-				, auth, g_StatsID);
+				Format(query, sizeof(query), "select PlayTime from `%s` where `SteamID`='%s' and `StatsID`='%i'"
+				, sql.playerlist, auth, g_StatsID);
 				DataPack pack = new DataPack();
 				pack.WriteCell(strlen(name)+1);
 				pack.WriteString(name);
@@ -446,7 +447,7 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 				pack.WriteCell(timestamp);
 				pack.WriteCell(g_Player[client].session[Stats_PlayTime]);
 				pack.Reset();
-				sql.Query(DBQuery_OnPlayerDisconnected, query, pack);
+				sql.setsuzoku.Query(DBQuery_OnPlayerDisconnected, query, pack);
 				
 				Send_Player_Disconnected(client, event_reason);
 			}
@@ -481,19 +482,19 @@ void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const 
 		Transaction txn = new Transaction();
 		
 		char query[512];
-		Format(query, sizeof(query), "update `"...sql_table_settings..."` set"
+		Format(query, sizeof(query), "update `%s` set"
 		..." LastConnectedGame = '%s'"
 		...",LastConnectedStatsID = '%i'"
 		...",LastConnectedTime = '%i'"
 		..." where SteamID = '%s'"
-		, GameType, g_StatsID, timestamp, auth);
+		, sql.settings, GameType, g_StatsID, timestamp, auth);
 		txn.AddQuery(query, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected);
 		
-		Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set LastConnectedName = '%s', LastConnectedTime = %i, PlayTime = PlayTime+%i where SteamID = '%s' and StatsID = '%s'"
-		, name, timestamp, calculate, auth, g_StatsID);
+		Format(query, sizeof(query), "update `%s` set LastConnectedName = '%s', LastConnectedTime = %i, PlayTime = PlayTime+%i where SteamID = '%s' and StatsID = '%s'"
+		, sql.playerlist, name, timestamp, calculate, auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnPlayerDisconnectUpdatePlayTime);
 		
-		sql.Execute(txn, _, TXN_Callback_Failure);
+		sql.setsuzoku.Execute(txn, _, TXN_Callback_Failure);
 	}
 }
 
@@ -535,12 +536,12 @@ Action Timer_TimePlayed(Handle timer, int userid)
 		return Plugin_Handled;
 	}
 	
-	if(sql != null)
+	if(sql.setsuzoku != null)
 	{
 		char query[256];
-		Format(query, sizeof(query), "select `PlayTime` from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'"
-		, g_Player[client].auth, g_StatsID);
-		sql.Query(DBQuery_TimePlayed, query, userid);
+		Format(query, sizeof(query), "select `PlayTime` from `%s` where `SteamID`='%s' and `StatsID`='%i'"
+		, sql.playerlist, g_Player[client].auth, g_StatsID);
+		sql.setsuzoku.Query(DBQuery_TimePlayed, query, userid);
 		
 		#if defined load_menus
 		if(g_Player[client].active_page_session == 1)
@@ -573,8 +574,9 @@ void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] err
 		int PlayTime = results.FetchInt(0);
 		int session = g_Player[client].session[Stats_PlayTime];
 		int calculate = session - PlayTime;
-		CallbackQuery("update `"... sql_table_playerlist..."` set `PlayTime`=`PlayTime`+%i where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `PlayTime`=`PlayTime`+%i where `SteamID`='%s' and `StatsID`='%i'"
 		, query_error_uniqueid_UpdatePlayTime
+		, sql.playerlist
 		, calculate
 		, g_Player[client].auth
 		, g_StatsID);
@@ -646,11 +648,11 @@ Action MapTimer_OnMapStart_Seconds(Handle timer)
 
 void SQLUpdateMapTimer()
 {
-	if(sql != null)
+	if(sql.setsuzoku != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select `PlayTime` from `"...sql_table_maps_log..."` where `MapName`='%s' and `StatsID`='%i'", cMap, g_StatsID);
-		sql.Query(DBQuery_MapTimer, query, GetTime());
+		Format(query, sizeof(query), "select `PlayTime` from `%s` where `MapName`='%s' and `StatsID`='%i'", sql.maps_log, cMap, g_StatsID);
+		sql.setsuzoku.Query(DBQuery_MapTimer, query, GetTime());
 	}
 }
 
@@ -661,9 +663,9 @@ void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, int 
 		// not found
 		case false:
 		{
-			CallbackQuery("insert into `"...sql_table_maps_log..."` (PlayTime,LastPlayedTime,StatsID,MapName) values ('%i','%i','%i','%s')"
+			CallbackQuery("insert into `%s` (PlayTime,LastPlayedTime,StatsID,MapName) values ('%i','%i','%i','%s')"
 			, query_error_uniqueid_UpdateMapTimeInserting
-			, iMapTimerSeconds, LastPlayedTime, g_StatsID, cMap);
+			, sql.maps_log, iMapTimerSeconds, LastPlayedTime, g_StatsID, cMap);
 		}
 		// found
 		case true:
@@ -674,9 +676,9 @@ void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, int 
 				int session = iMapTimerSeconds;
 				int calculate = session - PlayTime;
 				
-				CallbackQuery("update `"...sql_table_maps_log..."` set `PlayTime`=`PlayTime`+'%i',`LastPlayedTime`='%i' where `StatsID`='%i' and `MapName`='%s'"
+				CallbackQuery("update `%s` set `PlayTime`=`PlayTime`+'%i',`LastPlayedTime`='%i' where `StatsID`='%i' and `MapName`='%s'"
 				, query_error_uniqueid_UpdateMapTimeUpdating
-				, calculate, LastPlayedTime, g_StatsID, cMap);
+				, sql.maps_log, calculate, LastPlayedTime, g_StatsID, cMap);
 			}
 		}
 	}
@@ -684,17 +686,17 @@ void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, int 
 
 void UpdateMapTimerSeconds(const char[] map, int seconds)
 {
-	if(sql != null)
+	if(sql.setsuzoku != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select `PlayTime` from `"...sql_table_maps_log..."` where `MapName`='%s' and `StatsID`='%i'", map, g_StatsID);
+		Format(query, sizeof(query), "select `PlayTime` from `%s` where `MapName`='%s' and `StatsID`='%i'", sql.maps_log, map, g_StatsID);
 		DataPack pack = new DataPack();
 		pack.WriteCell(strlen(map)+1);
 		pack.WriteString(map);
 		pack.WriteCell(seconds);
 		pack.WriteCell(GetTime());
 		pack.Reset();
-		sql.Query(DBQuery_UpdateMapTimerSeconds, query, pack);
+		sql.setsuzoku.Query(DBQuery_UpdateMapTimerSeconds, query, pack);
 	}
 }
 
@@ -713,8 +715,8 @@ void DBQuery_UpdateMapTimerSeconds(Database db, DBResultSet results, const char[
 		int session = seconds;
 		int calculate = session - PlayTime;
 		
-		CallbackQuery("update `"...sql_table_maps_log..."` set `PlayTime`=`PlayTime`+%i,`LastPlayedTime` = %i where `StatsID`='%i' and `MapName`='%s'"
+		CallbackQuery("update `%s` set `PlayTime`=`PlayTime`+%i,`LastPlayedTime` = %i where `StatsID`='%i' and `MapName`='%s'"
 		, query_error_uniqueid_UpdateMapTimeUpdatingSeconds
-		, calculate, lastplayed, g_StatsID, map);
+		, sql.maps_log, calculate, lastplayed, g_StatsID, map);
 	}
 }

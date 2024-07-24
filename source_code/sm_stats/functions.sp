@@ -73,19 +73,19 @@ stock int GetTablePlayerCount()
 	if(!!sql)
 	{
 		char query[256];
-		Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `StatsID`='%i'", g_StatsID);
+		Format(query, sizeof(query), "select * from `%s` where `StatsID`='%i'", sql.playerlist, g_StatsID);
 		
-		SQL_LockDatabase(sql);
-		DBResultSet results = SQL_Query(sql, query);
-		SQL_UnlockDatabase(sql);
+		sql.lock();
+		DBResultSet results = sql.query(query);
+		sql.unlock();
 		
 		switch(!!results)
 		{
 			case false:
 			{
 				char error[256];
-				SQL_GetError(sql, error, sizeof(error));
-				LogError("%s GetTablePlayerCount error: Failed getting playercount of sql table '"...sql_table_playerlist..."' (%s)", core_chattag, error);
+				sql.error(error, sizeof(error));
+				LogError("%s GetTablePlayerCount error: Failed getting playercount of sql table '%s' (%s)", core_chattag, sql.playerlist, error);
 			}
 			case true: players = results.RowCount;
 		}
@@ -1760,7 +1760,7 @@ stock void Send_Player_Connected(int client)
 	int points = g_Player[client].points;
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `StatsID`='%i' order by `Points` desc", g_StatsID);
+	Format(query, sizeof(query), "select `SteamID` from `%s` where `StatsID`='%i' order by `Points` desc", sql.playerlist, g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(points);
@@ -1771,7 +1771,7 @@ stock void Send_Player_Connected(int client)
 	pack.WriteCell(strlen(name)+1);
 	pack.WriteString(name);
 	pack.Reset();
-	sql.Query(DBQuery_Send_Player_Connected, query, pack);
+	sql.tquery(DBQuery_Send_Player_Connected, query, pack);
 }
 
 stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results, const char[] error, DataPack pack)
@@ -1851,7 +1851,7 @@ stock void Send_Player_Connected_CheckTop10(int client)
 	strcopy(name, sizeof(name), g_Player[client].name);
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID` from `"...sql_table_playerlist..."` where `StatsID`='%i' order by `Points` limit 10 desc", g_StatsID);
+	Format(query, sizeof(query), "select `SteamID` from `%s` where `StatsID`='%i' order by `Points` limit 10 desc", sql.playerlist, g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(strlen(auth)+1);
@@ -1861,7 +1861,7 @@ stock void Send_Player_Connected_CheckTop10(int client)
 	pack.WriteCell(strlen(name)+1);
 	pack.WriteString(name);
 	pack.Reset();
-	sql.Query(DBQuery_Send_Player_Connected_CheckTop10, query, pack);
+	sql.tquery(DBQuery_Send_Player_Connected_CheckTop10, query, pack);
 }
 
 void DBQuery_Send_Player_Connected_CheckTop10(Database database, DBResultSet results, const char[] error, DataPack pack)
@@ -1965,7 +1965,7 @@ stock void Send_Player_Disconnected(int client, const char[] event_reason)
 	strcopy(name, sizeof(name), g_Player[client].name);
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID`,`Points` from `"...sql_table_playerlist..."` where `StatsID`='%i' order by `Points` desc", g_StatsID);
+	Format(query, sizeof(query), "select `SteamID`,`Points` from `%s` where `StatsID`='%i' order by `Points` desc", sql.playerlist, g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(strlen(auth)+1);
 	pack.WriteString(auth);
@@ -1976,7 +1976,7 @@ stock void Send_Player_Disconnected(int client, const char[] event_reason)
 	pack.WriteCell(strlen(event_reason)+1);
 	pack.WriteString(event_reason);
 	pack.Reset();
-	sql.Query(DBQuery_Send_Player_Disconnected, query, pack);
+	sql.tquery(DBQuery_Send_Player_Disconnected, query, pack);
 }
 
 stock void DBQuery_Send_Player_Disconnected(Database database, DBResultSet results, const char[] error, DataPack pack)
@@ -2691,7 +2691,7 @@ stock int GetFieldString(DBResultSet results, char[] field_name, char[] output, 
 
 stock void PenaltyPlayer(int client, int pPoints)
 {
-	if(sql == null)
+	if(!sql.valid())
 	{
 		PrintToServer(core_chattag..." PenaltyPlayer() error : SQL Connection unavailable or invalid.");
 		return;
@@ -2711,13 +2711,14 @@ stock void PenaltyPlayer(int client, int pPoints)
 	//
 	
 	char query[256];
-	Format(query, sizeof(query), "update `"...sql_table_settings..."` set `Penalty`='1',`LastPenaltyTime`='%i',`PenaltyTime`='%i' where SteamID='%s'", timestamp, penalty, auth);
+	Format(query, sizeof(query), "update `%s` set `Penalty`='1',`LastPenaltyTime`='%i',`PenaltyTime`='%i' where SteamID='%s'"
+	, sql.settings, timestamp, penalty, auth);
 	DataPack pack = new DataPack();
 	pack.WriteCell(g_Player[client].userid);
 	pack.WriteCell(strlen(auth)+1);
 	pack.WriteString(auth);
 	pack.Reset();
-	sql.Query(DBQuery_PenaltyPlayer, query, pack);
+	sql.tquery(DBQuery_PenaltyPlayer, query, pack);
 	
 	//
 	
@@ -2770,8 +2771,8 @@ stock Action Timer_PenaltyPlayer_Expire(Handle timer, DataPack pack)
 	delete pack;
 	
 	char query[256];
-	Format(query, sizeof(query), "update `"...sql_table_settings..."` set `Penalty`='0', `PenaltyTime`='-1' where SteamID='%s'", auth);
-	sql.Query(DBQuery_PenaltyPlayer_Expire, query, userid);
+	Format(query, sizeof(query), "update `%s` set `Penalty`='0', `PenaltyTime`='-1' where SteamID='%s'", sql.settings, auth);
+	sql.tquery(DBQuery_PenaltyPlayer_Expire, query, userid);
 	
 	int client;
 	if(IsValidClient((client = GetClientOfUserId(userid))))

@@ -5,7 +5,7 @@
 #define VersionAlt "v" ... Version
 #define MaxPlayers 65
 #define MaxItemDef 527 // will later be updated to use indexes instead of itemdef
-#define GameType "csgo"
+char GameType[11];
 #define core_chattag "[SMStats: CSGO]"
 #define core_chattag2 "SMStats: CSGO"
 
@@ -44,18 +44,37 @@ SMStats_CSGOGameInfo g_Game[MaxPlayers+1];
 #include <cstrike>
 #include <sdktools>
 
+stock SMStats_CSGOType g_CSGOType;
+
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	char gamefolder[16];
-	GetGameFolderName(gamefolder, sizeof(gamefolder));
-	
-	if(!StrEqual(gamefolder, "csgo"))
+	switch(GetEngineVersion())
 	{
-		SetFailState("This SM Stats game addon may only be running in:"
-		... "\nCounter-Strike: Global Offensive."
-		// ... "\nCounter-Strike: Classic Offensive."
-		// ... "\nLegacy Strike."
-		);
+		case Engine_CSGO:
+		{
+			char gamefolder[16];
+			GetGameFolderName(gamefolder, sizeof(gamefolder));
+			
+			if(StrEqual(gamefolder, "csgo", false))
+			{
+				g_CSGOType = CSGOType_CSGO;
+				GameType = "csgo";
+			}
+			else if(StrEqual(gamefolder, "cscomod", false))
+			{
+				g_CSGOType = CSGOType_CSCO;
+				GameType = "csco";
+			}
+		}
+		default:
+		{
+			SetFailState("This SMStats game addon may only be running in:"
+			... "\nCounter-Strike: Global Offensive."
+			... "\nCounter-Strike: Classic Offensive."
+			//... "\nLegacy Strike."
+			);
+		}
+
 	}
 	
 	CreateNative("SMStats.Native_GetPlayerSessionInfo", Native_GetPlayerSessionInfo);

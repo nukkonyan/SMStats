@@ -296,21 +296,21 @@ methodmap SMStatsInfo __nullable__
 {
 	/*
 	 *	SourceMod Statistics.
-	 *	Obtain the current player stats.
+	 *	Obtain the current player info.
 	 *
 	 *	@param client		The user index.
-	 *	@param player_stats	The SMStats_PlayerInfo array to store the obtained statistics.
+	 *	@param player_info	The SMStats_PlayerInfo array to store the obtained statistics.
 	 */
-	public static native void GetPlayerStats(int client, any[] player_stats);
+	public static native void GetPlayerInfo(int client, any[] player_info);
 	
 	/*
 	 *	SourceMod Statistics.
-	 *	Save the current player stats.
+	 *	Save the current player info.
 	 *
 	 *	@param client		The user index.
-	 *	@param player_stats	The SMStats_PlayerInfo array to obtain the statistics.
+	 *	@param player_info	The SMStats_PlayerInfo array to obtain the statistics.
 	 */
-	public static native void SavePlayerStats(int client, any[] player_stats);
+	public static native void SavePlayerInfo(int client, any[] player_info);
 	
 	/*
 	 *	SourceMod Statistics.
