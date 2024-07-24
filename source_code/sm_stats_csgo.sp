@@ -46,18 +46,7 @@ SMStats_CSGOGameInfo g_Game[MaxPlayers+1];
 
 public APLRes AskPluginLoad2(Handle myself, bool late, char[] error, int err_max)
 {
-	EngineVersion engine;
-	if((engine = GetEngineVersion()) != Engine_CSGO)
-	{
-		SetFailState("This SMStats game addon may only be running in:"
-		... "\nCounter-Strike: Global Offensive."
-		... "\nCounter-Strike: Classic Offensive."
-		... "\nLegacy Strike."
-		);
-	}
-	
-	PostAskPluginLoad(engine);
-	
+	PostAskPluginLoad(GetEngineVersion());
 	return APLRes_Success;
 }
 
