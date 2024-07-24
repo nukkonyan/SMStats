@@ -479,6 +479,15 @@ Action Timer_OnRestarted(Handle timer)
 
 //
 
+stock void PostAskPluginLoad()
+{
+	CreateNative("SMStats.Native_GetPlayerSessionInfo", Native_GetPlayerSessionInfo);
+	CreateNative("_sm_stats_detect_ban_player_auth", Native_BanPlayer_Auth);
+	CreateNative("_sm_stats_detect_ban_player_ip", Native_BanPlayer_IPAddress);
+}
+
+//
+
 public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 {
 	sql.setsuzoku = database;
