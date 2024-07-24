@@ -1155,7 +1155,7 @@ stock void PointsPluralSplitter(int client, int points, char[] translation, int 
 	Format(fmt_plural, sizeof(fmt_plural), "%T", "#SMStats_Points", client);
 	switch(StrContains(fmt_plural, "#|#") != -1)
 	{
-		// this language defies the 'point' and 'points' with one word as both singular and plural.
+		// this language defines the 'point' and 'points' with one word as both singular and plural.
 		case false:
 		{
 			if(type >= PointSplit_On)
@@ -1171,7 +1171,7 @@ stock void PointsPluralSplitter(int client, int points, char[] translation, int 
 				Format(translation, maxlen, "%s%s", fmt_points, fmt_plural);
 			}
 		}
-		// this language defies the 'point' and 'points' with one word as inflection-based singular and plural.
+		// this language defines the 'point' and 'points' with one word as inflection-based singular and plural.
 		case true:
 		{
 			bool bPlural = (points < -1 || points > 1);
@@ -2049,7 +2049,7 @@ stock void DBQuery_Send_Player_Disconnected(Database database, DBResultSet resul
 
 stock void TXNEvent_OnFailed(Database db, int userid, int numQueries, const char[] error, int failIndex, int[] queryId)
 {
-	LogMessage(core_chattag ... " TXNEvent_OnFailed:\nQuery for '%s' (userid %i) failed\nError below:\n%s", g_strTXNqueryId[queryId[failIndex]], userid, error);
+	LogError("TXNEvent_OnFailed:\nQuery for '%s' (userid %i) failed\nError below:\n%s", g_strTXNqueryId[queryId[failIndex]], userid, error);
 }
 
 //

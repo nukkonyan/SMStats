@@ -71,4 +71,24 @@
 		"sv" "Mitt-i-luftenfrags : {1}"
 		"tr" "Havada Öldürmeler: {1}"
 	}
+
+	//================================//
+	// General.
+	//================================//
+	"#SMStats_Chicken_Frag"
+	{
+		// {1} points lost or earned
+		"#format" "{1:s}"
+		"en" "{1} for neutralizing a {green}Chicken{default}."
+		"jp" "チキンを無力化したため{1}"
+		"sv" "{1} för att neutralizera en {green}Kyckling{default}."
+	}
+	"#SMStats_Chicken_Frag_Multi"
+	{
+		// {1} points lost or earned
+		"#format" "{1:s}"
+		"en" "{1} for neutralizing {green}Chickens{default}."
+		"jp" "チキンを無力化したため{1}"
+		"sv" "{1} för att neutralizera {green}Kycklingar{default}."
+	}
 }

@@ -1,7 +1,7 @@
 "Phrases"
 {
 	//================================//
-	// Menu.
+	// Bomb.
 	//================================//
 	"#SMStats_CStrike_Bomb_Planted"
 	{
@@ -16,6 +16,9 @@
 		"en" "{1} for {green}Defusing {default}the Bomb."
 	}
 
+	//================================//
+	// Hostage.
+	//================================//
 	"#SMStats_CStrike_Hostage_Rescued"
 	{
 		// {1} points earned
@@ -29,6 +32,9 @@
 		"en" "{1} for {red}Killing {default}a Hostage."
 	}
 
+	//================================//
+	// General.
+	//================================//
 	"#SMStats_CStrike_Blinded_Multi"
 	{
 		// {1} points earned

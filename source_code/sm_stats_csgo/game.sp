@@ -1,5 +1,6 @@
 /* ========== Convars ========= */
 ConVar g_cvarCollateral;
+ConVar g_cvarChickenFrag;
 
 ConVar g_cvarBurned;
 
@@ -44,6 +45,7 @@ void PrepareGame()
 {
 	/* other */
 	g_cvarCollateral = CreateConVar("sm_stats_points_collateral", "2", "SMStats: CSGO - Points earned when doing a collateral frag.", _, true);
+	g_cvarChickenFrag = CreateConVar("sm_stats_points_chicken_killed", "1", "SMStats: CSGO - Points lost or earned when killing a Chicken.");
 	g_cvarBurned = CreateConVar("sm_stats_points_burned", "2", "SMStats: CSGO - Points earned when burning an enemy.", _, true);
 	
 	/* ========================================================================================== */
@@ -123,6 +125,7 @@ void PrepareGame()
 	
 	/* core */
 	HookEvent("player_death", OnPlayerDeath, EventHookMode_Pre);
+	HookEvent("other_death", OnChickenDeath, EventHookMode_Pre);
 	HookEvent("player_team", OnPlayerTeamChange, EventHookMode_Pre);
 	
 	/* item was traded, found, unboxed, etc */
@@ -147,9 +150,9 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 		return;
 	}
 	
-	if(!sql)
+	if(!sql.setsuzoku)
 	{
-		LogError(core_chattag..." OnPlayerDeath error: No database connection available.");
+		LogError("OnPlayerDeath() error: No database connection available.");
 		return;
 	}
 	
@@ -386,6 +389,48 @@ stock void OnPlayerDeath(Event event, const char[] szASDF, bool bASDF)
 	}
 	
 	g_Game[client].aFragEvent.PushArray(frag, sizeof(frag));
+}
+
+/* Called as soon as a Chicken is killed. */
+stock void OnChickenDeath(Event event, const char[] szASDF, bool bASDF)
+{
+	if(!IsValidStats())
+	{
+		return;
+	}
+	
+	if(!sql.setsuzoku)
+	{
+		LogError("OnChickenDeath() error: No database connection available.");
+		return;
+	}
+	
+	int chicken;
+	int attacker;
+	if((chicken = event.GetInt("otherid")) < 1
+	|| (attacker = event.GetInt("attacker")) < 1)
+	{
+		return;
+	}
+	
+	int client;
+	if(!IsValidClient((client = GetClientOfUserId(attacker))))
+	{
+		return;
+	}
+	if(IsValidAbuse(client))
+	{
+		return;
+	}
+	
+	//
+	
+	if(!g_Game[client].aChickenFragEvent)
+	{
+		g_Game[client].aChickenFragEvent = new ArrayList();
+	}
+	
+	g_Game[client].aChickenFragEvent.Push(chicken);
 }
 
 /* Called as soon as a player finds, unboxes, trades, etc an item. */
@@ -1072,13 +1117,51 @@ Action MapTimer_GameTimer(Handle timer)
 					}
 					#endif
 					
-					
 					//
 					
 					// translation, separated instead.
 					if(points >= 1 && g_Player[client].bShowFragMsg)
 					{
 						PrepareFragMessage(client, dummy, points, frags);
+					}
+				}
+			}
+			
+			if(!!g_Game[client].aChickenFragEvent)
+			{
+				if(txn == null)
+				{
+					txn = new Transaction();
+				}
+				
+				int chickens;
+				if((chickens = g_Game[client].aChickenFragEvent.Length) > 0)
+				{
+					g_Game[client].aChickenFragEvent.Clear();
+					g_Player[client].session[Stats_ChickenFrags] += chickens;
+					
+					int points;
+					if((points = g_cvarChickenFrag.IntValue) != 0)
+					{
+						char str_points[11];
+						IntToString(points, str_points, sizeof(str_points));
+						if(points < 1)
+						{
+							strcopy(str_points, sizeof(str_points), str_points[1]);
+						}
+						
+						char query[256];
+						Format(query, sizeof(query), "update `%s` set `Points`=`Points`%s%s where `SteamID`='%s' and `StatsID`='%i'"
+						, sql.playerlist
+						, (points < 1) ? "-" : "+", str_points
+						, g_Player[client].auth
+						, g_StatsID);
+						txn.AddQuery(query);
+						
+						char points_format[64];
+						PointsPluralSplitter(client, points, points_format, sizeof(points_format), PointSplit_On);
+						
+						CPrintToChat(client, "%s %T", g_ChatTag, (points < 1) ? "#SMStats_Chicken_Frag" : "#SMStats_Chicken_Frag_Multi", client, points_format);
 					}
 				}
 			}
