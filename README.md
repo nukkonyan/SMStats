@@ -46,6 +46,7 @@
    - [ ] Legacy Strike (2015 CS:GO)
    - [ ] Left 4 Dead 1
    - [ ] Left 4 Dead 2
+   - [ ] Day Of Defeat: Source
 ### To-do
    - [x] Update Stats Menu
       -  [x] Implement sm_stats <top index | steamid > to manually check statistics of a particular player.
