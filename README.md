@@ -42,6 +42,7 @@
    - [ ] Counter-Strike: Source
    - [x] Counter-Strike: Global Offensive
    - [ ] Counter-Strike: Classic Offensive.
+   - [ ] ClassicCounter
    - [ ] Counter-Strike 2
    - [ ] Legacy Strike (2015 CS:GO)
    - [ ] Left 4 Dead 1
