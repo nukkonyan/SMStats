@@ -1,36 +1,3 @@
-stock bool IsValidClient(int client, bool bIsFakeClient=true)
-{
-	if(client < 1 || client > MaxPlayers)
-	{
-		return false;
-	}
-	
-	if(!IsClientConnected(client))
-	{
-		return false;
-	}
-	
-	if(IsClientReplay(client))
-	{
-		return false;
-	}
-	
-	if(IsClientSourceTV(client))
-	{
-		return false;
-	}
-	
-	if(bIsFakeClient)
-	{
-		if(IsFakeClient(client))
-		{
-			return false;
-		}
-	}
-	
-	return true;
-}
-
 stock int GetPlayerWeaponSlotItemdef(int client, int slot)
 {
 	int weapon = GetPlayerWeaponSlot(client, slot);
@@ -73,7 +40,7 @@ stock int GetTablePlayerCount()
 	if(!!sql)
 	{
 		char query[256];
-		Format(query, sizeof(query), "select * from `%s` where `StatsID`='%i'", sql.playerlist, g_StatsID);
+		Format(query, sizeof(query), "select * from `%s` where `sID`='%i'", sql.playerlist, g_StatsID);
 		
 		sql.lock();
 		DBResultSet results = sql.query(query);
@@ -118,7 +85,11 @@ stock int GetPlayerCount(bool bCountBots=false, bool bCheckBotGameMode=false)
 	int count, player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(IsValidClient(player, (!bCountBots && bValidGameMode)))
+		int a[5];
+		a[0] = 1;
+		a[1] = (!bCountBots && bValidGameMode) ? 1:2;
+		
+		if(SMStats_IsValidClient(player, a))
 		{
 			count++;
 		}
@@ -156,7 +127,7 @@ stock void OnRoundStarted(Event event, const char[] event_name, bool dontBroadca
 		int player = 0;
 		while((player = FindEntityByClassname(player, "player")) != -1)
 		{
-			if(IsValidClient(player))
+			if(SMStats_IsValidClient(player))
 			{
 				CPrintToChat(player, "%s %T", g_ChatTag, "#SMStats_RoundStart_Warmup", player);
 			}
@@ -176,7 +147,7 @@ stock void OnRoundStarted(Event event, const char[] event_name, bool dontBroadca
 			int player = 0;
 			while((player = FindEntityByClassname(player, "player")) != -1)
 			{
-				if(IsValidClient(player))
+				if(SMStats_IsValidClient(player))
 				{
 					CPrintToChat(player, "%s %T", g_ChatTag, "#SMStats_RoundStart", player);
 				}
@@ -203,7 +174,7 @@ stock void OnRoundEnded(Event event, const char[] event_name, bool dontBroadcast
 		int player = 0;
 		while((player = FindEntityByClassname(player, "player")) != -1)
 		{
-			if(IsValidClient(player))
+			if(SMStats_IsValidClient(player))
 			{
 				CPrintToChat(player, "%s %T", g_ChatTag, "#SMStats_RoundEnd", player);
 			}
@@ -227,7 +198,7 @@ void CheckActivePlayers()
 				int player = 0;
 				while((player = FindEntityByClassname(player, "player")) != -1)
 				{
-					if(IsValidClient(player))
+					if(SMStats_IsValidClient(player))
 					{
 						CPrintToChat(player, "%s %T"
 						, g_ChatTag
@@ -249,7 +220,7 @@ void CheckActivePlayers()
 				int player = 0;
 				while((player = FindEntityByClassname(player, "player")) != -1)
 				{
-					if(IsValidClient(player))
+					if(SMStats_IsValidClient(player))
 					{
 						CPrintToChat(player, "%s %T"
 						, g_ChatTag
@@ -1740,12 +1711,10 @@ stock void CPrintToChatAll2(const char[] message, any ...)
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(!IsValidClient(player))
+		if(SMStats_IsValidClient(player))
 		{
-			continue;
+			CPrintToChat(player, msg);
 		}
-		
-		CPrintToChat(player, msg);
 	}
 }
 
@@ -1753,14 +1722,14 @@ stock void CPrintToChatAll2(const char[] message, any ...)
 
 stock void Send_Player_Connected(int client)
 {
-	char auth[28], ip[16], name[64];
+	char auth[AUTH_LENGTH], ip[16], name[64];
 	strcopy(auth, sizeof(auth), g_Player[client].auth);
 	strcopy(ip, sizeof(ip), g_Player[client].ip);
 	strcopy(name, sizeof(name), g_Player[client].name);
 	int points = g_Player[client].points;
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID` from `%s` where `StatsID`='%i' order by `Points` desc", sql.playerlist, g_StatsID);
+	Format(query, sizeof(query), "select `auth` from `%s` where `sID`='%i' order by `p` desc", sql.playerlist, g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(points);
@@ -1814,7 +1783,7 @@ stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results,
 	}
 	
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Player[client].position = position;
 	}
@@ -1822,7 +1791,7 @@ stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results,
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(IsValidClient(player))
+		if(SMStats_IsValidClient(player))
 		{
 			if(g_Player[player].bShowConMsg)
 			{
@@ -1845,13 +1814,13 @@ stock void DBQuery_Send_Player_Connected(Database database, DBResultSet results,
 
 stock void Send_Player_Connected_CheckTop10(int client)
 {
-	char auth[28], ip[16], name[64];
+	char auth[AUTH_LENGTH], ip[16], name[64];
 	strcopy(auth, sizeof(auth), g_Player[client].auth);
 	strcopy(ip, sizeof(ip), g_Player[client].ip);
 	strcopy(name, sizeof(name), g_Player[client].name);
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID` from `%s` where `StatsID`='%i' order by `Points` limit 10 desc", sql.playerlist, g_StatsID);
+	Format(query, sizeof(query), "select `auth` from `%s` where `sID`='%i' order by `p` limit 10 desc", sql.playerlist, g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(GetClientUserId(client));
 	pack.WriteCell(strlen(auth)+1);
@@ -1904,7 +1873,7 @@ void DBQuery_Send_Player_Connected_CheckTop10(Database database, DBResultSet res
 	}
 	
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Player[client].position = position;
 	}
@@ -1912,7 +1881,7 @@ void DBQuery_Send_Player_Connected_CheckTop10(Database database, DBResultSet res
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(IsValidClient(player))
+		if(SMStats_IsValidClient(player))
 		{
 			if(g_Player[player].bPlayConSnd)
 			{
@@ -1959,13 +1928,13 @@ void DBQuery_Send_Player_Connected_CheckTop10(Database database, DBResultSet res
 
 stock void Send_Player_Disconnected(int client, const char[] event_reason)
 {
-	char auth[28], ip[16], name[64];
+	char auth[AUTH_LENGTH], ip[16], name[64];
 	strcopy(auth, sizeof(auth), g_Player[client].auth);
 	strcopy(ip, sizeof(ip), g_Player[client].ip);
 	strcopy(name, sizeof(name), g_Player[client].name);
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID`,`Points` from `%s` where `StatsID`='%i' order by `Points` desc", sql.playerlist, g_StatsID);
+	Format(query, sizeof(query), "select `auth`,`p` from `%s` where `sID`='%i' order by `p` desc", sql.playerlist, g_StatsID);
 	DataPack pack = new DataPack();
 	pack.WriteCell(strlen(auth)+1);
 	pack.WriteString(auth);
@@ -2025,7 +1994,7 @@ stock void DBQuery_Send_Player_Disconnected(Database database, DBResultSet resul
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) > 0)
 	{
-		if(IsValidClient(player))
+		if(SMStats_IsValidClient(player))
 		{
 			if(g_Player[player].bShowConMsg)
 			{
@@ -2131,76 +2100,84 @@ void GetPlayerName(int client, char[] name, int maxlen, char[] name2, int maxlen
 			// regular
 			{
 				// Team colour
-				"{grey}",
-				"{red}",
-				"{blue}",
-				"{green}",
-				"{yellow}"
+				/*0*/"{grey}",
+				/*1*/"{grey}",
+				/*2*/"{red}",
+				/*3*/"{blue}",
+				/*4*/"{green}",
+				/*5*/"{yellow}"
 			},
 			// developer
 			{
-				"{unusual}",
-				"{cyan}",
-				"{orange}",
-				"{lightgreen}",
-				""
+				/*0*/"{unusual}",
+				/*1*/"{cyan}",
+				/*2*/"{orange}",
+				/*3*/"{lightgreen}",
+				/*4*/"",
+				/*5*/"",
 			}
 		},
 		// Counter-Strike: Source
 		{
 			// regular
 			{
-				"{grey}",
-				"{red}",
-				"{blue}",
-				"",
-				""
+				/*0*/"{grey}",
+				/*1*/"{grey}",
+				/*2*/"{red}",
+				/*3*/"{blue}",
+				/*4*/"",
+				/*5*/""
 			},
 			{
-				"{purple}",
-				"{cyan}",
-				"{orange}",
-				"{lightgreen}",
-				""
+				/*0*/"{purple}",
+				/*1*/"{cyan}",
+				/*2*/"{orange}",
+				/*3*/"{lightgreen}",
+				/*4*/"",
+				/*5*/"",
 			}
 		},
 		// Counter-Strike: Global Offensive
 		{
 			// regular
 			{
-				"{grey}",
-				"{orange}",
-				"{blue}",
-				"",
-				""
+				/*0*/"{grey}",
+				/*1*/"{grey}",
+				/*2*/"{orange}",
+				/*3*/"{blue}",
+				/*4*/"",
+				/*5*/"",
 			},
 			{
-				"{purple}",
-				"{green}",
-				"{orchid}",
-				"{lightgreen}",
-				""
+				/*0*/"{purple}",
+				/*1*/"{green}",
+				/*2*/"{orchid}",
+				/*3*/"{lightgreen}",
+				/*4*/"",
+				/*5*/"",
 			}
 		},
 		// Left 4 Dead
 		{
 			// regular
 			{
-				"{grey}",
-				"{red}",
-				"{orange}",
-				"",
-				""
+				/*0*/"{grey}",
+				/*1*/"{grey}",
+				/*2*/"{red}",
+				/*3*/"{orange}",
+				/*4*/"",
+				/*5*/""
 			},
 			{
-				"{purple}",
-				"{green}",
-				"{orchid}",
-				"{lightgreen}",
-				""
+				/*0*/"{purple}",
+				/*1*/"{green}",
+				/*2*/"{orchid}",
+				/*3*/"{lightgreen}",
+				/*4*/"",
+				/*5*/"",
 			}
 		}
-	}
+	};
 	
 	//
 	
@@ -2461,7 +2438,7 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 			{
 				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
 			}
-			Format(szDay, sizeof(szDay), "%i%s", hours, szPlural[view_as<int>(bPlural)]);
+			Format(szHour, sizeof(szHour), "%i%s", hours, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 	
@@ -2478,7 +2455,7 @@ stock void GetTimeFormat(int client, int time_seconds, char[] time_format, int m
 			{
 				ReplaceString(szPlural[0], sizeof(szPlural[]), "#|#", "");
 			}
-			Format(szDay, sizeof(szDay), "%i%s", minutes, szPlural[view_as<int>(bPlural)]);
+			Format(szMinute, sizeof(szMinute), "%i%s", minutes, szPlural[view_as<int>(bPlural)]);
 		}
 	}
 	
@@ -2697,7 +2674,7 @@ stock void PenaltyPlayer(int client, int pPoints)
 		return;
 	}
 	
-	char name[64], auth[28];
+	char name[64], auth[AUTH_LENGTH];
 	strcopy(name, sizeof(name), g_Player[client].name);
 	strcopy(auth, sizeof(auth), g_Player[client].auth);
 	
@@ -2711,7 +2688,7 @@ stock void PenaltyPlayer(int client, int pPoints)
 	//
 	
 	char query[256];
-	Format(query, sizeof(query), "update `%s` set `Penalty`='1',`LastPenaltyTime`='%i',`PenaltyTime`='%i' where SteamID='%s'"
+	Format(query, sizeof(query), "update `%s` set `Penalty`='1',`LastPenaltyTime`='%i',`PenaltyTime`='%i' where `auth`='%s'"
 	, sql.settings, timestamp, penalty, auth);
 	DataPack pack = new DataPack();
 	pack.WriteCell(g_Player[client].userid);
@@ -2771,11 +2748,11 @@ stock Action Timer_PenaltyPlayer_Expire(Handle timer, DataPack pack)
 	delete pack;
 	
 	char query[256];
-	Format(query, sizeof(query), "update `%s` set `Penalty`='0', `PenaltyTime`='-1' where SteamID='%s'", sql.settings, auth);
+	Format(query, sizeof(query), "update `%s` set `Penalty`='0', `PenaltyTime`='-1' where `auth`='%s'", sql.settings, auth);
 	sql.tquery(DBQuery_PenaltyPlayer_Expire, query, userid);
 	
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Player[client].bPenalty = false;
 		
@@ -2840,7 +2817,7 @@ stock float DistanceAboveGround(int client)
 // TraceEntityFilterPlayer() : ignore players in a trace ray
 bool TraceEntityFilterPlayer(int client, int contentsMask)
 {
-	return IsValidClient(client, !bAllowBots);
+	return SMStats_IsValidClient(client, {1,2,1,0,0});
 }
 
 // kill-death ratio, prototype. Will use 1.00 Ratio. similar to HLTV Ratio? (as in 1.00  ratio)

@@ -20,9 +20,9 @@ public Plugin myinfo = {
 #include "sm_stats/updater.sp"
 
 // game related
-SMStats_PlayerInfo g_Player[MAXPLAYERS+1];
-SMStats_TF2GameInfo g_TF2GameStats[MAXPLAYERS+1];
-SMStats_CSGOGameInfo g_CSGOGameStats[MAXPLAYERS+1];
+SMStats_PlayerInfo g_Player[MAXPLAYERS];
+SMStats_TF2GameInfo g_TF2GameStats[MAXPLAYERS];
+SMStats_CSGOGameInfo g_CSGOGameStats[MAXPLAYERS];
 
 // crucial stuff
 bool bLoaded;

@@ -17,21 +17,11 @@ stock void Assister_PlayerHurt(Event event, const char[] event_name, bool dontBr
 		return;
 	}
 	
-	int attacker = event.GetInt("attacker");
-	int userid = event.GetInt("userid");
-	if(attacker < 1
-	|| userid < 1
-	|| attacker == userid)
-	{
-		return;
-	}
-	
-	int client, victim;
-	if(!IsValidClient((client = GetClientOfUserId(attacker))))
-	{
-		return;
-	}
-	if(!IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots))
+	int client, attacker = event.GetInt("attacker");
+	int target, userid = event.GetInt("userid");
+	if(attacker == userid
+	|| !SMStats_IsValidClient(client, attacker)
+	|| !SMStats_IsValidClient(target, userid, {1,2,0}))
 	{
 		return;
 	}
@@ -50,7 +40,7 @@ stock void Assister_PlayerHurt(Event event, const char[] event_name, bool dontBr
 		}
 	}
 	
-	g_PlayerDamaged[victim][client] += dmg;
+	g_PlayerDamaged[target][client] += dmg;
 }
 
 stock void Assister_PlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
@@ -60,27 +50,17 @@ stock void Assister_PlayerDeath(Event event, const char[] event_name, bool dontB
 		return;
 	}
 	
-	int attacker = event.GetInt("attacker");
-	int userid = event.GetInt("userid");
-	if(attacker < 1
-	|| userid < 1
-	|| attacker == userid)
+	int client, attacker = event.GetInt("attacker");
+	int target, userid = event.GetInt("userid");
+	if(attacker == userid
+	|| !SMStats_IsValidClient(client, attacker)
+	|| !SMStats_IsValidClient(target, userid, {1,2,0}))
 	{
 		return;
 	}
 	
-	int client, victim;
-	if(!IsValidClient((client = GetClientOfUserId(attacker)), !bAllowBots))
-	{
-		return;
-	}
-	if(!IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots))
-	{
-		return;
-	}
-	
-	g_PlayerDamaged[client][victim] = 0;
-	g_PlayerDamaged[victim][client] = 0;
+	g_PlayerDamaged[client][target] = 0;
+	g_PlayerDamaged[target][client] = 0;
 }
 
 /**
@@ -109,12 +89,12 @@ stock int GetLatestAssister(int victim, int client)
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
 		//Make sure the user is in the game.
-		if(IsValidClient(player, !bAllowBots))
+		if(SMStats_IsValidClient(player, {1,2,0}))
 		{
 			//Make sure to not return the attacker, only return the player who did the most damage.
 			if(client != player && g_PlayerDamaged[victim][player] > 50)
 			{
-				return GetClientUserId(player);
+				return g_Player[player].userid;
 			}
 		}
 	}

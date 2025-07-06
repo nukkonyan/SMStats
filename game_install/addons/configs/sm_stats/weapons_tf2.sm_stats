@@ -1,7 +1,7 @@
 create table if not exists `weapons_tf2`
 (
-	`StatsID` int not null default '1',
-	`SteamID` varchar(64) not null default '',
+	`sID` int not null default '1',
+	`auth` varchar(18) not null default '',
 	`tf_weapon_bat` int not null default '0',
 	`tf_weapon_bottle` int not null default '0',
 	`tf_weapon_fireaxe` int not null default '0',
@@ -236,5 +236,5 @@ create table if not exists `weapons_tf2`
 	`tf_weapon_prinnymachete_medic` int not null default '0',
 	`tf_weapon_prinnymachete_sniper` int not null default '0',
 	`tf_weapon_prinnymachete_spy` int not null default '0',
-	primary key (`SteamID`)
+	primary key (`auth`)
 )

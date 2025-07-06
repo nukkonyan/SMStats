@@ -781,14 +781,6 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	int attacker = event.GetInt("attacker");
-	if(userid < 1
-	|| attacker < 1)
-	{
-		return;
-	}
-	
 	if(!sql)
 	{
 		LogError(core_chattag..." OnPlayerDeath error: No database connection available.");
@@ -797,14 +789,13 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 	
 	//
 	
-	int client = GetClientOfUserId(attacker);
-	if(!IsValidClient(client))
+	int client, userid = event.GetInt("userid");
+	int victim, attacker = event.GetInt("attacker");
+	if(!SMStats_IsValidUserID(client, attacker))
 	{
 		return;
 	}
-	
-	int victim = GetClientOfUserId(userid);
-	if(!IsValidClient(victim, !bAllowBots))
+	if(!SMStats_IsValidUserID(victim, userid, {1,2,1,0,0}))
 	{
 		return;
 	}
@@ -827,13 +818,6 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 		{
 			g_Game[victim].iFrameHealPoints = healpoints;
 		}
-	}
-	
-	//
-	
-	if(IsValidAbuse(client))
-	{
-		return;
 	}
 	
 	//
@@ -1198,10 +1182,10 @@ void OnPlayerDeath(Event event, const char[] event_name, bool dontBroadcast)
 /* Called as soon as a player finds, unboxes, trades, etc an item. */
 void OnItemFound(Event event, const char[] event_name, bool dontBroadcast)
 {
-	if(sql != null && bLoaded)
+	if(sql.valid() && bLoaded)
 	{
 		int client;
-		if(IsValidClient((client = event.GetInt("player"))))
+		if(SMStats_IsValidClient((client = event.GetInt("player"))))
 		{
 			if(!g_Game[client].aItemEvent)
 			{
@@ -1312,12 +1296,7 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 	for(int i = 0; i < strlen(cappers); i++)
 	{
 		int client = cappers[i];
-		if(!IsValidClient(client))
-		{
-			continue;
-		}
-		
-		if(IsValidAbuse(client))
+		if(!SMStats_IsValidClient(client))
 		{
 			continue;
 		}
@@ -1349,11 +1328,11 @@ void OnCapturedPoint(Event event, const char[] event_name, bool dontBroadcast)
 			g_Player[client].points += points;
 		}
 		
-		len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+		len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_CP_OnCapturedPoint);
 	}
 	
-	sql.Execute(txn, _, TXN_Callback_Failure);
+	sql.exec(txn, _, TXN_Callback_Failure);
 }
 
 /* Called as soon as a player blocks a capture point from being captured. */
@@ -1369,19 +1348,9 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int client = event.GetInt("blocker");
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	int victim = event.GetInt("victim");
-	if(!IsValidClient(victim, !bAllowBots ? true : false))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	int client;
+	if(!SMStats_IsValidClient((client = event.GetInt("victim")))
+	|| !SMStats_IsValidClient(event.GetInt("blocker"), {1,2,1,0,0}))
 	{
 		return;
 	}
@@ -1394,10 +1363,10 @@ void OnCaptureBlocked(Event event, const char[] event_name, bool dontBroadcast)
 	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `PointsDefended`=`PointsDefended`+1");
 	if((points = g_PointBlocked.IntValue) > 0 && !g_Player[client].bPenalty)
 	{
-		len += Format(query[len], sizeof(query)-len, ", `Points`=`Points`+%i", points);
+		len += Format(query[len], sizeof(query)-len, ", `p`=`p`+%i", points);
 	}
-	len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-	sql.Query(DBQuery_Callback, query, query_error_uniqueid_CP_OnCapturedPoint);
+	len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
+	sql.tquery(DBQuery_Callback, query, query_error_uniqueid_CP_OnCapturedPoint);
 	
 	if(points > 0 && !g_Player[client].bPenalty)
 	{
@@ -1433,12 +1402,7 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 	}
 	
 	int client = event.GetInt("player");
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	if(!SMStats_IsValidClient(client))
 	{
 		return;
 	}
@@ -1504,14 +1468,14 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			{
 				case false:
 				{
-					CallbackQuery("update `%s` set `Points`=`Points`+%i,`FlagsPickedUp`=`FlagsPickedUp`+1 where `SteamID`='%s' and `StatsID`='%i'"
+					CallbackQuery("update `%s` set `p`=`p`+%i,`FlagsPickedUp`=`FlagsPickedUp`+1 where `auth`='%s' and `sID`='%i'"
 					, query_error_uniqueid_CTF_OnFlagPickedUp
 					, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 				}
 				
 				case true:
 				{
-					CallbackQuery("update `%s` set `Points`=`Points`+%i,`FlagsPickedUp`=`FlagsPickedUp`+1,`FlagsStolen`=`FlagsStolen`+1 where SteamID = '%s' and `StatsID`='%i'"
+					CallbackQuery("update `%s` set `p`=`p`+%i,`FlagsPickedUp`=`FlagsPickedUp`+1,`FlagsStolen`=`FlagsStolen`+1 where `auth`='%s' and `sID`='%i'"
 					, query_error_uniqueid_CTF_OnFlagStolen
 					, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 				}
@@ -1537,7 +1501,7 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set `Points`=Points+%i,`FlagsCaptured`=`FlagsCaptured`+1 where `SteamID`='%s' and `StatsID`='%i'"
+			CallbackQuery("update `%s` set `p`=Points+%i,`FlagsCaptured`=`FlagsCaptured`+1 where `auth`='%s' and `sID`='%i'"
 			, query_error_uniqueid_CTF_OnFlagCaptured
 			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
@@ -1561,7 +1525,7 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set `Points`=`Points`+%i,`FlagsDefended`=`FlagsDefended`+1 where `SteamID`='%s' and `StatsID`='%i'"
+			CallbackQuery("update `%s` set `p`=`p`+%i,`FlagsDefended`=`FlagsDefended`+1 where `auth`='%s' and `sID`='%i'"
 			, query_error_uniqueid_CTF_OnFlagDefended
 			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
@@ -1585,7 +1549,7 @@ void OnCTFEvent(Event event, const char[] event_name, bool dontBroadcast)
 			g_Player[client].session[Stats_Points] -= points;
 			g_Player[client].points -= points;
 			
-			CallbackQuery("update `%s` set `Points`=`Points`-%i where `SteamID`='%s' and `StatsID`='%i'"
+			CallbackQuery("update `%s` set `p`=`p`-%i where `auth`='%s' and `sID`='%i'"
 			, query_error_uniqueid_CTF_OnFlagDropped
 			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
@@ -1606,19 +1570,8 @@ void OnObjectPlaced(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
-	if(userid < 1)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	int client, userid = event.GetInt("userid");
+	if(!SMStats_IsValidUserID(client, userid))
 	{
 		return;
 	}
@@ -1663,22 +1616,10 @@ void OnObjectDestroyed(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int userid = event.GetInt("userid");
+	int client, userid = event.GetInt("userid");
 	int attacker = event.GetInt("attacker");
-	if( userid < 1
-	|| attacker < 1
-	|| userid == attacker)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(attacker);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	if(userid == attacker
+	|| !SMStats_IsValidUserID(client, attacker))
 	{
 		return;
 	}
@@ -1716,33 +1657,16 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 		return;
 	}
 	
-	int medic_userid = event.GetInt("medic_userid");
-	int userid = event.GetInt("userid");
-	if(medic_userid < 1
-	|| userid < 1
-	|| medic_userid == userid)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(medic_userid);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	int client, medic_userid = event.GetInt("medic_userid");
+	int victim, userid = event.GetInt("userid");
+	if(medic_userid == userid
+	|| !SMStats_IsValidUserID(client, medic_userid)
+	|| !SMStats_IsValidUserID(victim, userid, {1,2,1,0,0}))
 	{
 		return;
 	}
 	
 	if(g_Game[client].bUbercharged)
-	{
-		return;
-	}
-	
-	int victim;
-	if(!IsValidClient((victim = GetClientOfUserId(userid)), !bAllowBots))
 	{
 		return;
 	}
@@ -1761,10 +1685,10 @@ void OnPlayerUbercharged(Event event, const char[] event_name, bool dontBroadcas
 	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Ubercharged`=`Ubercharged`+1");
 	if((points = g_Ubercharged.IntValue) > 0 && !g_Player[client].bPenalty)
 	{
-		len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+		len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 	}
-	len += Format(query[len], sizeof(query)-len, "where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerUbercharged);
+	len += Format(query[len], sizeof(query)-len, "where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
+	sql.tquery(DBQuery_Callback, query, query_error_uniqueid_OnPlayerUbercharged);
 	
 	g_Game[client].bUbercharged = true;
 	CreateTimer(g_Time_Ubercharged, Timer_bUbercharged, GetClientUserId(client));
@@ -1795,28 +1719,10 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 		return;
 	}
 	
-	int builderid = event.GetInt("builderid");
-	int userid = event.GetInt("userid");
-	if(builderid < 1
-	|| userid < 1
-	|| builderid == userid)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(builderid);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
-	{
-		return;
-	}
-	
-	int victim = GetClientOfUserId(userid);
-	if(!IsValidClient(victim, !bAllowBots))
+	int client, victim, builderid = event.GetInt("builderid"), userid = event.GetInt("userid");
+	if(builderid == userid
+	|| !SMStats_IsValidUserID(client, builderid)
+	|| !SMStats_IsValidUserID(victim, userid, {1,2,0,0,0}))
 	{
 		return;
 	}
@@ -1837,9 +1743,9 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 		if((points = g_Teleported.IntValue) > 0 && !g_Player[client].bPenalty)
 		{
 			g_Player[client].session[Stats_Points] += points;
-			len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+			len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 		}
-		len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+		len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnPlayerUsedTeleporter);
 		
 		g_Game[client].bUsedTeleporter = true;
@@ -1858,7 +1764,7 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 			}
 			
 			char query[256];
-			Format(query, sizeof(query), "update `%s` set `PlayersTeleported`=`PlayersTeleported`+1 where `SteamID`='%s' and `StatsID`='%i'"
+			Format(query, sizeof(query), "update `%s` set `PlayersTeleported`=`PlayersTeleported`+1 where `auth`='%s' and `sID`='%i'"
 			, sql_table_playerlist, g_Player[victim].auth, g_StatsID);
 			txn.AddQuery(query, query_error_uniqueid_OnPlayerTeleported);
 			
@@ -1869,7 +1775,7 @@ void OnPlayerTeleported(Event event, const char[] event_name, bool dontBroadcast
 	
 	if(!!txn)
 	{
-		sql.Execute(txn, _, TXN_Callback_Failure);
+		sql.exec(txn, _, TXN_Callback_Failure);
 	}
 }
 
@@ -1881,21 +1787,10 @@ void OnPlayerStealSandvich(Event event, const char[] event_name, bool dontBroadc
 		return;
 	}
 	
-	int target = event.GetInt("target");
-	int owner = event.GetInt("owner");
-	if(target < 1
-	|| target == owner)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(target);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	int client, target = event.GetInt("target");
+	int victim, owner = event.GetInt("owner");
+	if(target == owner
+	|| !SMStats_IsValidUserID(client, target))
 	{
 		return;
 	}
@@ -1915,21 +1810,20 @@ void OnPlayerStealSandvich(Event event, const char[] event_name, bool dontBroadc
 	{
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].points += points;
-		len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+		len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 	}
-	len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerStealSandvich);
+	len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
+	sql.tquery(DBQuery_Callback, query, query_error_uniqueid_OnPlayerStealSandvich);
 	
 	g_Game[client].bStolenSandvich = true;
-	CreateTimer(g_Time_StolenSandvich, Timer_bStolenSandvich, GetClientUserId(client));
+	CreateTimer(g_Time_StolenSandvich, Timer_bStolenSandvich, target);
 	
 	if(points > 0 && !g_Player[client].bPenalty)
 	{
 		char points_plural[32];
 		PointsPluralSplitter(client, points, points_plural, sizeof(points_plural), PointSplit_Plus);
 		
-		int victim = GetClientOfUserId(owner);
-		switch(IsValidClient(victim, !bAllowBots))
+		switch(SMStats_IsValidUserID(victim, owner, {1,2,0,0,0}))
 		{
 			case false:
 			{
@@ -1963,33 +1857,16 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int userid = event.GetInt("stunner");
-	int userid_victim = event.GetInt("victim");
-	if(userid < 1
-	|| userid_victim < 1
-	|| userid == userid_victim)
-	{
-		return;
-	}
-	
-	int client;
-	if(!IsValidClient((client = GetClientOfUserId(userid))))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	int client, userid = event.GetInt("stunner");
+	int victim, userid_victim = event.GetInt("victim");
+	if(userid == userid_victim
+	|| !SMStats_IsValidUserID(client, userid)
+	|| !SMStats_IsValidUserID(victim, userid_victim, {1,2,0,0,0}))
 	{
 		return;
 	}
 	
 	if(g_Game[client].bStunned)
-	{
-		return;
-	}
-	
-	int victim = GetClientOfUserId(userid_victim);
-	if(!IsValidClient(userid_victim, !bAllowBots))
 	{
 		return;
 	}
@@ -2021,7 +1898,7 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 	int points = 0;
 	int len = 0;
 	char query[256];
-	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set StunnedPlayers = StunnedPlayers+1");
+	len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `StunnedPlayers`=`StunnedPlayers`+1");
 	if(big_stun)
 	{
 		g_Player[client].session[Stats_MoonShotStunnedPlayers]++;
@@ -2031,10 +1908,10 @@ void OnPlayerStunned(Event event, const char[] event_name, bool dontBroadcast)
 	{
 		g_Player[client].points += points;
 		g_Player[client].session[Stats_Points] += points;
-		len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+		len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 	}
-	len += Format(query[len], sizeof(query)-len, " where SteamID='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-	sql.Query(DBQuery_Callback, query, query_error_uniqueid_OnPlayerStunned);
+	len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
+	sql.tquery(DBQuery_Callback, query, query_error_uniqueid_OnPlayerStunned);
 	
 	g_Game[client].bStunned = true;
 	CreateTimer(g_Time_Stunned, Timer_bStunned, GetClientUserId(client));
@@ -2088,21 +1965,9 @@ void OnHalloweenBossKill(Event event, const char[] event_name, bool dontBroadcas
 	3 - Merasmus.
 	*/
 	
-	int killer = event.GetInt("killer");
-	int boss = event.GetInt("boss");
-	if(killer < 1
-	|| boss < 1)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(killer);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	int client, boss = event.GetInt("boss");
+	if(boss < 1
+	|| !SMStats_IsValidUserID(client, event.GetInt("killer")))
 	{
 		return;
 	}
@@ -2139,21 +2004,21 @@ void OnHalloweenBossKill(Event event, const char[] event_name, bool dontBroadcas
 		{
 			case 1:
 			{
-				CallbackQuery("update `%s` set `Points`=`Points`+%i,`HHHFragged`=`HHHFragged`+1 where `SteamID`='%s' and `StatsID`=%i"
+				CallbackQuery("update `%s` set `p`=`p`+%i,`HHHFragged`=`HHHFragged`+1 where `auth`='%s' and `sID`=%i"
 				, query_error_uniqueid_Halloween_OnHHHFragged
 				, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 			}
 			
 			case 2:
 			{
-				CallbackQuery("update `%s` set `Points`=`Points`+%i,`MonoculusFragged`=`MonoculusFragged`+1 where `SteamID`='%s' and `StatsID`='%i'"
+				CallbackQuery("update `%s` set `p`=`p`+%i,`MonoculusFragged`=`MonoculusFragged`+1 where `auth`='%s' and `sID`='%i'"
 				, query_error_uniqueid_Halloween_OnMonoculusFragged
 				, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 			}
 			
 			case 3:
 			{
-				CallbackQuery("update `%s` set `Points`=`Points`+%i,`MerasmusFragged`=`MerasmusFragged`+1 where `SteamID`='%s' and `StatsID`='%i'"
+				CallbackQuery("update `%s` set `p`=`p`+%i,`MerasmusFragged`=`MerasmusFragged`+1 where `auth`='%s' and `sID`='%i'"
 				, query_error_uniqueid_Halloween_OnMerasmusFragged
 				, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 			}
@@ -2169,19 +2034,8 @@ void OnHalloweenSkeletonKingKilled(Event event, const char[] event_name, bool do
 		return;
 	}
 	
-	int userid = event.GetInt("player");
-	if(userid < 1)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	int client;
+	if(!SMStats_IsValidUserID(client, event.GetInt("player")))
 	{
 		return;
 	}
@@ -2206,7 +2060,7 @@ void OnHalloweenSkeletonKingKilled(Event event, const char[] event_name, bool do
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set `Points`=`Points`+%i,`SkeletonKingsFragged`=`SkeletonKingsFragged`+1 where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `p`=`p`+%i,`SkeletonKingsFragged`=`SkeletonKingsFragged`+1 where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_Halloween_OnSkeletonKingFragged
 		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	}
@@ -2221,12 +2075,7 @@ void OnHalloweenStunned(Event event, const char[] event_name, bool dontBroadcast
 	}
 	
 	int client = event.GetInt("player_entindex");
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	if(!SMStats_IsValidClient(client))
 	{
 		return;
 	}
@@ -2253,7 +2102,7 @@ void OnHalloweenStunned(Event event, const char[] event_name, bool dontBroadcast
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set `Points`=`Points`+%i,`MonoculusStunned`=`MonoculusStunned`+1 where `SteamID`='%s' and `StatsID`='%i'"
+			CallbackQuery("update `%s` set `p`=`p`+%i,`MonoculusStunned`=`MonoculusStunned`+1 where `auth`='%s' and `sID`='%i'"
 			, query_error_uniqueid_Halloween_OnMonoculusStunned
 			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
@@ -2281,7 +2130,7 @@ void OnHalloweenStunned(Event event, const char[] event_name, bool dontBroadcast
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set `Points`=`Points`+%i,`MerasmusStunned`=`MerasmusStunned`+1 where `SteamID`='%s' and `StatsID`='%i'"
+			CallbackQuery("update `%s` set `p`=`p`+%i,`MerasmusStunned`=`MerasmusStunned`+1 where `auth`='%s' and `sID`='%i'"
 			, query_error_uniqueid_Halloween_OnMerasmusStunned
 			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
@@ -2302,12 +2151,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 	
 	if(StrEqual(event_name, "pass_get") && (client = event.GetInt("owner")) > 0 && (points = g_PassBall[(type = PassBall_GrabbingNeutralBall)].IntValue) > 0)
 	{
-		if(!IsValidClient(client))
-		{
-			return;
-		}
-		
-		if(IsValidAbuse(client))
+		if(!SMStats_IsValidClient(client))
 		{
 			return;
 		}
@@ -2332,18 +2176,13 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsGotten`=`PassBallsGotten`+1 where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `p`=`p`+%i,`PassBallsGotten`=`PassBallsGotten`+1 where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_PassBall_Get
 		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_score") && (client = event.GetInt("scorer")) > 0 && (points = g_PassBall[(type = PassBall_ScoringBall)].IntValue) > 0)
 	{
-		if(!IsValidClient(client))
-		{
-			return;
-		}
-		
-		if(IsValidAbuse(client))
+		if(!SMStats_IsValidClient(client))
 		{
 			return;
 		}
@@ -2368,18 +2207,13 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsScored`=`PassBallsScored`+1 where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `p`=`p`+%i,`PassBallsScored`=`PassBallsScored`+1 where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_PassBall_Score
 		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_free") && (client = event.GetInt("owner")) > 0 && (points = g_PassBall[(type = PassBall_DroppingBall)].IntValue) > 0)
 	{
-		if(!IsValidClient(client))
-		{
-			return;
-		}
-		
-		if(IsValidAbuse(client))
+		if(!SMStats_IsValidClient(client))
 		{
 			return;
 		}
@@ -2404,18 +2238,13 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points -= points;
 		
-		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsDropped`=`PassBallsDropped`+1 where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `p`=`p`+%i,`PassBallsDropped`=`PassBallsDropped`+1 where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_PassBall_Dropped
 		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_pass_caught") && (client = event.GetInt("catcher")) > 0 && (points = g_PassBall[(type = PassBall_CatchingBall)].IntValue) > 0)
 	{
-		if(!IsValidClient(client))
-		{
-			return;
-		}
-		
-		if(IsValidAbuse(client))
+		if(!SMStats_IsValidClient(client))
 		{
 			return;
 		}
@@ -2432,7 +2261,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_PassBallsCatched]++;
 		
 		int victim = event.GetInt("victim");
-		switch(IsValidClient(victim, bAllowBots ? true : false))
+		switch(SMStats_IsValidClient(victim, {1,2,0,0,0}))
 		{
 			case false:
 			{
@@ -2458,18 +2287,13 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsCatched`=`PassBallsCatched`+1 where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `p`=`p`+%i,`PassBallsCatched`=`PassBallsCatched`+1 where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_PassBall_Catched
 		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_pass_stolen") && (client = event.GetInt("attacker")) > 0 && (points = g_PassBall[(type = PassBall_StealingBall)].IntValue) > 0)
 	{
-		if(!IsValidClient(client))
-		{
-			return;
-		}
-		
-		if(IsValidAbuse(client))
+		if(!SMStats_IsValidClient(client))
 		{
 			return;
 		}
@@ -2486,7 +2310,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_PassBallsStolen]++;
 		
 		int victim = event.GetInt("victim");	
-		switch(IsValidClient(victim, bAllowBots))
+		switch(SMStats_IsValidClient(victim, {1,2,0,0,0}))
 		{
 			case false:
 			{
@@ -2512,18 +2336,13 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsStolen`=`PassBallsStolen`+1 where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `p`=`p`+%i,`PassBallsStolen`=`PassBallsStolen`+1 where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_PassBall_Stolen
 		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	} else
 	if(StrEqual(event_name, "pass_pass_blocked") && (client = event.GetInt("blocker")) > 0 && (points = g_PassBall[(type = PassBall_BlockingBall)].IntValue) > 0)
 	{
-		if(!IsValidClient(client))
-		{
-			return;
-		}
-		
-		if(IsValidAbuse(client))
+		if(!SMStats_IsValidClient(client))
 		{
 			return;
 		}
@@ -2540,7 +2359,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_PassBallsBlocked]++;
 		
 		int victim = event.GetInt("victim");
-		switch(IsValidClient(victim, !bAllowBots))
+		switch(SMStats_IsValidClient(victim, {1,2,0,0,0}))
 		{
 			case false:
 			{
@@ -2566,7 +2385,7 @@ void OnPassBallEvent(Event event, const char[] event_name, bool dontBroadcast)
 		
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set `Points`=`Points`+%i,`PassBallsBlocked`=`PassBallsBlocked`+1 where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `p`=`p`+%i,`PassBallsBlocked`=`PassBallsBlocked`+1 where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_PassBall_Blocked
 		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 	}
@@ -2607,12 +2426,7 @@ void MvM_OnTankDestroyed(Event event, const char[] event_name, bool dontBroadcas
 	int client = 0;
 	while((client = FindEntityByClassname(client, "player")) > 0)
 	{
-		if(!IsValidClient(client))
-		{
-			continue;
-		}
-		
-		if(IsValidAbuse(client))
+		if(!SMStats_IsValidClient(client))
 		{
 			continue;
 		}
@@ -2633,7 +2447,7 @@ void MvM_OnTankDestroyed(Event event, const char[] event_name, bool dontBroadcas
 			g_Player[client].session[Stats_Points] += points;
 			g_Player[client].points += points;
 			
-			CallbackQuery("update `%s` set `Points`=`Points`+%i,`TanksDestroyed`=`TanksDestroyed`+1 where `SteamID`='%s' and `StatsID`='%i'"
+			CallbackQuery("update `%s` set `p`=`p`+%i,`TanksDestroyed`=`TanksDestroyed`+1 where `auth`='%s' and `sID`='%i'"
 			, query_error_uniqueid_MvM_OnTankDestroyed
 			, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		}
@@ -2653,28 +2467,11 @@ void MvM_OnRobotDeath(Event event, const char[] event_name, bool dontBroadcast)
 		return;
 	}
 	
-	int userid = event.GetInt("attacker");
-	int userid_victim = event.GetInt("userid");
-	if(userid < 1
-	|| userid_victim < 1
-	|| userid == userid_victim)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
-	{
-		return;
-	}
-	
-	int victim = GetClientOfUserId(userid_victim);
-	if(!IsValidClient(victim))
+	int client, attacker = event.GetInt("attacker");
+	int victim, userid = event.GetInt("userid");
+	if(attacker == userid
+	|| !SMStats_IsValidUserID(client, attacker)
+	|| !SMStats_IsValidUserID(victim, userid))
 	{
 		return;
 	}
@@ -2728,7 +2525,7 @@ void MvM_OnRobotDeath(Event event, const char[] event_name, bool dontBroadcast)
 		g_Player[client].session[Stats_Points] += points;
 		g_Player[client].points += points;
 		
-		CallbackQuery("update `%s` set `Points`=`Points`+%i,`SentryBustersFragged`=`SentryBustersFragged`+1 where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `p`=`p`+%i,`SentryBustersFragged`=`SentryBustersFragged`+1 where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_MvM_OnSentryBusterFragged
 		, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 		
@@ -2751,19 +2548,8 @@ void MvM_OnBombResetted(Event event, const char[] event_name, bool dontBroadcast
 		return;
 	}
 	
-	int userid = event.GetInt("player");
-	if(userid < 1)
-	{
-		return;
-	}
-	
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
-	{
-		return;
-	}
-	
-	if(IsValidAbuse(client))
+	int client;
+	if(!SMStats_IsValidUserID(client, event.GetInt("player")))
 	{
 		return;
 	}
@@ -2787,7 +2573,7 @@ void MvM_OnBombResetted(Event event, const char[] event_name, bool dontBroadcast
 	g_Player[client].session[Stats_Points] += points;
 	g_Player[client].points += points;
 	
-	CallbackQuery("update `%s` set `Points`=`Points`+%i,`BombsResetted`=`BombsResetted`+1 where `SteamID`='%s' and `StatsID`='%i'"
+	CallbackQuery("update `%s` set `p`=`p`+%i,`BombsResetted`=`BombsResetted`+1 where `auth`='%s' and `sID`='%i'"
 	, query_error_uniqueid_MvM_OnBombResetted
 	, sql_table_playerlist, points, g_Player[client].auth, g_StatsID);
 }
@@ -2821,7 +2607,7 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 		return Plugin_Handled;
 	}
 	
-	if(!IsValidClient(client))
+	if(!SMStats_IsValidClient(client))
 	{
 		return Plugin_Handled;
 	}
@@ -2875,12 +2661,7 @@ Action OnPlayerCoated(UserMsg msg_id, BfRead bf, const int[] players, int player
 		return Plugin_Handled;
 	}
 	
-	if(IsValidAbuse(client))
-	{
-		return Plugin_Handled;
-	}
-	
-	if(!IsValidClient(victim, !bAllowBots ? true : false))
+	if(!SMStats_IsValidClient(victim, {1,2,0,0,0}))
 	{
 		return Plugin_Handled;
 	}
@@ -2922,12 +2703,7 @@ Action OnPlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int 
 		return Plugin_Handled;
 	}
 	
-	if(!IsValidClient(client))
-	{
-		return Plugin_Handled;
-	}
-	
-	if(IsValidAbuse(client))
+	if(!SMStats_IsValidClient(client))
 	{
 		return Plugin_Handled;
 	}
@@ -2937,7 +2713,7 @@ Action OnPlayerExtinguished(UserMsg msg_id, BfRead bf, const int[] players, int 
 		return Plugin_Handled;
 	}
 	
-	if(!IsValidClient(victim, !bAllowBots))
+	if(!SMStats_IsValidClient(victim,{1,2,0,0,0}))
 	{
 		return Plugin_Handled;
 	}
@@ -2969,17 +2745,12 @@ Action OnPlayerIgnited(UserMsg msg_id, BfRead bf, const int[] players, int playe
 		return Plugin_Handled;
 	}
 	
-	if(!IsValidClient(client))
+	if(!SMStats_IsValidClient(client))
 	{
 		return Plugin_Handled;
 	}
 	
-	if(IsValidAbuse(client))
-	{
-		return Plugin_Handled;
-	}
-	
-	if(!IsValidClient(victim, !bAllowBots ? true : false))
+	if(!SMStats_IsValidClient(victim,{1,2,0,0,0}))
 	{
 		return Plugin_Handled;
 	}
@@ -3011,7 +2782,7 @@ Action MapTimer_GameTimer(Handle timer)
 		int client = 0;
 		while((client = FindEntityByClassname(client, "player")) != -1)
 		{
-			if(!IsValidClient(client))
+			if(!SMStats_IsValidClient(client))
 			{
 				continue;
 			}
@@ -3035,9 +2806,9 @@ Action MapTimer_GameTimer(Handle timer)
 				{
 					FragEventInfo event;
 					int[] list = new int[frags];
-					int[] list_assister = new int[frags];
-					bool[] list_assister_dominate = new bool[frags];
-					bool[] list_assister_revenge = new bool[frags];
+					int[] list_assist = new int[frags];
+					bool[] list_assist_dominate = new bool[frags];
+					bool[] list_assist_revenge = new bool[frags];
 					int[][] list_healer = new int[MaxPlayers+1][frags];
 					int[] list_healercount = new int[frags];
 					int[] list_itemdef = new int[frags];
@@ -3047,8 +2818,8 @@ Action MapTimer_GameTimer(Handle timer)
 					
 					// kill log
 					
-					char list_steamid_victim[448];
-					char list_steamid_assister[448];
+					char list_auth_target[AUTH_LENGTH*16];
+					char list_auth_assist[AUTH_LENGTH*16];
 					int list_timestamp;
 					char list_itemdefs[176];
 					bool list_ubercharged;
@@ -3111,10 +2882,10 @@ Action MapTimer_GameTimer(Handle timer)
 					{
 						g_Game[client].aFragEvent.GetArray(i, event, sizeof(event));
 						list_timestamp = event.timestamp;
-						int userid_victim = (list[i] = event.userid);
-						list_assister[i] = event.assister;
-						list_assister_dominate[i] = event.dominated_assister;
-						list_assister_revenge[i] = event.revenge_assister;
+						int userid_target = (list[i] = event.userid);
+						list_assist[i] = event.assister;
+						list_assist_dominate[i] = event.dominated_assister;
+						list_assist_revenge[i] = event.revenge_assister;
 						list_itemdef[i] = event.itemdef;
 						list_class[i] = event.class;
 						strcopy(list_classname[i], sizeof(event.classname), event.classname);
@@ -3126,13 +2897,13 @@ Action MapTimer_GameTimer(Handle timer)
 							case true: Format(list_itemdefs, sizeof(list_itemdefs), "%i", list_itemdef[i]);
 						}
 						
-						int victim;
-						if(IsValidClient((victim = GetClientOfUserId(userid_victim))))
+						int target;
+						if(SMStats_IsValidUserID(target, userid_target))
 						{
-							switch(strlen(list_steamid_victim) < 1)
+							switch(strlen(list_auth_target) < 1)
 							{
-								case false: Format(list_steamid_victim, sizeof(list_steamid_victim), "%s;%s", list_steamid_victim, g_Player[victim].auth);
-								case true: strcopy(list_steamid_victim, sizeof(list_steamid_victim), g_Player[victim].auth);
+								case false: Format(list_auth_target, sizeof(list_auth_target), "%s;%s", list_auth_target, g_Player[target].auth);
+								case true: strcopy(list_auth_target, sizeof(list_auth_target), g_Player[target].auth);
 							}
 						}
 						
@@ -3428,19 +3199,19 @@ Action MapTimer_GameTimer(Handle timer)
 					g_Game[client].aFragEvent.Clear();
 					
 					int attacker = GetClientUserId(client); // native string arrays needs to be added (・`ω´・)
-					_sm_stats_player_death_fwd(attacker, frags, list, list_assister, event.classname, list_itemdef);
+					_sm_stats_player_death_fwd(attacker, frags, list, list_assist, event.classname, list_itemdef);
 					
 					char dummy[256];
 					GetMultipleTargets(client, list, frags, dummy, sizeof(dummy));
 					
 					txn = new Transaction();
-					AssistedKills(txn, list, list_assister, list_assister_dominate, list_assister_revenge, frags, client, list_healercount, list_healer, list_steamid_assister, sizeof(list_steamid_assister));
-					VictimDied(txn, list, list_class, frags);
+					AssistedKills(txn, list, list_assist, list_assist_dominate, list_assist_revenge, frags, client, list_healercount, list_healer, list_auth_assist, sizeof(list_auth_assist));
+					TargetDied(txn, list, list_class, frags);
 					
 					char query[4096], query_map[4096];
 					int len = 0, len_map = 0;
-					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Frags`=`Frags`+%i", frags);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set `Frags`=`Frags`+%i", frags);
+					len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `k`=`k`+%i", frags);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, "update `"...sql_table_maps_log..."` set `k`=`k`+%i", frags);
 					
 					if(iWepFrags > 0)
 					{
@@ -3484,7 +3255,7 @@ Action MapTimer_GameTimer(Handle timer)
 							
 							char fix_weapon[64], query_wep[256];
 							CorrectWeaponClassname(event.class_attacker, fix_weapon, sizeof(fix_weapon), epic.itemdef, epic.classname);
-							Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set `%s`=`%s`+'%i' where `SteamID`='%s' and `StatsID`='%i'"
+							Format(query_wep, sizeof(query_wep), "update `"...sql_table_weapons..."` set `%s`=`%s`+'%i' where `auth`='%s' and `sID`='%i'"
 							, fix_weapon, fix_weapon, epic.quantity, g_Player[client].auth, g_StatsID);
 							txn.AddQuery(query_wep, queryId_kill_weapon);
 							
@@ -3627,59 +3398,14 @@ Action MapTimer_GameTimer(Handle timer)
 						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`CritFrags`=`CritFrags`+%i", frags);
 					}
 					// classes
-					if(tfClasses[TFClass_Scout] > 0)
+					for(TFClassType c = TFClass_Scout; c <= TFClass_Engineer; c++)
 					{
-						g_Player[client].session[Stats_ScoutFrags] += tfClasses[TFClass_Scout];
-						len += Format(query[len], sizeof(query)-len, ",`ScoutFrags`=`ScoutFrags`+%i", tfClasses[TFClass_Scout]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`ScoutFrags`=`ScoutFrags`+%i", tfClasses[TFClass_Scout]);
-					}
-					if(tfClasses[TFClass_Soldier] > 0)
-					{
-						g_Player[client].session[Stats_SoldierFrags] += tfClasses[TFClass_Soldier];
-						len += Format(query[len], sizeof(query)-len, ",`SoldierFrags`=`SoldierFrags`+%i", tfClasses[TFClass_Soldier]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SoldierFrags`=`SoldierFrags`+%i", tfClasses[TFClass_Soldier]);
-					}
-					if(tfClasses[TFClass_Pyro] > 0)
-					{
-						g_Player[client].session[Stats_PyroFrags] += tfClasses[TFClass_Pyro];
-						len += Format(query[len], sizeof(query)-len, ",`PyroFrags`=`PyroFrags`+%i", tfClasses[TFClass_Pyro]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`PyroFrags`=`PyroFrags`+%i", tfClasses[TFClass_Pyro]);
-					}
-					if(tfClasses[TFClass_DemoMan] > 0)
-					{
-						g_Player[client].session[Stats_DemoFrags] += tfClasses[TFClass_DemoMan];
-						len += Format(query[len], sizeof(query)-len, ",`DemoFrags`=`DemoFrags`+%i", tfClasses[TFClass_DemoMan]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`DemoFrags`=`DemoFrags`+%i", tfClasses[TFClass_DemoMan]);
-					}
-					if(tfClasses[TFClass_Heavy] > 0)
-					{
-						g_Player[client].session[Stats_HeavyFrags] += tfClasses[TFClass_Heavy];
-						len += Format(query[len], sizeof(query)-len, ",`HeavyFrags`=`HeavyFrags`+%i", tfClasses[TFClass_Heavy]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`HeavyFrags`=`HeavyFrags`+%i", tfClasses[TFClass_Heavy]);
-					}
-					if(tfClasses[TFClass_Engineer] > 0)
-					{
-						g_Player[client].session[Stats_EngieFrags] += tfClasses[TFClass_Engineer];
-						len += Format(query[len], sizeof(query)-len, ",`EngieFrags`=`EngieFrags`+%i", tfClasses[TFClass_Engineer]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`EngieFrags`=`EngieFrags`+%i", tfClasses[TFClass_Engineer]);
-					}
-					if(tfClasses[TFClass_Medic] > 0)
-					{
-						g_Player[client].session[Stats_MedicFrags] += tfClasses[TFClass_Medic];
-						len += Format(query[len], sizeof(query)-len, ",`MedicFrags`=`MedicFrags`+%i", tfClasses[TFClass_Medic]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`MedicFrags`=`MedicFrags`+%i", tfClasses[TFClass_Medic]);
-					}
-					if(tfClasses[TFClass_Sniper] > 0)
-					{
-						g_Player[client].session[Stats_SniperFrags] += tfClasses[TFClass_Sniper];
-						len += Format(query[len], sizeof(query)-len, ",`SniperFrags`=`SniperFrags`+%i", tfClasses[TFClass_Sniper]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SniperFrags`=`SniperFrags`+%i", tfClasses[TFClass_Sniper]);
-					}
-					if(tfClasses[TFClass_Spy] > 0)
-					{
-						g_Player[client].session[Stats_SpyFrags] += tfClasses[TFClass_Spy];
-						len += Format(query[len], sizeof(query)-len, ",`SpyFrags`=`SpyFrags`+%i", tfClasses[TFClass_Spy]);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`SpyFrags`=`SpyFrags`+%i", tfClasses[TFClass_Spy]);
+						if(tfClasses[c] > 0)
+						{
+							g_Player[client].session[c] += tfClasses[c];
+							len += Format(query[len], sizeof(query)-len, ",`%s`=`%s`+%i", szClassSQL[c][0], szClassSQL[c][0], tfClasses[c]);
+							len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`%s`=`%s`+%i", szClassSQL[c][0], szClassSQL[c][0], tfClasses[c]);
+						}
 					}
 					
 					//
@@ -3690,12 +3416,12 @@ Action MapTimer_GameTimer(Handle timer)
 					{
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
-						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
-						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`Points`=`Points`+%i", points);
+						len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
+						len_map += Format(query_map[len_map], sizeof(query_map)-len_map, ",`p`=`p`+%i", points);
 					}
 					
-					len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `StatsID`='%i'", g_StatsID);
+					len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `sID`='%i'", g_StatsID);
 					txn.AddQuery(query, queryId_kill_playerlist);
 					txn.AddQuery(query_map, queryId_kill_playerlist_MapUpdate);
 					
@@ -3705,10 +3431,10 @@ Action MapTimer_GameTimer(Handle timer)
 					char queryk[4096];
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "insert into `"...sql_table_kill_log..."`");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "StatsID");
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Attacker");
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Victim");
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",SteamID_Assister");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "sID");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",auth_attacker");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",auth_target");
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",auth_assister");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Timestamp");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Itemdefs");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",Quantity");
@@ -3746,8 +3472,8 @@ Action MapTimer_GameTimer(Handle timer)
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "(");
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, "%i", g_StatsID);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", g_Player[client].auth);
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_victim);
-					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_steamid_assister);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_auth_target);
+					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_auth_assist);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", list_timestamp);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%s'", list_itemdefs);
 					lenk += Format(queryk[lenk], sizeof(queryk)-lenk, ",'%i'", frags);
@@ -3814,8 +3540,8 @@ Action MapTimer_GameTimer(Handle timer)
 					char query[1024];
 					len += Format(query[len], sizeof(query)-len, "insert into `"...sql_table_item_log..."`");
 					len += Format(query[len], sizeof(query)-len, "(");
-					len += Format(query[len], sizeof(query)-len, "StatsID");
-					len += Format(query[len], sizeof(query)-len, ",SteamID");
+					len += Format(query[len], sizeof(query)-len, "sID");
+					len += Format(query[len], sizeof(query)-len, ",auth");
 					len += Format(query[len], sizeof(query)-len, ",Timestamp");
 					len += Format(query[len], sizeof(query)-len, ",itemdef");
 					len += Format(query[len], sizeof(query)-len, ",quality");
@@ -3967,17 +3693,17 @@ Action MapTimer_GameTimer(Handle timer)
 					}
 					if(points > 0 && !g_Player[client].bPenalty)
 					{
-						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+						len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 						
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
 					}
 					
-					len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `StatsID`='%i'", g_StatsID);
+					len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `sID`='%i'", g_StatsID);
 					txn.AddQuery(query, queryId_object_placed);
 					txn.AddQuery(query_map, queryId_object_placed_MapUpdate);
-					sql.Execute(txn, _, TXNEvent_OnFailed, GetClientUserId(client));
+					sql.exec(txn, _, TXNEvent_OnFailed, g_Player[client].userid);
 					
 					DataPack pack;
 					CreateDataTimer(g_Time_ObjectPlaced, Timer_bObjectPlaced, pack);
@@ -4127,21 +3853,21 @@ Action MapTimer_GameTimer(Handle timer)
 					}
 					if(points > 0 && g_Player[client].bPenalty)
 					{
-						len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+						len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 						
 						g_Player[client].session[Stats_Points] += points;
 						g_Player[client].points += points;
 					}
 					
-					len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
-					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `StatsID`='%i'", g_StatsID);
+					len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
+					len_map += Format(query_map[len_map], sizeof(query_map)-len_map, " where `sID`='%i'", g_StatsID);
 					txn.AddQuery(query, queryId_object_destroyed);
 					txn.AddQuery(query_map, queryId_object_destroyed_MapUpdate);
-					sql.Execute(txn, _, TXNEvent_OnFailed, GetClientUserId(client));
+					sql.exec(txn, _, TXNEvent_OnFailed, g_Player[client].userid);
 					
 					DataPack pack;
 					CreateDataTimer(g_Time_ObjectDestroyed, Timer_bObjectDestroyed, pack);
-					pack.WriteCell(GetClientUserId(client));
+					pack.WriteCell(g_Player[client].userid);
 					pack.WriteCell(objects);
 					pack.WriteCellArray(list, objects);
 					pack.Reset();
@@ -4207,12 +3933,12 @@ Action MapTimer_GameTimer(Handle timer)
 								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Coated`=`Coated`+%i", jars);
 								if((points = g_Jarated.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
-									len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+									len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 									g_Player[client].session[Stats_Points] += points;
 									g_Player[client].points += points;
 								}
 								len += Format(query[len], sizeof(query)-len, ",`CoatedPiss`=`CoatedPiss`+%i", jars);
-								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+								len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
 								txn.AddQuery(query, query_error_uniqueid_OnPlayerJarated);
 								
 								g_Game[client].bPlayerJarated = true;
@@ -4250,12 +3976,12 @@ Action MapTimer_GameTimer(Handle timer)
 								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Coated`=`Coated`+%i", jars);
 								if((points = g_Milked.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
-									len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+									len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 									g_Player[client].session[Stats_Points] += points;
 									g_Player[client].points += points;
 								}
 								len += Format(query[len], sizeof(query)-len, ",`CoatedMilk`=`CoatedMilk`+%i", jars);
-								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+								len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
 								txn.AddQuery(query, query_error_uniqueid_OnPlayerMilked);
 								
 								g_Game[client].bPlayerMilked = true;
@@ -4293,12 +4019,12 @@ Action MapTimer_GameTimer(Handle timer)
 								len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set Coated = Coated+%i", jars);
 								if((points = g_GasPassed.IntValue * jars) > 0 && !g_Player[client].bPenalty)
 								{
-									len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+									len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 									g_Player[client].session[Stats_Points] += points;
 									g_Player[client].points += points;
 								}
 								len += Format(query[len], sizeof(query)-len, ",`CoatedGasoline`=`CoatedGasoline`+%i", jars);
-								len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+								len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
 								txn.AddQuery(query, query_error_uniqueid_OnPlayerGasPassed);
 								
 								g_Game[client].bPlayerGasPassed = true;
@@ -4355,11 +4081,11 @@ Action MapTimer_GameTimer(Handle timer)
 						len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `Extinguished`=`Extinguished`+%i", exts);
 						if((points = g_Extinguished.IntValue * exts) > 0 && !g_Player[client].bPenalty)
 						{
-							len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+							len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 							g_Player[client].session[Stats_Points] += points;
 							g_Player[client].points += points;
 						}
-						len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+						len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
 						txn.AddQuery(query, query_error_uniqueid_OnPlayerExtinguished);
 						
 						g_Game[client].bExtEvent = true;
@@ -4400,11 +4126,11 @@ Action MapTimer_GameTimer(Handle timer)
 				len += Format(query[len], sizeof(query)-len, "update `"...sql_table_playerlist..."` set `RobotsFragged`=`RobotsFragged`+%i", robots);
 				if((points = g_MvM[MvM_FragRobot].IntValue * robots) > 0 && !g_Player[client].bPenalty)
 				{
-					len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", points);
+					len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", points);
 					g_Player[client].session[Stats_Points] += points;
 					g_Player[client].points += points;
 				}
-				len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[client].auth, g_StatsID);
+				len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[client].auth, g_StatsID);
 				txn.AddQuery(query, query_error_uniqueid_OnRobotsFragged);
 				
 				if(points > 0 && !g_Player[client].bPenalty)
@@ -4437,7 +4163,7 @@ Action MapTimer_GameTimer(Handle timer)
 				g_Game[client].iFrameFeignDeaths = 0;
 				
 				char query[256];
-				Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `FeignDeaths`=`FeignDeaths`+%i where `SteamID`='%s' and `Stats`='%i'"
+				Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `FeignDeaths`=`FeignDeaths`+%i where `auth`='%s' and `Stats`='%i'"
 				, feigns, g_Player[client].auth, g_StatsID);
 				txn.AddQuery(query, query_error_uniqueid_OnFeignDeathUpdate);
 			}
@@ -4453,7 +4179,7 @@ Action MapTimer_GameTimer(Handle timer)
 				g_Game[client].iFrameHealPoints = 0;
 				
 				char query[256];
-				Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HealPoints`=`HealPoints`+%i where `SteamID`='%s' and `StatsID`='%i'"
+				Format(query, sizeof(query), "update `"...sql_table_playerlist..."` set `HealPoints`=`HealPoints`+%i where `auth`='%s' and `sID`='%i'"
 				, healpoints, g_Player[client].auth, g_StatsID);
 				txn.AddQuery(query, query_error_uniqueid_OnMedicHealPointsUpdate);
 			}
@@ -4463,7 +4189,7 @@ Action MapTimer_GameTimer(Handle timer)
 		
 		if(txn != null)
 		{
-			sql.Execute(txn, _, TXN_OnGameFrameCallback_Failure);
+			sql.exec(txn, _, TXN_OnGameFrameCallback_Failure);
 		}
 	}
 	
@@ -4480,7 +4206,7 @@ Action Timer_bObjectPlaced(Handle timer, DataPack pack)
 	pack.ReadCellArray(list, objects);
 	
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		for(int i = 0; i < objects; i++)
 		{
@@ -4499,7 +4225,7 @@ Action Timer_bObjectDestroyed(Handle timer, DataPack pack)
 	pack.ReadCellArray(list, objects);
 	
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		for(int i = 0; i < objects; i++)
 		{
@@ -4513,7 +4239,7 @@ Action Timer_bObjectDestroyed(Handle timer, DataPack pack)
 Action Timer_bUbercharged(Handle timer, int userid)
 {
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bUbercharged = false;
 	}
@@ -4523,7 +4249,7 @@ Action Timer_bUbercharged(Handle timer, int userid)
 Action Timer_bUsedTeleporter(Handle timer, int userid)
 {
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bUsedTeleporter = false;
 	}
@@ -4533,7 +4259,7 @@ Action Timer_bUsedTeleporter(Handle timer, int userid)
 Action Timer_bPlayerUsedTeleporter(Handle timer, int userid)
 {
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bPlayerUsedTeleporter = false;
 	}
@@ -4543,7 +4269,7 @@ Action Timer_bPlayerUsedTeleporter(Handle timer, int userid)
 Action Timer_bStolenSandvich(Handle timer, int userid)
 {
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bStunned = false;
 	}
@@ -4553,7 +4279,7 @@ Action Timer_bStolenSandvich(Handle timer, int userid)
 Action Timer_bStunned(Handle timer, int userid)
 {
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bStunned = false;
 	}
@@ -4566,7 +4292,7 @@ Action Timer_bPassBallEvent(Handle timer, DataPack pack)
 	int type = pack.ReadCell();
 	
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bPassBallEvent[type] = false;
 	}
@@ -4576,7 +4302,7 @@ Action Timer_bPassBallEvent(Handle timer, DataPack pack)
 Action Timer_bPlayerJarated(Handle timer, int userid)
 {
 	int client = 0;
-	if((IsValidClient((client = GetClientOfUserId(userid)))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bPlayerJarated = false;
 	}
@@ -4586,7 +4312,7 @@ Action Timer_bPlayerJarated(Handle timer, int userid)
 Action Timer_bPlayerMilked(Handle timer, int userid)
 {
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bPlayerMilked = false;
 	}
@@ -4596,7 +4322,7 @@ Action Timer_bPlayerMilked(Handle timer, int userid)
 Action Timer_bPlayerGasPassed(Handle timer, int userid)
 {
 	int client = 0;
-	if((IsValidClient((client = GetClientOfUserId(userid)))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bPlayerGasPassed = false;
 	}
@@ -4606,7 +4332,7 @@ Action Timer_bPlayerGasPassed(Handle timer, int userid)
 Action Timer_bExtEvent(Handle timer, int userid)
 {
 	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		g_Game[client].bExtEvent = false;
 	}

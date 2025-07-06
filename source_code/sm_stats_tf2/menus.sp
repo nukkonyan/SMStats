@@ -95,8 +95,8 @@ enum struct StatsMenuInfo
 	void ActiveStats(int client)
 	{
 		char query[256];
-		Format(query, sizeof(query), "select `SteamID`,`PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", g_Player[client].auth);
-		sql.Query(DBQuery_CheckActiveStats_1, query, GetClientUserId(client));
+		Format(query, sizeof(query), "select `auth`,`name`,`ip`,`Penalty` from `"...sql_table_settings..."` where `auth`='%s'", g_Player[client].auth);
+		sql.tquery(DBQuery_CheckActiveStats_1, query, g_Player[client].userid);
 	}
 	
 	void ActiveStatsInfo(int client, int page=1)
@@ -115,10 +115,10 @@ enum struct StatsMenuInfo
 	void TopStats(int client, int display_at=0)
 	{
 		DataPack pack = new DataPack();
-		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(g_Player[client].userid);
 		pack.WriteCell(display_at);
 		pack.Reset();
-		sql.Query(DBQuery_TopStats_1, "select `LastConnectedName`,`SteamID`,`Points` from `"...sql_table_playerlist..."` order by `Points` desc limit 10", pack);
+		sql.tquery(DBQuery_TopStats_1, "select `lcn`,`auth`,`p` from `"...sql_table_playerlist..."` order by `p` desc limit 10", pack);
 		
 		/*
 		char[][] SteamID = new char[10][64];
@@ -128,7 +128,7 @@ enum struct StatsMenuInfo
 		
 		char error[256];
 		SQL_LockDatabase(sql);
-		DBResultSet results = SQL_Query(sql, "select `LastConnectedName`,`SteamID`,`Points` from `"...sql_table_playerlist..."` order by `"...sql_table_playerlist..."`.`Points` desc limit 10");
+		DBResultSet results = SQL_Query(sql, "select `LastConnectedName`,`SteamID`,`p` from `"...sql_table_playerlist..."` order by `"...sql_table_playerlist..."`.`p` desc limit 10");
 		SQL_UnlockDatabase(sql);
 		if(results == null)
 		{
@@ -189,20 +189,20 @@ enum struct StatsMenuInfo
 	{
 		g_Player[client].menustats_pos = top_player_id;
 		char query[255];
-		Format(query, sizeof(query), "select SteamID from `"... sql_table_playerlist ... "` order by `Points` desc");
-		sql.Query(StatsMenu_TopPlayerId_1, query, GetClientUserId(client));
+		Format(query, sizeof(query), "select `auth` from `"... sql_table_playerlist ... "` order by `p` desc");
+		sql.tquery(StatsMenu_TopPlayerId_1, query, g_Player[client].userid);
 	}
 	
 	void TopPlayerAuth(int client, const char[] auth)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select SteamID from `"... sql_table_playerlist..."` order by `Points` desc");
+		Format(query, sizeof(query), "select `auth` from `"... sql_table_playerlist..."` order by `p` desc");
 		DataPack pack = new DataPack();
-		pack.WriteCell(GetClientUserId(client));
+		pack.WriteCell(g_Player[client].userid);
 		pack.WriteCell(strlen(auth)+1);
 		pack.WriteString(auth);
 		pack.Reset();
-		sql.Query(StatsMenu_TopPlayerAuth_1, query, pack);
+		sql.tquery(StatsMenu_TopPlayerAuth_1, query, pack);
 	}
 	
 	void Settings(int client, int display_at=0)
@@ -1016,8 +1016,8 @@ int StatsMenu_TopStats(Menu menu, MenuAction action, int client, int select)
 			g_Player[client].menustats_pos = select+1;
 			
 			char query[256];
-			Format(query, sizeof(query), "select `SteamID`,`PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);
-			sql.Query(DBQuery_TopStats_Menu_1, query, GetClientUserId(client));
+			Format(query, sizeof(query), "select `auth`,`name`,`ip`,`Penalty` from `"...sql_table_settings..."` where `auth`='%s'", auth);
+			sql.tquery(DBQuery_TopStats_Menu_1, query, g_Player[client].userid);
 		}
 		case MenuAction_Cancel:
 		{
@@ -1419,7 +1419,7 @@ int StatsMenu_TopStatsInfo(Menu menu, MenuAction action, int client, int select)
 void StatsMenu_TopPlayerId_1(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	if(!SMStats_IsValidUserID(client, userid))
 	{
 		return;
 	}
@@ -1434,7 +1434,7 @@ void StatsMenu_TopPlayerId_1(Database database, DBResultSet results, const char[
 	
 	int top_player_id = g_Player[client].menustats_pos;
 	
-	char auth[64];
+	char auth[AUTH_LENGTH];
 	while(results.FetchRow())
 	{
 		Players++
@@ -1453,26 +1453,26 @@ void StatsMenu_TopPlayerId_1(Database database, DBResultSet results, const char[
 	}
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID`,`PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);
-	sql.Query(StatsMenu_TopPlayerId_2, query, GetClientUserId(client));
+	Format(query, sizeof(query), "select `auth`,`name`,`ip`,`Penalty` from `"...sql_table_settings..."` where `auth`='%s'", auth);
+	sql.tquery(StatsMenu_TopPlayerId_2, query, g_Player[client].userid);
 }
 
 void StatsMenu_TopPlayerId_2(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		if(results != null && results.FetchRow())
 		{
-			char auth[28];
+			char auth[AUTH_LENGTH];
 			results.FetchString(0, auth, sizeof(auth));
 			results.FetchString(1, g_Player[client].menustats_name, sizeof(g_Player[].menustats_name));
 			results.FetchString(2, g_Player[client].menustats_ip, sizeof(g_Player[].menustats_ip));
 			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
 			
 			char query[256];
-			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID` = %i", auth, g_StatsID);
-			sql.Query(StatsMenu_TopPlayerId_3, query, userid);
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `auth`='%s' and `sID` = %i", auth, g_StatsID);
+			sql.tquery(StatsMenu_TopPlayerId_3, query, userid);
 		}
 		else
 		{
@@ -1484,7 +1484,7 @@ void StatsMenu_TopPlayerId_2(Database database, DBResultSet results, const char[
 void StatsMenu_TopPlayerId_3(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		if(results != null && results.FetchRow())
 		{
@@ -1513,7 +1513,7 @@ void StatsMenu_TopPlayerAuth_1(Database database, DBResultSet results, const cha
 	delete pack;
 	
 	int client;
-	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	if(!SMStats_IsValidUserID(client, userid))
 	{
 		return;
 	}
@@ -1532,7 +1532,7 @@ void StatsMenu_TopPlayerAuth_1(Database database, DBResultSet results, const cha
 	{
 		Players++
 		
-		char SteamID[64];
+		char SteamID[AUTH_LENGTH];
 		results.FetchString(0, SteamID, sizeof(SteamID));
 		if(StrEqual(SteamID, auth, false))
 		{
@@ -1551,26 +1551,26 @@ void StatsMenu_TopPlayerAuth_1(Database database, DBResultSet results, const cha
 	strcopy(g_Player[client].menustats_auth, sizeof(g_Player[].menustats_auth), auth);
 	
 	char query[256];
-	Format(query, sizeof(query), "select `SteamID`,`PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);
-	sql.Query(StatsMenu_TopPlayerAuth_2, query, GetClientUserId(userid));
+	Format(query, sizeof(query), "select `auth`,`name`,`ip`,`Penalty` from `"...sql_table_settings..."` where `auth`='%s'", auth);
+	sql.tquery(StatsMenu_TopPlayerAuth_2, query, g_Player[client].userid);
 }
 
 void StatsMenu_TopPlayerAuth_2(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		if(results != null && results.FetchRow())
 		{
-			char auth[28];
+			char auth[AUTH_LENGTH];
 			results.FetchString(0, auth, sizeof(auth));
 			results.FetchString(1, g_Player[client].menustats_name, sizeof(g_Player[].menustats_name));
 			results.FetchString(2, g_Player[client].menustats_ip, sizeof(g_Player[].menustats_ip));
 			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
 			
 			char query[256];
-			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'", auth, g_StatsID);
-			sql.Query(StatsMenu_TopPlayerAuth_3, query, userid);
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `auth`='%s' and `sID`='%i'", auth, g_StatsID);
+			sql.tquery(StatsMenu_TopPlayerAuth_3, query, userid);
 		}
 		else
 		{
@@ -1582,7 +1582,7 @@ void StatsMenu_TopPlayerAuth_2(Database database, DBResultSet results, const cha
 void StatsMenu_TopPlayerAuth_3(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		if(results != null && results.FetchRow())
 		{
@@ -1860,7 +1860,7 @@ Action Top10Cmd(int client, int args)
 
 stock bool IsValidSteamID(const char[] steam_id)
 {
-	Regex exp = new Regex("^STEAM_[0-5]:[0-1]:[0-9]+$");
+	Regex exp = new Regex("^[U:[0-1]:[1-10]+$");
 	int matches = exp.Match(steam_id);
 	delete exp;
 	return (matches == 1);
@@ -1917,7 +1917,7 @@ bool TF2_GetPlayerSQLInfo(int client
 	
 	bool bReturn;
 	char query[2048];
-	Format(query, sizeof(query), "select `PlayerName`,`IPAddress`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);	
+	Format(query, sizeof(query), "select `name`,`ip`,`Penalty` from `"...sql_table_settings..."` where SteamID = '%s'", auth);	
 	SQL_LockDatabase(sql);
 	DBResultSet results = SQL_Query(sql, query);
 	SQL_UnlockDatabase(sql);
@@ -1994,7 +1994,7 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 					GeoipCountryName(client, g_Player[client].menustats_ip, country, sizeof(country));
 					GetLastConnectedFormat(client, g_Player[client].menustats_ip, g_Player[client].menustats_lastconnected, last_connected, sizeof(last_connected));
 					
-					//PanelItem(panel, "  %T", "#SMStats_MenuInfo_Profile", client); // need a working Steam32 (STEAM_0:0:123456 => 7655168912398123456)
+					//PanelItem(panel, "  %T", "#SMStats_MenuInfo_Profile", client); // need a working Steam3 ([U:1:123456789] => 7655168912398123456)
 					PanelText(panel, "  %T", "#SMStats_MenuInfo_PlayTime", client, play_time);
 					PanelText(panel, "  %T", "#SMStats_MenuInfo_Country", client, country);
 					PanelText(panel, "  %T", "#SMStats_MenuInfo_LastConnected", client, last_connected);
@@ -2161,14 +2161,14 @@ void TF2_GetStatisticalInformation(Panel panel, int client, int page, int[] stat
 
 void GetPlayerlistStats(DBResultSet results, int[] stats)
 {
-	stats[Stats_PlayTime] = GetFieldValue(results, "PlayTime");
-	stats[Stats_Points] = GetFieldValue(results, "Points");
-	stats[Stats_Frags] = GetFieldValue(results, "Frags");
-	stats[Stats_Assists] = GetFieldValue(results, "Assists");
-	stats[Stats_Deaths] = GetFieldValue(results, "Deaths");
-	stats[Stats_Suicides] = GetFieldValue(results, "Suicides");
-	stats[Stats_DamageDone] = GetFieldValue(results, "DamageDone");
-	stats[Stats_Achievements] = GetFieldValue(results, "Achievements");
+	stats[Stats_PlayTime] = GetFieldValue(results, "pt");
+	stats[Stats_Points] = GetFieldValue(results, "p");
+	stats[Stats_Frags] = GetFieldValue(results, "k");
+	stats[Stats_Assists] = GetFieldValue(results, "a");
+	stats[Stats_Deaths] = GetFieldValue(results, "d");
+	stats[Stats_Suicides] = GetFieldValue(results, "s");
+	stats[Stats_DamageDone] = GetFieldValue(results, "dmg");
+	stats[Stats_Achievements] = GetFieldValue(results, "ach");
 	
 	stats[Stats_Dominations] = GetFieldValue(results, "Dominations");
 	stats[Stats_Revenges] = GetFieldValue(results, "Revenges");
@@ -2259,7 +2259,7 @@ void GetPlayerlistStats(DBResultSet results, int[] stats)
 void DBQuery_CheckActiveStats_1(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		if(results != null && results.FetchRow())
 		{
@@ -2270,8 +2270,8 @@ void DBQuery_CheckActiveStats_1(Database database, DBResultSet results, const ch
 			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
 			
 			char query[256];
-			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'", auth, g_StatsID);
-			sql.Query(DBQuery_CheckActiveStats_2, query, userid);
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `auth`='%s' and `sID`='%i'", auth, g_StatsID);
+			sql.tquery(DBQuery_CheckActiveStats_2, query, userid);
 		}
 	}
 }
@@ -2279,11 +2279,11 @@ void DBQuery_CheckActiveStats_1(Database database, DBResultSet results, const ch
 void DBQuery_CheckActiveStats_2(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		if(results != null && results.FetchRow())
 		{
-			g_Player[client].menustats_lastconnected = GetFieldValue(results, "LastConnectedTime");
+			g_Player[client].menustats_lastconnected = GetFieldValue(results, "lct");
 			GetPlayerlistStats(results, g_Player[client].menustats);
 			
 			g_Player[client].active_page_mainmenu = -1;
@@ -2306,9 +2306,9 @@ void DBQuery_TopStats_1(Database database, DBResultSet results, const char[] err
 	//
 	
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
-		char[][] SteamID = new char[10][64];
+		char[][] SteamID = new char[10][AUTH_LENGTH];
 		char[][] PlayerName = new char[10][64];
 		int Points[10];
 		int Players = 0;
@@ -2360,7 +2360,7 @@ void DBQuery_TopStats_1(Database database, DBResultSet results, const char[] err
 void DBQuery_TopStats_Menu_1(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		if(results != null && results.FetchRow())
 		{
@@ -2371,8 +2371,8 @@ void DBQuery_TopStats_Menu_1(Database database, DBResultSet results, const char[
 			g_Player[client].menustats_penalty = view_as<bool>(results.FetchInt(3));
 			
 			char query[256];
-			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `SteamID`='%s' and `StatsID`='%i'", auth, g_StatsID);
-			sql.Query(DBQuery_TopStats_Menu_2, query, userid);
+			Format(query, sizeof(query), "select * from `"...sql_table_playerlist..."` where `auth`='%s' and `sID`='%i'", auth, g_StatsID);
+			sql.tquery(DBQuery_TopStats_Menu_2, query, userid);
 		}
 	}
 }
@@ -2380,11 +2380,11 @@ void DBQuery_TopStats_Menu_1(Database database, DBResultSet results, const char[
 void DBQuery_TopStats_Menu_2(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(IsValidClient((client = GetClientOfUserId(userid))))
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		if(results != null && results.FetchRow())
 		{
-			g_Player[client].menustats_lastconnected = GetFieldValue(results, "LastConnectedTime");
+			g_Player[client].menustats_lastconnected = GetFieldValue(results, "lct");
 			GetPlayerlistStats(results, g_Player[client].menustats);
 			
 			g_Player[client].active_page_mainmenu = -1;

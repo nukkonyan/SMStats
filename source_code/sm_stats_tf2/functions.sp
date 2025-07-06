@@ -12,6 +12,34 @@ char TF2_ClassTypeNameLC[][] = {
 	"civilian"		
 };
 
+char szClassSQL[][][] =
+{
+	{"",""},
+	{"c1f", "c1f"},
+	{"c2f", "c2f"},
+	{"c3f", "c3f"},
+	{"c4f", "c4f"},
+	{"c5f", "c5f"},
+	{"c6f", "c6f"},
+	{"c7f", "c7f"},
+	{"c8f", "c8f"},
+	{"c9f", "c9f"},
+	{"c10f","c10d"},
+};
+SMStats_Type stClassSQL[][] =
+{
+	{Stats_ScoutFrags,Stats_ScoutDeaths},
+	{Stats_SniperFrags,Stats_SniperDeaths},
+	{Stats_SoldierFrags,Stats_SoldierDeaths},
+	{Stats_DemoFrags,Stats_DemoDeaths},
+	{Stats_MedicFrags,Stats_MedicDeaths},
+	{Stats_HeavyFrags,Stats_HeavyDeaths},
+	{Stats_PyroFrags,Stats_PyroDeaths},
+	{Stats_SpyFrags,Stats_SpyDeaths},
+	{Stats_EngieFrags,Stats_EngieDeaths},
+	{Stats_CivilianFrags,Stats_CivilianDeaths},
+};
+
 enum TFBuilding
 {
 	TFBuilding_Invalid = -1,
@@ -759,8 +787,8 @@ stock bool AssistedKills(Transaction txn
 		for(int i = 0; i < assisters.Length; i++)
 		{
 			int assist = assisters.Get(i);
-			int assister = GetClientOfUserId(assist);
-			if(IsValidClient(assister))
+			int assister;
+			if(SMStats_IsValidUserID(assister, assist))
 			{
 				g_Player[assister].session[Stats_Assists]++;
 				
@@ -790,9 +818,9 @@ stock bool AssistedKills(Transaction txn
 				}
 				if(g_AssistPoints > 0)
 				{
-					len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`+%i", g_AssistPoints*assister_count[i]);
+					len += Format(query[len], sizeof(query)-len, ",`p`=`p`+%i", g_AssistPoints*assister_count[i]);
 				}
-				len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[assister].auth, g_StatsID);
+				len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[assister].auth, g_StatsID);
 				txn.AddQuery(query, queryId_kill_assister);
 				
 				if(g_AssistPoints > 0)
@@ -844,83 +872,37 @@ bool IsMedicAssister(int assister, const int[] list_healercount, const int[][] l
 }
 
 // will be re-done and optimized.
-stock void VictimDied(Transaction txn, const int[] list, const TFClassType[] list_class, int frags)
+stock void TargetDied(Transaction txn, const int[] list, const TFClassType[] list_class, int frags)
 {
 	for(int i = 0; i < frags; i++)
 	{
 		int victim;
-		if(IsValidClient((victim = GetClientOfUserId(list[i]))))
+		if(SMStats_IsValidUserID(victim, list[i]))
 		{
 			TFClassType class = list_class[i];
 			if(class < TFClass_Scout || class > TFClass_Engineer)
 			{
-				PrintToServer("%s VictimDied() UserId %i has an invalid class id of %i", core_chattag, list[i], class);
+				PrintToServer("%s TargetDied() UserId %i has an invalid class id of %i", core_chattag, list[i], class);
 				continue;
 			}
 			
 			int len = 0;
 			char query[1024];
-			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set `Deaths`=`Deaths`+1");
+			len += Format(query[len], sizeof(query)-len, "update `" ... sql_table_playerlist ... "` set `d`=`d`+1");
 			
 			g_Player[victim].session[Stats_Deaths]++;
-			switch(class)
-			{
-				case TFClass_Scout:
-				{
-					g_Player[victim].session[Stats_ScoutDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`ScoutDeaths`=`ScoutDeaths`+1");
-				}
-				case TFClass_Soldier:
-				{
-					g_Player[victim].session[Stats_SoldierDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`SoldierDeaths`=`SoldierDeaths`+1");
-				}
-				case TFClass_Pyro:
-				{
-					g_Player[victim].session[Stats_PyroDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`PyroDeaths`=`PyroDeaths`+1");
-				}
-				case TFClass_DemoMan:
-				{
-					g_Player[victim].session[Stats_DemoDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`DemoDeaths`=`DemoDeaths`+1");
-				}
-				case TFClass_Heavy:
-				{
-					g_Player[victim].session[Stats_HeavyDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`HeavyDeaths`=`HeavyDeaths`+1");
-				}
-				case TFClass_Engineer:
-				{
-					g_Player[victim].session[Stats_EngieDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`EngieDeaths`=`EngieDeaths`+1");
-				}
-				case TFClass_Medic:
-				{
-					g_Player[victim].session[Stats_MedicDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`MedicDeaths`=`MedicDeaths`+1");
-				}
-				case TFClass_Sniper:
-				{
-					g_Player[victim].session[Stats_SniperDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`SniperDeaths`=`SniperDeaths`+1");
-				}
-				case TFClass_Spy:
-				{
-					g_Player[victim].session[Stats_SpyDeaths]++;
-					len += Format(query[len], sizeof(query)-len, ",`SpyDeaths`=`SpyDeaths`+1");
-				}
-			}
+			g_Player[victim].session[stClassSQL[class][0]]++;
+			len += Format(query[len], sizeof(query)-len, ",`%s`=`%s`+1", szClassSQL[class][0], szClassSQL[class][0]);
 			
 			if(g_DeathPoints >= 1)
 			{
-				len += Format(query[len], sizeof(query)-len, ",`Points`=`Points`-%i", g_DeathPoints);
+				len += Format(query[len], sizeof(query)-len, ",`p`=`p`-%i", g_DeathPoints);
 				
 				g_Player[victim].session[Stats_Points] -= g_DeathPoints;
 				g_Player[victim].points -= g_DeathPoints;
 			}
 			
-			len += Format(query[len], sizeof(query)-len, " where `SteamID`='%s' and `StatsID`='%i'", g_Player[victim].auth, g_StatsID);
+			len += Format(query[len], sizeof(query)-len, " where `auth`='%s' and `sID`='%i'", g_Player[victim].auth, g_StatsID);
 			txn.AddQuery(query, queryId_kill_victim_death);
 			
 			if(g_DeathPoints >= 1 && g_Player[victim].bShowDeathMsg)
@@ -1088,7 +1070,7 @@ stock ArrayList GetHealers(int client)
 	int player;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(IsValidClient(player, !bAllowBots ? true : false))
+		if(SMStats_IsValidClient(player, {1,2,0,0,0}))
 		{
 			int medigun = GetPlayerWeaponSlot(player, 1);
 			if(IsValidEdict(medigun))

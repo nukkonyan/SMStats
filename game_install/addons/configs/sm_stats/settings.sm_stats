@@ -1,11 +1,11 @@
 create table if not exists `settings`
 (
-	`PlayerName` varchar(64) not null default 'ERR_NAME_NOT_FOUND',
-	`SteamID` varchar(28) not null default '',
-	`IPAddress` varchar(16) not null default '',
-	`LastConnectedGame` varchar(16) not null default 'invalid_game',
-	`LastConnectedStatsID` int(4) not null default '0',
-	`LastConnectedTime` int not null default '0',
+	`name` varchar(64) not null default 'ERR_NAME_NOT_FOUND',
+	`auth` varchar(18) not null default '',
+	`ip` varchar(16) not null default '',
+	`lcg` varchar(16) not null default 'invalid_game',
+	`lcsID` int(4) not null default '0',
+	`lct` int not null default '0',
 	`LastPenaltyTime` int not null default '0',
 	`PenaltyTime` int(6) not null default '-1',
 	`Penalty` bool not null default '0',
@@ -15,5 +15,5 @@ create table if not exists `settings`
 	`ShowFragMsg` bool not null default '1',
 	`ShowAssistMsg` bool not null default '1',
 	`ShowDeathMsg` bool not null default '1',
-	primary key (`SteamID`)
+	primary key (`auth`)
 )

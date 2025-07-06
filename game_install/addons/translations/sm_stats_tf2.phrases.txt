@@ -287,9 +287,9 @@
 		// {3} lvl 3 sentry frags
 		// {4} total sentry frags
 		"#format" "{1:i},{2:i},{3:i},{4:i},{5:i}"
-		"en" "Sentry Gun Frags \nTotal : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  Mini : {5}"
-		"jp" "セントリーガンFRAG \n合計 : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  ミニ : {5}"
-		"sv" "Vaktgevärs Frags \nTotal : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  Mini : {5}"
+		"en" "Sentry Gun Frags \n  Total : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  Mini : {5}"
+		"jp" "セントリーガンFRAG \n  合計 : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  ミニ : {5}"
+		"sv" "Vaktgevärs Frags \n  Total : {1}\n  LVL1 : {2}\n  LVL2 : {3}\n  LVL3 : {4}\n  Mini : {5}"
 	}
 
 	"#SMStats_MenuInfo_CP_Captured"

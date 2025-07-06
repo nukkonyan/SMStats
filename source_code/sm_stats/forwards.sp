@@ -34,31 +34,33 @@ public void OnClientConnected(int client)
 	
 	if(!sql)
 	{
-		PrintToServer("%s OnClientConnected error: No database connection.", core_chattag);
+		PrintToServer(core_chattag ..." OnClientConnected error: No database connection.");
 		return;
 	}
 	
-	if(!IsValidClient(client))
+	if(!SMStats_IsValidConnected(client))
 	{
+		PrintToServer(core_chattag ... " OnClientConnected error: Invalid index %i", client);
 		return;
 	}
 	
 	int userid = (g_Player[client].userid = GetClientUserId(client));
+	g_Player[client].iTeam = IsClientInGame(client) ? GetClientTeam(client) : 0;
 	
-	if(!GetClientAuthId(client, AuthId_Steam2, g_Player[client].auth, sizeof(g_Player[].auth), false))
+	if(!GetClientAuthId(client, AuthId_Steam3, g_Player[client].auth, sizeof(g_Player[].auth), false))
 	{
-		LogMessage("OnClientConnected error: Failed to authenticate steamid of user index %i (userid %i)", client, userid);
+		LogMessage("OnClientConnected error: Failed to authenticate steamid3 of user index %i (userid %i)", client, userid);
 		return;
 	}
-	if(!GetClientAuthId(client, AuthId_SteamID64, g_Player[client].profileid, sizeof(g_Player[].profileid), false))
-	{
-		LogMessage("OnClientConnected error: Failed to authenticate profileid of user index %i (userid %i)", client, userid);
-		return;
-	}
-	
 	if(strlen(g_Player[client].auth) < 1)
 	{
 		LogMessage("OnClientConnected error: Obtained an empty steamid from user index (userid %i)", client, userid);
+		return;
+	}
+	
+	if(!GetClientAuthId(client, AuthId_SteamID64, g_Player[client].profileid, sizeof(g_Player[].profileid), false))
+	{
+		LogMessage("OnClientConnected error: Failed to authenticate profileid of user index %i (userid %i)", client, userid);
 		return;
 	}
 	if(strlen(g_Player[client].profileid) < 1)
@@ -78,13 +80,13 @@ public void OnClientConnected(int client)
 	Transaction txn = new Transaction();
 	char query[255];
 	
-	Format(query, sizeof(query), "select * from `%s` where SteamID = '%s'", sql.settings, g_Player[client].auth);
+	Format(query, sizeof(query), "select * from `%s` where `auth`='%s'", sql.settings, g_Player[client].auth);
 	txn.AddQuery(query, 1);
 	
-	Format(query, sizeof(query), "select StatsID from `%s` where SteamID = '%s' and StatsID = %i", sql.playerlist, g_Player[client].auth, g_StatsID);
+	Format(query, sizeof(query), "select `sID` from `%s` where `auth`='%s' and `sID`='%i'", sql.playerlist, g_Player[client].auth, g_StatsID);
 	txn.AddQuery(query, 2);
 	
-	Format(query, sizeof(query), "select StatsID from `%s` where SteamID = '%s' and StatsID = %i", sql.weapons, g_Player[client].auth, g_StatsID);
+	Format(query, sizeof(query), "select `sID` from `%s` where `auth`='%s' and `sID`='%i'", sql.weapons, g_Player[client].auth, g_StatsID);
 	txn.AddQuery(query, 3);
 	
 	sql.setsuzoku.Execute(txn, CheckUserSQL_Success, CheckUserSQL_Failed, g_Player[client].userid);
@@ -98,12 +100,12 @@ public void OnClientPutInServer(int client)
 	
 	SDKHook(client, SDKHook_OnTakeDamage, OnPlayerTakeDamage);
 	
-	CreateTimer(60.0, Timer_TimePlayed, GetClientUserId(client), TIMER_REPEAT);
+	CreateTimer(60.0, Timer_TimePlayed, g_Player[client].userid, TIMER_REPEAT);
 }
 
 public void OnClientPostAdminCheck(int client)
 {
-	if(IsValidClient(client))
+	if(SMStats_IsValidClient(client))
 	{
 		Send_Player_Connected_CheckTop10(client);
 	}
@@ -114,14 +116,14 @@ public void OnClientSettingsChanged(int client)
 	if(bLoaded)
 	{
 		// too early to gather info, delay has to be added..
-		CreateTimer(0.2, Timer_OnPlayerUpdated, GetClientUserId(client));
+		CreateTimer(0.2, Timer_OnPlayerUpdated, g_Player[client].userid);
 	}
 }
 
 Action Timer_OnPlayerUpdated(Handle timer, int userid)
 {
-	int client = 0;
-	if(IsValidClient((client = GetClientOfUserId(userid)), false))
+	int client;
+	if(SMStats_IsValidUserID(client, userid))
 	{
 		UpdatePlayerInfo(client);
 		
@@ -135,11 +137,11 @@ Action Timer_OnPlayerUpdated(Handle timer, int userid)
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name2), name);
 		}
 		// duplicate runs of same event.
-		else if(!StrEqual(name, g_Player[client].name2))
+		else if(strcmp(name, g_Player[client].name2) == -1)
 		{
 			strcopy(g_Player[client].name2, sizeof(g_Player[].name), name);
 			
-			CallbackQuery("update `%s` set `PlayerName`='%s' where `SteamID`='%s'"
+			CallbackQuery("update `%s` set `name`='%s' where `auth`='%s'"
 			, query_error_uniqueid_OnPlayerNameUpdate
 			, sql.settings, name, g_Player[client].auth);
 		}
@@ -152,8 +154,8 @@ ArrayList g_penaltySQLCheck;
 
 void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[] results, int[] queryData)
 {
-	int client = GetClientOfUserId(userid);
-	if(!IsValidClient(client))
+	int client;
+	if(!IsValidConnectedUserID(client, userid))
 	{
 		PrintToServer("%s CheckUser_SQL error: Attempted reading invalid userid %i (Disconnected during query?)", core_chattag, userid);
 		return;
@@ -187,10 +189,10 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 						/*4*/...",ShowFragMsg"
 						/*5*/...",ShowAssistMsg"
 						/*6*/...",ShowDeathMsg"
-						..." from `%s` where `SteamID`='%s'", sql.settings, g_Player[client].auth);
+						..." from `%s` where `auth`='%s'", sql.settings, g_Player[client].auth);
 						txn.AddQuery(query, 1);
 						
-						Format(query, sizeof(query), "update `%s` set `PlayerName`='%s' where `SteamID`='%s'"
+						Format(query, sizeof(query), "update `%s` set `name`='%s' where `auth`='%s'"
 						, sql.settings, g_Player[client].name2, g_Player[client].auth);
 						txn.AddQuery(query, 2);
 					}
@@ -199,7 +201,7 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 						// table not found, insert it.
 						char query[1024];
 						Format(query, sizeof(query), "insert into `%s`"
-						... " (`PlayerName`,`SteamID`,`IPAddress`,`LastConnectedGame`,`LastConnectedStatsID`,`LastConnectedTime`) values"
+						... " (`name`,`auth`,`ip`,`lcgame`,`lcsID`,`lct`) values"
 						... " ('%s', '%s', '%s', '%s', '%i', '%i')"
 						, sql.settings, g_Player[client].name2, g_Player[client].auth, g_Player[client].ip, GameType, g_StatsID, timestamp);
 						txn.AddQuery(query, 3);
@@ -221,7 +223,7 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				{
 					// found table, update it.
 					char query[256];
-					Format(query, sizeof(query), "update `%s` set `LastConnectedName`='%s',`LastConnectedTime`='%i' where `SteamID`='%s' and `StatsID`='%i'"
+					Format(query, sizeof(query), "update `%s` set `lcn`='%s',`lct`='%i' where `auth`='%s' and `sID`='%i'"
 					, sql.playerlist, g_Player[client].name2, timestamp, g_Player[client].auth, g_StatsID);
 					txn.AddQuery(query, 4);
 				}
@@ -229,7 +231,7 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				{
 					// table not found, insert it.
 					char query[256];
-					Format(query, sizeof(query), "insert into `%s` (`LastConnectedName`,`LastConnectedTime`,`SteamID`,`StatsID`) values ('%s','%i','%s','%i')"
+					Format(query, sizeof(query), "insert into `%s` (`lcn`,`lct`,`auth`,`sID`) values ('%s','%i','%s','%i')"
 					, sql.playerlist, g_Player[client].name2, timestamp, g_Player[client].auth, g_StatsID);
 					txn.AddQuery(query, 5);
 				}
@@ -252,7 +254,7 @@ void CheckUserSQL_Success(Database db, int userid, int numQueries, DBResultSet[]
 				{
 					// table not found, insert it.
 					char query[256];
-					Format(query, sizeof(query), "insert into `%s` (`SteamID`,`StatsID`) values ('%s','%i')"
+					Format(query, sizeof(query), "insert into `%s` (`auth`,`sID`) values ('%s','%i')"
 					, sql.weapons, g_Player[client].auth, g_StatsID);
 					txn.AddQuery(query, 7);
 				}
@@ -271,7 +273,7 @@ void CheckUserSQL_Failed(Database db, int userid, int numQueries, const char[] e
 void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResultSet[] results, int[] queryData)
 {
 	int client;
-	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	if(!IsValidConnectedUserID(client, userid))
 	{
 		PrintToServer("%s CheckUserSQL_Query error: Attempted reading invalid userid %i (Disconnected during query?)", core_chattag, userid);
 		return;
@@ -335,7 +337,7 @@ void CheckUserSQL_Query_Success(Database db, int userid, int numQueries, DBResul
 				g_TotalTablePlayers = GetTablePlayerCount();
 				
 				char query[256];
-				Format(query, sizeof(query), "select `Points` from `%s` where `SteamID`='%s' and `StatsID`='%i'"
+				Format(query, sizeof(query), "select `p` from `%s` where `auth`='%s' and `sID`='%i'"
 				, sql.playerlist, g_Player[client].auth, g_StatsID);
 				sql.setsuzoku.Query(DBQuery_CheckUserSQL_Points, query, client);
 			}
@@ -399,8 +401,6 @@ void OnPlayerConnected(Event event, const char[] event_name, bool dontBroadcast)
 
 public void OnClientDisconnect_Post(int client)
 {
-	SMStatsInfo.ResetPlayerStats(client);
-	
 	if(!IsValidStats())
 	{
 		return;
@@ -411,6 +411,8 @@ public void OnClientDisconnect_Post(int client)
 		UpdateDamageDone(g_Player[client]);
 	}
 	
+	
+	SMStatsInfo.ResetPlayerInfo(client);
 	g_Player[client].Reset();
 	
 	CheckActivePlayers();
@@ -422,35 +424,32 @@ void OnPlayerDisconnected(Event event, const char[] event_name, bool dontBroadca
 {
 	if(bLoaded)
 	{
-		int client, userid = event.GetInt("userid");
-		if(userid > 0)
+		int client;
+		if(SMStats_IsValidUserID(client, event.GetInt("userid")))
 		{
-			if(IsValidClient((client = GetClientOfUserId(userid))))
-			{
-				//event.BroadcastDisabled = true; // this has no effect as well, likely a bug.
-				SetEventBroadcast(event, true);
-				
-				char event_reason[256], auth[28], name[64];
-				event.GetString("reason", event_reason, sizeof(event_reason));
-				GetClientAuthId(client, AuthId_Steam2, auth, sizeof(auth));
-				strcopy(name, sizeof(name), g_Player[client].name2);
-				int timestamp = GetTime();
-				
-				char query[255];
-				Format(query, sizeof(query), "select PlayTime from `%s` where `SteamID`='%s' and `StatsID`='%i'"
-				, sql.playerlist, auth, g_StatsID);
-				DataPack pack = new DataPack();
-				pack.WriteCell(strlen(name)+1);
-				pack.WriteString(name);
-				pack.WriteCell(strlen(auth)+1);
-				pack.WriteString(auth);
-				pack.WriteCell(timestamp);
-				pack.WriteCell(g_Player[client].session[Stats_PlayTime]);
-				pack.Reset();
-				sql.setsuzoku.Query(DBQuery_OnPlayerDisconnected, query, pack);
-				
-				Send_Player_Disconnected(client, event_reason);
-			}
+			//event.BroadcastDisabled = true; // this has no effect as well, likely a bug.
+			SetEventBroadcast(event, true);
+			
+			char event_reason[256], auth[28], name[64];
+			event.GetString("reason", event_reason, sizeof(event_reason));
+			GetClientAuthId(client, AuthId_Steam3, auth, sizeof(auth));
+			strcopy(name, sizeof(name), g_Player[client].name2);
+			int timestamp = GetTime();
+			
+			char query[255];
+			Format(query, sizeof(query), "select `pt` from `%s` where `auth`='%s' and `sID`='%i'"
+			, sql.playerlist, auth, g_StatsID);
+			DataPack pack = new DataPack();
+			pack.WriteCell(strlen(name)+1);
+			pack.WriteString(name);
+			pack.WriteCell(strlen(auth)+1);
+			pack.WriteString(auth);
+			pack.WriteCell(timestamp);
+			pack.WriteCell(g_Player[client].session[Stats_PlayTime]);
+			pack.Reset();
+			sql.setsuzoku.Query(DBQuery_OnPlayerDisconnected, query, pack);
+			
+			Send_Player_Disconnected(client, event_reason);
 		}
 	}
 }
@@ -483,14 +482,18 @@ void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const 
 		
 		char query[512];
 		Format(query, sizeof(query), "update `%s` set"
-		..." LastConnectedGame = '%s'"
-		...",LastConnectedStatsID = '%i'"
-		...",LastConnectedTime = '%i'"
-		..." where SteamID = '%s'"
+		..." `lcgame`='%s'"
+		...",`lcsID`='%i'"
+		...",`lct`='%i'"
+		..." where `auth`='%s'"
 		, sql.settings, GameType, g_StatsID, timestamp, auth);
 		txn.AddQuery(query, query_error_uniqueid_OnPlayerDisconnectUpdateLastConnected);
 		
-		Format(query, sizeof(query), "update `%s` set LastConnectedName = '%s', LastConnectedTime = %i, PlayTime = PlayTime+%i where SteamID = '%s' and StatsID = '%s'"
+		Format(query, sizeof(query), "update `%s` set "
+		... " `lcn`= '%s'"
+		... ",`lct`='%i'"
+		... ",`pt`=`pt`+%i"
+		... " where `auth`='%s' and `sID`='%s'"
 		, sql.playerlist, name, timestamp, calculate, auth, g_StatsID);
 		txn.AddQuery(query, query_error_uniqueid_OnPlayerDisconnectUpdatePlayTime);
 		
@@ -502,24 +505,22 @@ void DBQuery_OnPlayerDisconnected(Database database, DBResultSet results, const 
 
 Action OnPlayerTakeDamage(int victim, int &client, int &inflictor, float &damage, int &damagetype)
 {
-	if(IsValidClient(victim) && IsValidClient(client, true))
+	if(SMStats_IsValidClient(victim, {1,2,0,0,0}, 1, client)
+	&& SMStats_IsValidClient(client, {1,1,0,0,0}, 1, victim))
 	{
-		if(GetClientTeam(victim) != GetClientTeam(client) && client != victim)
-		{
-			//Turn the float into a valid integer.
-			char getdmg[96];
-			FloatToString(damage, getdmg, sizeof(getdmg));
-			SplitString(getdmg, ".", getdmg, sizeof(getdmg));
-			int dmg = StringToInt(getdmg);
-			
-			//PrintToChatAll("[%N] Damage done: %i", client, dmg);
-			
-			#if defined assister_func
-			g_PlayerDamaged[victim][client] += dmg;
-			#endif
-			
-			g_Player[client].session[Stats_DamageDone] += dmg;
-		}
+		//Turn the float into a valid integer.
+		char getdmg[96];
+		FloatToString(damage, getdmg, sizeof(getdmg));
+		SplitString(getdmg, ".", getdmg, sizeof(getdmg));
+		int dmg = StringToInt(getdmg);
+		
+		//PrintToChatAll("[%N] Damage done: %i", client, dmg);
+		
+		#if defined assister_func
+		g_PlayerDamaged[victim][client] += dmg;
+		#endif
+		
+		g_Player[client].session[Stats_DamageDone] += dmg;
 	}
 	
 	return Plugin_Continue;
@@ -529,35 +530,32 @@ Action OnPlayerTakeDamage(int victim, int &client, int &inflictor, float &damage
 
 Action Timer_TimePlayed(Handle timer, int userid)
 {
-	int client = 0;
-	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	int client;
+	if(SMStats_IsValidUserID(client, userid))
 	{
-		KillTimer(timer);
-		return Plugin_Handled;
-	}
-	
-	if(sql.setsuzoku != null)
-	{
-		char query[256];
-		Format(query, sizeof(query), "select `PlayTime` from `%s` where `SteamID`='%s' and `StatsID`='%i'"
-		, sql.playerlist, g_Player[client].auth, g_StatsID);
-		sql.setsuzoku.Query(DBQuery_TimePlayed, query, userid);
-		
-		#if defined load_menus
-		if(g_Player[client].active_page_session == 1)
+		if(sql.setsuzoku != null)
 		{
-			StatsMenu.Session(client, 1);
+			char query[256];
+			Format(query, sizeof(query), "select `pt` from `%s` where `auth`='%s' and `sID`='%i'"
+			, sql.playerlist, g_Player[client].auth, g_StatsID);
+			sql.setsuzoku.Query(DBQuery_TimePlayed, query, userid);
+			
+			#if defined load_menus
+			if(g_Player[client].active_page_session == 1)
+			{
+				StatsMenu.Session(client, 1);
+			}
+			#endif
 		}
-		#endif
 	}
 	
-	return Plugin_Continue;
+	return Plugin_Handled;
 }
 
 void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] error, int userid)
 {
 	int client;
-	if(!IsValidClient((client = GetClientOfUserId(userid))))
+	if(!SMStats_IsValidUserID(client, userid))
 	{
 		PrintToServer("%s Attempted to check playtime of userid %i that isn't valid!", core_chattag, userid);
 		return;
@@ -574,7 +572,7 @@ void DBQuery_TimePlayed(Database database, DBResultSet results, const char[] err
 		int PlayTime = results.FetchInt(0);
 		int session = g_Player[client].session[Stats_PlayTime];
 		int calculate = session - PlayTime;
-		CallbackQuery("update `%s` set `PlayTime`=`PlayTime`+%i where `SteamID`='%s' and `StatsID`='%i'"
+		CallbackQuery("update `%s` set `pt`=`pt`+%i where `auth`='%s' and `sID`='%i'"
 		, query_error_uniqueid_UpdatePlayTime
 		, sql.playerlist
 		, calculate
@@ -651,7 +649,7 @@ void SQLUpdateMapTimer()
 	if(sql.setsuzoku != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select `PlayTime` from `%s` where `MapName`='%s' and `StatsID`='%i'", sql.maps_log, cMap, g_StatsID);
+		Format(query, sizeof(query), "select `pt` from `%s` where `name`='%s' and `sID`='%i'", sql.maps_log, cMap, g_StatsID);
 		sql.setsuzoku.Query(DBQuery_MapTimer, query, GetTime());
 	}
 }
@@ -663,7 +661,7 @@ void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, int 
 		// not found
 		case false:
 		{
-			CallbackQuery("insert into `%s` (PlayTime,LastPlayedTime,StatsID,MapName) values ('%i','%i','%i','%s')"
+			CallbackQuery("insert into `%s` (`pt`,`lpt`,`sID`,`name`) values ('%i','%i','%i','%s')"
 			, query_error_uniqueid_UpdateMapTimeInserting
 			, sql.maps_log, iMapTimerSeconds, LastPlayedTime, g_StatsID, cMap);
 		}
@@ -676,7 +674,7 @@ void DBQuery_MapTimer(Database db, DBResultSet results, const char[] error, int 
 				int session = iMapTimerSeconds;
 				int calculate = session - PlayTime;
 				
-				CallbackQuery("update `%s` set `PlayTime`=`PlayTime`+'%i',`LastPlayedTime`='%i' where `StatsID`='%i' and `MapName`='%s'"
+				CallbackQuery("update `%s` set `pt`=`pt`+'%i',`lpt`='%i' where `sID`='%i' and `name`='%s'"
 				, query_error_uniqueid_UpdateMapTimeUpdating
 				, sql.maps_log, calculate, LastPlayedTime, g_StatsID, cMap);
 			}
@@ -689,7 +687,7 @@ void UpdateMapTimerSeconds(const char[] map, int seconds)
 	if(sql.setsuzoku != null)
 	{
 		char query[255];
-		Format(query, sizeof(query), "select `PlayTime` from `%s` where `MapName`='%s' and `StatsID`='%i'", sql.maps_log, map, g_StatsID);
+		Format(query, sizeof(query), "select `pt` from `%s` where `name`='%s' and `sID`='%i'", sql.maps_log, map, g_StatsID);
 		DataPack pack = new DataPack();
 		pack.WriteCell(strlen(map)+1);
 		pack.WriteString(map);
@@ -715,7 +713,7 @@ void DBQuery_UpdateMapTimerSeconds(Database db, DBResultSet results, const char[
 		int session = seconds;
 		int calculate = session - PlayTime;
 		
-		CallbackQuery("update `%s` set `PlayTime`=`PlayTime`+%i,`LastPlayedTime` = %i where `StatsID`='%i' and `MapName`='%s'"
+		CallbackQuery("update `%s` set `pt`=`pt`+'%i',`lpt`='%i' where `sID`='%i' and `name`='%s'"
 		, query_error_uniqueid_UpdateMapTimeUpdatingSeconds
 		, sql.maps_log, calculate, lastplayed, g_StatsID, map);
 	}

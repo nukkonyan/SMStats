@@ -34,7 +34,7 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 	//
 	
 	char query[256], error[256];
-	Format(query, sizeof(query), "select `PlayerName` from settings where SteamID = '%s'", auth);
+	Format(query, sizeof(query), "select `PlayerName` from settings where `auth`='%s'", auth);
 	sql.lock();
 	DBResultSet results;
 	if(!(results = sql.query(query)))
@@ -81,10 +81,10 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 	{
 		case false:
 		{
-			Format(query, sizeof(query), "delete from playerlist_* where SteamID = '%s'", auth);
+			Format(query, sizeof(query), "delete from playerlist_* where `auth`='%s'", auth);
 			txn.AddQuery(query, 1);
 			
-			Format(query, sizeof(query), "select from weapon_* where SteamID = '%s'", auth);
+			Format(query, sizeof(query), "select from weapon_* where `auth`='%s'", auth);
 			txn.AddQuery(query, 2);
 			
 			//Format(query, sizeof(query), "delete from kill_log_* where SteamID = '%s'", auth);
@@ -99,10 +99,10 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 		
 		case true:
 		{
-			Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.playerlist, auth);
+			Format(query, sizeof(query), "delete from `%s` where `auth`='%s'", sql.playerlist, auth);
 			txn.AddQuery(query, 1);
 			
-			Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.weapons, auth);
+			Format(query, sizeof(query), "delete from `%s` where `auth`='%s'", sql.weapons, auth);
 			txn.AddQuery(query, 2);
 			
 			//Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.kill_log, auth);
@@ -116,7 +116,7 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 		}
 	}
 	
-	Format(query, sizeof(query), "delete from settings where SteamID = '%s'", auth);
+	Format(query, sizeof(query), "delete from settings where `auth`='%s'", auth);
 	txn.AddQuery(query, 6);
 	
 	sql.setsuzoku.Execute(txn);
@@ -126,7 +126,7 @@ stock any Native_BanPlayer_Auth(Handle plugin, int params)
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(IsValidClient(player))
+		if(SMStats_IsValidClient(player))
 		{
 			CPrintToChat(player, "%s %T", g_ChatTag, "#SMStats_Player_Detected_Banned", player, PlayerName, auth);
 		}
@@ -165,12 +165,12 @@ stock any Native_BanPlayer_IPAddress(Handle plugin, int params)
 	{
 		case false:
 		{
-			Format(query, sizeof(query), "select PlayerName, SteamID from playerlist_* where IPAddress = '%s'", ip);
+			Format(query, sizeof(query), "select `PlayerName`,`auth` from playerlist_* where IPAddress = '%s'", ip);
 			results = sql.query(query);
 		}
 		case true:
 		{
-			Format(query, sizeof(query), "select PlayerName, SteamID from `%s` where IPAddress = '%s'", sql.playerlist, ip);
+			Format(query, sizeof(query), "select `PlayerName`,`auth` from `%s` where IPAddress = '%s'", sql.playerlist, ip);
 			results = sql.query(query);
 		}
 	}
@@ -218,10 +218,10 @@ stock any Native_BanPlayer_IPAddress(Handle plugin, int params)
 		{
 			case false:
 			{
-				Format(query, sizeof(query), "delete from playerlist_* where SteamID = '%s'", thing.auth);
+				Format(query, sizeof(query), "delete from playerlist_* where `auth`='%s'", thing.auth);
 				txn.AddQuery(query, 1);
 				
-				Format(query, sizeof(query), "delete from weapon_* where SteamID = '%s'", thing.auth);
+				Format(query, sizeof(query), "delete from weapon_* where `auth`='%s'", thing.auth);
 				txn.AddQuery(query, 2);
 				
 				//Format(query, sizeof(query), "delete from kill_log_* where SteamID = '%s'", thing.auth);
@@ -236,10 +236,10 @@ stock any Native_BanPlayer_IPAddress(Handle plugin, int params)
 			
 			case true:
 			{
-				Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.playerlist, thing.auth);
+				Format(query, sizeof(query), "delete from `%s` where `auth`='%s'", sql.playerlist, thing.auth);
 				txn.AddQuery(query, 1);
 				
-				Format(query, sizeof(query), "delete from `%s` where SteamID = '%s'", sql.weapons, thing.auth);
+				Format(query, sizeof(query), "delete from `%s` where `SteamID`='%s'", sql.weapons, thing.auth);
 				txn.AddQuery(query, 2);
 				
 				//Format(query, sizeof(query), "delete from `"...sql_table_kill_log..."` where SteamID = '%s'", thing.auth);
@@ -265,7 +265,7 @@ stock any Native_BanPlayer_IPAddress(Handle plugin, int params)
 	int player = 0;
 	while((player = FindEntityByClassname(player, "player")) != -1)
 	{
-		if(IsValidClient(player))
+		if(SMStats_IsValidClient(player))
 		{
 			for(int i = 0; i < count; i++)
 			{

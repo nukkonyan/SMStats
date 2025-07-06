@@ -81,17 +81,13 @@
 	}
 	"#SMStats_TimeFormatShort_Minute"
 	{
-		"en" "min"
+		"en" "m"
 		"jp" "分"
-		"tr" "dk"
 	}
 	"#SMStats_TimeFormatShort_Second"
 	{
-		"en" "sec"
+		"en" "s"
 		"jp" "秒"
-		"no" "sek"
-		"sv" "sek"
-		"tr" "sn"
 	}
 	"#SMStats_TimeFormat_AM_PM"
 	{
@@ -110,11 +106,11 @@
 		// {5} minutes
 		// {6} seconds
 		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s},{6:s}"
-		"en" "{1}, {2}, {3}, {4}, {5} and {6}"
+		"en" "{1}, {2} {3} {4} {5} {6}"
 		"jp" "{1}{2}{3}{4}{5}{6}"
-		"no" "{1}, {2}, {3}, {4}, {5} og {6}"
-		"sv" "{1}, {2}, {3}, {4}, {5} och {6}"
-		"tr" "{1}, {2}, {3}, {4}, {5} ve {6}"
+		"no" "{1} {2} {3} {4} {5} {6}"
+		"sv" "{1} {2} {3} {4} {5} {6}"
+		"tr" "{1} {2} {3} {4} {5} {6}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario1"
 	{
@@ -124,12 +120,12 @@
 		// {4} minutes
 		// {5} seconds
 		"#format" "{1:s},{2:s},{3:s},{4:s},{5:s}"
-		"dk" "{1}, {2}, {3}, {4} og {5}"
-		"en" "{1}, {2}, {3}, {4} and {5}"
+		"dk" "{1} {2} {3} {4} {5}"
+		"en" "{1} {2} {3} {4} {5}"
 		"jp" "{1}{2}{3}{4}{5}"
-		"no" "{1}, {2}, {3}, {4} og {5}"
-		"sv" "{1}, {2}, {3}, {4} och {5}"
-		"tr" "{1}, {2}, {3}, {4} ve {5}"
+		"no" "{1} {2} {3} {4} {5}"
+		"sv" "{1} {2} {3} {4} {5}"
+		"tr" "{1} {2} {3} {4} {5}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario2"
 	{
@@ -138,12 +134,12 @@
 		// {3} minutes
 		// {4} seconds
 		"#format" "{1:s},{2:s},{3:s},{4:s}"
-		"dk" "{1}, {2}, {3} og {4}"
-		"en" "{1}, {2}, {3} and {4}"
+		"dk" "{1} {2}, {3} {4}"
+		"en" "{1} {2}, {3} {4}"
 		"jp" "{1}{2}{3}{4}"
-		"no" "{1}, {2}, {3} og {4}"
-		"sv" "{1}, {2}, {3} och {4}"
-		"tr" "{1}, {2}, {3} ve {4}"
+		"no" "{1} {2}, {3} {4}"
+		"sv" "{1} {2}, {3} {4}"
+		"tr" "{1} {2}, {3} {4}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario3"
 	{
@@ -151,24 +147,24 @@
 		// {2} minutes
 		// {3} seconds
 		"#format" "{1:s},{2:s},{3:s}"
-		"dk" "{1}, {2} og {3}"
-		"en" "{1}, {2} and {3}"
+		"dk" "{1} {2} {3}"
+		"en" "{1} {2} {3}"
 		"jp" "{1}{2}{3}"
-		"no" "{1}, {2} og {3}"
-		"sv" "{1}, {2} och {3}"
-		"tr" "{1}, {2} ve {3}"
+		"no" "{1} {2} {3}"
+		"sv" "{1} {2} {3}"
+		"tr" "{1} {2} {3}"
 	}
 	"#SMStats_PlayTimeFormat_Scenario4"
 	{
 		// {1} minutes
 		// {2} seconds
 		"#format" "{1:s},{2:s}"
-		"dk" "{1} og {2}"
-		"en" "{1} and {2}"
+		"dk" "{1} {2}"
+		"en" "{1} {2}"
 		"jp" "{1}{2}"
-		"no" "{1} og {2}"
-		"sv" "{1} och {2}"
-		"tr" "{1} ve {2}"
+		"no" "{1} {2}"
+		"sv" "{1} {2}"
+		"tr" "{1} {2}"
 	}
 	//"#SMStats_PlayTimeFormat_Scenario5" // seconds
 	"#SMStats_TimeFormat_LastConnected"
@@ -197,16 +193,16 @@
 	//================================//
 	"#SMStats_StatsCmd_Usage"
 	{
-		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid>  {grey}Example below:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
-		"sv" "{grey}Använding: {lightgreen}sm_stats <topp spelarplacering | steamid>  {grey}Exempel nedan:\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
-		"jp" "{grey}使用: {lightgreen}sm_stats <トッププレイヤー | steamid>  {grey}例の下：\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
-		"tr" "{grey}Kullanım: {lightgreen}sm_stats <Oyuncu sıralaması | steamid>  {grey}Örnek:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"en" "{grey}Usage: {lightgreen}sm_stats <top player position | steamid3>  {grey}Example below:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"sv" "{grey}Använding: {lightgreen}sm_stats <topp spelarplacering | steamid3>  {grey}Exempel nedan:\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"jp" "{grey}使用: {lightgreen}sm_stats <トッププレイヤー | steamid3>  {grey}例の下：\n{grey}sm_stats {lightgreen}\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
+		"tr" "{grey}Kullanım: {lightgreen}sm_stats <Oyuncu sıralaması | steamid3>  {grey}Örnek:\n{grey}sm_stats {lightgreen}1\n{grey}sm_stats {lightgreen}\"STEAM_0:0:694201337\""
 	}
 	"#SMStats_StatsCmd_Error"
 	{
-		"en" "{yellow}Error: {default}You must enter a valid top player position or steamid."
-		"sv" "{yellow}Fel: {default}Du måste ange ett giltigt spelarplacering eller steamid."
-		"tr" "{yellow}Hata: {default}Geçerli bir sıralama veya steamid girmelisiniz."
+		"en" "{yellow}Error: {default}You must enter a valid top player position or steamid3."
+		"sv" "{yellow}Fel: {default}Du måste ange ett giltigt spelarplacering eller steamid3."
+		"tr" "{yellow}Hata: {default}Geçerli bir sıralama veya steamid3 girmelisiniz."
 	}
 	"#SMStats_StatsCmd_NULL"
 	{
@@ -226,9 +222,9 @@
 	{
 		// {1} steamid
 		"#format" "{1:s}"
-		"en" "{yellow}Error: {default}The steamid {lightgreen}{1} {default}you entered is invalid. The steamid must be something like {lightgreen}STEAM_0:0:12345{default}."
-		"sv" "{yellow}Fel: {default}steamidn {lightgreen}{1} {default}är ej giltigt. steamidn bör se ut någonting likt som {lightgreen}STEAM_0:0:12345{default}."
-		"tr" "{yellow}Hata: {default}Girdiğiniz steamid {lightgreen}{1} {default}geçersizdir. Steamid, {lightgreen}STEAM_0:0:12345{default} gibi bir şey olmalıdır."
+		"en" "{yellow}Error: {default}The SteamID3 {lightgreen}{1} {default}you entered is invalid. The SteamID3 must be something like {lightgreen}[U:1:69420]{default}."
+		"sv" "{yellow}Fel: {default}SteamID3'n {lightgreen}{1} {default}är ej giltigt. SteamID3'n bör se ut någonting likt som {lightgreen}[U:1:69420]{default}."
+		"tr" "{yellow}Hata: {default}Girdiğiniz steamid {lightgreen}{1} {default}geçersizdir. SteamID3, {lightgreen}[U:1:69420]{default} gibi bir şey olmalıdır."
 	}
 
 	//================================//
@@ -297,7 +293,7 @@
 		// {2} steamid
 		"#format" "{1:s},{2:s}"
 		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got banned and were removed from SMStats completely."
-		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}blev bannad och borttagen från SMStats helt hållet."
+		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}blev bannad och borttagen från SMStats helt i hållet."
 		"tr" "{grey}{1} {lightgreen}[{2}] {darkred}yasaklandı ve SMStats'tan tamamen kaldırıldı."
 	}
 	"#SMStats_Player_Detected_IPBanned"
@@ -306,7 +302,7 @@
 		// {2} steamid
 		"#format" "{1:s},{2:s}"
 		"en" "{grey}{1} {lightgreen}[{2}] {darkred}got ip-banned and were removed from SMStats completely."
-		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}fick ip-ban och blev borttagen från SMStats helt hållet."
+		"sv" "{grey}{1} {lightgreen}[{2}] {darkred}fick ip-ban och blev borttagen från SMStats helt i hållet."
 		"tr" "{grey}{1} {lightgreen}[{2}] {darkred}IP yasağı aldı ve SMStats'tan tamamen kaldırıldı."
 	}
 
@@ -755,9 +751,9 @@
 	//================================//
 	"#SMStats_UpdateFound"
 	{
-	    "en" "New {lightgreen}Update {default}was found, restarting.."
-	    "jp" "{lightgreen}新しい更新が見つかりました。再開しています.."
-	    "sv" "Ny {lightgreen}Uppdatering {default}var funnen, startar om.."
+	    "en" "[Update] {lightgreen}Detected new version, restarting.."
+	    "jp" "[Update] {lightgreen}新版が見つけた、再開されてきます.."
+	    "sv" "[Update] {lightgreen}Upptäckte ny version, startar om.."
 	    "tr" "Yeni {lightgreen}Güncelleme {default}bulundu, yeniden başlatılıyor.."
 	}
 	
@@ -765,7 +761,7 @@
 	{
 	    "#format" "{1:s}"
 	    "en" "{orange}Version {1} {lightgreen}has loaded!"
-	    "jp" "{orange}バージョン{1}{lightgreen}がロードされました！"
+	    "jp" "{orange}{1}版{lightgreen}がロードされました！"
 	    "sv" "{orange}Version {1} {lightgreen}har laddats!"
 	    "tr" "{orange}Sürüm {1} {lightgreen}yüklendi!"
 	}
@@ -775,41 +771,44 @@
 	//================================//
 	"#SMStats_RoundStart"
 	{
-	    "en" "Round Start: Tracking enabled."
-		"jp" "ラウンド開始：トラッキングが有効です。"
-		"sv" "Rundstart: Spårning aktiverad."
-		"tr" "Round Başladı: Puanlama aktif."
+	    "en" "[Round] Tracking enabled."
+		"jp" "[Round] トラッキングに有効されました"
+		"sv" "[Round] Trackern aktiverad."
+		"tr" "[Round] Puanlama aktif."
 	}
 	"#SMStats_RoundStart_Warmup"
 	{
-	    "en" "Round Start: Warmup/Waiting for players detected, ignoring statistical tracking."
-	    "sv" "Rundstart: Uppvärmning/Väntar på spelare upptäckt, ignorerar statistiskt spårning."
-	    "tr" "Hazırlık Süresi/Oyuncular bekleniyor, Puanlama aktif değil."
+	    "en" "[Warmup] {orange}Ignoring stats tracking.."
+	    "jp" "[Warmup] {orange}トラッキングに無職されます.."
+	    "sv" "[Warmup] {orange}Ignorerar stats tracking.."
+	    "tr" "[Warmup] Bekleniyor, Puanlama aktif değil.."
 	}
 	"#SMStats_RoundEnd"
 	{
-	    "en" "Round End: Tracking disabled."
-	    "jp" "ラウンド終了：トラッキングが無効です。"
-	    "sv" "Rundslut: Spårning inaktiverad."
-	    "tr" "Round Bitti: Puanlama kapatıldı."
+	    "en" "[Round] Tracking disabled."
+	    "jp" "[Round] トラッキングに無効されました"
+	    "sv" "[Round] Trackern inaktiverad."
+	    "tr" "[Round] Puanlama kapatıldı."
 	}
 	"#SMStats_NotEnoughPlayers"
 	{
 	    // {1} current player count in the server
 	    // {2} required player count to start tracking
 	    "#format" "{1:i},{2:i}"
-	    "en" "Not enough players ({1} out of required {2}), disabling.."
-	    "sv" "Inte tillräckligt med spelare ({1} utav krävande {2}), inaktiverar.."
-	    "tr" "Yeterli oyuncu yok ({1}/{2}), puanlama devre dışı.."
+	    "en" "[{1}/{2}] {red}Not enough players, deactivating stat tracker.."
+	    "jp" "[{1}/{2}] {red}足りなくプレイヤーが居り、トラッキングに無効されてきました.."
+	    "sv" "[{1}/{2}] {red}Inte tillräckligt spelare inne, inaktiverar stats trackern.."
+	    "tr" "[{1}/{2}] {red}Yeterli oyuncu yok, puanlama devre dışı.."
 	}
 	"#SMStats_EnoughPlayers"
 	{
 	    // {1} current player count in the server
 	    // {2} required player count to start tracking
 	    "#format" "{1:i},{2:i}"
-	    "en" "Enough Players ({1} out of required {2}), enabling.."
-	    "sv" "Tillräckligt med spelare ({1} utav krävande {2}), aktiverar.."
-	    "tr" "Yeterli Oyuncu mevcut ({1}/{2}), puanlama etkinleştiriliyor.."
+	    "en" "[{1}/{2}] {lightgreen}Enough players, activating stats tracker.."
+	    "jp" "[{1}/{2}] {lightgreen}足りプレイヤーが居り、トラッキングに有効されてきました.."
+	    "sv" "[{1}/{2}] {lightgreen}Tillräckligt spelare inne, aktiverar stats trackern.."
+	    "tr" "[{1}/{2}] {lightgreen}Yeterli Oyuncu mevcut, puanlama etkinleştiriliyor.."
 	}
 	
 	//================================//
@@ -1092,7 +1091,7 @@
 	    // {3} special frag event
 	    "#format" "{1:s},{2:s},{3:s}"
 	    "en" "{1} for neutralizing {2} ({3})"
-	    "jp" "【{3}】{2}を無力化したため{1}"
+	    "jp" "【{3}】 {2}を無力化したため{1}"
 	    "sv" "{1} för att neutralisera {2} ({3})"
 	    "tr" "{2} oyuncusunu öldürdüğün için {1} kazandın ({3})"
 	}
