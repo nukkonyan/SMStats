@@ -58,7 +58,7 @@ enum struct SMStats_PlayerInfo
 {
 	int userid;
 	int iTeam;
-	char auth[28];
+	char auth[AUTH_LENGTH];
 	char profileid[24];
 	char name[64];
 	char name2[64];
@@ -269,6 +269,7 @@ enum struct SMStats_CSGOGameInfo
 {
 	ArrayList aFragEvent;
 	ArrayList aFrameBlinded;
+	ArrayList aChickenFragEvent;
 	
 	void Reset()
 	{
@@ -280,6 +281,11 @@ enum struct SMStats_CSGOGameInfo
 		if(!!this.aFrameBlinded)
 		{
 			delete this.aFrameBlinded;
+		}
+		
+		if(!!this.aChickenFragEvent)
+		{
+			delete this.aChickenFragEvent;
 		}
 	}
 }
@@ -318,7 +324,7 @@ methodmap SMStatsInfo __nullable__
 	 *
 	 *	@param client		The user index.
 	 */
-	public static native void ResetPlayerStats(int client);
+	public static native void ResetPlayerInfo(int client);
 	
 	
 	/*
@@ -351,4 +357,33 @@ methodmap SMStatsInfo __nullable__
 	{
 		return LibraryExists("SMStatsInfo");
 	}
+}
+
+public SharedPlugin __pl_sm_stats_info =
+{
+	name = "SMStats",
+	file = "sm_stats_info.smx",
+#if defined REQUIRE_PLUGIN
+	required = 1
+#else
+	required = 0
+#endif
+}
+
+#if !defined REQUIRE_PLUGIN
+public void __pl_sm_stats_info_SetNTVOptional()
+{
+	MarkNativeAsOptional("SMStatsInfo.GetPlayerInfo");
+	MarkNativeAsOptional("SMStatsInfo.SavePlayerInfo");
+	MarkNativeAsOptional("SMStatsInfo.ResetPlayerInfo");
+	
+	MarkNativeAsOptional("SMStatsInfo.GetGameStats");
+	MarkNativeAsOptional("SMStatsInfo.SaveGameStats");
+	MarkNativeAsOptional("SMStatsInfo.ResetGameStats");
+	
+	MarkNativeAsOptional("_sm_stats_info_update_stats_active");
+	MarkNativeAsOptional("_sm_stats_info_update_round_active");
+	MarkNativeAsOptional("_sm_stats_info_update_maptimer");
+	MarkNativeAsOptional("_sm_stats_info_get_crucial_stuff");
+	MarkNativeAsOptional("_sm_stats_info_save_crucial_stuff");
 }

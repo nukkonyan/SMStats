@@ -1,25 +1,25 @@
-stock void LoadForwardEvents()
+char szEventConn[][] =
 {
-	char player_con[22];
+	"player_connect_client",
+	"player_connect"
+};
+
+stock int szEventConnType()
+{
 	switch(GetEngineVersion())
 	{
-		case Engine_TF2
-		, Engine_CSS
-		, Engine_Contagion
-		, Engine_DODS
-		, Engine_SourceSDK2006
-		, Engine_SourceSDK2007
-		, Engine_SDK2013:
-		{
-			player_con = "player_connect_client"
-		}
 		case Engine_Left4Dead2, Engine_CSGO:
 		{
-			player_con = "player_connect"
+			return 1;
 		}
 	}
 	
-	HookEvent(player_con, OnPlayerConnected, EventHookMode_Pre);
+	return 0;
+}
+
+stock void LoadForwardEvents()
+{
+	HookEvent(szEventConn[szEventConnType()], OnPlayerConnected, EventHookMode_Pre);
 	HookEvent("player_disconnect", OnPlayerDisconnected, EventHookMode_Pre);
 }
 

@@ -6,6 +6,7 @@
 
 #define _sm_stats_db "sm_stats"
 #define _sm_stats_default_points 1000
+#define AUTH_LENGTH 18
 
 enum SMStats_Type
 {

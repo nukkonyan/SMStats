@@ -206,6 +206,13 @@ native void _sm_stats_detect_ban_player_ip(const char[] ip, bool only_same_games
 
 // sql
 
+#define sql_table_playerlist "playerlist_" ... GameType
+#define sql_table_weapons    "weapons_"    ... GameType
+#define sql_table_kill_log   "kill_log_"   ... GameType
+#define sql_table_item_log   "item_log_"   ... GameType
+#define sql_table_maps_log   "maps_log_"   ... GameType
+#define sql_table_settings   "settings"
+
 char g_strTableName[7][24];
 
 enum struct SMStats_SQLInfo
@@ -501,13 +508,11 @@ stock void PostAskPluginLoad(EngineVersion engine)
 			if(StrEqual(gamefolder, "csgo", false))
 			{
 				g_CustomGameType = GameType_CSGO;
-				GameType = "csgo";
 				bValid = true;
 			}
 			else if(StrEqual(gamefolder, "cscomod", false))
 			{
 				g_CustomGameType = GameType_CSCO;
-				GameType = "csco";
 				bValid = true;
 			}
 		}
@@ -728,7 +733,7 @@ public void _sm_stats_loaded_sql(Database database, bool bOnPluginStart)
 		int client = 0;
 		while((client = FindEntityByClassname(client, "player")) > 0)
 		{
-			if(IsValidClient(client))
+			if(SMStats_IsValidClient(client))
 			{
 				OnClientConnected(client);
 			}
@@ -787,7 +792,7 @@ Action Timer_PluginLoaded(Handle timer)
 	int client = 0;
 	while((client = FindEntityByClassname(client, "player")) != -1)
 	{
-		if(IsValidClient(client, false))
+		if(SMStats_IsValidClient(client))
 		{
 			// obtain the player info.
 			UpdatePlayerInfo(client);
@@ -1033,6 +1038,193 @@ stock void PrepareCoreCFG()
 	
 	LogToGame(core_chattag..." Loaded Core CFG ('configs/sm_stats/core.cfg')");
 	core.Rewind();
+}
+
+// other
+
+/*
+ * @param client		- client player ent index
+ * @param aBlock[0]		- Boolean if to to block non-ingame players.
+ * @param aBlock[1]		- 0 = Do not block fake players.
+ *                      - 1 = Block fake players.
+ *                      - 2 = Block bots if disabled by cvar setting.
+ * @param aBlock[2]		- Boolean if to Block dead players or not.
+ * @param aBlock[3]		- Boolean if to check if player is abusing.
+ * @param aBlock[4]		- Boolean if to check steam authentication id.
+ * @param iBlockp1		- 1 = Block if on the same team.
+ *                        2 = Block if not same team.
+ *                        3 = Block if same player.
+ *                        4 = Block if not same player.
+ * @param iBlockp2		- Target index.
+ * @param auth			- Steam authentication id.
+*/
+stock bool SMStats_IsValidClient(int client, int aBlock[5]={1,1,0,0,0}, int iBlockp1=-1, int iBlockp2=-1, char[] auth="")
+{
+	if(client >= 1)
+	{
+		if(!IsClientConnected(client))
+		{
+			return false;
+		}
+		if(IsClientReplay(client))
+		{
+			return false;
+		}
+		if(IsClientSourceTV(client))
+		{
+			return false;
+		}
+		
+		if(aBlock[0] == 1)
+		{
+			if(!IsClientInGame(client))
+			{
+				return false;
+			}
+		}
+		
+		bool bBot = IsFakeClient(client);
+		
+		switch(aBlock[1])
+		{
+			case 1:
+			{
+				if(bBot)
+				{
+					return false;
+				}
+			}
+			case 2:
+			{
+				if(!bAllowBots && bBot)
+				{
+					return false;
+				}
+			}
+		}
+		if(aBlock[2] == 1)
+		{
+			if(!IsPlayerAlive(client))
+			{
+				return false;
+			}
+		}
+		if(aBlock[3] == 0)
+		{
+			if(!bBot)
+			{
+				if(IsValidAbuse(client))
+				{
+					return false;
+				}
+			}
+		}
+		if(aBlock[4] == 0)
+		{
+			if(!bBot)
+			{
+				if(!GetClientAuthId(client, AuthId_Steam3, auth, AUTH_LENGTH, false))
+				{
+					return false;
+				}
+			}
+		}
+		switch(iBlockp1)
+		{
+			case 1:
+			{
+				if(GetClientTeam(client) == GetClientTeam(iBlockp2))
+				{
+					return false;
+				}
+			}
+			case 2:
+			{
+				if(GetClientTeam(client) != GetClientTeam(iBlockp2))
+				{
+					return false;
+				}
+			}
+			case 3:
+			{
+				if(client == iBlockp2)
+				{
+					return false;
+				}
+			}
+			case 4:
+			{
+				if(client != iBlockp2)
+				{
+					return false;
+				}
+			}
+		}
+	}
+	
+	return true;
+}
+
+/*
+ * @param client		- client player ent index
+ * @param userid		- userid
+ * @param aBlock[0]		- Boolean if to to block non-ingame players.
+ * @param aBlock[1]		- 0 = Do not block fake players.
+ *                      - 1 = Block fake players.
+ *                      - 2 = Block bots if disabled by cvar setting.
+ * @param aBlock[2]		- Boolean if to Block dead players or not.
+ * @param aBlock[3]		- Boolean if to check if player is abusing.
+ * @param aBlock[4]		- Boolean if to check steam authentication id.
+ * @param iBlockp1		- 1 = Block if on the same team.
+ *                        2 = Block if not same team.
+ *                        3 = Block if same player.
+ *                        4 = Block if not same player.
+ * @param iBlockp2		- Target index.
+ * @param auth			- Steam authentication id.
+*/
+stock bool SMStats_IsValidUserID(int &client=0, int userid, int aBlock[5]={1,1,0,0,0}, int iBlockp1=-1, int iBlockp2=-1, char[] auth="")
+{
+	if(userid < 1)
+	{
+		return false;
+	}
+	
+	if((client = GetClientOfUserId(userid)) < 1)
+	{
+		return false;
+	}
+	
+	return SMStats_IsValidClient(client, aBlock, iBlockp1, iBlockp2, auth);
+}
+
+stock bool SMStats_IsValidConnected(int client)
+{
+	if(client < 1)
+	{
+		return false;
+	}
+	
+	if(IsFakeClient(client))
+	{
+		return true;
+	}
+	
+	return true;
+}
+
+stock bool IsValidConnectedUserID(int &client=0, int userid)
+{
+	if(userid < 1)
+	{
+		return false;
+	}
+	
+	if((client = GetClientOfUserId(userid)) < 1)
+	{
+		return false;
+	}
+	
+	return SMStats_IsValidConnected(client);
 }
 
 #endif
