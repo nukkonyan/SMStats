@@ -1,5 +1,5 @@
 > [!NOTE]
-> This project is just a hobby and is in no way made to compete either with **HLStatsX:CE** nor **gameME**.
+> This project is just a hobby and is in no way made to compete either with any other Statistical trackers.
 
 ### SMStats
    - 100% translation supported.
