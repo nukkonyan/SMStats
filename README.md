@@ -50,7 +50,7 @@
    - [ ] Day Of Defeat: Source
 ### To-do
    - [x] Update Stats Menu
-      -  [x] Implement sm_stats <top index | steamid > to manually check statistics of a particular player.
+      -  [x] Implement sm_stats <top index | steamid3 > to manually check statistics of a particular player.
          -  [x] sm_stats 30 **displays Top 30 current player.**
          -  [x] sm_stats "[U:1:123456789]" **displays the Top player through steamid.**
    - [ ] Implement spam-detection with a penalty (exploiting loopholes to farm points). (Prevent gaining points).
